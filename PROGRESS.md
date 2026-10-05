@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T4.4`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 5 · **Tugas berikutnya:** `T5.1` (T3.3 menunggu T6.2)
 
 ## Ringkasan
 
@@ -13,13 +13,13 @@
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
-| 4 | Generate PDF CV & Portfolio | 🔄 3/4 tugas |
-| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
+| 4 | Generate PDF CV & Portfolio | ✅ Selesai |
+| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⏳ Berikutnya |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
-Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
+Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 menunggu CI) — ≈55%**
 
 ---
 
@@ -71,13 +71,13 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 - [x] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
 - [ ] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam) *(bergantung T6.2)*
 
-## Fase 4: PDF CV & Portfolio
+## Fase 4: PDF CV & Portfolio ✅
 
 - [x] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
 - [x] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
 - [x] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
-- [ ] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
+- [x] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
 
 ## Fase 5: Statistik bawaan (ADR 0009, `docs/08-analytics.md`)
 
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T4.4 (Fase 4 selesai)
+- **Dikerjakan:** tombol "Download CV" + "Portfolio PDF" (EN/ID) di hero (menggantikan CTA sementara mailto/LinkedIn) dan di halaman About; URL dari `downloadPath()`, atribut `download` dan `data-download` untuk statistik T5.3; `DownloadIcon`.
+- **Verifikasi:** e2e: href per bahasa, setiap tombol di 4 halaman mengarah ke PDF yang ada (200, `application/pdf`), klik memicu unduhan bernama `Harry-Mardika-CV-EN.pdf`; screenshot desktop & HP gelap; `bun run verify` lulus.
+- **Ringkasan Fase 4:** CV ATS 2 halaman + Portfolio visual 8 halaman, EN & ID, dibuat otomatis tiap build (±5 detik), ber-tag, dalam anggaran ukuran; highlight diterjemahkan (menunggu review pemilik).
 
 ### 2026-10-05 · Claude Code (Opus) · T4.3
 - **Dikerjakan:** `src/lib/downloads.ts` (murni: nama file, URL, halaman sumber; dipakai skrip & tombol), `scripts/generate-pdf.ts` (`Bun.serve` port acak + Chromium; PDF ber-tag dengan outline; anggaran ukuran CV < 1 MB, Portfolio < 3 MB menggagalkan build), `bun run build` = fetch → astro → pdf. `BUILD_OUT_DIR` menggantikan flag `--outDir` (Astro & skrip PDF membaca variabel yang sama). `pdfjs-dist` (dev) untuk membaca PDF dalam tes.

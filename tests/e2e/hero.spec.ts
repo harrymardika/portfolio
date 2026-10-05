@@ -10,8 +10,14 @@ test('the hero shows the headline, tagline, actions, and three stats from profil
   await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
     /Harry Mardika: Let's build something useful\./,
   );
-  await expect(hero.getByRole('link', { name: 'Get in touch' })).toHaveAttribute('href', /^mailto:/);
-  await expect(hero.getByRole('link', { name: 'LinkedIn profile' })).toHaveAttribute('href', /linkedin\.com/);
+  await expect(hero.getByRole('link', { name: 'Download CV' })).toHaveAttribute(
+    'href',
+    '/downloads/Harry-Mardika-CV-EN.pdf',
+  );
+  await expect(hero.getByRole('link', { name: 'Portfolio PDF' })).toHaveAttribute(
+    'href',
+    '/downloads/Harry-Mardika-Portfolio-EN.pdf',
+  );
   await expect(hero.locator('dl dd')).toHaveCount(3);
   await expect(hero.getByRole('img', { name: 'Photo of Harry Mardika' })).toBeVisible();
 });
@@ -21,7 +27,10 @@ test('the hero is translated on /id/', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Mari membangun sesuatu yang bermanfaat.',
   );
-  await expect(page.getByRole('link', { name: 'Hubungi saya' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Unduh CV' })).toHaveAttribute(
+    'href',
+    '/downloads/Harry-Mardika-CV-ID.pdf',
+  );
   await expect(page.getByRole('img', { name: 'Foto Harry Mardika' })).toBeVisible();
 });
 
@@ -94,4 +103,32 @@ test('largest contentful paint stays under 2.5 s', async ({ page }) => {
   );
   expect(lcp).toBeGreaterThan(0);
   expect(lcp).toBeLessThan(2500);
+});
+
+test('every download button points at a PDF that exists and downloads with its file name', async ({
+  page,
+  request,
+}) => {
+  for (const path of ['/', '/id/', '/about/', '/id/about/']) {
+    await page.goto(path);
+    const links = page.locator('main a[data-download]');
+    await expect(links).toHaveCount(2);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute('download', '');
+      const href = await link.getAttribute('href');
+      const response = await request.get(href ?? '');
+      expect(response.status(), href ?? '').toBe(200);
+      expect(response.headers()['content-type']).toContain('pdf');
+    }
+  }
+});
+
+test('the hero download starts a real file download', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Download events are the same on mobile');
+  await page.goto('/');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('link', { name: 'Download CV' }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe('Harry-Mardika-CV-EN.pdf');
 });

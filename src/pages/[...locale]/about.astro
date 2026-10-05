@@ -1,6 +1,7 @@
 ---
 import AboutSection from '@/components/about/AboutSection.astro';
 import TimelineItem from '@/components/about/TimelineItem.astro';
+import DownloadIcon from '@/components/ui/DownloadIcon.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { formatYearMonth, localize, splitExperience } from '@/lib/content';
 import {
@@ -12,6 +13,7 @@ import {
   getSkillGroups,
   getTrainings,
 } from '@/lib/content/queries';
+import { downloadPath } from '@/lib/downloads';
 import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -46,6 +48,26 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
       <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
       <h1 class="text-h2">{t['about.title']}</h1>
       <p class="text-lg text-ink-muted">{localize(profile.summary, locale)}</p>
+      <p class="flex flex-wrap gap-3">
+        <a
+          href={downloadPath(profile.name, 'cv', locale)}
+          download
+          data-download="cv"
+          class="inline-flex min-h-11 w-max items-center gap-2 rounded-full bg-forest px-5 font-semibold text-on-forest hover:brightness-110 dark:bg-amber dark:text-forest"
+        >
+          <DownloadIcon />
+          {t['download.cv']}
+        </a>
+        <a
+          href={downloadPath(profile.name, 'portfolio', locale)}
+          download
+          data-download="portfolio"
+          class="inline-flex min-h-11 w-max items-center gap-2 rounded-full border border-line px-5 font-semibold text-ink hover:bg-surface"
+        >
+          <DownloadIcon />
+          {t['download.portfolio']}
+        </a>
+      </p>
     </header>
 
     {[

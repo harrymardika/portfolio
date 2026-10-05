@@ -85,6 +85,7 @@ Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run 
 | GitHub sync gagal | Pesan `GitHub: warning: …` tidak menghentikan build: cache terakhir dipakai (atau daftar kosong). Penyebab umum: offline, rate limit (isi `GITHUB_TOKEN`), atau salah ketik nama di `include` (ada peringatannya). |
 | `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Jika mendeteksi AI agent (mis. Claude Code), Astro 7 otomatis menjalankan dev/preview server di background. Cek `bunx astro dev status`, log `bunx astro dev logs`, hentikan `bunx astro dev stop`. Tambahkan `--ignore-lock` untuk memaksa foreground (dipakai `playwright.config.ts`). Saat dijalankan manusia atau Docker, server berjalan normal di foreground. |
 | Browser Playwright belum ada | `bunx playwright install chromium` |
+| Tombol "Download CV" 404 di `bun run dev` | PDF hanya dibuat oleh `bun run build`. Untuk mengujinya: `bun run build && bun run preview`. |
 | Port 4322 terpakai saat e2e | Ada preview lama yang masih jalan. Cari dengan `ss -ltnp \| grep 4322`, hentikan PID-nya. E2E selalu membangun ulang dan tidak memakai server yang sudah ada. |
 | Docker: `address already in use` port 4321 | Dev server lokal masih jalan (`bunx astro dev status` / `stop`) atau pakai `DEV_PORT=4331`. |
 | Docker: dependency tidak sinkron setelah `bun add` | Container menjalankan `bun install --frozen-lockfile` setiap start; restart container. Jika tetap error: `docker compose -f docker/compose.dev.yml down -v` (menghapus volume `node_modules`). |

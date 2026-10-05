@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Download CV and Portfolio PDF buttons on the home hero and About page, in both languages (T4.4).
 - Automatic PDF generation at build time: CV and portfolio in English and Indonesian, tagged, with size budgets (T4.3).
 - Visual portfolio print pages (A4 landscape, 8 pages) in English and Indonesian (T4.2).
 - Indonesian translations for all experience, education, and training highlights (draft, pending owner review); translatable skill items and award issuers.

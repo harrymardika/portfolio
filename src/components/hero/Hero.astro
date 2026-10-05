@@ -4,8 +4,10 @@
  * Content comes from profile.yaml; the 3D card loads after the page is interactive.
  */
 import PhotoCard from './PhotoCard.astro';
+import DownloadIcon from '@/components/ui/DownloadIcon.astro';
 import { localize, splitEmphasis, type Profile } from '@/lib/content';
 import { contentImage } from '@/lib/content/media';
+import { downloadPath } from '@/lib/downloads';
 import { type Locale, UI } from '@/lib/i18n';
 
 interface Props {
@@ -17,7 +19,6 @@ const { locale, profile } = Astro.props;
 const t = UI[locale];
 const role = localize(profile.role, locale);
 const headline = splitEmphasis(localize(profile.headline, locale));
-const linkedin = profile.socials.find((social) => social.platform === 'linkedin');
 ---
 
 <section class="bg-forest text-on-forest" aria-labelledby="hero-title">
@@ -38,20 +39,23 @@ const linkedin = profile.socials.find((social) => social.platform === 'linkedin'
       </p>
       <div class="flex flex-wrap gap-3">
         <a
-          href={`mailto:${profile.email}`}
-          class="inline-flex min-h-11 items-center rounded-full bg-amber px-5 font-semibold text-forest transition hover:brightness-105"
+          href={downloadPath(profile.name, 'cv', locale)}
+          download
+          data-download="cv"
+          class="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber px-5 font-semibold text-forest transition hover:brightness-105"
         >
-          {t['hero.ctaContact']}
+          <DownloadIcon />
+          {t['download.cv']}
         </a>
-        {linkedin && (
-          <a
-            href={linkedin.url}
-            rel="me noopener"
-            class="inline-flex min-h-11 items-center rounded-full border border-on-forest/45 px-5 font-semibold text-on-forest transition hover:bg-on-forest/10"
-          >
-            {t['hero.ctaLinkedIn']}
-          </a>
-        )}
+        <a
+          href={downloadPath(profile.name, 'portfolio', locale)}
+          download
+          data-download="portfolio"
+          class="inline-flex min-h-11 items-center gap-2 rounded-full border border-on-forest/45 px-5 font-semibold text-on-forest transition hover:bg-on-forest/10"
+        >
+          <DownloadIcon />
+          {t['download.portfolio']}
+        </a>
       </div>
       <dl class="flex flex-wrap gap-x-8 gap-y-4" aria-label={t['hero.statsLabel']}>
         {profile.stats.map((stat) => (

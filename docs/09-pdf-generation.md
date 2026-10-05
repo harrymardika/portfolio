@@ -17,6 +17,8 @@ Alasan teknis: ADR 0003.
 
 Nama file stabil agar tautan tidak pernah rusak.
 
+Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `download` dan `data-download="cv|portfolio"`.
+
 ## 2. Aturan CV (ramah ATS)
 
 - A4, margin 12–15 mm, **satu kolom**, maksimal 2 halaman.
