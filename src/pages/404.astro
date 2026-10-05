@@ -1,0 +1,37 @@
+---
+/**
+ * Not-found page. A static server returns this single file for every unknown URL in either
+ * language, so it speaks both and links to both home pages.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getProfile } from '@/lib/content/queries';
+import { LOCALES, LOCALE_TAGS, localizePath, UI } from '@/lib/i18n';
+
+const profile = await getProfile();
+---
+
+<BaseLayout locale="en" title={`${UI.en['notFound.title']} · ${profile.name}`} noindex linkAlternates={false}>
+  <main
+    id="main"
+    class="mx-auto grid min-h-[70vh] max-w-[720px] content-center gap-10 px-[clamp(16px,4vw,40px)] py-16"
+  >
+    <p class="font-mono text-eyebrow text-amber-deep">404</p>
+    {LOCALES.map((locale, index) => (
+      <section lang={LOCALE_TAGS[locale]} class="grid gap-3">
+        {/* One h1 per page; the second language uses an h2 with the same look. */}
+        {index === 0 ? (
+          <h1 class="text-h2">{UI[locale]['notFound.title']}</h1>
+        ) : (
+          <h2 class="text-h2">{UI[locale]['notFound.title']}</h2>
+        )}
+        <p class="text-ink-muted">{UI[locale]['notFound.body']}</p>
+        <a
+          href={localizePath('/', locale)}
+          class="inline-flex min-h-11 w-max items-center rounded-full bg-forest px-5 font-semibold text-on-forest hover:brightness-110 dark:bg-amber dark:text-forest"
+        >
+          {UI[locale]['notFound.home']}
+        </a>
+      </section>
+    ))}
+  </main>
+</BaseLayout>

@@ -11,6 +11,7 @@ import {
   certificationSchema,
   educationSchema,
   experienceSchema,
+  homelabSchema,
   milestoneSchema,
   profileSchema,
   projectSchema,
@@ -30,6 +31,10 @@ export const collections = {
   profile: defineCollection({
     loader: file(`${CONTENT_DIR}/profile.yaml`, { parser: (text) => parseYamlSingleton(text, 'profile') }),
     schema: profileSchema,
+  }),
+  homelab: defineCollection({
+    loader: file(`${CONTENT_DIR}/homelab.yaml`, { parser: (text) => parseYamlSingleton(text, 'homelab') }),
+    schema: homelabSchema,
   }),
   experience: defineCollection({ loader: listFile('experience'), schema: experienceSchema }),
   education: defineCollection({ loader: listFile('education'), schema: educationSchema }),

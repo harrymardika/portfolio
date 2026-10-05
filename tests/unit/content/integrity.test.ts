@@ -14,6 +14,7 @@ import {
   certificationSchema,
   educationSchema,
   experienceSchema,
+  homelabSchema,
   milestoneSchema,
   profileSchema,
   projectSchema,
@@ -57,6 +58,10 @@ describe('content files', () => {
     expectValid(profileSchema, parseYamlSingleton(read('profile.yaml'), 'profile')['profile'], 'profile.yaml');
   });
 
+  it('homelab.yaml matches the schema', () => {
+    expect(() => homelabSchema.parse(parseYamlSingleton(read('homelab.yaml'), 'homelab')['homelab'])).not.toThrow();
+  });
+
   for (const entry of LIST_FILES) {
     const { file, key, schema } = entry;
     it(`${file} matches the schema and has unique ids`, () => {
@@ -98,6 +103,7 @@ describe('content files', () => {
   it('contains no phone numbers', () => {
     const files = [
       'profile.yaml',
+      'homelab.yaml',
       ...LIST_FILES.map(({ file }) => file),
       ...projectFiles.map((name) => `projects/${name}`),
     ];

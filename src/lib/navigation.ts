@@ -12,6 +12,7 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { labelKey: 'nav.projects', path: '/projects/' },
   { labelKey: 'nav.about', path: '/about/' },
+  { labelKey: 'nav.homelab', path: '/homelab/' },
 ];
 
 /** Display names for social platforms (proper nouns, identical in every locale). */

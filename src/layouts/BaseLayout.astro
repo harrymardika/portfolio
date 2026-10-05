@@ -14,9 +14,11 @@ interface Props {
   description?: string;
   /** Exclude utility pages (print views, placeholders) from search engines. */
   noindex?: boolean;
+  /** Write canonical and hreflang links. Off for pages without a fixed URL, such as 404. */
+  linkAlternates?: boolean;
 }
 
-const { locale, title, description, noindex = false } = Astro.props;
+const { locale, title, description, noindex = false, linkAlternates = true } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
 const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_');
@@ -41,11 +43,15 @@ const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_')
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={absolute(paths[locale])} />
-    {LOCALES.map((alt) => (
-      <link rel="alternate" hreflang={alt} href={absolute(paths[alt])} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={absolute(paths[DEFAULT_LOCALE])} />
+    {linkAlternates && (
+      <>
+        <link rel="canonical" href={absolute(paths[locale])} />
+        {LOCALES.map((alt) => (
+          <link rel="alternate" hreflang={alt} href={absolute(paths[alt])} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={absolute(paths[DEFAULT_LOCALE])} />
+      </>
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

@@ -11,13 +11,29 @@ import { compareDatesDesc, compareRangesDesc, sortedBy } from './ordering';
 import { compareProjects, isPublished } from './projects';
 import { visibleOn, type Surface } from './visibility';
 
-import type { Award, Certification, Education, Experience, Milestone, Profile, SkillGroup, Training } from './schemas';
+import type {
+  Award,
+  Certification,
+  Education,
+  Experience,
+  Homelab,
+  Milestone,
+  Profile,
+  SkillGroup,
+  Training,
+} from './schemas';
 
 const dataOf = async <T>(entries: Promise<{ data: T }[]>): Promise<T[]> => (await entries).map((e) => e.data);
 
 export async function getProfile(): Promise<Profile> {
   const entry = await getEntry('profile', 'profile');
   if (!entry) throw new Error('content/profile.yaml is missing');
+  return entry.data;
+}
+
+export async function getHomelab(): Promise<Homelab> {
+  const entry = await getEntry('homelab', 'homelab');
+  if (!entry) throw new Error('content/homelab.yaml is missing');
   return entry.data;
 }
 

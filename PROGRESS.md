@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.7`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.1`
 
 ## Ringkasan
 
@@ -11,15 +11,15 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 7/8 tugas |
-| 3 | Sinkronisasi proyek dari GitHub | ⬜ |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
+| 3 | Sinkronisasi proyek dari GitHub | ⏳ Berikutnya |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
-Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
+Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 ---
 
@@ -50,7 +50,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 - [x] **T1.8** Docker dev: `docker/compose.dev.yml` dengan hot reload *(independen, boleh dikerjakan paralel)*
   - Kriteria: `docker compose -f docker/compose.dev.yml up` menjalankan dev server di port 4321.
 
-## Fase 2: Halaman & UI
+## Fase 2: Halaman & UI ✅
 
 - [x] **T2.1** Modul inti 3D `src/scenes/core/` (renderer, loop, pause saat offscreen, reduced-motion, deteksi WebGL, dispose)
   - Kriteria: kontrak `SceneHandle` sesuai `docs/02-architecture.md` §6; tes unit untuk util non-WebGL.
@@ -62,7 +62,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 - [x] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
 - [x] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
 - [x] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
-- [ ] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
+- [x] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
 
 ## Fase 3: Sinkronisasi GitHub
 
@@ -118,6 +118,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 | D4 | Subdomain analytics (mis. `analytics.mardika.my.id`) | `analytics.mardika.my.id` |
 | D5 | Repo mana saja yang diberi topic `portfolio` di GitHub | Pemilik menandai sendiri |
 | D6 | Sertifikat Azure AI Engineer: diperpanjang atau tidak | Tetap tersembunyi (kedaluwarsa Jul 2026) |
+| D7 | Spesifikasi server untuk `/homelab` (`content/homelab.yaml → hardware`) | Bagian spesifikasi disembunyikan |
 
 ## Catatan data
 
@@ -130,6 +131,12 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.7 (Fase 2 selesai)
+- **Dikerjakan:** `/homelab/` dari `content/homelab.yaml` (intro, 4 langkah pipeline deploy sesuai ADR 0005/docs 07, stack; bagian spesifikasi hardware hanya tampil jika diisi pemilik, D7) + `homelabSchema`/`getHomelab()`; menu "Homelab". `src/pages/404.astro` dwibahasa (satu h1, h2 untuk bahasa kedua, tautan ke `/` dan `/id/`), tanpa canonical/hreflang (opsi baru `linkAlternates` di `BaseLayout`). Tombol solid memakai amber di mode gelap.
+- **Verifikasi:** `bun run verify` lulus; e2e homelab EN/ID, 404 (status 404, kedua bahasa, tanpa hreflang), axe bersih. Screenshot dicek.
+- **Catatan:** spesifikasi server **tidak dikarang**; menunggu data pemilik. Status uptime live: T6.5.
+- **Ringkasan Fase 2:** 8/8 tugas; halaman: beranda (hero 3D, journey 3D, proyek pilihan, kontak), Projects + 3 case study, About, Homelab, 404, semuanya EN/ID; menu HP.
 
 ### 2026-10-05 · Claude Code (Opus) · T2.6
 - **Dikerjakan:** `src/components/contact/Contact.astro` di akhir beranda: kartu per kanal dari `socials` (email pertama dan selebar dua kolom, lalu LinkedIn, Instagram, GitHub), tombol salin email (hanya dengan JS, aman jika clipboard diblokir). Copy di `profile.yaml → contact`.

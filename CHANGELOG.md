@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Homelab page (deployment pipeline and stack from `content/homelab.yaml`) and a bilingual 404 page (T2.7).
 - Contact section with email (copy button), LinkedIn, Instagram, and GitHub; no phone number (T2.6).
 - Mobile navigation menu built on the Popover API (works without JavaScript) (T2.8).
 - About page with summary, experience, leadership and teaching, education, training, awards, active certifications, and skills (T2.5).
