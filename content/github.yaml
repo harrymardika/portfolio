@@ -1,0 +1,17 @@
+# Which public GitHub repositories appear as projects (decision D5, docs/04-content-guide.md §4).
+# Shown = (include ∪ repos with the topic below) − exclude. Synced on every build (bun run fetch:github).
+
+username: harrymardika
+
+# Add this topic to a repo on GitHub (About → ⚙️ → Topics) to show it without editing this file.
+topic: portfolio
+
+# Repo names (exact, case-sensitive) that are always shown, e.g. [aksara-jawa, tsm-grid-camera].
+include: []
+
+# Repo names that are never shown, even if they have the topic.
+exclude: [harrymardika, portfolio]
+
+# Forks and archived repos are skipped unless listed in `include`.
+include_forks: false
+include_archived: false

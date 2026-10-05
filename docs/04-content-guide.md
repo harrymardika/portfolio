@@ -141,7 +141,9 @@ Anda yang memilih repo mana yang tampil, dengan salah satu atau kedua cara:
    ```
 2. **Topic `portfolio` di GitHub**: buka repo → ⚙️ di bagian *About* → tambahkan topic `portfolio`.
 
-Repo yang tampil = (`include` ∪ repo bertopic `portfolio`) − `exclude`. Hanya repo publik milik `harrymardika`. Sinkron tiap 6 jam dan setiap push.
+Repo yang tampil = (`include` ∪ repo bertopic `portfolio`) − `exclude`. Hanya repo publik milik `harrymardika`; fork dan repo arsip dilewati kecuali dicantumkan di `include`. Secara bawaan `exclude` berisi repo profil (`harrymardika`) dan repo situs ini (`portfolio`).
+
+Setelah mengubah `github.yaml`, jalankan `bun run fetch:github --force` untuk melihat hasilnya secara lokal (nama yang salah ketik akan diperingatkan). Di production, sinkron berjalan setiap build (T3.3: terjadwal tiap 6 jam).
 - Deskripsi repo → ringkasan; topics → tag; *social preview image* → gambar sampul.
 - Jika ada `content/projects/*.md` dengan `links.repo` yang sama, data lokal menang dan data GitHub hanya melengkapi (bintang, bahasa, tanggal update).
 

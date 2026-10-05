@@ -22,6 +22,7 @@ import {
   trainingSchema,
 } from '@/lib/content/schemas';
 import { parseYamlList, parseYamlSingleton } from '@/lib/content/yaml';
+import { githubConfigSchema } from '@/lib/github';
 
 import type { z } from 'astro/zod';
 
@@ -56,6 +57,10 @@ function readFrontmatter(path: string): unknown {
 describe('content files', () => {
   it('profile.yaml matches the schema', () => {
     expectValid(profileSchema, parseYamlSingleton(read('profile.yaml'), 'profile')['profile'], 'profile.yaml');
+  });
+
+  it('github.yaml matches the schema', () => {
+    expect(() => githubConfigSchema.parse(load(read('github.yaml')))).not.toThrow();
   });
 
   it('homelab.yaml matches the schema', () => {

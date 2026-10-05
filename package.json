@@ -11,9 +11,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "bun run fetch:github && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "fetch:github": "bun scripts/fetch-github.ts",
     "typecheck": "astro check",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",

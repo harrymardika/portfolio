@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- GitHub sync: choose repos in `content/github.yaml` or with the `portfolio` topic; REST client with retries; never breaks the build when GitHub is unreachable (T3.1).
 - MIT license for the code; server specs on the Homelab page; site-wide link crawler test; ADR 0009 (built-in stats shown on the site) replacing the Umami plan; GitHub repo selection via `content/github.yaml` planned for Phase 3.
 - Homelab page (deployment pipeline and stack from `content/homelab.yaml`) and a bilingual 404 page (T2.7).
 - Contact section with email (copy button), LinkedIn, Instagram, and GitHub; no phone number (T2.6).

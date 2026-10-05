@@ -19,7 +19,8 @@ export default defineConfig({
   ],
   webServer: {
     // --ignore-lock keeps preview in the foreground even when Astro detects an AI agent.
-    command: `bun run build && bun run preview --port ${PORT} --ignore-lock`,
+    // GITHUB_FIXTURE keeps e2e independent of live GitHub data and the network.
+    command: `GITHUB_FIXTURE=tests/fixtures/github.json bun run build && bun run preview --port ${PORT} --ignore-lock`,
     url: `http://localhost:${PORT}/`,
     // Always build and serve fresh: reusing a server left running would test a stale dist/.
     reuseExistingServer: false,

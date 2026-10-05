@@ -97,7 +97,7 @@ Aturan:
 │   │   ├── navigation.ts        # NAV_ITEMS (menu utama) dan label platform sosial
 │   │   ├── theme.ts             # logika tema terang/gelap
 │   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
-│   │   ├── github/              # client.ts (I/O) + map.ts (murni)
+│   │   ├── github/              # schemas, select (murni), client (REST, retry), sync (I/O diinjeksi)
 │   │   ├── stats/               # (T5.3) events.ts (konstanta nama event), beacon
 │   │   └── seo/                 # meta, JSON-LD builders
 │   ├── components/
@@ -134,7 +134,10 @@ Aturan:
 
 ```
 bun run build
-  1. scripts/fetch-github.ts     → src/data/generated/github.json  (gagal? pakai cache terakhir)
+  1. scripts/fetch-github.ts     → src/data/generated/github.json
+                                   REST API, token opsional; repo dipilih lewat content/github.yaml;
+                                   cache < 1 jam dipakai ulang; gagal → cache terakhir → daftar kosong;
+                                   e2e memakai GITHUB_FIXTURE=tests/fixtures/github.json
   2. astro build                 → dist/  (validasi Zod terjadi di sini)
   3. scripts/generate-pdf.ts     → dist/downloads/*.pdf (serve dist/, cetak /print/*)
 ```

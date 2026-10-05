@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.1`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.2`
 
 ## Ringkasan
 
@@ -12,7 +12,7 @@
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
-| 3 | Sinkronisasi proyek dari GitHub | ⏳ Berikutnya |
+| 3 | Sinkronisasi proyek dari GitHub | 🔄 1/3 tugas |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
@@ -66,7 +66,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 ## Fase 3: Sinkronisasi GitHub
 
-- [ ] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (GraphQL), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
+- [x] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (REST, token opsional), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
   - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
 - [ ] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
 - [ ] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam) *(bergantung T6.2)*
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T3.1
+- **Dikerjakan:** `content/github.yaml` (username, topic, `include`, `exclude` [default: `harrymardika`, `portfolio`], opsi fork/arsip) + `githubConfigSchema`; `src/lib/github/` (`schemas`, `select` murni: seleksi + `missingIncludes` + `toGithubRepo`; `client` REST dengan paginasi, retry/backoff 500 ms → 1 s, gagal cepat saat rate limit/4xx, timeout 10 s; `sync` dengan I/O diinjeksi: fixture → cache segar → API → cache lama → daftar kosong); `scripts/fetch-github.ts` (`bun run fetch:github [--force]`), dijalankan sebelum `astro build`. E2E memakai `GITHUB_FIXTURE=tests/fixtures/github.json`.
+- **Keputusan:** REST, bukan GraphQL (GraphQL selalu butuh token; REST tanpa token cukup untuk 1–2 request per build). Token opsional.
+- **Verifikasi:** sinkron live: 41 repo publik, 0 terpilih (belum ada `include`/topic, sesuai harapan); unit 166/166 (seleksi, client dengan fetch palsu, semua jalur fallback sync), cakupan `src/lib/github` 95–100% baris; `bun run verify` lulus.
+- **Catatan:** data GitHub belum ditampilkan di situs (T3.2). Pemilik belum memilih repo; usulan dari nama repo yang cocok dengan proyek draft disampaikan di chat.
 
 ### 2026-10-05 · Claude Code (Opus) · Keputusan D1–D7 + validasi ulang
 - **Keputusan diterapkan:** `LICENSE` MIT (+ catatan hak cipta `content/`), `package.json` `license`; spesifikasi server dibaca via `ssh mardika-server` (perintah baca saja) ke `content/homelab.yaml`; Umami dihapus dari stack; ADR 0009 (statistik bawaan di situs) menggantikan ADR 0004; Fase 5 ditulis ulang (service Bun + SQLite di domain yang sama, tanpa cookie/IP, `?ref=` hanya untuk pemilik); T3.1 mendukung `content/github.yaml` (`include`/`exclude`) + topic; tabel keputusan diganti "Keputusan pemilik".
