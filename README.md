@@ -32,7 +32,7 @@ bun run dev          # http://localhost:4321
 docker compose -f docker/compose.dev.yml up   # http://localhost:4321
 ```
 
-Syarat tanpa Docker: Bun 1.3+ dan Node.js 22.12+. Sebelum commit: `bun run check && bun test && bun run test:e2e`.
+Syarat tanpa Docker: Bun 1.3+ dan Node.js 22.12+. Sebelum commit: `bun run verify`.
 
 Perintah lengkap ada di [docs/06-development-workflow.md](docs/06-development-workflow.md).
 

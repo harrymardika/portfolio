@@ -24,6 +24,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Fixed
+- Type error in `ProjectGrid` optional prop that slipped into T2.4; added `bun run verify` to gate commits (T2.4).
 - Journey and skills keep file order (Astro sorts collection entries by id) (T2.3).
 - Light-theme `amber-deep` text color darkened to meet WCAG AA contrast (T1.6).
 - YAML label in the multimodal crisis-detection project split by an unquoted comma (T1.3).

@@ -131,6 +131,10 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-05 · Claude Code (Opus) · Perbaikan T2.4
+- **Masalah:** commit T2.4 (`5752f03`) masuk ke `main` walau `bun run check` gagal (error TS `exactOptionalPropertyTypes` di `ProjectGrid.astro`), karena perintah dirangkai dengan `;` sehingga commit tetap jalan. Build dan semua tes tetap lulus; hanya typecheck yang gagal.
+- **Perbaikan:** default `headingLevel = 3` di `ProjectGrid`. Script baru `bun run verify` (check → unit → e2e, berhenti saat gagal); `AGENTS.md` mewajibkan `bun run verify && git commit`.
+
 ### 2026-10-05 · Claude Code (Opus) · T2.4
 - **Dikerjakan:** `/projects/` (grid + filter tag), `/projects/<slug>/` (case study Markdown via `render()`, metrik, tautan, kembali ke daftar; di `/id/` ada catatan bahasa dan `lang="en"` pada body), bagian "Proyek pilihan" di beranda (maks. 3 `featured`). Komponen `ProjectCard` (seluruh kartu dapat diklik lewat tautan judul), `ProjectGrid`, `TagFilter` (hanya untuk pengguna JS), `SelectedProjects`. Helper murni `collectTags(minCount)`, `filterByTag`, `tagKey`. `NAV_ITEMS` berisi Projects. Gaya `.prose` di `global.css`. Copy halaman di `profile.yaml → projects.intro`.
 - **Keputusan:** filter hanya menampilkan tag yang dipakai ≥ 2 proyek dan disembunyikan jika < 2 tag seperti itu (saat ini tersembunyi: 3 proyek tanpa tag bersama). Judul kosong "What I learned" di `decklify.md` dipindah ke komentar TODO.
