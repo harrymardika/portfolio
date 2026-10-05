@@ -38,7 +38,7 @@ function describe(): { meta: string[]; highlights: string[] } {
         meta: [
           `${localize(source.item.degree, locale)} · ${source.item.institution}`,
           formatDateRange(source.item, locale, present),
-          ...(source.item.gpa ? [`${t['journey.gpa']} ${source.item.gpa}`] : []),
+          ...(source.item.gpa ? [`${t['common.gpa']} ${source.item.gpa}`] : []),
         ],
         highlights: source.item.highlights.map((h) => localize(h, locale)),
       };

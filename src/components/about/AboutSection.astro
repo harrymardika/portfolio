@@ -1,0 +1,16 @@
+---
+/** Titled section of the About page; the id doubles as an in-page anchor. */
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<section id={id} aria-labelledby={`${id}-title`} class="grid scroll-mt-20 gap-6 border-t border-line pt-10">
+  <h2 id={`${id}-title`} class="text-h3">
+    {title}
+  </h2>
+  <slot />
+</section>

@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.5`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.8`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 4/8 tugas |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 5/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -59,7 +59,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 - [x] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
 - [x] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
-- [ ] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
+- [x] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
 - [ ] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
 - [ ] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
 - [ ] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
@@ -130,6 +130,11 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.5
+- **Dikerjakan:** `/about/` (ringkasan, Pengalaman, Kepemimpinan & mengajar, Pendidikan, Pelatihan, Penghargaan, Sertifikasi aktif, Keahlian), komponen `TimelineItem` (highlight yang belum diterjemahkan diberi `lang="en"` di halaman ID) dan `AboutSection`; helper murni `splitExperience` (kategori seperti CV); menu "About". Kunci UI `journey.gpa` → `common.gpa`.
+- **Verifikasi:** `bun run verify` lulus (unit 140, e2e termasuk urutan bagian, Present/Sekarang, sertifikat kedaluwarsa tersembunyi, `lang="en"`, axe EN/ID × terang/gelap). Screenshot desktop ID dan HP gelap dicek; tumpukan teks yang terlihat di satu screenshot terbukti artefak capture (0 overlap terukur).
+- **Catatan:** "Microsoft Azure" tetap tampil sebagai *skill*; yang disembunyikan hanya *sertifikat* Azure yang kedaluwarsa.
 
 ### 2026-10-05 · Claude Code (Opus) · Perbaikan T2.4
 - **Masalah:** commit T2.4 (`5752f03`) masuk ke `main` walau `bun run check` gagal (error TS `exactOptionalPropertyTypes` di `ProjectGrid.astro`), karena perintah dirangkai dengan `;` sehingga commit tetap jalan. Build dan semua tes tetap lulus; hanya typecheck yang gagal.

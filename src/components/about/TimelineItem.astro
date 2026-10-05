@@ -1,0 +1,59 @@
+---
+/**
+ * One dated entry (experience, education, training). Highlights still waiting for an Indonesian
+ * translation are marked lang="en" so screen readers pronounce them correctly.
+ */
+import {
+  formatDateRange,
+  isFallback,
+  localize,
+  type EndDate,
+  type LocalizedText,
+  type YearMonth,
+} from '@/lib/content';
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  subtitle: string;
+  location: string;
+  start: YearMonth;
+  end: EndDate;
+  detail?: string;
+  highlights: LocalizedText[];
+  tags?: string[];
+}
+
+const { locale, title, subtitle, location, start, end, detail, highlights, tags = [] } = Astro.props;
+const dates = formatDateRange({ start, end }, locale, UI[locale]['date.present']);
+---
+
+<li class="grid gap-3 border-l-2 border-line pb-8 pl-6 last:pb-0">
+  <div class="relative grid gap-0.5">
+    <span
+      class="absolute top-2 -left-[1.95rem] size-3 rounded-full border-2 border-forest bg-amber"
+      aria-hidden="true"
+    ></span>
+    <h3 class="font-sans text-base font-semibold text-ink">{title}</h3>
+    <p class="text-sm text-ink-muted">{subtitle}</p>
+    <p class="font-mono text-xs text-amber-deep">
+      {dates} · {location}
+      {detail && ` · ${detail}`}
+    </p>
+  </div>
+  {highlights.length > 0 && (
+    <ul class="grid list-disc gap-1.5 pl-5 text-sm">
+      {highlights.map((highlight) => (
+        <li lang={isFallback(highlight, locale) ? 'en' : undefined}>{localize(highlight, locale)}</li>
+      ))}
+    </ul>
+  )}
+  {tags.length > 0 && (
+    <ul class="flex flex-wrap gap-1.5" aria-label={UI[locale]['projects.tags']}>
+      {tags.map((tag) => (
+        <li class="rounded-full bg-surface px-2.5 py-0.5 text-xs text-ink-muted">{tag}</li>
+      ))}
+    </ul>
+  )}
+</li>

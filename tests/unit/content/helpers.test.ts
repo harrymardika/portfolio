@@ -13,6 +13,7 @@ import {
   isPublished,
   localize,
   sortedBy,
+  splitExperience,
   splitEmphasis,
   stripEmphasis,
   tagKey,
@@ -190,5 +191,21 @@ describe('project tags', () => {
   it('turns tags into URL-safe keys', () => {
     expect(tagKey('Next.js')).toBe('next-js');
     expect(tagKey('Edge AI (Hailo-8L)')).toBe('edge-ai-hailo-8l');
+  });
+});
+
+describe('splitExperience', () => {
+  it('separates professional roles from leadership and teaching, keeping order', () => {
+    const items = [
+      { id: 'a', category: 'founder' as const },
+      { id: 'b', category: 'teaching' as const },
+      { id: 'c', category: 'research' as const },
+      { id: 'd', category: 'leadership' as const },
+      { id: 'e', category: 'program' as const },
+      { id: 'f', category: 'work' as const },
+    ];
+    const { professional, leadership } = splitExperience(items);
+    expect(professional.map((i) => i.id)).toEqual(['a', 'c', 'f']);
+    expect(leadership.map((i) => i.id)).toEqual(['b', 'd', 'e']);
   });
 });

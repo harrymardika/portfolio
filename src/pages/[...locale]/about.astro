@@ -1,0 +1,171 @@
+---
+import AboutSection from '@/components/about/AboutSection.astro';
+import TimelineItem from '@/components/about/TimelineItem.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { formatYearMonth, localize, splitExperience } from '@/lib/content';
+import {
+  getAwards,
+  getCertifications,
+  getEducation,
+  getExperience,
+  getProfile,
+  getSkillGroups,
+  getTrainings,
+} from '@/lib/content/queries';
+import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const [profile, experience, education, trainings, awards, certifications, skills] = await Promise.all([
+  getProfile(),
+  getExperience(),
+  getEducation(),
+  getTrainings(),
+  getAwards(),
+  getCertifications(),
+  getSkillGroups(),
+]);
+const { professional, leadership } = splitExperience(experience);
+const formatDate = (value: string): string => (value.length === 4 ? value : formatYearMonth(value, locale));
+---
+
+<PageLayout
+  locale={locale}
+  title={`${t['about.title']} · ${profile.name}`}
+  description={localize(profile.tagline, locale)}
+  profile={profile}
+>
+  <div class="mx-auto grid max-w-[760px] gap-12 px-[clamp(16px,4vw,40px)] py-16">
+    <header class="grid gap-4">
+      <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
+      <h1 class="text-h2">{t['about.title']}</h1>
+      <p class="text-lg text-ink-muted">{localize(profile.summary, locale)}</p>
+    </header>
+
+    {[
+      { id: 'experience', title: t['about.experience'], items: professional },
+      { id: 'leadership', title: t['about.leadership'], items: leadership },
+    ].map(
+      (group) =>
+        group.items.length > 0 && (
+          <AboutSection id={group.id} title={group.title}>
+            <ol>
+              {group.items.map((item) => (
+                <TimelineItem
+                  locale={locale}
+                  title={localize(item.role, locale)}
+                  subtitle={item.organization}
+                  location={item.location}
+                  start={item.start}
+                  end={item.end}
+                  highlights={item.highlights}
+                  tags={item.tags}
+                />
+              ))}
+            </ol>
+          </AboutSection>
+        ),
+    )}
+
+    <AboutSection id="education" title={t['about.education']}>
+      <ol>
+        {education.map((item) => (
+          <TimelineItem
+            locale={locale}
+            title={localize(item.degree, locale)}
+            subtitle={item.institution}
+            location={item.location}
+            start={item.start}
+            end={item.end}
+            {...(item.gpa ? { detail: `${t['common.gpa']} ${item.gpa}` } : {})}
+            highlights={item.highlights}
+          />
+        ))}
+      </ol>
+    </AboutSection>
+
+    {trainings.length > 0 && (
+      <AboutSection id="training" title={t['about.training']}>
+        <ol>
+          {trainings.map((item) => (
+            <TimelineItem
+              locale={locale}
+              title={localize(item.program, locale)}
+              subtitle={item.institution}
+              location={item.location}
+              start={item.start}
+              end={item.end}
+              highlights={item.highlights}
+              tags={item.tags}
+            />
+          ))}
+        </ol>
+      </AboutSection>
+    )}
+
+    <AboutSection id="awards" title={t['about.awards']}>
+      <ul class="grid gap-3">
+        {awards.map((award) => (
+          <li class="grid gap-0.5 rounded-lg border border-line bg-surface px-4 py-3">
+            <span class="font-semibold">{localize(award.title, locale)}</span>
+            <span class="font-mono text-xs text-amber-deep">
+              {award.issuer} · {formatDate(award.date)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </AboutSection>
+
+    {certifications.length > 0 && (
+      <AboutSection id="certifications" title={t['about.certifications']}>
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {certifications.map((cert) => (
+            <li class="grid content-start gap-1 rounded-lg border border-line bg-surface px-4 py-3">
+              <span class="font-semibold">{cert.name}</span>
+              <span class="text-sm text-ink-muted">{cert.issuer}</span>
+              <span class="font-mono text-xs text-amber-deep">
+                {t['about.issued']} {formatYearMonth(cert.issued, locale)}
+                {cert.expires && ` · ${t['about.expires']} ${formatYearMonth(cert.expires, locale)}`}
+              </span>
+              {cert.credential_id && (
+                <span class="text-xs text-ink-muted">
+                  {t['about.credential']}: <span class="font-mono">{cert.credential_id}</span>
+                </span>
+              )}
+              {cert.url && (
+                <a
+                  href={cert.url}
+                  rel="noopener"
+                  class="w-max text-sm font-semibold text-forest-ink underline"
+                >
+                  {t['about.verify']} ↗
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </AboutSection>
+    )}
+
+    <AboutSection id="skills" title={t['about.skills']}>
+      <div class="grid gap-5">
+        {skills.map((group) => (
+          <div class="grid gap-2">
+            <h3 class="font-sans text-sm font-semibold text-ink-muted">{localize(group.name, locale)}</h3>
+            <ul class="flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <li class="rounded-full border border-line bg-surface px-3 py-1 text-sm">{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </AboutSection>
+  </div>
+</PageLayout>
