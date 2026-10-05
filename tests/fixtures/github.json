@@ -4,6 +4,11 @@
   "repos": [
     {
       "name": "fixture-vision-toolkit",
+      "title": null,
+      "summary": {
+        "en": "Test fixture: a GitHub repository without a case study.",
+        "id": "Fixture uji: repositori GitHub tanpa studi kasus."
+      },
       "description": "Test fixture: a GitHub repository without a case study.",
       "url": "https://github.com/harrymardika/fixture-vision-toolkit",
       "homepage": null,
@@ -11,7 +16,36 @@
       "language": "Python",
       "stars": 3,
       "createdAt": "2025-02-01T00:00:00Z",
-      "pushedAt": "2026-03-01T00:00:00Z"
+      "pushedAt": "2026-03-01T00:00:00Z",
+      "members": [
+        {
+          "name": "fixture-vision-toolkit",
+          "url": "https://github.com/harrymardika/fixture-vision-toolkit"
+        }
+      ]
+    },
+    {
+      "name": "fixture-group-api",
+      "title": "Fixture grouped project",
+      "summary": null,
+      "description": "Test fixture: one project split across two repositories.",
+      "url": "https://github.com/harrymardika/fixture-group-api",
+      "homepage": null,
+      "topics": [],
+      "language": "TypeScript",
+      "stars": 0,
+      "createdAt": "2024-05-01T00:00:00Z",
+      "pushedAt": "2025-11-01T00:00:00Z",
+      "members": [
+        {
+          "name": "fixture-group-api",
+          "url": "https://github.com/harrymardika/fixture-group-api"
+        },
+        {
+          "name": "fixture-group-web",
+          "url": "https://github.com/harrymardika/fixture-group-web"
+        }
+      ]
     }
   ]
 }

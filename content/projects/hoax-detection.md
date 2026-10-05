@@ -7,10 +7,11 @@ role: { en: ML Engineer, id: ML Engineer }
 year: 2024
 tags: [CNN, NLP, TFX, TensorFlow Serving, Prometheus, Grafana]
 metrics:
-  - { value: "89.6%", label: { en: accuracy, id: akurasi } }
-links: {}
+  - { value: "89.6%", label: { en: "training accuracy (validation 81.2%)", id: "akurasi latih (validasi 81,2%)" } }
+links:
+  repo: https://github.com/harrymardika/hoax-detection
 featured: false
-draft: true   # TODO(owner): add repo link
+draft: false
 ---
 
 End-to-end MLOps project: TFX pipeline, deployment on Railway with TensorFlow Serving, and monitoring with Prometheus and Grafana.

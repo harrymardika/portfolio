@@ -4,7 +4,7 @@
  */
 import { fetchPublicRepos, type ClientOptions } from './client';
 import { githubCacheSchema, type GithubCache, type GithubConfig } from './schemas';
-import { missingIncludes, selectRepos, toGithubRepo } from './select';
+import { selectRepos } from './select';
 
 export interface SyncIO {
   readText(path: string): Promise<string | null>;
@@ -64,20 +64,13 @@ export async function syncGithub(options: SyncOptions): Promise<SyncResult> {
 
   try {
     const all = await fetchPublicRepos(config.username, options.client);
-    for (const name of missingIncludes(all, config)) {
-      io.log(
-        `GitHub: warning: "${name}" in content/github.yaml include was not found (typo, renamed, or private?)`,
-      );
-    }
-    // The selection topic is bookkeeping, not a technology: drop it from the displayed topics.
-    const repos = selectRepos(all, config)
-      .map(toGithubRepo)
-      .map((repo) => ({ ...repo, topics: repo.topics.filter((topic) => topic !== config.topic) }));
+    const { entries: repos, warnings } = selectRepos(all, config);
+    for (const warning of warnings) io.log(`GitHub: warning: content/github.yaml: ${warning}`);
     await io.writeText(
       cachePath,
       serialize({ generatedAt: now.toISOString(), username: config.username, source: 'api', repos }),
     );
-    io.log(`GitHub: ${repos.length} of ${all.length} public repos selected`);
+    io.log(`GitHub: ${repos.length} projects from ${all.length} public repos`);
     return { source: 'api', count: repos.length };
   } catch (error) {
     io.log(`GitHub: warning: ${error instanceof Error ? error.message : String(error)}`);

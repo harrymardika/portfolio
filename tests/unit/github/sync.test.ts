@@ -23,6 +23,8 @@ const cache = (generatedAt: string, names: string[], username = 'harrymardika'):
     username,
     repos: names.map((name) => ({
       name,
+      title: null,
+      summary: null,
       description: null,
       url: `https://github.com/harrymardika/${name}`,
       homepage: null,
@@ -31,6 +33,7 @@ const cache = (generatedAt: string, names: string[], username = 'harrymardika'):
       stars: 0,
       createdAt: '2025-01-01T00:00:00Z',
       pushedAt: null,
+      members: [{ name, url: `https://github.com/harrymardika/${name}` }],
     })),
   });
 

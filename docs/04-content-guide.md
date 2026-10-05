@@ -134,10 +134,16 @@ Struktur body yang disarankan: **Problem → Approach → Result → What I lear
 
 Anda yang memilih repo mana yang tampil, dengan salah satu atau kedua cara:
 
-1. **Daftar di `content/github.yaml`** (paling mudah, cukup edit file):
+1. **Daftar di `content/github.yaml`** (paling mudah, cukup edit file). `include` menerima tiga bentuk:
    ```yaml
-   include: [decklify-web, crowd-violence-detection]   # repo ini selalu tampil
-   exclude: [old-experiment]                           # repo ini tidak pernah tampil
+   include:
+     - camera-genai                       # nama repo saja (deskripsi dari GitHub)
+     - repo: rocm-test                    # repo + deskripsi Anda sendiri (EN/ID)
+       description: { en: ..., id: ... }
+     - title: Chatbot RAG Gunadarma       # satu proyek yang dipecah ke beberapa repo:
+       repos: [gunadarma-ai, chatbot-rag-gunadarma-backend]   # tampil sebagai SATU kartu,
+       description: { en: ..., id: ... }  # tertaut ke repo pertama
+   exclude: [old-experiment]              # repo ini tidak pernah tampil
    ```
 2. **Topic `portfolio` di GitHub**: buka repo → ⚙️ di bagian *About* → tambahkan topic `portfolio`.
 

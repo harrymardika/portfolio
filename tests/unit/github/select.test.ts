@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { githubConfigSchema, missingIncludes, selectRepos, toGithubRepo, type ApiRepo } from '@/lib/github';
+import { githubConfigSchema, groupRepos, selectRepos, toGithubRepo, type ApiRepo } from '@/lib/github';
 
 const repo = (name: string, extra: Partial<ApiRepo> = {}): ApiRepo => ({
   name,
@@ -18,69 +18,118 @@ const repo = (name: string, extra: Partial<ApiRepo> = {}): ApiRepo => ({
   ...extra,
 });
 
-const config = githubConfigSchema.parse({ username: 'harrymardika', topic: 'portfolio' });
+const config = (extra: Record<string, unknown> = {}) =>
+  githubConfigSchema.parse({ username: 'harrymardika', topic: 'portfolio', ...extra });
+const names = (result: ReturnType<typeof selectRepos>) => result.entries.map((e) => e.title ?? e.name);
+
+describe('githubConfigSchema', () => {
+  it('accepts names, repos with descriptions, and groups', () => {
+    expect(() =>
+      config({
+        include: ['a', { repo: 'b', description: { en: 'B', id: 'B' } }, { title: 'G', repos: ['c', 'd'] }],
+      }),
+    ).not.toThrow();
+  });
+
+  it('rejects a group with a single repo and unknown keys', () => {
+    expect(() => config({ include: [{ title: 'G', repos: ['c'] }] })).toThrow();
+    expect(() => config({ include: [{ repo: 'b', descripton: { en: 'typo' } }] })).toThrow();
+  });
+});
 
 describe('selectRepos', () => {
-  it('selects repos with the topic and those listed in include', () => {
-    const repos = [repo('a', { topics: ['portfolio'] }), repo('b'), repo('c')];
-    const names = selectRepos(repos, { ...config, include: ['c'] }).map((r) => r.name);
-    expect(names).toEqual(['c', 'a']);
+  it('shows included entries in order, then repos with the topic', () => {
+    const all = [repo('topic', { topics: ['portfolio'] }), repo('second'), repo('first'), repo('ignored')];
+    expect(names(selectRepos(all, config({ include: ['first', 'second'] })))).toEqual([
+      'first',
+      'second',
+      'topic',
+    ]);
   });
 
-  it('removes excluded repos even when they have the topic or are included', () => {
-    const repos = [repo('a', { topics: ['portfolio'] }), repo('b')];
-    expect(selectRepos(repos, { ...config, include: ['b'], exclude: ['a', 'b'] })).toEqual([]);
+  it('uses the owner description and keeps the GitHub one as a fallback', () => {
+    const [entry] = selectRepos(
+      [repo('a')],
+      config({ include: [{ repo: 'a', description: { en: 'Mine' } }] }),
+    ).entries;
+    expect(entry?.summary).toEqual({ en: 'Mine' });
+    expect(entry?.description).toBe('a description');
   });
 
-  it('skips forks and archived repos found by topic unless enabled', () => {
-    const repos = [
+  it('combines a group into one entry linked to its first repo', () => {
+    const all = [
+      repo('api', { language: 'Python', stargazers_count: 2, pushed_at: '2025-03-01T00:00:00Z' }),
+      repo('web', { language: 'TypeScript', stargazers_count: 1, pushed_at: '2025-09-01T00:00:00Z' }),
+      repo('docs', { language: 'Python', created_at: '2024-01-01T00:00:00Z' }),
+    ];
+    const result = selectRepos(
+      all,
+      config({ include: [{ title: 'Chatbot', repos: ['docs', 'api', 'web'] }] }),
+    );
+    expect(result.entries).toHaveLength(1);
+    const [group] = result.entries;
+    expect(group?.title).toBe('Chatbot');
+    expect(group?.url).toBe('https://github.com/harrymardika/docs');
+    expect(group?.members.map((m) => m.name)).toEqual(['docs', 'api', 'web']);
+    expect(group?.stars).toBe(3);
+    expect(group?.language).toBe('Python');
+    expect(group?.pushedAt).toBe('2025-09-01T00:00:00Z');
+    expect(group?.createdAt).toBe('2024-01-01T00:00:00Z');
+  });
+
+  it('does not list a grouped repo again because of its topic', () => {
+    const all = [repo('a', { topics: ['portfolio'] }), repo('b')];
+    expect(names(selectRepos(all, config({ include: [{ title: 'G', repos: ['a', 'b'] }] })))).toEqual(['G']);
+  });
+
+  it('warns about missing, private, excluded, and duplicate names, and skips them', () => {
+    const all = [repo('ok'), repo('secret', { private: true }), repo('nope')];
+    const result = selectRepos(
+      all,
+      config({ include: ['typo', 'secret', 'nope', 'ok', 'ok'], exclude: ['nope'] }),
+    );
+    expect(names(result)).toEqual(['ok']);
+    expect(result.warnings).toHaveLength(4);
+    expect(result.warnings.join('\n')).toContain('"typo" was not found');
+  });
+
+  it('keeps a group when only some of its repos exist', () => {
+    const result = selectRepos([repo('a')], config({ include: [{ title: 'G', repos: ['a', 'missing'] }] }));
+    expect(result.entries[0]?.members.map((m) => m.name)).toEqual(['a']);
+    expect(result.warnings).toHaveLength(1);
+  });
+
+  it('skips forks and archived repos found by topic unless enabled, but not when included', () => {
+    const all = [
       repo('fork', { topics: ['portfolio'], fork: true }),
       repo('old', { topics: ['portfolio'], archived: true }),
     ];
-    expect(selectRepos(repos, config)).toEqual([]);
-    expect(selectRepos(repos, { ...config, include_forks: true, include_archived: true })).toHaveLength(2);
+    expect(selectRepos(all, config()).entries).toEqual([]);
+    expect(selectRepos(all, config({ include_forks: true, include_archived: true })).entries).toHaveLength(2);
+    expect(selectRepos(all, config({ include: ['fork'] })).entries).toHaveLength(1);
   });
 
-  it('keeps forks and archived repos that are explicitly included', () => {
-    expect(selectRepos([repo('fork', { fork: true })], { ...config, include: ['fork'] })).toHaveLength(1);
-  });
-
-  it('never selects private repos', () => {
-    expect(selectRepos([repo('secret', { private: true })], { ...config, include: ['secret'] })).toEqual([]);
-  });
-
-  it('orders included repos by the include list, then by API order', () => {
-    const repos = [repo('x', { topics: ['portfolio'] }), repo('second'), repo('first')];
-    const names = selectRepos(repos, { ...config, include: ['first', 'second'] }).map((r) => r.name);
-    expect(names).toEqual(['first', 'second', 'x']);
+  it('removes the selection topic from displayed topics', () => {
+    const [entry] = selectRepos([repo('a', { topics: ['portfolio', 'yolo'] })], config()).entries;
+    expect(entry?.topics).toEqual(['yolo']);
   });
 });
 
-describe('missingIncludes', () => {
-  it('reports included names that GitHub did not return', () => {
-    expect(missingIncludes([repo('a')], { ...config, include: ['a', 'typo'] })).toEqual(['typo']);
-  });
-});
-
-describe('toGithubRepo', () => {
-  it('maps API fields to the site shape', () => {
-    expect(toGithubRepo(repo('a', { stargazers_count: 3, homepage: 'https://a.dev' }))).toEqual({
+describe('toGithubRepo and groupRepos', () => {
+  it('maps a single repo, turning blank or non-http values into null', () => {
+    const mapped = toGithubRepo(repo('a', { homepage: 'example.com', description: ' ' }));
+    expect(mapped).toMatchObject({
       name: 'a',
-      description: 'a description',
-      url: 'https://github.com/harrymardika/a',
-      homepage: 'https://a.dev',
-      topics: [],
-      language: 'Python',
-      stars: 3,
-      createdAt: '2025-01-01T00:00:00Z',
-      pushedAt: '2025-06-01T00:00:00Z',
+      title: null,
+      summary: null,
+      homepage: null,
+      description: null,
     });
+    expect(mapped.members).toEqual([{ name: 'a', url: 'https://github.com/harrymardika/a' }]);
+    expect(toGithubRepo(repo('b', { homepage: 'https://b.dev' })).homepage).toBe('https://b.dev');
   });
 
-  it('turns blank or non-http homepages and descriptions into null', () => {
-    const mapped = toGithubRepo(repo('a', { homepage: '  ', description: ' ' }));
-    expect(mapped.homepage).toBeNull();
-    expect(mapped.description).toBeNull();
-    expect(toGithubRepo(repo('b', { homepage: 'example.com' })).homepage).toBeNull();
+  it('refuses an empty group', () => {
+    expect(() => groupRepos('Empty', [])).toThrow('no repositories');
   });
 });

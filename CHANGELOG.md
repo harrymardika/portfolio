@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Curated GitHub projects: owner descriptions (EN/ID) and multi-repo project groups in `content/github.yaml`; four more case studies linked to their repos.
 - Selected GitHub repositories appear on the Projects page (GitHub badge, language, stars, topics); case studies linked to a repo show its stars (T3.2).
 - GitHub sync: choose repos in `content/github.yaml` or with the `portfolio` topic; REST client with retries; never breaks the build when GitHub is unreachable (T3.1).
 - MIT license for the code; server specs on the Homelab page; site-wide link crawler test; ADR 0009 (built-in stats shown on the site) replacing the Umami plan; GitHub repo selection via `content/github.yaml` planned for Phase 3.
@@ -31,6 +32,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Fixed
+- Hoax and BCA case study metrics now say they are training values and show the validation values from the repos.
 - E2E builds use a separate GitHub cache and output directory, so test fixtures never appear in dev or production (T3.2).
 - E2E tests always build and start a fresh server instead of reusing a possibly stale one (T2.8).
 - Type error in `ProjectGrid` optional prop that slipped into T2.4; added `bun run verify` to gate commits (T2.4).

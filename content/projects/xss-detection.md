@@ -8,9 +8,10 @@ year: 2024
 tags: [Deep Learning, NLP, Cybersecurity, TensorFlow]
 metrics:
   - { value: "98.97%", label: { en: validation accuracy, id: akurasi validasi } }
-links: {}
+links:
+  repo: https://github.com/harrymardika/xss-detection-pipeline
 featured: false
-draft: true   # TODO(owner): add repo link
+draft: false
 ---
 
 Text classification model (TextVectorization, embedding, deep layers) trained on a public XSS dataset, with custom preprocessing and tokenization for script payloads.

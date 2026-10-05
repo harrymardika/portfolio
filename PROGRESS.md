@@ -137,6 +137,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-05 · Claude Code (Opus) · Kurasi repo GitHub (lanjutan T3.2)
+- **Diminta pemilik:** memilih repo sendiri; beberapa proyek dipecah ke banyak repo.
+- **Dikerjakan:** `include` di `github.yaml` kini menerima tiga bentuk: nama repo, `{ repo, description }` (deskripsi dwibahasa), dan `{ title, repos, description }` (grup → satu kartu, tertaut ke repo pertama; bahasa terbanyak, total bintang, push terakhir). Peringatan untuk nama hilang/privat/dikecualikan/duplikat. Case study bisa diklaim lewat repo anggota grup mana pun. Kartu menampilkan "N repositories" untuk grup; label bintang cukup "★ n".
+- **Kurasi (dari README tiap repo, 2026-10-05):** 16 entri dari 41 repo: 6 repo terhubung ke case study (`links.repo`), 3 grup (Chatbot RAG Gunadarma 4 repo, Netflix Prize 3 repo, Leukemia ALL 2 repo), 7 repo tunggal dengan deskripsi dwibahasa. Tidak dipilih: repo tanpa README (`convert-model-to-hailo`), template/latihan dasar, dan proyek kecil lain.
+- **Case study diaktifkan:** Aksara Jawa (ditulis ulang dari README: YOLO26 nano-cls, 20 karakter, visualisasi filter; tanpa angka akurasi karena tidak ada di README), Hoax, XSS, BCA. **Koreksi kejujuran metrik:** Hoax 89,6% dan BCA RMSE 0,0052 adalah nilai data latih; labelnya kini menyebut validasi (81,2% / 0,0186) sesuai README.
+- **Verifikasi:** sinkron live tanpa peringatan; unit 180; e2e 140 lulus + 2 dilewati (tes filter tag kini aktif dan lulus); screenshot daftar & case study dicek.
+
 ### 2026-10-05 · Claude Code (Opus) · T3.2
 - **Dikerjakan:** collection `githubRepos` (loader membaca cache; tidak ada file → kosong); `mergeProjects`/`itemTags`/`itemYear`/`normalizeRepoUrl` murni (`src/lib/content/project-items.ts`); `getGithubRepos`/`getProjectItems`; `ProjectCard` mendukung case study dan repo GitHub (badge "GitHub ↗", bahasa · tahun · ★ bintang, tag dari bahasa + topics); halaman Projects memakai item gabungan; beranda tetap hanya case study `featured`. Topic seleksi dibuang saat sinkron.
 - **Isolasi data uji (ditemukan saat mengerjakan):** mode fixture semula menimpa cache asli, sehingga (a) repo palsu bisa dipakai sebagai "cache lama" saat GitHub tidak terjangkau, (b) `bun run dev` dan `dist/` menampilkan repo palsu setelah e2e. Perbaikan: cache mencatat `source` (`api`/`fixture`) dan fixture tidak pernah dipakai sebagai cadangan; `GITHUB_CACHE` + `--outDir dist-e2e` memisahkan build e2e; `bun run dev` menyinkron GitHub dulu.

@@ -28,20 +28,23 @@ export function mergeProjects(
   local: readonly { id: string; data: Project }[],
   repos: readonly GithubRepo[],
 ): ProjectItem[] {
-  const byUrl = new Map(repos.map((repo) => [normalizeRepoUrl(repo.url), repo]));
-  const claimed = new Set<string>();
+  // A case study can point at any repo of a grouped project.
+  const byUrl = new Map(
+    repos.flatMap((repo) => repo.members.map((member) => [normalizeRepoUrl(member.url), repo] as const)),
+  );
+  const claimed = new Set<GithubRepo>();
 
   const localItems: ProjectItem[] = [...local]
     .sort((a, b) => compareProjects(a.data, b.data))
     .map((entry) => {
       const key = entry.data.links.repo ? normalizeRepoUrl(entry.data.links.repo) : null;
       const repo = key ? (byUrl.get(key) ?? null) : null;
-      if (key && repo) claimed.add(key);
+      if (repo) claimed.add(repo);
       return { kind: 'local', slug: entry.id, project: entry.data, repo };
     });
 
   const githubItems: ProjectItem[] = repos
-    .filter((repo) => !claimed.has(normalizeRepoUrl(repo.url)))
+    .filter((repo) => !claimed.has(repo))
     .sort((a, b) => (b.pushedAt ?? b.createdAt).localeCompare(a.pushedAt ?? a.createdAt))
     .map((repo) => ({ kind: 'github', repo }));
 

@@ -7,10 +7,11 @@ role: { en: ML Engineer, id: ML Engineer }
 year: 2024
 tags: [LSTM, Time Series, TensorFlow, KerasTuner, PyTorch, Optuna]
 metrics:
-  - { value: "0.0052", label: { en: RMSE, id: RMSE } }
-links: {}
+  - { value: "0.0052", label: { en: "training RMSE (validation 0.0186)", id: "RMSE latih (validasi 0,0186)" } }
+links:
+  repo: https://github.com/harrymardika/BCA-Stock-Forecasting
 featured: false
-draft: true   # TODO(owner): add repo link
+draft: false
 ---
 
 Built with TensorFlow (KerasTuner) and PyTorch (Optuna) during the IDCamp Machine Learning Developer expert level.

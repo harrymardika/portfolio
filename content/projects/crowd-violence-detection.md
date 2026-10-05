@@ -8,7 +8,8 @@ year: 2026
 tags: [YOLO, Temporal Shift Module, ByteTrack, RTSP, Gemini API, Qdrant]
 metrics:
   - { value: "−45%", label: { en: compute overhead, id: beban komputasi } }
-links: {}
+links:
+  repo: https://github.com/harrymardika/tsm-grid-camera
 featured: true
 order: 2
 draft: false

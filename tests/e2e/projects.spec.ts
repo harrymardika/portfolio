@@ -21,29 +21,48 @@ test('the list shows case studies first (drafts hidden), then GitHub repos', asy
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
   const titles = await page.locator('[data-project] h2').allTextContents();
   expect(titles.map((t) => t.trim())).toEqual([
+    // Featured case studies by `order`, then the rest by year (newest) and title.
     'Decklify',
     'Real-time crowd violence detection',
     'Multimodal crisis-detection model',
-    // From tests/fixtures/github.json (e2e builds never call the GitHub API).
+    'Javanese script (Aksara Jawa) classification',
+    'BCA stock price prediction',
+    'Cross-site scripting (XSS) detection',
+    'Indonesian fake news detection',
+    // From tests/fixtures/github.json (e2e builds never call the GitHub API), newest push first.
     'fixture-vision-toolkit',
+    'Fixture grouped project',
   ]);
   await expect(page.getByText('Reclaimyt')).toHaveCount(0); // draft
 });
 
 test('a GitHub repo card links to GitHub and shows its language, stars, and topics', async ({ page }) => {
   await page.goto('/projects/');
-  const card = page.locator('[data-project-kind="github"]');
+  const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'fixture-vision-toolkit' });
   await expect(card).toHaveCount(1);
+  // The owner's description from github.yaml wins over the GitHub one.
+  await expect(card).toContainText('Test fixture: a GitHub repository without a case study.');
   await expect(card.getByRole('link', { name: 'fixture-vision-toolkit' })).toHaveAttribute(
     'href',
     'https://github.com/harrymardika/fixture-vision-toolkit',
   );
   await expect(card).toContainText('GitHub');
-  await expect(card).toContainText('Python · 2026 · ★ 3 stars');
+  await expect(card).toContainText('Python · 2026 · ★ 3');
   await expect(card.getByRole('list', { name: 'Technologies' }).getByRole('listitem')).toHaveText([
     'Python',
     'computer-vision',
   ]);
+});
+
+test('a project split across repositories shows as one card linked to its first repo', async ({ page }) => {
+  await page.goto('/projects/');
+  const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'Fixture grouped project' });
+  await expect(card).toHaveCount(1);
+  await expect(card).toContainText('TypeScript · 2025 · 2 repositories');
+  await expect(card.getByRole('link', { name: 'Fixture grouped project' })).toHaveAttribute(
+    'href',
+    'https://github.com/harrymardika/fixture-group-api',
+  );
 });
 
 test('GitHub repos stay off the home page, which shows featured case studies only', async ({ page }) => {
@@ -54,7 +73,12 @@ test('GitHub repos stay off the home page, which shows featured case studies onl
 
 test('GitHub cards are translated on /id/', async ({ page }) => {
   await page.goto('/id/projects/');
-  await expect(page.locator('[data-project-kind="github"]')).toContainText('★ 3 bintang');
+  const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'fixture-vision-toolkit' });
+  await expect(card).toContainText('★ 3');
+  await expect(card).toContainText('Fixture uji: repositori GitHub tanpa studi kasus.');
+  await expect(
+    page.locator('[data-project-kind="github"]').filter({ hasText: 'Fixture grouped' }),
+  ).toContainText('2 repositori');
 });
 
 test('a card opens its case study, which links back to the list', async ({ page }) => {

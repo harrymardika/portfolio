@@ -19,17 +19,23 @@ const Heading = `h${headingLevel}` as const;
 const tags = itemTags(item);
 const isGithub = item.kind === 'github';
 const href = item.kind === 'local' ? localizePath(`/projects/${item.slug}/`, locale) : item.repo.url;
-const title = item.kind === 'local' ? item.project.title : item.repo.name;
+const title = item.kind === 'local' ? item.project.title : (item.repo.title ?? item.repo.name);
+// GitHub entries prefer the owner's description from github.yaml over the repo's own description.
 const summary =
   item.kind === 'local'
     ? localize(item.project.summary, locale)
-    : (item.repo.description ?? t['projects.noDescription']);
+    : item.repo.summary
+      ? localize(item.repo.summary, locale)
+      : (item.repo.description ?? t['projects.noDescription']);
 const metric = item.kind === 'local' ? item.project.metrics[0] : undefined;
 const stars = item.repo?.stars ?? 0;
+const repoCount = item.kind === 'github' ? item.repo.members.length : 0;
 const meta = [
   item.kind === 'local' ? localize(item.project.role, locale) : item.repo.language,
   String(itemYear(item)),
-  stars > 0 ? `★ ${stars} ${t['projects.stars']}` : null,
+  // The star alone reads correctly for 1 or many, in both languages.
+  stars > 0 ? `★ ${stars}` : null,
+  repoCount > 1 ? `${repoCount} ${t['projects.repositories']}` : null,
 ].filter(Boolean);
 ---
 

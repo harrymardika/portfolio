@@ -19,6 +19,8 @@ const project = (title: string, extra: Partial<Project> = {}): Project => ({
 
 const repo = (name: string, extra: Partial<GithubRepo> = {}): GithubRepo => ({
   name,
+  title: null,
+  summary: null,
   description: null,
   url: `https://github.com/harrymardika/${name}`,
   homepage: null,
@@ -27,6 +29,7 @@ const repo = (name: string, extra: Partial<GithubRepo> = {}): GithubRepo => ({
   stars: 0,
   createdAt: '2024-01-01T00:00:00Z',
   pushedAt: '2025-01-01T00:00:00Z',
+  members: [{ name, url: `https://github.com/harrymardika/${name}` }],
   ...extra,
 });
 
@@ -46,6 +49,22 @@ describe('mergeProjects', () => {
     expect(items.map((item) => item.kind)).toEqual(['local', 'github']);
     expect(items[0]?.kind === 'local' && items[0].repo?.stars).toBe(5);
     expect(items[1]?.kind === 'github' && items[1].repo.name).toBe('other');
+  });
+
+  it('lets a case study claim a grouped project through any of its repos', () => {
+    const group = repo('group-docs', {
+      title: 'Group',
+      members: [
+        { name: 'group-docs', url: 'https://github.com/harrymardika/group-docs' },
+        { name: 'group-api', url: 'https://github.com/harrymardika/group-api' },
+      ],
+    });
+    const items = mergeProjects(
+      [{ id: 'g', data: project('G', { links: { repo: 'https://github.com/harrymardika/group-api' } }) }],
+      [group],
+    );
+    expect(items).toHaveLength(1);
+    expect(items[0]?.kind === 'local' && items[0].repo?.title).toBe('Group');
   });
 
   it('orders case studies first (featured, then newest) and repos by last push', () => {
