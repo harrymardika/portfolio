@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Astro 7 + Bun + TypeScript (strictest) scaffold with `@/` path alias, folder skeleton, placeholder home page, and favicon (T1.1).
 - Project foundation (Phase 0): README, AGENTS.md, CLAUDE.md, PROGRESS.md, full documentation in `docs/`, ADR 0001–0008.
 - Content source in `content/` extracted from the owner's CV (profile, experience, education, awards, trainings, certifications, skills, journey, projects).
 - Theme prototypes (`docs/design/theme-prototypes.html`); chosen theme: F + E, green palette.

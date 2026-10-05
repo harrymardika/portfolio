@@ -48,7 +48,7 @@ Prinsip utama:
 | Tes | `bun test` (unit), Playwright (e2e), axe (a11y) | – |
 | Lint/format | ESLint + Prettier (dengan plugin Astro) | – |
 
-Versi pasti dikunci di `package.json`/`bun.lock` (Fase 1). Gunakan versi stabil terbaru saat scaffold.
+Versi dikunci di `package.json`/`bun.lock`. Saat T1.1: Astro 7.3.5, TypeScript 6.0.3 (TS 7 belum didukung `@astrojs/check`), Node ≥ 22.12, Bun 1.3.
 
 ## 3. Lapisan dan arah dependensi
 

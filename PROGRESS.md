@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.1`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.2`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ⏳ Berikutnya |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 1/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -33,7 +33,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 
 ## Fase 1: Scaffold & fondasi kode
 
-- [ ] **T1.1** Scaffold Astro + Bun + TypeScript strict
+- [x] **T1.1** Scaffold Astro + Bun + TypeScript strict
   - Kriteria: `bun run dev` jalan; `tsconfig` strict (`strict`, `noUncheckedIndexedAccess`); struktur folder sesuai `docs/02-architecture.md` §4; path alias `@/` → `src/`.
 - [ ] **T1.2** Tooling kualitas
   - Kriteria: ESLint (+ plugin astro), Prettier (+ plugin astro), script `bun run check` = typecheck + lint + format:check; `bun test` jalan dengan 1 contoh tes; Playwright terpasang dengan 1 smoke test.
@@ -128,7 +128,13 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 
 ## Log sesi
 
-Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan.
+Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.1
+- **Dikerjakan:** Astro 7.3.5 (static, `trailingSlash: 'always'`), TypeScript 6.0.3 dengan preset `astro/tsconfigs/strictest` (sudah termasuk `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), alias `@/` → `src/`, `@types/node` 22, struktur folder sesuai arsitektur §4 (`.gitkeep` di folder kosong), placeholder `src/pages/index.astro`, favicon.
+- **Verifikasi:** `bun run typecheck` 0 error; probe sementara membuktikan `noUncheckedIndexedAccess` aktif dan alias `@/` ter-resolve; `bun run build` sukses; dev server menyajikan `/` dan `/favicon.svg` (200).
+- **Catatan:** TypeScript 7 belum didukung `@astrojs/check` (peer `^5 || ^6`), jadi dikunci ke 6.0.3. `baseUrl` tidak dipakai karena deprecated di TS 6. Tanpa TTY, `astro dev` berjalan di background; hentikan dengan `bunx astro dev stop`.
+- **Langkah berikutnya:** `T1.2` tooling (ESLint, Prettier, `bun run check`, `bun test`, Playwright). Larangan `any` baru ditegakkan di T1.2 lewat ESLint.
 
 ### 2026-10-05 · Claude Code (Opus) · Fase 0
 - **Dikerjakan:** analisis SRS + CV + LinkedIn + portfolio lama; 8 prototipe tema → dipilih F + E Hijau; seluruh dokumentasi dan ADR; ekstraksi data ke `content/`; foto profil dioptimasi ke `content/media/profile.jpg`.

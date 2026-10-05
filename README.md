@@ -24,16 +24,15 @@ Astro (SSG) · TypeScript strict · Bun · Tailwind CSS · Three.js (vanilla) ·
 
 ## Quick start
 
-> Kode aplikasi belum di-scaffold (Fase 1). Perintah di bawah akan berlaku setelah tugas `T1.1` selesai.
-
 ```bash
-# Dengan Docker (disarankan)
-docker compose -f docker/compose.dev.yml up      # http://localhost:4321
-
-# Tanpa Docker
 bun install
-bun run dev
+bun run dev          # http://localhost:4321
+
+# Dengan Docker (tersedia setelah T1.8)
+docker compose -f docker/compose.dev.yml up
 ```
+
+Syarat: Bun 1.3+ dan Node.js 22.12+.
 
 Perintah lengkap ada di [docs/06-development-workflow.md](docs/06-development-workflow.md).
 
@@ -56,7 +55,7 @@ Baca **[`AGENTS.md`](AGENTS.md)** terlebih dahulu. Isinya urutan membaca dokumen
 ├── content/             # SUMBER DATA: profil, pengalaman, proyek, dll.
 ├── docs/                # Dokumentasi: SRS, arsitektur, desain, standar, ADR
 │   └── design/theme-prototypes.html   # Prototipe tema (buka di browser)
-├── src/                 # (Fase 1) Kode aplikasi Astro
+├── src/                 # Kode aplikasi Astro (lib, components, scenes, pages)
 ├── scripts/             # (Fase 3–4) Script build: GitHub sync, PDF
 ├── tests/               # (Fase 1+) Unit & e2e
 ├── docker/              # (Fase 6) Dockerfile, compose, Caddyfile

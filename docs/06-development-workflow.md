@@ -9,22 +9,25 @@
 | Git | – | |
 | Chromium untuk Playwright | – | `bunx playwright install chromium` (sekali saja) |
 
-## 2. Perintah (berlaku setelah T1.1–T1.2)
+## 2. Perintah
 
-| Perintah | Fungsi |
-|---|---|
-| `bun install` | Pasang dependency |
-| `bun run dev` | Dev server di http://localhost:4321 |
-| `bun run build` | Build lengkap: GitHub sync → Astro → PDF |
-| `bun run preview` | Menyajikan hasil build |
-| `bun run check` | Typecheck + lint + format check (wajib sebelum commit) |
-| `bun run format` | Merapikan format otomatis |
-| `bun test` | Unit test |
-| `bun run test:e2e` | Playwright e2e + a11y |
-| `bun run fetch:github` | Hanya sinkronisasi GitHub |
-| `bun run pdf` | Hanya generate PDF (butuh hasil build) |
-| `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload |
-| `docker compose -f docker/compose.yml up -d --build` | Simulasi produksi secara lokal |
+Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan tugas yang belum selesai belum tersedia.
+
+| Perintah | Fungsi | Sejak |
+|---|---|---|
+| `bun install` | Pasang dependency | T1.1 ✅ |
+| `bun run dev` | Dev server di http://localhost:4321 | T1.1 ✅ |
+| `bun run build` | Build (nanti: GitHub sync → Astro → PDF) | T1.1 ✅ |
+| `bun run preview` | Menyajikan hasil build | T1.1 ✅ |
+| `bun run typecheck` | `astro check` (TypeScript + file .astro) | T1.1 ✅ |
+| `bun run check` | Typecheck + lint + format check (wajib sebelum commit) | T1.2 |
+| `bun run format` | Merapikan format otomatis | T1.2 |
+| `bun test` | Unit test | T1.2 |
+| `bun run test:e2e` | Playwright e2e + a11y | T1.2 |
+| `bun run fetch:github` | Hanya sinkronisasi GitHub | T3.1 |
+| `bun run pdf` | Hanya generate PDF (butuh hasil build) | T4.3 |
+| `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload | T1.8 |
+| `docker compose -f docker/compose.yml up -d --build` | Simulasi produksi secara lokal | T6.4 |
 
 > Saat mengubah perintah, perbarui tabel ini dan `README.md`.
 
@@ -73,4 +76,5 @@ Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run 
 | Build gagal: "Invalid content in content/…" | Baca pesan Zod; perbaiki field yang disebut (sering: format tanggal atau `en` yang hilang) |
 | 3D tidak muncul | Cek console. Pastikan WebGL aktif (hardware acceleration). Fallback HTML harus tetap tampil. |
 | GitHub sync gagal | Cek `GITHUB_TOKEN` di `.env`. Build tetap jalan dengan cache terakhir. |
+| `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Tanpa terminal interaktif (mis. dijalankan AI agent), Astro 7 menjalankan dev server di background. Cek `bunx astro dev status`, lihat log `bunx astro dev logs`, hentikan `bunx astro dev stop`. |
 | PDF kosong/terpotong | Jalankan `bun run preview` dan buka `/print/cv` di browser untuk melihat sumbernya |
