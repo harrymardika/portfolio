@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.5`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.6`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 4/8 tugas |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 5/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -41,7 +41,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: build gagal dengan pesan jelas jika data salah; tipe TS diekspor; tes unit untuk validasi `LocalizedText`, tanggal `YYYY-MM`, dan sertifikat kedaluwarsa.
 - [x] **T1.4** Helper konten murni di `src/lib/content/` (`localize`, `formatDateRange`, `isActiveCertification`, `sortByDateDesc`, dll.)
   - Kriteria: fungsi murni tanpa I/O, cakupan tes ≥ 90%.
-- [ ] **T1.5** i18n: routing `en` (default `/`) + `id` (`/id/`), kamus UI di `src/lib/i18n/`, tombol ganti bahasa
+- [x] **T1.5** i18n: routing `en` (default `/`) + `id` (`/id/`), kamus UI di `src/lib/i18n/`, tombol ganti bahasa
   - Kriteria: setiap halaman punya `hreflang` alternatif; teks UI tidak ada yang hardcode.
 - [ ] **T1.6** Design tokens & Tailwind: tokens dari `docs/03-design-system.md` di `src/styles/tokens.css`, font dimuat (self-host via Fontsource)
   - Kriteria: tidak ada hex mentah di komponen; mode gelap/terang berfungsi.
@@ -129,6 +129,11 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.5
+- **Dikerjakan:** konfigurasi `i18n` Astro (en default tanpa prefix, id di `/id/`); helper murni `splitLocale`, `localizePath`, `alternates`, `localeStaticPaths` (`src/lib/i18n/routing.ts`); kamus UI bertipe `src/lib/i18n/ui.ts` (kunci `id` yang hilang = error TS) + `useTranslations`; `src/layouts/BaseLayout.astro` (lang, canonical, hreflang en/id/x-default); `LangSwitch.astro` (tautan biasa tanpa JS, `aria-current`); halaman `src/pages/[...locale]/index.astro` menggantikan placeholder dan kini membaca `profile.yaml` (tidak ada teks hardcode).
+- **Verifikasi:** build menghasilkan `/index.html` dan `/id/index.html` dengan lang/canonical/hreflang yang benar; probe menghapus satu kunci `id` → error TS; `bun test` 71/71 (cakupan `src/lib` 100%); e2e 10/10 (lang, hreflang, perpindahan bahasa); `bun run check` lulus.
+- **Catatan:** pola `[...locale]` dipilih agar setiap halaman cukup satu file (dokumentasi arsitektur §4 dan §7 serta ADR 0008 diperbarui). Kelas `sr-only` di LangSwitch baru berfungsi setelah Tailwind (T1.6). Halaman masih `noindex` sampai hero asli (T2.2).
 
 ### 2026-10-05 · Claude Code (Opus) · T1.4
 - **Dikerjakan:** helper murni di `src/lib/content/`: `localize`/`isFallback`, `toYearMonth`/`formatYearMonth`/`formatDateRange` (Intl, UTC; label "Present" dari luar), `isActiveCertification` (berlaku sampai akhir bulan `expires`), `compareRangesDesc`/`compareDatesDesc`/`sortedBy`, `visibleOn` (web/cv), `splitEmphasis`/`stripEmphasis` (untuk `*kata*` di headline), `isPublished`/`compareProjects`. Barrel `@/lib/content` hanya berisi modul murni. `queries.ts` (getProfile, getExperience, getCertifications(now), getProjects, dll.) adalah satu-satunya yang memakai `astro:content`. `src/lib/i18n/locales.ts` (`LOCALES`, `Locale`, `isLocale`) dibuat lebih awal untuk dipakai T1.5.

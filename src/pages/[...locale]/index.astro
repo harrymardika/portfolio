@@ -1,0 +1,33 @@
+---
+/**
+ * Home page in every locale. Temporary content from profile.yaml until the real hero (T2.2).
+ */
+import LangSwitch from '@/components/layout/LangSwitch.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localize, stripEmphasis } from '@/lib/content';
+import { getProfile } from '@/lib/content/queries';
+import { localeStaticPaths, type Locale } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const profile = await getProfile();
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${profile.name} · ${localize(profile.role, locale)}`}
+  description={localize(profile.tagline, locale)}
+  noindex
+>
+  <LangSwitch locale={locale} />
+  <main>
+    <h1>{profile.name}</h1>
+    <p>{localize(profile.role, locale)}</p>
+    <p>{stripEmphasis(localize(profile.headline, locale))}</p>
+  </main>
+</BaseLayout>

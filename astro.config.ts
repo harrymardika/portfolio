@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 
+import { DEFAULT_LOCALE, LOCALES } from './src/lib/i18n/locales';
 import { resolveSiteUrl } from './src/lib/site';
 
 // Public URL of the deployed site. Used for canonical URLs, sitemap, and OG tags.
@@ -13,6 +14,12 @@ export default defineConfig({
   trailingSlash: 'always',
   build: {
     format: 'directory',
+  },
+  // ADR 0008: English at `/`, Indonesian at `/id/`. Pages use a `[...locale]` route.
+  i18n: {
+    locales: [...LOCALES],
+    defaultLocale: DEFAULT_LOCALE,
+    routing: { prefixDefaultLocale: false },
   },
   server: {
     port: 4321,

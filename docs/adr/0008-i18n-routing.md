@@ -15,4 +15,4 @@ Gunakan routing i18n bawaan Astro: **`en` sebagai default tanpa prefix**, **`id`
 
 ## Konsekuensi
 - Konten ditulis dulu dalam English; versi Indonesia boleh menyusul dengan fallback.
-- Halaman `id` adalah komposisi tipis yang memakai komponen yang sama.
+- Setiap halaman cukup satu file di `src/pages/[...locale]/` yang menghasilkan kedua bahasa (lihat `docs/02-architecture.md` §7), sehingga tidak ada duplikasi halaman.

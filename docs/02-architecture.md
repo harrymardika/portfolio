@@ -108,11 +108,13 @@ Aturan:
 │   │   ├── core/                # createRenderer, loop, visibility, reducedMotion, webglSupport, dispose
 │   │   ├── photo-card/          # kartu foto 3D + kotak deteksi
 │   │   └── journey-path/        # jalur karier 3D
+│   ├── layouts/                 # BaseLayout (dokumen HTML, head, hreflang)
 │   ├── pages/
-│   │   ├── index.astro, about.astro, homelab.astro, 404.astro
-│   │   ├── projects/index.astro, projects/[slug].astro
-│   │   ├── print/cv.astro, print/portfolio.astro
-│   │   └── id/…                 # padanan halaman versi Indonesia (memakai komponen yang sama)
+│   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
+│   │   │   ├── index.astro, about.astro, homelab.astro
+│   │   │   ├── projects/index.astro, projects/[slug].astro
+│   │   │   └── print/cv.astro, print/portfolio.astro
+│   │   └── 404.astro
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
 ├── scripts/                     # fetch-github.ts, generate-pdf.ts (CLI, dipanggil saat build)
@@ -155,7 +157,10 @@ Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi
 
 ## 7. i18n
 
-- Locale: `en` (default, tanpa prefix) dan `id` (`/id/`).
+- Locale: `en` (default, tanpa prefix) dan `id` (`/id/`). Konstanta di `src/lib/i18n/locales.ts`.
+- **Pola halaman:** setiap halaman ada di `src/pages/[...locale]/` dan memakai `export const getStaticPaths = localeStaticPaths;`. Parameter `locale` kosong menghasilkan halaman EN tanpa prefix, `id` menghasilkan `/id/…`. Locale masuk lewat `Astro.props.locale`. Halaman dengan parameter lain (mis. `[slug]`) menggabungkan `localeStaticPaths()` dengan daftar slug.
+- **URL:** jangan menulis path manual. Gunakan `localizePath(path, locale)` dan `alternates(pathname)` dari `@/lib/i18n` (semua path diakhiri `/`).
+- `BaseLayout` otomatis menulis `<html lang>`, canonical, dan `hreflang` (`en`, `id`, `x-default`).
 - Teks konten memakai tipe `LocalizedText = { en: string; id?: string }`. Helper `localize(text, locale)` mengembalikan `id` jika ada, jika tidak `en`.
 - Teks UI ada di `src/lib/i18n/ui.ts` sebagai kamus bertipe, sehingga kunci yang hilang menjadi error TypeScript.
 

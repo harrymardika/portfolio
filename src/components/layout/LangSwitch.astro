@@ -1,0 +1,29 @@
+---
+/**
+ * Language switch: links to the same page in every locale.
+ * Plain links (no JS) so it works everywhere and search engines can follow it.
+ */
+import { alternates, LOCALES, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const paths = alternates(Astro.url.pathname);
+---
+
+<nav aria-label={UI[locale]['lang.switchLabel']} class="lang-switch">
+  {LOCALES.map((target) => (
+    <a
+      href={paths[target]}
+      hreflang={target}
+      lang={target}
+      aria-current={target === locale ? 'true' : undefined}
+      title={UI[target]['lang.readIn']}
+    >
+      <span aria-hidden="true">{UI[target]['lang.short']}</span>
+      <span class="sr-only">{UI[target]['lang.name']}</span>
+    </a>
+  ))}
+</nav>
