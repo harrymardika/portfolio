@@ -4,6 +4,7 @@
   "private": true,
   "description": "Personal portfolio of Harry Mardika, self-hosted at harry.mardika.my.id",
   "author": "Harry Mardika",
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"

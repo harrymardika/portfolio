@@ -24,7 +24,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 4. Jaringan home server yang aman (Cloudflare Tunnel, SSL/TLS)
 5. CI/CD otomatis
 6. 🆕 Pembuatan otomatis PDF CV dan Portfolio
-7. 🆕 Analytics yang menghormati privasi
+7. 🆕 Statistik bawaan yang ditampilkan langsung di situs dan menghormati privasi (ADR 0009)
 8. 🆕 Dua bahasa (EN/ID)
 9. 🆕 Elemen 3D interaktif
 
@@ -49,13 +49,14 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | FR-04 | Menampilkan pengalaman, pendidikan, penghargaan, pelatihan, sertifikat **yang masih berlaku**, dan skills | Wajib |
 | FR-05 | Menampilkan proyek: gabungan case study lokal (`content/projects`) dan repo GitHub bertopic `portfolio` | Wajib |
 | FR-06 | Mengambil data repo (nama, deskripsi, topics, URL, bahasa, bintang, tanggal update) via GitHub API | Wajib |
+| FR-06a | 🆕 Pemilik memilih repo yang tampil: daftar di `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` | Wajib |
 | FR-07 | Memperbarui data secara otomatis: terjadwal (tiap 6 jam) dan setiap push | Wajib |
 | FR-08 | 🆕 Download CV (PDF, ramah ATS) dalam EN dan ID | Wajib |
 | FR-09 | 🆕 Download Portfolio (PDF visual) dalam EN dan ID | Wajib |
 | FR-10 | 🆕 PDF dibuat otomatis saat build dari data yang sama dengan website | Wajib |
 | FR-11 | 🆕 Ganti bahasa EN ↔ ID di setiap halaman | Wajib |
-| FR-12 | 🆕 Mencatat pengunjung, unduhan, sumber trafik, klik keluar, dan proyek yang dibuka | Wajib |
-| FR-13 | 🆕 Link pelacak per lamaran (`?ref=<nama>`) | Sebaiknya |
+| FR-12 | 🆕 Mencatat dan **menampilkan di situs** pengunjung, tampilan halaman, unduhan CV/Portfolio, sumber trafik, dan negara (tanpa layanan analytics terpisah) | Wajib |
+| FR-13 | 🆕 Link pelacak per lamaran (`?ref=<nama>`), **hanya terlihat oleh pemilik** | Sebaiknya |
 | FR-14 | Halaman `/homelab`: spesifikasi server dan status uptime live | Sebaiknya |
 | FR-15 | 🆕 Mode gelap/terang | Sebaiknya |
 | FR-16 | 🆕 Mengedit konten lewat CMS berbasis Git | Nanti |
@@ -70,7 +71,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | NFR-03 | Keamanan | Tanpa port forwarding (Cloudflare Tunnel); HTTPS; UFW; header keamanan nilai A |
 | NFR-04 | 🆕 Aksesibilitas | WCAG 2.2 AA; Lighthouse A11y ≥ 95; dapat dinavigasi dengan keyboard |
 | NFR-05 | 🆕 3D sebagai progressive enhancement | Konten lengkap tanpa JS/WebGL; 3D mati otomatis untuk `prefers-reduced-motion` dan perangkat lemah |
-| NFR-06 | 🆕 Privasi | Analytics tanpa cookie; tidak ada data pribadi sensitif di repo/web/PDF |
+| NFR-06 | 🆕 Privasi | Statistik tanpa cookie dan tanpa menyimpan IP; DNT/GPC dihormati; tidak ada data pribadi sensitif di repo/web/PDF |
 | NFR-07 | 🆕 Kemudahan perawatan | Isi diubah hanya lewat `content/`; kode modular; tes otomatis; dokumentasi selalu terbarui |
 | NFR-08 | 🆕 SEO | Sitemap, OG image, JSON-LD `Person`, hreflang; Lighthouse SEO ≥ 95 |
 
@@ -87,7 +88,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 
 ## 6. Infrastruktur
 
-Lihat `docs/07-deployment.md`. Ringkasnya: build image di GitHub Actions → GHCR → home server menarik image baru (Watchtower) → Caddy menyajikan file statis → Cloudflare Tunnel → Cloudflare CDN.
+Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04. Lihat `docs/07-deployment.md`. Ringkasnya: build image di GitHub Actions → GHCR → home server menarik image baru (Watchtower) → Caddy menyajikan file statis → Cloudflare Tunnel → Cloudflare CDN.
 
 > Perubahan dari PDF: **self-hosted GitHub runner tidak digunakan** karena berisiko untuk repo publik (lihat ADR 0005).
 

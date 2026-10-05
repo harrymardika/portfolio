@@ -24,10 +24,19 @@ pipeline:
       en: The server opens an outbound-only connection to Cloudflare, which handles HTTPS and caches pages, so the site stays up even if my home internet goes down.
       id: Server membuka koneksi keluar saja ke Cloudflare, yang menangani HTTPS dan menyimpan cache halaman, sehingga situs tetap bisa diakses walau internet rumah saya mati.
 
-stack: [Astro, TypeScript, Three.js, Tailwind CSS, Bun, Docker, Caddy, GitHub Actions, Cloudflare Tunnel, Umami]
+stack: [Astro, TypeScript, Three.js, Tailwind CSS, Bun, SQLite, Docker, Caddy, GitHub Actions, Cloudflare Tunnel]
 
-# TODO(owner): add your server's real specs; the section stays hidden while this list is empty.
-# Example:
-#   - label: { en: CPU, id: CPU }
-#     value: Intel N100, 4 cores
-hardware: []
+# Read from the server (fastfetch, lscpu, lsblk) on 2026-10-05. Update when the hardware changes.
+hardware:
+  - label: { en: Machine, id: Perangkat }
+    value: Lenovo IdeaPad 300S-11IBR (laptop)
+  - label: { en: CPU, id: CPU }
+    value: Intel Celeron N3050, 2 cores, up to 2.16 GHz
+  - label: { en: Memory, id: Memori }
+    value: 1.8 GB RAM
+  - label: { en: Storage, id: Penyimpanan }
+    value: 500 GB SanDisk Ultra 3D SSD
+  - label: { en: Operating system, id: Sistem operasi }
+    value: Ubuntu 24.04 LTS
+  - label: { en: Runtime, id: Runtime }
+    value: Docker 29 + Docker Compose

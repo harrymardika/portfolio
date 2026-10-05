@@ -20,7 +20,7 @@ items:
     issuer: Digital Talent Scholarship
     issued: 2024-01   # TODO(owner): confirm the month
 
-  # Expired July 2026, so hidden automatically. Owner decision D6 in PROGRESS.md.
+  # Expired July 2026 and not being renewed (decision D6): hidden automatically. Kept for history.
   - id: azure-ai-engineer
     name: "Microsoft Certified: Azure AI Engineer Associate"
     issuer: Microsoft

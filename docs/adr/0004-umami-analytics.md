@@ -1,6 +1,6 @@
 # 0004 · Analytics dengan Umami self-hosted
 
-- **Status:** Accepted
+- **Status:** Superseded by [0009](0009-built-in-stats.md) (pemilik tidak ingin layanan analytics terpisah; server terlalu kecil untuk Postgres)
 - **Tanggal:** 2026-10-05
 
 ## Konteks

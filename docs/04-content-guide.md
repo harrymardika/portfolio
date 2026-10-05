@@ -130,9 +130,18 @@ Catatan tampilan:
 - Filter tag di halaman Projects hanya muncul jika minimal dua tag masing-masing dipakai oleh dua proyek atau lebih.
 Struktur body yang disarankan: **Problem → Approach → Result → What I learned**.
 
-## 4. Proyek dari GitHub
+## 4. Proyek dari GitHub (Fase 3)
 
-Repo publik milik `harrymardika` yang diberi **topic `portfolio`** akan otomatis tampil (sinkron tiap 6 jam).
+Anda yang memilih repo mana yang tampil, dengan salah satu atau kedua cara:
+
+1. **Daftar di `content/github.yaml`** (paling mudah, cukup edit file):
+   ```yaml
+   include: [decklify-web, crowd-violence-detection]   # repo ini selalu tampil
+   exclude: [old-experiment]                           # repo ini tidak pernah tampil
+   ```
+2. **Topic `portfolio` di GitHub**: buka repo → ⚙️ di bagian *About* → tambahkan topic `portfolio`.
+
+Repo yang tampil = (`include` ∪ repo bertopic `portfolio`) − `exclude`. Hanya repo publik milik `harrymardika`. Sinkron tiap 6 jam dan setiap push.
 - Deskripsi repo → ringkasan; topics → tag; *social preview image* → gambar sampul.
 - Jika ada `content/projects/*.md` dengan `links.repo` yang sama, data lokal menang dan data GitHub hanya melengkapi (bintang, bahasa, tanggal update).
 

@@ -1,6 +1,8 @@
 # 07 · Deployment
 
 > Pengaturan Cloudflare (DNS, Tunnel, aturan cache) **diurus langsung oleh pemilik** di servernya. Dokumen ini menjelaskan bagian yang disediakan repo dan titik integrasinya.
+>
+> **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04, Docker 29 (lihat `content/homelab.yaml`). Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
 
 ## 1. Alur
 
@@ -20,7 +22,7 @@ Alasan build di GitHub, bukan di server: ADR 0005.
 |---|---|
 | `docker/Dockerfile` | Multi-stage: `deps` (bun install) → `build` (fetch GitHub, astro build, Playwright PDF) → `runtime` (Caddy alpine + `dist/`) |
 | `docker/Caddyfile` | Static file server, kompresi, cache header, header keamanan, `try_files` untuk 404 |
-| `docker/compose.yml` | Produksi: `web`, `watchtower`, `umami`, `umami-db` |
+| `docker/compose.yml` | Produksi: `web` (Caddy), `stats` (Bun + SQLite), `watchtower` |
 | `docker/Dockerfile.dev` ✅ | Image dev: `node:22-bookworm-slim` + binary Bun 1.3.9 (Astro butuh Node asli; `node` di image `oven/bun` hanya pembungkus Bun) |
 | `docker/compose.dev.yml` ✅ | Dev: bind mount kode, volume `node_modules`, hot reload, port `DEV_PORT` (default 4321) |
 | `.dockerignore` ✅ | Mengecualikan `node_modules`, `dist`, `.env`, `CV/`, `Photos/`, `.git` dari build context |
@@ -32,7 +34,7 @@ Alasan build di GitHub, bukan di server: ADR 0005.
 | Item | Nilai |
 |---|---|
 | Hostname | `harry.mardika.my.id` → service `http://web:8080` (atau `localhost:8080`) |
-| Analytics | `analytics.mardika.my.id` → `http://umami:3000` (keputusan D4) |
+| Statistik | Tidak perlu hostname sendiri: Caddy meneruskan `/api/stats/*` ke service `stats` (ADR 0009) |
 | Port publik di router | **Tidak ada** (Cloudflare Tunnel, koneksi keluar) |
 | Firewall | UFW: tolak semua masuk kecuali SSH dari LAN |
 | Secret di server | `.env` di folder deploy (lihat `.env.example`) |
@@ -45,7 +47,7 @@ Alasan build di GitHub, bukan di server: ADR 0005.
 
 ## 5. Header keamanan (target nilai A)
 
-`Content-Security-Policy` (tanpa `unsafe-inline` untuk script; Umami dari domain sendiri), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (matikan kamera, mic, geolocation), `Cross-Origin-Opener-Policy: same-origin`.
+`Content-Security-Policy` (tanpa `unsafe-inline` untuk script; hanya `self`, plus hash skrip tema inline), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (matikan kamera, mic, geolocation), `Cross-Origin-Opener-Policy: same-origin`.
 
 ## 6. Rollback
 

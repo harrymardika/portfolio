@@ -15,12 +15,12 @@ Website portfolio pribadi **Harry Mardika** (AI Engineer · Founder, Decklify), 
 | Download CV & Portfolio | PDF dibuat otomatis saat build. CV ramah ATS dan tanpa nomor HP. |
 | 3D interaktif | Kartu foto 3D di hero dan jalur perjalanan karier 3D, dengan fallback statis untuk HP lemah dan `prefers-reduced-motion` |
 | Sinkronisasi GitHub | Repo `harrymardika` dengan topic `portfolio` otomatis tampil sebagai proyek |
-| Analytics | Umami self-hosted: pengunjung, download CV, sumber trafik, link pelacak per lamaran |
+| Statistik | Ditampilkan langsung di situs: pengunjung, unduhan CV/Portfolio, sumber trafik. Tautan pelacak lamaran hanya untuk pemilik. Tanpa cookie. |
 | Self-hosted | Docker + Cloudflare Tunnel di home server; image di-build oleh GitHub Actions |
 
 ## Tech stack (rencana, lihat [ADR](docs/adr/))
 
-Astro (SSG) · TypeScript strict · Bun · Tailwind CSS · Three.js (vanilla) · Zod (content schema) · Playwright (PDF & e2e) · Docker + Caddy · GitHub Actions · Umami
+Astro (SSG) · TypeScript strict · Bun · Tailwind CSS · Three.js (vanilla) · Zod (content schema) · Playwright (PDF & e2e) · Docker + Caddy · SQLite (statistik) · GitHub Actions
 
 ## Quick start
 
@@ -64,4 +64,4 @@ Baca **[`AGENTS.md`](AGENTS.md)** terlebih dahulu. Isinya urutan membaca dokumen
 
 ## Lisensi
 
-Belum ditentukan (lihat `PROGRESS.md` → Keputusan tertunda). Isi pribadi di `content/` (teks, foto) bukan untuk digunakan ulang.
+Kode: [MIT](LICENSE). Isi pribadi di `content/` (teks, foto, data CV): © Harry Mardika, *all rights reserved*.

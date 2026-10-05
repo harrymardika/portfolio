@@ -14,7 +14,7 @@ flowchart LR
     J --> V
     V --> A[Astro SSG<br/>halaman EN + ID]
     A --> P[scripts/generate-pdf.ts<br/>Playwright]
-    P --> D[public/downloads/*.pdf]
+    P --> D[dist/downloads/*.pdf]
   end
   G --> F
   A --> I[(Image Docker<br/>Caddy + file statis)]
@@ -22,7 +22,7 @@ flowchart LR
   I -->|push| R[GHCR]
   R -->|pull, Watchtower| S[Home server]
   S -->|Cloudflare Tunnel| CF[Cloudflare CDN] --> U((Pengunjung))
-  U -.->|event| UM[Umami<br/>self-hosted]
+  U -.->|beacon /api/stats| ST[stats<br/>Bun + SQLite]
 ```
 
 Prinsip utama:
@@ -42,7 +42,7 @@ Prinsip utama:
 | Validasi data | Zod (Astro Content Layer) | 0002 |
 | i18n | Routing bawaan Astro, `en` default | 0008 |
 | PDF | Playwright mencetak halaman `/print/*` | 0003 |
-| Analytics | Umami self-hosted | 0004 |
+| Statistik | Service kecil Bun + SQLite di domain yang sama | 0009 |
 | Server web | Caddy (dalam image) | 0005 |
 | CI/CD | GitHub Actions → GHCR → Watchtower | 0005 |
 | Tes | `bun test` (unit), Playwright (e2e), axe (a11y) | – |
@@ -98,7 +98,7 @@ Aturan:
 │   │   ├── theme.ts             # logika tema terang/gelap
 │   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
 │   │   ├── github/              # client.ts (I/O) + map.ts (murni)
-│   │   ├── analytics/           # events.ts (konstanta nama event), track.ts
+│   │   ├── stats/               # (T5.3) events.ts (konstanta nama event), beacon
 │   │   └── seo/                 # meta, JSON-LD builders
 │   ├── components/
 │   │   ├── layout/              # BaseLayout, Header, Footer, LangSwitch, ThemeToggle, SkipLink
@@ -106,7 +106,8 @@ Aturan:
 │   │   ├── hero/                # Hero.astro (+ island kartu 3D)
 │   │   ├── journey/             # Journey.astro, JourneyTimeline.astro (fallback)
 │   │   ├── projects/            # ProjectCard, ProjectGrid, TagFilter
-│   │   ├── about/               # ExperienceList, EducationList, CertificationList, SkillGroups
+│   │   ├── about/               # AboutSection, TimelineItem
+│   │   ├── contact/             # Contact (bagian kontak beranda)
 │   │   └── print/               # CvDocument, PortfolioDocument
 │   ├── scenes/
 │   │   ├── core/                # createRenderer, loop, visibility, reducedMotion, webglSupport, dispose
@@ -178,4 +179,4 @@ Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi
 
 - Tidak ada secret di klien. `GITHUB_TOKEN` hanya dipakai saat build.
 - Header keamanan diatur di `docker/Caddyfile` (CSP ketat, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`).
-- Script pihak ketiga hanya Umami dari domain sendiri.
+- Tidak ada script pihak ketiga. Statistik memakai endpoint di domain sendiri (`/api/stats/*`).

@@ -1,52 +1,51 @@
-# 08 · Analytics
+# 08 · Statistik situs
 
-Menggunakan **Umami** self-hosted: tanpa cookie (tidak perlu banner), data milik sendiri. Alasan: ADR 0004.
+Statistik dikumpulkan dan **ditampilkan langsung di harry.mardika.my.id**, tanpa layanan analytics terpisah. Keputusan dan alasan: [ADR 0009](adr/0009-built-in-stats.md). Implementasi: Fase 5.
 
-## 1. Yang diukur
+## 1. Arsitektur
 
-| Metrik | Sumber |
-|---|---|
-| Pengunjung unik, page views, durasi | Otomatis |
-| Sumber trafik (LinkedIn, Instagram, Google, langsung) | Otomatis (referrer + UTM) |
-| Negara, perangkat, browser, bahasa | Otomatis |
-| Download CV / Portfolio (per bahasa) | Event |
-| Klik ke LinkedIn, Instagram, GitHub, email | Event |
-| Proyek yang dibuka | Event |
-| Ganti bahasa | Event |
-| Asal lamaran (`?ref=`) | Query param, otomatis tercatat |
+```
+Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──► service `stats` (Bun + SQLite)
+   ▲                                                                │
+   └──── GET /api/stats/summary (cache 5 menit) ◄───────────────────┘
+```
 
-## 2. Daftar event
+- `stats` berjalan di `docker/compose.yml` di samping `web`, dengan data SQLite di volume `stats-data`.
+- Caddy meneruskan `/api/stats/*` ke `stats`; semua path lain adalah file statis.
+- Jika `stats` tidak tersedia, situs tetap normal dan angka statistik tampil sebagai "—".
 
-Nama event didefinisikan di **satu tempat**: `src/lib/analytics/events.ts`. Jangan menulis string event langsung di komponen.
+## 2. Yang dicatat
 
-| Event | Data | Dipicu oleh |
+| Event | Data | Pemicu |
 |---|---|---|
-| `download-cv` | `{ lang: 'en' \| 'id' }` | Tombol Download CV |
-| `download-portfolio` | `{ lang }` | Tombol Portfolio PDF |
-| `outbound-linkedin` / `outbound-instagram` / `outbound-github` / `outbound-email` | `{ location: 'header' \| 'hero' \| 'footer' \| 'contact' }` | Klik tautan sosial |
-| `project-open` | `{ slug }` | Membuka detail proyek |
-| `journey-open` | `{ milestone }` | Klik titik Journey |
-| `lang-switch` | `{ to }` | Tombol bahasa |
+| `pageview` | path (tanpa query), bahasa, domain asal (referrer), negara (`CF-IPCountry`) | Setiap halaman dimuat |
+| `download-cv` | `{ lang }` | Tombol Download CV (T4.4) |
+| `download-portfolio` | `{ lang }` | Tombol Portfolio PDF (T4.4) |
+| `outbound` | `{ platform: linkedin \| instagram \| github \| email }` | Klik tautan sosial |
+| `ref` *(privat)* | nilai `?ref=` | Kunjungan dari tautan lamaran |
 
-Implementasi: atribut `data-umami-event` dan `data-umami-event-*` di elemen, dibuat oleh helper agar nama event selalu dari konstanta.
+Nama event akan didefinisikan di satu tempat, `src/lib/stats/events.ts` (dibuat di T5.3). Komponen memakai helper, tidak menulis string sendiri.
 
-## 3. Link pelacak per lamaran
+## 3. Yang ditampilkan publik
 
-Saat melamar ke perusahaan, kirim tautan dengan parameter `ref`:
+Bagian statistik (EN/ID): total pengunjung unik dan tampilan halaman (semua waktu dan 30 hari), unduhan CV dan Portfolio, 5 halaman terpopuler, 5 sumber trafik (hanya nama domain), dan negara teratas. **Tidak** menampilkan nilai `?ref=`, path dengan query, atau data per orang.
+
+## 4. Tautan pelacak lamaran (privat)
+
+Kirim tautan dengan parameter `ref` saat melamar:
 
 ```
 https://harry.mardika.my.id/?ref=tokopedia-ml-engineer
 ```
 
-Di dashboard Umami, filter **Query parameters → ref** untuk melihat apakah tautan dibuka, kapan, dan apakah CV diunduh.
-Gunakan format `<perusahaan>-<posisi>`, huruf kecil, tanpa spasi.
+Formatnya `<perusahaan>-<posisi>`, huruf kecil, tanpa spasi. Data `ref` hanya bisa dilihat oleh pemilik:
+- `GET /api/stats/private` dengan header `Authorization: Bearer $STATS_ADMIN_TOKEN`, atau
+- skrip laporan (T5.5), yang menampilkan kapan tautan dibuka dan apakah CV diunduh pada sesi yang sama.
 
-## 4. Privasi
+## 5. Privasi
 
-- Script tracking hanya dimuat di production (`PUBLIC_UMAMI_WEBSITE_ID` terisi).
-- Tidak ada data pribadi pengunjung yang dikumpulkan; IP tidak disimpan oleh Umami.
-- Halaman `/print/*` tidak dilacak.
-
-## 5. Counter publik
-
-Statistik **tidak** ditampilkan di beranda. Jika ingin ditampilkan, taruh di `/homelab` sebagai "live stats" (via Umami API dari proses build, bukan dari browser, agar token tidak bocor).
+- Tanpa cookie, tanpa localStorage untuk pelacakan, tanpa menyimpan IP.
+- Pengunjung unik harian = `SHA-256(IP + User-Agent + salt harian)`. Salt acak diganti setiap hari dan dibuang, sehingga hash lama tidak bisa dicocokkan ulang.
+- *Do Not Track* dan *Global Privacy Control* dihormati: beacon tidak dikirim.
+- Bot dan crawler (berdasarkan User-Agent) tidak dihitung. Endpoint dibatasi laju (rate limit) per hash.
+- Halaman `/print/*` dan mode development tidak dicatat.

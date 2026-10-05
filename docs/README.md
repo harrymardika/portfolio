@@ -9,7 +9,7 @@
 | 05 | [Standar kode](05-coding-standards.md) | Prinsip, konvensi, testing, Git, Definition of Done |
 | 06 | [Alur pengembangan](06-development-workflow.md) | Setup lokal, perintah, alur kerja dengan AI agent |
 | 07 | [Deployment](07-deployment.md) | Docker, CI/CD, GHCR, Cloudflare Tunnel |
-| 08 | [Analytics](08-analytics.md) | Umami, event, link pelacak lamaran |
+| 08 | [Statistik](08-analytics.md) | Statistik bawaan di situs, event, privasi, link pelacak lamaran |
 | 09 | [PDF generation](09-pdf-generation.md) | CV & Portfolio otomatis |
 | — | [ADR](adr/) | Catatan keputusan arsitektur |
 | — | [Prototipe tema](design/theme-prototypes.html) | Buka di browser. Tema terpilih: bagian **F + E**, warna **Hijau** |

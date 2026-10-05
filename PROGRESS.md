@@ -14,7 +14,7 @@
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | ⏳ Berikutnya |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
-| 5 | Analytics (Umami) & link pelacak | ⬜ |
+| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
@@ -66,8 +66,8 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 ## Fase 3: Sinkronisasi GitHub
 
-- [ ] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` dengan topic `portfolio` (GraphQL), simpan ke `src/data/generated/github.json`
-  - Kriteria: retry + backoff, tetap build jika API gagal (pakai cache terakhir), tes untuk fungsi mapping.
+- [ ] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (GraphQL), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
+  - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
 - [ ] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
 - [ ] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam) *(bergantung T6.2)*
 
@@ -75,22 +75,25 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 - [ ] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
 - [ ] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
-- [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `public/downloads/` dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
+- [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
-- [ ] **T4.4** Tombol download di UI (EN/ID) dan event analytics; ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
+- [ ] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
 
-## Fase 5: Analytics
+## Fase 5: Statistik bawaan (ADR 0009, `docs/08-analytics.md`)
 
-- [ ] **T5.1** Umami di `docker/compose.yml` (Postgres) + script tracking (hanya production)
-- [ ] **T5.2** Event: `download-cv`, `download-portfolio`, `outbound-*`, `project-open`, `lang-switch` (lihat `docs/08-analytics.md`)
-- [ ] **T5.3** Link pelacak `?ref=` per lamaran + panduan pemakaian
+- [ ] **T5.1** Service `stats/` (Bun + SQLite): `POST /api/stats/event`, `GET /api/stats/summary`, `GET /api/stats/private` (token)
+  - Kriteria: hash pengunjung harian dengan salt yang berganti & dibuang, tanpa IP tersimpan; filter bot; rate limit; validasi input (Zod); unit test untuk agregasi & privasi; RAM < 64 MB.
+- [ ] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats`, volume `stats-data`, route `/api/stats/*`, batas memori, panduan backup SQLite *(bergantung T6.1)*
+- [ ] **T5.3** Skrip beacon di situs: `pageview`, `download-cv`, `download-portfolio`, `outbound` (konstanta di `src/lib/stats/events.ts`); hormati DNT/GPC; tidak aktif di dev dan `/print/*`
+- [ ] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
+- [ ] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
 
 ## Fase 6: Docker, CI/CD, deploy
 
 - [ ] **T6.1** `docker/Dockerfile` multi-stage (deps → build → PDF → Caddy) + `Caddyfile` dengan header keamanan
 - [ ] **T6.2** GitHub Actions `ci.yml`: check, test, build pada setiap PR
 - [ ] **T6.3** GitHub Actions `deploy.yml`: build image dan push ke GHCR saat push ke `main` dan terjadwal
-- [ ] **T6.4** `docker/compose.yml` produksi: `web` + `watchtower` (+ `umami`, `db`); Cloudflare Tunnel diurus pemilik
+- [ ] **T6.4** `docker/compose.yml` produksi: `web` (Caddy) + `stats` + `watchtower`, dengan batas memori per container (server RAM 1,8 GB); Cloudflare Tunnel diurus pemilik
 - [ ] **T6.5** Halaman `/homelab`: status uptime live (Uptime Kuma badge/API)
 
 ## Fase 7: Kualitas
@@ -108,17 +111,19 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 ---
 
-## Keputusan tertunda (butuh jawaban pemilik)
+## Keputusan pemilik
 
-| # | Pertanyaan | Default jika tidak dijawab |
+Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
+
+| # | Pertanyaan | Keputusan |
 |---|---|---|
-| D1 | Lisensi kode (MIT?) | Kode MIT, isi `content/` *All rights reserved* |
-| D2 | Teks badge status di hero ("Open to work" / "Open for collaboration" / tidak ada) | Tidak ditampilkan |
-| D3 | Latar foto: tetap biru (kontras) atau diganti hijau tua/putih | Tetap biru |
-| D4 | Subdomain analytics (mis. `analytics.mardika.my.id`) | `analytics.mardika.my.id` |
-| D5 | Repo mana saja yang diberi topic `portfolio` di GitHub | Pemilik menandai sendiri |
-| D6 | Sertifikat Azure AI Engineer: diperpanjang atau tidak | Tetap tersembunyi (kedaluwarsa Jul 2026) |
-| D7 | Spesifikasi server untuk `/homelab` (`content/homelab.yaml → hardware`) | Bagian spesifikasi disembunyikan |
+| D1 | Lisensi | Kode **MIT** (`LICENSE`); isi `content/` *all rights reserved* |
+| D2 | Teks badge status di hero | **Tidak ada** (`status_badge` kosong) |
+| D3 | Latar foto | **Tetap biru** |
+| D4 | Analytics | **Tanpa layanan analytics terpisah.** Statistik tampil langsung di situs (ADR 0009 menggantikan 0004; Fase 5 ditulis ulang) |
+| D5 | Memilih repo GitHub | **Bisa:** `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` (T3.1) |
+| D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
+| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04, Docker 29 (`content/homelab.yaml`) |
 
 ## Catatan data
 
@@ -131,6 +136,12 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · Keputusan D1–D7 + validasi ulang
+- **Keputusan diterapkan:** `LICENSE` MIT (+ catatan hak cipta `content/`), `package.json` `license`; spesifikasi server dibaca via `ssh mardika-server` (perintah baca saja) ke `content/homelab.yaml`; Umami dihapus dari stack; ADR 0009 (statistik bawaan di situs) menggantikan ADR 0004; Fase 5 ditulis ulang (service Bun + SQLite di domain yang sama, tanpa cookie/IP, `?ref=` hanya untuk pemilik); T3.1 mendukung `content/github.yaml` (`include`/`exclude`) + topic; tabel keputusan diganti "Keputusan pemilik".
+- **Validasi ulang:** tes baru `tests/e2e/links.spec.ts` menelusuri semua halaman dari `/` dan `/id/` dan memeriksa setiap tautan/gambar/stylesheet internal (0 rusak); audit path di dokumentasi (74 path; regex audit pertama ternyata tidak mencocokkan apa pun dan diperbaiki); audit teks hardcode di `.astro` (0); audit secret & nomor HP di file yang di-commit (0).
+- **Ketidakkonsistenan yang diperbaiki:** lokasi PDF (`dist/downloads/`, bukan `public/downloads/`), pohon folder arsitektur (`components/contact/`, `lib/stats/`), folder kosong `src/lib/analytics` → `src/lib/stats`, `.gitkeep` usang di `tests/`.
+- **Catatan penting dari spesifikasi server:** RAM 1,8 GB & Celeron 2 core → jangan build di server, batasi memori container, hindari database berat (dicatat di `docs/07-deployment.md`).
 
 ### 2026-10-05 · Claude Code (Opus) · T2.7 (Fase 2 selesai)
 - **Dikerjakan:** `/homelab/` dari `content/homelab.yaml` (intro, 4 langkah pipeline deploy sesuai ADR 0005/docs 07, stack; bagian spesifikasi hardware hanya tampil jika diisi pemilik, D7) + `homelabSchema`/`getHomelab()`; menu "Homelab". `src/pages/404.astro` dwibahasa (satu h1, h2 untuk bahasa kedua, tautan ke `/` dan `/id/`), tanpa canonical/hreflang (opsi baru `linkAlternates` di `BaseLayout`). Tombol solid memakai amber di mode gelap.

@@ -7,8 +7,11 @@ test('the homelab page explains the pipeline and stack', async ({ page }) => {
   await expect(page.locator('ol > li')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 3, name: 'Through a Cloudflare Tunnel' })).toBeVisible();
   await expect(page.getByText('Cloudflare Tunnel', { exact: true })).toBeVisible();
-  // Hidden until the owner adds real specs to content/homelab.yaml.
-  await expect(page.locator('#hardware-title')).toHaveCount(0);
+  // Real specs from content/homelab.yaml (read from the server).
+  const hardware = page.locator('section[aria-labelledby="hardware-title"]');
+  await expect(hardware.getByRole('heading', { level: 2, name: 'The server' })).toBeVisible();
+  await expect(hardware).toContainText('Intel Celeron N3050');
+  await expect(hardware).toContainText('Ubuntu 24.04 LTS');
 });
 
 test('the homelab page is translated', async ({ page }) => {
