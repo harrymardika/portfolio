@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test, type Page } from '@playwright/test';
 
 const stage = '[data-journey-stage]';
@@ -43,7 +44,9 @@ test.describe('without JavaScript', () => {
 test('the 3D path places labels and reaches milestones as you scroll', async ({ page }) => {
   await page.goto('/');
   await scrollJourney(page, 0.2);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
   await expect(page.locator(milestones).first()).toHaveAttribute('style', /--x:/);
 
   const reached = page.locator(`${milestones}[data-reached="true"]`);
@@ -57,7 +60,9 @@ test('the 3D path places labels and reaches milestones as you scroll', async ({ 
 test('3D labels stay inside the stage and never cover the section text', async ({ page }) => {
   await page.goto('/');
   await scrollJourney(page, 0.6);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
   await page.waitForTimeout(500);
 
   const stageBox = await page.locator(stage).boundingBox();
@@ -87,7 +92,9 @@ test('reduced motion shows the whole path as completed', async ({ page }) => {
   await page.goto('/');
   await scrollJourney(page, 0);
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
   await expect(page.locator(`${milestones}[data-reached="false"]`)).toHaveCount(0);
 });
 
@@ -96,7 +103,9 @@ for (const colorScheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme });
     await page.goto('/');
     await scrollJourney(page, 0.3);
-    await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+    await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+      timeout: SCENE_READY_TIMEOUT,
+    });
     await page.waitForTimeout(500);
     const results = await new AxeBuilder({ page })
       .include('#journey')

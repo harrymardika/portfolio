@@ -17,7 +17,7 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 |---|---|---|
 | `bun install` | Pasang dependency | T1.1 ✅ |
 | `bun run dev` | Sinkron GitHub (cache < 1 jam) lalu dev server di http://localhost:4321 | T1.1 ✅ |
-| `bun run build` | Build: GitHub sync → Astro (PDF menyusul di T4.3) | T1.1 ✅ |
+| `bun run build` | Build lengkap: GitHub sync → Astro → PDF CV & Portfolio (±5 detik) | T1.1 ✅ |
 | `bun run preview` | Menyajikan hasil build | T1.1 ✅ |
 | `bun run typecheck` | `astro check` (TypeScript + file .astro) | T1.1 ✅ |
 | `bun run verify` | **Wajib sebelum commit:** `check` → `bun test` → `test:e2e`, berhenti saat ada yang gagal | T2.4 ✅ |
@@ -30,7 +30,7 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run test:e2e` | Playwright e2e (build terisolasi ke `dist-e2e/` dengan data GitHub fixture, desktop & mobile) | T1.2 ✅ |
 | `bun run fetch:github` | Sinkronisasi repo GitHub ke `src/data/generated/github.json` (pakai cache < 1 jam) | T3.1 ✅ |
 | `bun run fetch:github --force` | Sinkronisasi tanpa memakai cache | T3.1 ✅ |
-| `bun run pdf` | Hanya generate PDF (butuh hasil build) | T4.3 |
+| `bun run pdf` | Generate 4 PDF dari build yang sudah ada (`BUILD_OUT_DIR`, default `dist`) | T4.3 ✅ |
 | `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload (http://localhost:4321) | T1.8 ✅ |
 | `DEV_PORT=4331 docker compose -f docker/compose.dev.yml up` | Sama, di port host lain jika 4321 terpakai | T1.8 ✅ |
 | `docker compose -f docker/compose.dev.yml down` | Hentikan container dev | T1.8 ✅ |

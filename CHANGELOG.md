@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Automatic PDF generation at build time: CV and portfolio in English and Indonesian, tagged, with size budgets (T4.3).
 - Visual portfolio print pages (A4 landscape, 8 pages) in English and Indonesian (T4.2).
 - Indonesian translations for all experience, education, and training highlights (draft, pending owner review); translatable skill items and award issuers.
 - ATS-friendly CV print pages in English and Indonesian that fit on two A4 pages (T4.1).

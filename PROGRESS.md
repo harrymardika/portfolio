@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T4.3`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T4.4`
 
 ## Ringkasan
 
@@ -13,7 +13,7 @@
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
-| 4 | Generate PDF CV & Portfolio | 🔄 2/4 tugas |
+| 4 | Generate PDF CV & Portfolio | 🔄 3/4 tugas |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
@@ -75,7 +75,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 - [x] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
 - [x] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
-- [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
+- [x] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
 - [ ] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
 
@@ -136,6 +136,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T4.3
+- **Dikerjakan:** `src/lib/downloads.ts` (murni: nama file, URL, halaman sumber; dipakai skrip & tombol), `scripts/generate-pdf.ts` (`Bun.serve` port acak + Chromium; PDF ber-tag dengan outline; anggaran ukuran CV < 1 MB, Portfolio < 3 MB menggagalkan build), `bun run build` = fetch → astro → pdf. `BUILD_OUT_DIR` menggantikan flag `--outDir` (Astro & skrip PDF membaca variabel yang sama). `pdfjs-dist` (dev) untuk membaca PDF dalam tes.
+- **Hasil:** build lengkap ±5 detik; CV-EN/ID 2 halaman ±195 KB; Portfolio-EN/ID 8 halaman ±440 KB; semua `Tagged: yes` dengan judul dokumen.
+- **Verifikasi:** unit `downloads` 3/3; e2e PDF 4/4 (status, content-type, ukuran, jumlah halaman, judul, teks EN/ID, tanpa nomor HP); `bun run verify` lulus.
+- **Catatan:** metadata author/keywords tidak diisi (keterbatasan Chromium; docs/09 diperbarui). Docker build (T6.1) wajib memasang Chromium.
+- **Tes flaky ditemukan:** satu tes a11y Journey gagal karena 3D belum siap dalam 15 s saat 8 worker paralel merender WebGL di CPU (lulus 42/42 bila dijalankan sendiri). Batas waktu dijadikan konstanta `SCENE_READY_TIMEOUT` = 30 s di `tests/e2e/helpers.ts`.
 
 ### 2026-10-05 · Claude Code (Opus) · T4.2
 - **Dikerjakan:** `PortfolioDocument` + `/print/portfolio/` dan `/id/print/portfolio/` (A4 landscape, 8 halaman: sampul dengan foto, profil + statistik + 5 penghargaan teratas, journey statis pengganti 3D, 3 proyek featured dengan isi case study, grid "proyek lainnya" 4×4 (case study non-featured + repo GitHub), keahlian & kontak).

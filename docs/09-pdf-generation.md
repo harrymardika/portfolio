@@ -5,8 +5,8 @@ Alasan teknis: ADR 0003.
 ## 1. Cara kerja
 
 1. Astro membuat halaman khusus cetak: `/print/cv/`, `/id/print/cv/`, `/print/portfolio/`, `/id/print/portfolio/` (tidak ada di navigasi, `noindex`, tidak dilacak analytics).
-2. Setelah `astro build`, `scripts/generate-pdf.ts` menyajikan `dist/` secara lokal, membuka setiap halaman cetak dengan Playwright Chromium, menunggu font termuat, lalu `page.pdf()`.
-3. Hasilnya disimpan di `dist/downloads/`:
+2. Setelah `astro build`, `scripts/generate-pdf.ts` (`bun run pdf`, otomatis di akhir `bun run build`) menyajikan folder build secara lokal dengan `Bun.serve` (port acak, menolak path di luar folder build), membuka setiap halaman cetak dengan Playwright Chromium, menunggu font termuat, lalu `page.pdf({ preferCSSPageSize, printBackground, tagged, outline })`. Ukuran kertas dan margin berasal dari `@page` di `src/layouts/PrintLayout.astro`.
+3. Hasilnya disimpan di `<BUILD_OUT_DIR>/downloads/` (default `dist/downloads/`). Nama file dan URL dibuat oleh `src/lib/downloads.ts`, yang juga dipakai tombol download, sehingga tidak bisa berbeda:
 
 | File | Isi |
 |---|---|
@@ -24,8 +24,8 @@ Nama file stabil agar tautan tidak pernah rusak.
 - Judul bagian standar: Summary, Experience, Education, Leadership, Training, Awards, Certifications, Skills.
 - Header: nama, kota, email, LinkedIn, GitHub, URL website. **Tanpa nomor HP.**
 - Isi: item dengan `show_on_cv: true`, sertifikat yang masih berlaku, urutan terbaru dulu.
-- Font: Plus Jakarta Sans (body) dan Young Serif (nama saja), keduanya di-embed.
-- Metadata PDF: `title`, `author`, `subject`, `keywords` diisi.
+- Font: Plus Jakarta Sans (body) dan Young Serif (nama saja), keduanya di-embed. Ukuran 8,6 pt agar muat 2 halaman seperti CV asli.
+- PDF ber-*tag* (struktur heading terbaca ATS dan pembaca layar). Metadata: judul dokumen dari `<title>` (mis. "Harry Mardika · CV"). *Author/keywords* tidak diisi: Chromium tidak mendukungnya dan tidak sebanding dengan menambah library PDF.
 
 ## 3. Aturan Portfolio (visual)
 
@@ -35,5 +35,9 @@ Nama file stabil agar tautan tidak pernah rusak.
 
 ## 4. Kriteria kualitas
 
-- Tes e2e: file ada, ukuran wajar, teks "Harry Mardika" bisa diekstrak, dan **tidak ada pola nomor telepon** (`/\+?62[\d\s-]{8,}/`).
+- **Anggaran ukuran** ditegakkan oleh skrip (build gagal jika dilampaui): CV < 1 MB, Portfolio < 3 MB. Saat ini ±195 KB dan ±440 KB.
+- **Tes e2e** (`tests/e2e/pdf.spec.ts`, membaca PDF dengan pdf.js): file tersedia, ukuran sesuai anggaran, CV ≤ 2 halaman, Portfolio ≤ 8 halaman, judul dokumen benar, teks bisa diekstrak (termasuk teks ID), dan **tidak ada pola nomor telepon**.
+- Tes halaman cetak (`tests/e2e/print.spec.ts`): struktur ATS, tanpa gambar di CV, noindex, tema terang, semua kartu proyek muat.
+- Jika konten bertambah dan CV menjadi 3 halaman, tes e2e gagal: pindahkan item kurang penting ke `show_on_cv: false`.
 - Dicek manual dengan ATS checker gratis sebelum rilis besar.
+- **Butuh Chromium Playwright** saat build (lokal: `bunx playwright install chromium`; Docker: T6.1).

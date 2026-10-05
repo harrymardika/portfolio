@@ -1,3 +1,4 @@
+import { SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test } from '@playwright/test';
 
 const stage = '[data-photo-card]';
@@ -31,7 +32,9 @@ test('the 3D card replaces the static card once ready, without console errors', 
 
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'animated');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
   await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '1');
   await expect(page.locator(`${stage} .static-card`)).toHaveCSS('opacity', '0');
   expect(errors).toEqual([]);
@@ -41,7 +44,9 @@ test('reduced motion renders a still 3D frame', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', { timeout: 15_000 });
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
 });
 
 test('without WebGL the static card stays and three.js is never downloaded', async ({ page }) => {

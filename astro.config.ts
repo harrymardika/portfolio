@@ -12,6 +12,8 @@ const SITE_URL = resolveSiteUrl(process.env['SITE_URL']);
 export default defineConfig({
   site: SITE_URL,
   output: 'static',
+  // BUILD_OUT_DIR lets e2e build into dist-e2e/ (scripts/generate-pdf.ts reads the same variable).
+  outDir: process.env['BUILD_OUT_DIR'] ?? './dist',
   trailingSlash: 'always',
   build: {
     format: 'directory',

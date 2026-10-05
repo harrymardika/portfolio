@@ -140,7 +140,8 @@ bun run build
                                    e2e terisolasi: GITHUB_FIXTURE=tests/fixtures/github.json,
                                    GITHUB_CACHE=…/github.e2e.json, output dist-e2e/ (tidak menyentuh dist/)
   2. astro build                 → dist/  (validasi Zod terjadi di sini)
-  3. scripts/generate-pdf.ts     → dist/downloads/*.pdf (serve dist/, cetak /print/*)
+  3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
+  BUILD_OUT_DIR mengganti folder output (Astro dan skrip PDF membaca variabel yang sama)
 ```
 
 ## 6. Kontrak modul 3D
