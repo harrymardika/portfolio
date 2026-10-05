@@ -55,7 +55,12 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
     if (choice.mode === 'still') requestAnimationFrame(() => renderFrame(0));
   };
 
-  module = create({ palette: readPalette(), mode: choice.mode, invalidate });
+  const ready = (): void => {
+    stage.dataset['sceneReady'] = 'true';
+    invalidate();
+  };
+
+  module = create({ palette: readPalette(), mode: choice.mode, invalidate, ready });
 
   const resize = (): void => {
     const { width, height } = stage.getBoundingClientRect();
@@ -103,6 +108,7 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
       }
       renderer.dispose();
       delete stage.dataset['scene'];
+      delete stage.dataset['sceneReady'];
     },
   };
 }

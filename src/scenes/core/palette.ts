@@ -4,7 +4,16 @@
  */
 
 /** Token names (without `--`) a scene may read. */
-export const PALETTE_TOKENS = ['forest', 'amber', 'sage', 'surface', 'ink', 'on-forest', 'line'] as const;
+export const PALETTE_TOKENS = [
+  'forest',
+  'amber',
+  'sage',
+  'surface',
+  'ink',
+  'on-forest',
+  'line',
+  'mint',
+] as const;
 export type PaletteToken = (typeof PALETTE_TOKENS)[number];
 export type ScenePalette = Readonly<Record<PaletteToken, number>>;
 

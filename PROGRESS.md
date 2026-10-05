@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.2`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.3`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 1/8 tugas |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 2/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -54,7 +54,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 
 - [x] **T2.1** Modul inti 3D `src/scenes/core/` (renderer, loop, pause saat offscreen, reduced-motion, deteksi WebGL, dispose)
   - Kriteria: kontrak `SceneHandle` sesuai `docs/02-architecture.md` §6; tes unit untuk util non-WebGL.
-- [ ] **T2.2** Hero: kartu foto 3D + kotak deteksi wajah + statistik
+- [x] **T2.2** Hero: kartu foto 3D + kotak deteksi wajah + statistik
   - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
 - [ ] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
@@ -77,7 +77,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 - [ ] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
 - [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `public/downloads/` dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
-- [ ] **T4.4** Tombol download di UI (EN/ID) dan event analytics
+- [ ] **T4.4** Tombol download di UI (EN/ID) dan event analytics; ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
 
 ## Fase 5: Analytics
 
@@ -130,6 +130,12 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.2
+- **Dikerjakan:** `Hero.astro` (badge peran, h1 headline + nama sr-only, tagline, CTA, statistik), `PhotoCard.astro` (kartu statis + panggung 3D, gambar `astro:assets` responsif `eager`/`fetchpriority=high`, kotak deteksi CSS), `src/scenes/photo-card/` (`config.ts`, `layout.ts` murni: `lockAmount`, `fitScale`, `visibleHeight`; `index.ts` scene). `src/lib/content/media.ts` (`contentImage`, path relatif `content/`). Kontrak inti ditambah `ready()` (`data-scene-ready`). Token dekoratif `--mint`. Three.js dimuat dinamis setelah `load` dan hanya jika `decide3D` mengizinkan.
+- **Verifikasi:** e2e 49 lulus (+1 skip): isi hero EN/ID, 3D siap tanpa error console, reduced-motion → `still`, tanpa WebGL → `off` dan file three.js tidak diunduh, tanpa JS kartu statis tampil, LCP < 2,5 s; unit 119 lulus; `bun run check` lulus. JS 3D ≈ 136 KB gzip (anggaran 180 KB), skrip awal 1,5 KB. Screenshot desktop/HP/gelap/tanpa JS dicek visual.
+- **Penyesuaian visual setelah screenshot:** jarak kamera 12 → 7,5 agar kartu 3D sama besar dengan kartu statis; intensitas lampu dinaikkan (satuan fisik three r155+); cincin −1,35 rad agar tidak menutupi wajah/teks; label deteksi dipendekkan; label kartu statis tidak lagi terpotong.
+- **Catatan:** CTA sementara (mailto + LinkedIn) karena PDF baru ada di Fase 4 (dicatat di T4.4). Halaman beranda tidak lagi `noindex`.
 
 ### 2026-10-05 · Claude Code (Opus) · T2.1
 - **Dikerjakan:** `three` 0.186.1 + `@types/three`. `src/scenes/core/`: `math.ts` (`frameDelta` dijepit, `damp`, `smoothstep`, `cappedPixelRatio`), `capabilities.ts` (`decide3D` murni + deteksi browser), `palette.ts` (warna dari token CSS), `pointer.ts`, `loop.ts` (rAF dapat diinjeksi, idempoten, error per frame tidak mematikan loop), `dispose.ts`, `mount.ts` (`mountScene` → `SceneHandle | null`), `types.ts` (`SceneModule`, `FrameContext`, `SceneSetup`).

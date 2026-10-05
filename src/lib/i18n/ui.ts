@@ -18,6 +18,11 @@ const en = {
   'nav.home': 'Home',
   'footer.socials': 'Find me online',
   'footer.builtWith': 'Built with Astro and self-hosted on a home server.',
+  'hero.photoAlt': 'Photo of',
+  'hero.detectionLabel': 'person · AI eng 0.99',
+  'hero.ctaContact': 'Get in touch',
+  'hero.ctaLinkedIn': 'LinkedIn profile',
+  'hero.statsLabel': 'Highlights',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -35,6 +40,11 @@ const id: Record<UiKey, string> = {
   'nav.home': 'Beranda',
   'footer.socials': 'Temukan saya di',
   'footer.builtWith': 'Dibangun dengan Astro dan di-host sendiri di server rumah.',
+  'hero.photoAlt': 'Foto',
+  'hero.detectionLabel': 'person · AI eng 0.99',
+  'hero.ctaContact': 'Hubungi saya',
+  'hero.ctaLinkedIn': 'Profil LinkedIn',
+  'hero.statsLabel': 'Sorotan',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

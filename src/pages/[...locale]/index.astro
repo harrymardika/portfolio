@@ -1,9 +1,10 @@
 ---
 /**
- * Home page in every locale. Temporary content from profile.yaml until the real hero (T2.2).
+ * Home page in every locale. Sections are added by later tasks (journey T2.3, contact T2.6).
  */
+import Hero from '@/components/hero/Hero.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { localize, stripEmphasis } from '@/lib/content';
+import { localize } from '@/lib/content';
 import { getProfile } from '@/lib/content/queries';
 import { localeStaticPaths, type Locale } from '@/lib/i18n';
 
@@ -22,11 +23,6 @@ const profile = await getProfile();
   title={`${profile.name} · ${localize(profile.role, locale)}`}
   description={localize(profile.tagline, locale)}
   profile={profile}
-  noindex
 >
-  <section class="mx-auto grid max-w-[1120px] gap-4 px-[clamp(16px,4vw,40px)] py-16">
-    <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
-    <h1 class="text-hero">{profile.name}</h1>
-    <p class="max-w-[65ch] text-ink-muted">{stripEmphasis(localize(profile.headline, locale))}</p>
-  </section>
+  <Hero locale={locale} profile={profile} />
 </PageLayout>

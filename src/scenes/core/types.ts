@@ -35,4 +35,9 @@ export interface SceneSetup {
   readonly mode: Exclude<Decision3D['mode'], 'off'>;
   /** Ask for one more frame; needed in `still` mode after async work such as a texture load. */
   readonly invalidate: () => void;
+  /**
+   * Signal that the scene can replace the static fallback (e.g. textures are loaded).
+   * Sets `data-scene-ready` on the stage; CSS cross-fades from the HTML fallback to the canvas.
+   */
+  readonly ready: () => void;
 }

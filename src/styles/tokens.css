@@ -19,6 +19,8 @@
   --on-forest: #ffffff;
   --on-forest-muted: #d3e2d9;
   --success: #7ee2a8;
+  /* Decorative only (3D spheres); never used for text. */
+  --mint: #8fc2a8;
   color-scheme: light;
 }
 

@@ -1,0 +1,107 @@
+---
+/**
+ * Home hero (docs/03-design-system.md §5): headline, tagline, actions, stats, and the photo card.
+ * Content comes from profile.yaml; the 3D card loads after the page is interactive.
+ */
+import PhotoCard from './PhotoCard.astro';
+import { localize, splitEmphasis, type Profile } from '@/lib/content';
+import { contentImage } from '@/lib/content/media';
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  profile: Profile;
+}
+
+const { locale, profile } = Astro.props;
+const t = UI[locale];
+const role = localize(profile.role, locale);
+const headline = splitEmphasis(localize(profile.headline, locale));
+const linkedin = profile.socials.find((social) => social.platform === 'linkedin');
+---
+
+<section class="bg-forest text-on-forest" aria-labelledby="hero-title">
+  <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-14 lg:grid-cols-[1.05fr_1fr] lg:py-20">
+    <div class="grid min-w-0 gap-6">
+      <p class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-on-forest/25 bg-on-forest/10 px-3 py-1 font-mono text-xs">
+        <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
+        {role}
+      </p>
+      <h1 id="hero-title" class="text-hero text-on-forest">
+        <span class="sr-only">{profile.name}: </span>
+        {headline.map((segment) =>
+          segment.emphasis ? <span class="text-amber">{segment.text}</span> : segment.text,
+        )}
+      </h1>
+      <p class="max-w-[42ch] text-base text-on-forest-muted sm:text-lg">
+        {localize(profile.tagline, locale)}
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href={`mailto:${profile.email}`}
+          class="inline-flex min-h-11 items-center rounded-full bg-amber px-5 font-semibold text-forest transition hover:brightness-105"
+        >
+          {t['hero.ctaContact']}
+        </a>
+        {linkedin && (
+          <a
+            href={linkedin.url}
+            rel="me noopener"
+            class="inline-flex min-h-11 items-center rounded-full border border-on-forest/45 px-5 font-semibold text-on-forest transition hover:bg-on-forest/10"
+          >
+            {t['hero.ctaLinkedIn']}
+          </a>
+        )}
+      </div>
+      <dl class="flex flex-wrap gap-x-8 gap-y-4" aria-label={t['hero.statsLabel']}>
+        {profile.stats.map((stat) => (
+          <div class="grid">
+            <dd class="order-1 font-mono text-xl font-medium text-amber">{stat.value}</dd>
+            <dt class="order-2 text-xs text-on-forest-muted">{localize(stat.label, locale)}</dt>
+          </div>
+        ))}
+      </dl>
+    </div>
+    <PhotoCard
+      photo={contentImage(profile.photo)}
+      alt={`${t['hero.photoAlt']} ${profile.name}`}
+      name={profile.name}
+      role={role}
+      location={profile.location.split(',')[0] ?? profile.location}
+      detectionLabel={t['hero.detectionLabel']}
+    />
+  </div>
+</section>
+
+<script>
+  import { decide3D, detectCapabilities } from '@/scenes/core/capabilities';
+
+  // Decide before downloading three.js so low-power and reduced-data visitors never fetch it.
+  async function start(): Promise<void> {
+    const decision = decide3D(detectCapabilities());
+    const stages = document.querySelectorAll<HTMLElement>('[data-photo-card]');
+    if (decision.mode === 'off' || stages.length === 0) {
+      stages.forEach((stage) => (stage.dataset['scene'] = 'off'));
+      return;
+    }
+    const [{ mountScene }, { createPhotoCard }] = await Promise.all([
+      import('@/scenes/core/mount'),
+      import('@/scenes/photo-card'),
+    ]);
+    for (const stage of stages) {
+      const canvas = stage.querySelector('canvas');
+      const { photoUrl, name, role, location, detectionLabel } = stage.dataset;
+      if (!canvas || !photoUrl || !name || !role || !location || !detectionLabel) continue;
+      mountScene({
+        stage,
+        canvas,
+        decision,
+        create: (setup) => createPhotoCard(setup, { photoUrl, name, role, location, detectionLabel }),
+      });
+    }
+  }
+
+  // Wait until the page has loaded so the 3D never competes with the LCP image.
+  if (document.readyState === 'complete') void start();
+  else window.addEventListener('load', () => void start(), { once: true });
+</script>

@@ -35,6 +35,7 @@
   --color-on-forest: var(--on-forest);
   --color-on-forest-muted: var(--on-forest-muted);
   --color-success: var(--success);
+  --color-mint: var(--mint);
 
   --font-display: 'Young Serif', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
