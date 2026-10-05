@@ -3,9 +3,10 @@
  * Home page in every locale. Sections are added by later tasks (journey T2.3, contact T2.6).
  */
 import Hero from '@/components/hero/Hero.astro';
+import Journey from '@/components/journey/Journey.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
-import { getProfile } from '@/lib/content/queries';
+import { getJourney, getProfile } from '@/lib/content/queries';
 import { localeStaticPaths, type Locale } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const profile = await getProfile();
+const [profile, journey] = await Promise.all([getProfile(), getJourney()]);
 ---
 
 <PageLayout
@@ -25,4 +26,5 @@ const profile = await getProfile();
   profile={profile}
 >
   <Hero locale={locale} profile={profile} />
+  <Journey locale={locale} copy={profile.journey} entries={journey} />
 </PageLayout>

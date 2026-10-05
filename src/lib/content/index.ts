@@ -5,6 +5,7 @@
 export * from './certifications';
 export * from './dates';
 export * from './emphasis';
+export * from './journey';
 export * from './localize';
 export * from './ordering';
 export * from './projects';

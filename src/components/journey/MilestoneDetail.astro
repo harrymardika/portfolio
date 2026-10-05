@@ -1,0 +1,120 @@
+---
+/**
+ * Popover with the full story behind a milestone (the item its `ref` points to).
+ * Uses the Popover API, so it opens and closes without JavaScript.
+ */
+import {
+  formatDateRange,
+  formatYearMonth,
+  localize,
+  type Milestone,
+  type MilestoneSource,
+} from '@/lib/content';
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  id: string;
+  locale: Locale;
+  milestone: Milestone;
+  source: MilestoneSource;
+}
+
+const { id, locale, milestone, source } = Astro.props;
+const t = UI[locale];
+const present = t['date.present'];
+
+function describe(): { meta: string[]; highlights: string[] } {
+  switch (source.kind) {
+    case 'experience':
+      return {
+        meta: [
+          `${localize(source.item.role, locale)} · ${source.item.organization}`,
+          formatDateRange(source.item, locale, present),
+        ],
+        highlights: source.item.highlights.map((h) => localize(h, locale)),
+      };
+    case 'education':
+      return {
+        meta: [
+          `${localize(source.item.degree, locale)} · ${source.item.institution}`,
+          formatDateRange(source.item, locale, present),
+          ...(source.item.gpa ? [`${t['journey.gpa']} ${source.item.gpa}`] : []),
+        ],
+        highlights: source.item.highlights.map((h) => localize(h, locale)),
+      };
+    case 'training':
+      return {
+        meta: [
+          `${localize(source.item.program, locale)} · ${source.item.institution}`,
+          formatDateRange(source.item, locale, present),
+        ],
+        highlights: source.item.highlights.map((h) => localize(h, locale)),
+      };
+    case 'award':
+      return {
+        meta: [
+          localize(source.item.title, locale),
+          source.item.issuer,
+          source.item.date.length === 4 ? source.item.date : formatYearMonth(source.item.date, locale),
+        ],
+        highlights: [],
+      };
+  }
+}
+
+const { meta, highlights } = describe();
+const titleId = `${id}-title`;
+---
+
+<div
+  id={id}
+  popover
+  role="dialog"
+  aria-labelledby={titleId}
+  class="m-auto max-h-[80vh] w-[min(560px,92vw)] overflow-y-auto rounded-2xl border border-line bg-surface p-6 text-ink shadow-2xl"
+>
+  <div class="flex items-start justify-between gap-4">
+    <div class="grid gap-1">
+      <p class="font-mono text-eyebrow text-amber-deep uppercase">{milestone.year}</p>
+      <h3 id={titleId} class="text-h3">
+        {localize(milestone.title, locale)}
+      </h3>
+    </div>
+    <button
+      type="button"
+      popovertarget={id}
+      popovertargetaction="hide"
+      class="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-line hover:bg-sage"
+      aria-label={t['common.close']}
+    >
+      <svg
+        class="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M18 6 6 18M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  <ul class="mt-3 grid gap-0.5 text-sm text-ink-muted">
+    {meta.map((line) => (
+      <li>{line}</li>
+    ))}
+  </ul>
+  {highlights.length > 0 && (
+    <ul class="mt-4 grid list-disc gap-2 pl-5 text-sm">
+      {highlights.map((text) => (
+        <li>{text}</li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  [popover]::backdrop {
+    background: color-mix(in srgb, var(--forest) 45%, transparent);
+  }
+</style>

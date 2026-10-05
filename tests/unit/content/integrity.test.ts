@@ -42,8 +42,8 @@ const LIST_FILES = [
   { file: 'awards.yaml', key: 'items', schema: awardSchema },
   { file: 'trainings.yaml', key: 'items', schema: trainingSchema },
   { file: 'certifications.yaml', key: 'items', schema: certificationSchema },
-  { file: 'skills.yaml', key: 'groups', schema: skillGroupSchema },
-  { file: 'journey.yaml', key: 'milestones', schema: milestoneSchema },
+  { file: 'skills.yaml', key: 'groups', schema: skillGroupSchema, withPosition: true },
+  { file: 'journey.yaml', key: 'milestones', schema: milestoneSchema, withPosition: true },
 ] as const;
 
 function readFrontmatter(path: string): unknown {
@@ -57,9 +57,10 @@ describe('content files', () => {
     expectValid(profileSchema, parseYamlSingleton(read('profile.yaml'), 'profile')['profile'], 'profile.yaml');
   });
 
-  for (const { file, key, schema } of LIST_FILES) {
+  for (const entry of LIST_FILES) {
+    const { file, key, schema } = entry;
     it(`${file} matches the schema and has unique ids`, () => {
-      const items = parseYamlList(read(file), key);
+      const items = parseYamlList(read(file), key, { withPosition: 'withPosition' in entry });
       items.forEach((item, index) => expectValid(schema, item, `${file}[${index}]`));
 
       const ids = items.map((item) => item['id']);
@@ -102,5 +103,12 @@ describe('content files', () => {
     ];
     const phonePattern = /(\+?62|\b08)[\d\s-]{8,}/;
     expect(files.filter((file) => phonePattern.test(read(file)))).toEqual([]);
+  });
+});
+
+describe('journey order', () => {
+  it('lists milestones oldest first, as the 3D path expects', () => {
+    const years = parseYamlList(read('journey.yaml'), 'milestones').map((m) => Number(m['year']));
+    expect([...years].sort((a, b) => a - b)).toEqual(years);
   });
 });

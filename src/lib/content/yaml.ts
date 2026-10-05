@@ -10,17 +10,25 @@ function isRecord(value: unknown): value is Entry {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+export interface ListOptions {
+  /**
+   * Add `position` (0-based index in the file) to every entry. Astro returns collection entries
+   * sorted by id, so collections whose order is meaningful (journey, skills) need it to restore file order.
+   */
+  readonly withPosition?: boolean;
+}
+
 /**
  * Parse a list file such as `experience.yaml` (`items:`) or `journey.yaml` (`milestones:`).
  * Throws with the expected key when the file does not have the documented shape.
  */
-export function parseYamlList(text: string, key: string): Entry[] {
+export function parseYamlList(text: string, key: string, { withPosition = false }: ListOptions = {}): Entry[] {
   const data: unknown = load(text);
   const list = isRecord(data) ? data[key] : undefined;
   if (!Array.isArray(list) || !list.every(isRecord)) {
     throw new Error(`Expected a top-level "${key}:" list of objects`);
   }
-  return list;
+  return withPosition ? list.map((entry, position) => ({ ...entry, position })) : list;
 }
 
 /**

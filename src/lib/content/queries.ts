@@ -6,6 +6,7 @@
 import { getCollection, getEntry } from 'astro:content';
 
 import { isActiveCertification } from './certifications';
+import { resolveMilestoneSource, type MilestoneSource } from './journey';
 import { compareDatesDesc, compareRangesDesc, sortedBy } from './ordering';
 import { compareProjects, isPublished } from './projects';
 import { visibleOn, type Surface } from './visibility';
@@ -44,17 +45,33 @@ export async function getCertifications(now: Date = new Date()): Promise<Certifi
   return sortedBy(active, (a, b) => compareDatesDesc(a.issued, b.issued));
 }
 
+const byPosition = (a: { position: number }, b: { position: number }): number => a.position - b.position;
+
+/** Skill groups in file order (Astro returns entries sorted by id). */
 export async function getSkillGroups(): Promise<SkillGroup[]> {
-  return dataOf(getCollection('skills'));
+  return sortedBy(await dataOf(getCollection('skills')), byPosition);
 }
 
 /** Journey milestones in file order (oldest first), as the 3D path expects. */
 export async function getMilestones(): Promise<Milestone[]> {
-  return dataOf(getCollection('journey'));
+  return sortedBy(await dataOf(getCollection('journey')), byPosition);
 }
 
 /** Published projects, featured first. Entries keep their `id` (the file slug) for routing. */
 export async function getProjects() {
   const entries = (await getCollection('projects')).filter((entry) => isPublished(entry.data));
   return sortedBy(entries, (a, b) => compareProjects(a.data, b.data));
+}
+
+/** Milestones with the item each one summarizes, for the Journey section and its detail popovers. */
+export async function getJourney(): Promise<{ milestone: Milestone; source: MilestoneSource | null }[]> {
+  const [milestones, experience, education, trainings, awards] = await Promise.all([
+    getMilestones(),
+    dataOf(getCollection('experience')),
+    dataOf(getCollection('education')),
+    dataOf(getCollection('trainings')),
+    dataOf(getCollection('awards')),
+  ]);
+  const sources = { experience, education, trainings, awards };
+  return milestones.map((milestone) => ({ milestone, source: resolveMilestoneSource(milestone, sources) }));
 }

@@ -52,6 +52,15 @@ socials:
     url: mailto:harrymardika48@gmail.com
     handle: harrymardika48@gmail.com
 
+# Copy for the Journey section on the home page (milestones live in journey.yaml).
+journey:
+  title:
+    en: From student to *founder.*
+    id: Dari mahasiswa menjadi *pendiri.*
+  intro:
+    en: Every milestone on the path is a chapter. Scroll to follow it, and open one to read the full story.
+    id: Setiap titik di jalur ini adalah satu bab. Scroll untuk mengikutinya, lalu buka salah satunya untuk membaca cerita lengkapnya.
+
 # Exactly three, shown under the hero buttons.
 stats:
   - value: "92.5%"

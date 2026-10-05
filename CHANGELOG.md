@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Journey section: 3D career path driven by scroll with milestone labels and no-JS detail popovers; accessible HTML timeline fallback (T2.3).
 - Home hero with headline, stats, and a 3D photo card with a face-detection frame; static HTML card as LCP image and fallback; three.js loaded only after page load on capable devices (T2.2).
 - 3D scene core: capability decision (off / still / animated), clamped frame loop that pauses off-screen, theme palette from CSS tokens, pointer tracking, and resource disposal (T2.1).
 - Docker development environment with hot reload (`docker/compose.dev.yml`, Node 22 + Bun) and `.dockerignore` (T1.8).
@@ -22,6 +23,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Fixed
+- Journey and skills keep file order (Astro sorts collection entries by id) (T2.3).
 - Light-theme `amber-deep` text color darkened to meet WCAG AA contrast (T1.6).
 - YAML label in the multimodal crisis-detection project split by an unquoted comma (T1.3).
 

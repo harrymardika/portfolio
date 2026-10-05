@@ -60,6 +60,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | `status_badge` | LocalizedText | | Kosongkan agar tidak tampil |
 | `socials[]` | `{ platform, url, handle? }` | ✔ | `platform`: `linkedin` · `instagram` · `github` · `email` |
 | `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero |
+| `journey` | `{ title, intro }` (LocalizedText) | ✔ | Judul (boleh `*penekanan*`) dan paragraf bagian Journey |
 
 ### `experience.yaml`
 List `items[]`:
@@ -86,10 +87,10 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 **Sertifikat yang `expires`-nya sudah lewat otomatis disembunyikan** dari web dan CV. Untuk menampilkannya lagi setelah diperpanjang, cukup perbarui `expires`.
 
 ### `skills.yaml`
-`groups[]`: `{ id, name: LocalizedText, items: string[] }`.
+`groups[]`: `{ id, name: LocalizedText, items: string[] }`. Urutan grup di file = urutan tampil.
 
 ### `journey.yaml`
-`milestones[]` (urut dari paling lama): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`.
+`milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.
 
 ### `projects/<slug>.md`

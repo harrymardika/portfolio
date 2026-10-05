@@ -43,6 +43,7 @@ export const profileSchema = z.strictObject({
   stats: z
     .array(z.strictObject({ value: z.string().trim().min(1), label: localizedText }))
     .length(3, 'The hero shows exactly 3 stats'),
+  journey: z.strictObject({ title: localizedText, intro: localizedText }),
 });
 
 export const experienceSchema = z
@@ -112,14 +113,19 @@ export const certificationSchema = z
     path: ['expires'],
   });
 
+/** Added by the YAML parser (file order); never written by hand. */
+const position = z.number().int().min(0);
+
 export const skillGroupSchema = z.strictObject({
   id: slug,
+  position,
   name: localizedText,
   items: z.array(z.string().trim().min(1)).min(1),
 });
 
 export const milestoneSchema = z.strictObject({
   id: slug,
+  position,
   year,
   title: localizedText,
   subtitle: localizedText,

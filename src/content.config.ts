@@ -17,13 +17,13 @@ import {
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
-import { parseYamlList, parseYamlSingleton } from '@/lib/content/yaml';
+import { parseYamlList, parseYamlSingleton, type ListOptions } from '@/lib/content/yaml';
 
 const CONTENT_DIR = 'content';
 
 /** A YAML file whose entries sit under a top-level key such as `items:`. */
-function listFile(name: string, key = 'items') {
-  return file(`${CONTENT_DIR}/${name}.yaml`, { parser: (text) => parseYamlList(text, key) });
+function listFile(name: string, key = 'items', options: ListOptions = {}) {
+  return file(`${CONTENT_DIR}/${name}.yaml`, { parser: (text) => parseYamlList(text, key, options) });
 }
 
 export const collections = {
@@ -36,8 +36,15 @@ export const collections = {
   awards: defineCollection({ loader: listFile('awards'), schema: awardSchema }),
   trainings: defineCollection({ loader: listFile('trainings'), schema: trainingSchema }),
   certifications: defineCollection({ loader: listFile('certifications'), schema: certificationSchema }),
-  skills: defineCollection({ loader: listFile('skills', 'groups'), schema: skillGroupSchema }),
-  journey: defineCollection({ loader: listFile('journey', 'milestones'), schema: milestoneSchema }),
+  // Order matters for these two, so the parser records each entry's position in the file.
+  skills: defineCollection({
+    loader: listFile('skills', 'groups', { withPosition: true }),
+    schema: skillGroupSchema,
+  }),
+  journey: defineCollection({
+    loader: listFile('journey', 'milestones', { withPosition: true }),
+    schema: milestoneSchema,
+  }),
   projects: defineCollection({
     // `<slug>.id.md` translation files are handled separately (T2.4).
     loader: glob({ pattern: ['*.md', '!*.id.md'], base: `./${CONTENT_DIR}/projects` }),

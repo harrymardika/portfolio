@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.3`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.4`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 2/8 tugas |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 3/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -56,7 +56,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
   - Kriteria: kontrak `SceneHandle` sesuai `docs/02-architecture.md` §6; tes unit untuk util non-WebGL.
 - [x] **T2.2** Hero: kartu foto 3D + kotak deteksi wajah + statistik
   - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
-- [ ] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
+- [x] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
 - [ ] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
 - [ ] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
@@ -130,6 +130,11 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.3
+- **Dikerjakan:** `Journey.astro` (satu `<ol>` = timeline fallback sekaligus label 3D), `MilestoneDetail.astro` (Popover API, tanpa JS), `src/scenes/journey-path/` (`layout.ts` murni: `pathPoints`, `sectionProgress`, `isReached`, `pathPlacement`; `index.ts` scene yang melaporkan posisi layar tiap titik). `resolveMilestoneSource`/`journeySpan` (murni) + `getJourney()`. Copy bagian di `profile.yaml → journey`.
+- **Bug ditemukan & diperbaiki:** (1) `getCollection` mengurutkan berdasarkan id, sehingga urutan journey/skills teracak → parser menambah `position`; (2) progres scroll langsung penuh → rumus diperlambat (±0,66 saat bagian di tengah layar); (3) di HP titik terakhir tidak pernah tercapai karena halaman terlalu pendek → progres penuh di dasar halaman; (4) status "tercapai" kini mengikuti posisi scroll, bukan bola yang di-*damp*; (5) label belum tercapai memakai opacity (kontras gagal) → gaya putus-putus.
+- **Verifikasi:** unit 135/135; e2e 63 lulus (+1 skip): timeline tanpa JS urut, popover buka/tutup tanpa JS, label diposisikan & tercapai bertahap saat scroll, label tidak keluar panggung/tidak menutupi teks (desktop & HP), reduced-motion = semua tercapai, axe bersih di bagian Journey (terang & gelap); `bun run check` lulus. Screenshot desktop/HP/tanpa JS/popover dicek visual.
 
 ### 2026-10-05 · Claude Code (Opus) · T2.2
 - **Dikerjakan:** `Hero.astro` (badge peran, h1 headline + nama sr-only, tagline, CTA, statistik), `PhotoCard.astro` (kartu statis + panggung 3D, gambar `astro:assets` responsif `eager`/`fetchpriority=high`, kotak deteksi CSS), `src/scenes/photo-card/` (`config.ts`, `layout.ts` murni: `lockAmount`, `fitScale`, `visibleHeight`; `index.ts` scene). `src/lib/content/media.ts` (`contentImage`, path relatif `content/`). Kontrak inti ditambah `ready()` (`data-scene-ready`). Token dekoratif `--mint`. Three.js dimuat dinamis setelah `load` dan hanya jika `decide3D` mengizinkan.

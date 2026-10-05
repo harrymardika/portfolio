@@ -23,6 +23,10 @@ const en = {
   'hero.ctaContact': 'Get in touch',
   'hero.ctaLinkedIn': 'LinkedIn profile',
   'hero.statsLabel': 'Highlights',
+  'journey.eyebrow': 'Journey',
+  'journey.openDetail': 'Read the story',
+  'journey.gpa': 'GPA',
+  'common.close': 'Close',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -45,6 +49,10 @@ const id: Record<UiKey, string> = {
   'hero.ctaContact': 'Hubungi saya',
   'hero.ctaLinkedIn': 'Profil LinkedIn',
   'hero.statsLabel': 'Sorotan',
+  'journey.eyebrow': 'Perjalanan',
+  'journey.openDetail': 'Baca ceritanya',
+  'journey.gpa': 'IPK',
+  'common.close': 'Tutup',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

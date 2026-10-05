@@ -22,3 +22,12 @@ describe('parseYamlSingleton', () => {
     expect(() => parseYamlSingleton('- a\n', 'profile')).toThrow('Expected a YAML object');
   });
 });
+
+describe('parseYamlList withPosition', () => {
+  it('records each entry position in file order', () => {
+    expect(parseYamlList('items:\n  - id: b\n  - id: a\n', 'items', { withPosition: true })).toEqual([
+      { id: 'b', position: 0 },
+      { id: 'a', position: 1 },
+    ]);
+  });
+});
