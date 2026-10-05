@@ -39,8 +39,8 @@ export default defineConfig(
     },
   },
   {
-    // Build scripts and tests are CLI programs; logging is their output.
-    files: ['scripts/**', 'tests/**', '*.config.*'],
+    // Build scripts, services, and tests are programs whose logs are their output.
+    files: ['scripts/**', 'services/**', 'tests/**', '*.config.*'],
     rules: { 'no-console': 'off' },
   },
   prettier,

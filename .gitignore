@@ -12,6 +12,9 @@ test-results/
 public/downloads/
 src/data/generated/
 
+# Local stats database (services/stats, STATS_DB_PATH)
+.data/
+
 # Environment & secrets
 .env
 .env.*

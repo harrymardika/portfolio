@@ -16,6 +16,7 @@
     "astro": "astro",
     "fetch:github": "bun scripts/fetch-github.ts",
     "pdf": "bun scripts/generate-pdf.ts",
+    "stats:dev": "bun services/stats/server.ts",
     "typecheck": "astro check",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
