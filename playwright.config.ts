@@ -21,7 +21,8 @@ export default defineConfig({
     // --ignore-lock keeps preview in the foreground even when Astro detects an AI agent.
     command: `bun run build && bun run preview --port ${PORT} --ignore-lock`,
     url: `http://localhost:${PORT}/`,
-    reuseExistingServer: !process.env['CI'],
+    // Always build and serve fresh: reusing a server left running would test a stale dist/.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });

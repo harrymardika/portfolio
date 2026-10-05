@@ -39,8 +39,9 @@ test('Indonesian page translates headings and marks untranslated highlights as E
 });
 
 test('the header links to About', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'The primary nav is hidden on small screens until the mobile menu (T2.8)');
   await page.goto('/');
+  // On phones the primary links live in the menu popover (T2.8).
+  if (isMobile) await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'About' }).click();
   await expect(page).toHaveURL(/\/about\/$/);
 });

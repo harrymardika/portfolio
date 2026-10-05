@@ -2,13 +2,18 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 test('the header links to Projects and marks the current page', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'The primary nav is hidden on small screens until the mobile menu (T2.8)');
+  // On phones the primary links live in the menu popover (T2.8).
+  const mainNav = async () => {
+    if (isMobile) await page.getByRole('button', { name: 'Menu' }).click();
+    return page.getByRole('navigation', { name: 'Main' });
+  };
   await page.goto('/');
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Projects' }).click();
+  await (await mainNav()).getByRole('link', { name: 'Projects' }).click();
   await expect(page).toHaveURL(/\/projects\/$/);
-  await expect(
-    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Projects' }),
-  ).toHaveAttribute('aria-current', 'page');
+  await expect((await mainNav()).getByRole('link', { name: 'Projects' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
 });
 
 test('the list shows published projects only, featured first', async ({ page }) => {

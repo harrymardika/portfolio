@@ -1,0 +1,108 @@
+---
+/**
+ * Navigation for small screens: a button that opens a panel with the primary links.
+ * Built on the Popover API, so it works without JavaScript; the browser manages
+ * aria-expanded, Escape, and light dismiss.
+ */
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+import { NAV_ITEMS } from '@/lib/navigation';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const currentPath = Astro.url.pathname;
+const id = 'mobile-menu';
+---
+
+{NAV_ITEMS.length > 0 && (
+  <div class="md:hidden">
+    <button
+      type="button"
+      popovertarget={id}
+      aria-label={t['nav.menu']}
+      class="inline-flex size-10 items-center justify-center rounded-full border border-line text-ink hover:bg-surface"
+    >
+      <svg
+        class="size-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+    <nav id={id} popover aria-label={t['nav.primary']} class="mobile-menu">
+      <ul class="grid gap-1">
+        <li>
+          <a
+            href={localizePath('/', locale)}
+            aria-current={currentPath === localizePath('/', locale) ? 'page' : undefined}
+          >
+            {t['nav.home']}
+          </a>
+        </li>
+        {NAV_ITEMS.map((item) => {
+          const href = localizePath(item.path, locale);
+          return (
+            <li>
+              <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
+                {t[item.labelKey]}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
+)}
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    inset: 4.25rem 16px auto auto;
+    margin: 0;
+    min-width: 12rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.5rem;
+    box-shadow: 0 18px 40px -20px color-mix(in srgb, var(--forest) 60%, transparent);
+  }
+
+  .mobile-menu a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    border-radius: 10px;
+    padding: 0 0.875rem;
+    font-weight: 600;
+  }
+
+  .mobile-menu a:hover {
+    background: var(--sage);
+  }
+
+  .mobile-menu a[aria-current='page'] {
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+
+  /* Dark theme: amber like the active language pill, since forest blends into the dark surface. */
+  :global([data-theme='dark']) .mobile-menu a[aria-current='page'] {
+    background: var(--amber);
+    color: var(--forest);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .mobile-menu a[aria-current='page'] {
+      background: var(--amber);
+      color: var(--forest);
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
 import LangSwitch from './LangSwitch.astro';
+import MobileMenu from './MobileMenu.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
 import { NAV_ITEMS } from '@/lib/navigation';
@@ -47,6 +48,7 @@ const currentPath = Astro.url.pathname;
       )}
       <LangSwitch locale={locale} />
       <ThemeToggle locale={locale} />
+      <MobileMenu locale={locale} />
     </div>
   </div>
 </header>

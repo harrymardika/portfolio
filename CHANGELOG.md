@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Mobile navigation menu built on the Popover API (works without JavaScript) (T2.8).
 - About page with summary, experience, leadership and teaching, education, training, awards, active certifications, and skills (T2.5).
 - Projects list with tag filter, case study pages, and selected projects on the home page (T2.4).
 - Journey section: 3D career path driven by scroll with milestone labels and no-JS detail popovers; accessible HTML timeline fallback (T2.3).
@@ -25,6 +26,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Fixed
+- E2E tests always build and start a fresh server instead of reusing a possibly stale one (T2.8).
 - Type error in `ProjectGrid` optional prop that slipped into T2.4; added `bun run verify` to gate commits (T2.4).
 - Journey and skills keep file order (Astro sorts collection entries by id) (T2.3).
 - Light-theme `amber-deep` text color darkened to meet WCAG AA contrast (T1.6).

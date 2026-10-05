@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.8`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.6`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 5/8 tugas |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 6/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -60,7 +60,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
 - [x] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
 - [x] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
-- [ ] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
+- [x] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
 - [ ] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
 - [ ] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
 
@@ -130,6 +130,11 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.8
+- **Dikerjakan:** `MobileMenu.astro` (tombol Menu + panel Popover API berisi Beranda + `NAV_ITEMS`, `aria-current`, item aktif amber di mode gelap), dipasang di `Header` (tampil < `md`). Tes header Projects/About kini juga berjalan di HP lewat menu.
+- **Masalah penting ditemukan:** server preview untuk screenshot (sejak 10:44) tidak pernah berhenti karena pola `pkill` tidak cocok dengan nama proses `node_modules/.bin/astro preview`; dengan `reuseExistingServer`, Playwright tidak membangun ulang dan menguji `dist/` hasil build manual terakhir. **Perbaikan:** `reuseExistingServer: false` (e2e selalu build + server baru); preview manual dihentikan berdasarkan port. Seluruh suite dijalankan ulang dengan build baru: 109 lulus, 3 dilewati sesuai rencana. Hasil tugas sebelumnya tetap valid.
+- **Verifikasi:** `bun run verify` lulus; e2e menu: buka, navigasi, `aria-current`, Escape, teks ID, tanpa JS, tidak tampil di desktop. Screenshot terang/gelap dicek.
 
 ### 2026-10-05 · Claude Code (Opus) · T2.5
 - **Dikerjakan:** `/about/` (ringkasan, Pengalaman, Kepemimpinan & mengajar, Pendidikan, Pelatihan, Penghargaan, Sertifikasi aktif, Keahlian), komponen `TimelineItem` (highlight yang belum diterjemahkan diberi `lang="en"` di halaman ID) dan `AboutSection`; helper murni `splitExperience` (kategori seperti CV); menu "About". Kunci UI `journey.gpa` → `common.gpa`.
