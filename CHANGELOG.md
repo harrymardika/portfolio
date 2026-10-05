@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Live site statistics on the Homelab page, formatted per language, with a graceful fallback when the service is down (T5.4).
 - Statistics beacon: page views (with private tracking ref), downloads, and social link clicks; respects DNT/GPC, never sends from localhost or print pages (T5.3).
 - Built-in stats service (Bun + SQLite): privacy-preserving event recording, public summary, token-protected tracking-link report (T5.1).
 - Download CV and Portfolio PDF buttons on the home hero and About page, in both languages (T4.4).

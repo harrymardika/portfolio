@@ -1,0 +1,146 @@
+---
+/**
+ * Public site statistics (ADR 0009, FR-12). Static HTML shows "—"; the script fills in numbers from
+ * GET /api/stats/summary. If the service is unreachable the section says so and the page is unaffected.
+ * Rendered only in builds with PUBLIC_STATS_ENABLED=true.
+ */
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const enabled = import.meta.env.PUBLIC_STATS_ENABLED === 'true';
+const tiles = [
+  { key: 'visitors', label: t['stats.visitors'] },
+  { key: 'pageviews', label: t['stats.pageviews'] },
+  { key: 'cv', label: t['stats.cvDownloads'] },
+  { key: 'portfolio', label: t['stats.portfolioDownloads'] },
+] as const;
+const lists = [
+  { key: 'topPages', label: t['stats.topPages'] },
+  { key: 'topReferrers', label: t['stats.topReferrers'] },
+  { key: 'topCountries', label: t['stats.topCountries'] },
+] as const;
+---
+
+{enabled && (
+  <section
+    aria-labelledby="stats-title"
+    class="grid gap-5"
+    data-site-stats
+    data-locale={locale}
+    data-label-all-time={t['stats.allTime']}
+    data-label-last30={t['stats.last30']}
+    data-label-empty={t['stats.empty']}
+    data-label-since={t['stats.since']}
+    aria-busy="true"
+  >
+    <div class="grid gap-2">
+      <h2 id="stats-title" class="text-h3">
+        {t['stats.title']}
+      </h2>
+      <p class="text-sm text-ink-muted">{t['stats.intro']}</p>
+    </div>
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {tiles.map((tile) => (
+        <div class="grid gap-1 rounded-xl border border-line bg-surface p-4">
+          <dt class="text-xs text-ink-muted">{tile.label}</dt>
+          <dd class="font-mono text-2xl font-medium text-forest-ink" data-stat={tile.key}>
+            —
+          </dd>
+          <dd class="font-mono text-[11px] text-ink-muted" data-stat-detail={tile.key} />
+        </div>
+      ))}
+    </dl>
+    <div class="grid gap-4 md:grid-cols-3">
+      {lists.map((list) => (
+        <div class="grid content-start gap-2">
+          <h3 class="font-sans text-sm font-semibold text-ink-muted">{list.label}</h3>
+          <ol class="grid gap-1 text-sm" data-stat-list={list.key}>
+            <li class="text-ink-muted">—</li>
+          </ol>
+        </div>
+      ))}
+    </div>
+    <p class="font-mono text-[11px] text-ink-muted" data-stat-status role="status">
+      <span class="[.js_&]:hidden">{t['stats.unavailable']}</span>
+    </p>
+    <template data-unavailable>{t['stats.unavailable']}</template>
+  </section>
+)}
+
+<script>
+  import { isLocale } from '@/lib/i18n/locales';
+  import { STATS_SUMMARY_URL } from '@/lib/stats/events';
+  import { countryName, formatCount, formatSince, summarySchema, type Ranked } from '@/lib/stats/summary';
+
+  async function load(section: HTMLElement): Promise<void> {
+    const locale = isLocale(section.dataset['locale']) ? section.dataset['locale'] : 'en';
+    const status = section.querySelector<HTMLElement>('[data-stat-status]');
+    const set = (selector: string, text: string): void => {
+      const element = section.querySelector<HTMLElement>(selector);
+      if (element) element.textContent = text;
+    };
+    try {
+      const response = await fetch(STATS_SUMMARY_URL, { headers: { accept: 'application/json' } });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const summary = summarySchema.parse(await response.json());
+      const all = section.dataset['labelAllTime'] ?? '';
+      const last30 = section.dataset['labelLast30'] ?? '';
+
+      set('[data-stat="visitors"]', formatCount(summary.visitors.total, locale));
+      set('[data-stat-detail="visitors"]', `${formatCount(summary.visitors.last30Days, locale)} · ${last30}`);
+      set('[data-stat="pageviews"]', formatCount(summary.pageviews.total, locale));
+      set(
+        '[data-stat-detail="pageviews"]',
+        `${formatCount(summary.pageviews.last30Days, locale)} · ${last30}`,
+      );
+      set('[data-stat="cv"]', formatCount(summary.downloads.cv, locale));
+      set('[data-stat-detail="cv"]', all);
+      set('[data-stat="portfolio"]', formatCount(summary.downloads.portfolio, locale));
+      set('[data-stat-detail="portfolio"]', all);
+
+      const fill = (key: string, items: Ranked[], label: (item: Ranked) => string): void => {
+        const list = section.querySelector<HTMLOListElement>(`[data-stat-list="${key}"]`);
+        if (!list) return;
+        list.replaceChildren(
+          ...(items.length > 0
+            ? items.map((item) => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between gap-3';
+                const name = document.createElement('span');
+                name.className = 'truncate';
+                name.textContent = label(item);
+                const count = document.createElement('span');
+                count.className = 'font-mono text-ink-muted';
+                count.textContent = formatCount(item.count, locale);
+                li.append(name, count);
+                return li;
+              })
+            : [
+                Object.assign(document.createElement('li'), {
+                  className: 'text-ink-muted',
+                  textContent: section.dataset['labelEmpty'] ?? '',
+                }),
+              ]),
+        );
+      };
+      fill('topPages', summary.topPages, (item) => item.key);
+      fill('topReferrers', summary.topReferrers, (item) => item.key);
+      fill('topCountries', summary.topCountries, (item) => countryName(item.key, locale));
+      if (status)
+        status.textContent = summary.since
+          ? `${section.dataset['labelSince'] ?? ''} ${formatSince(summary.since, locale)}`
+          : '';
+    } catch {
+      if (status) status.textContent = section.querySelector('template[data-unavailable]')?.innerHTML ?? '';
+    } finally {
+      section.setAttribute('aria-busy', 'false');
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-site-stats]').forEach((section) => void load(section));
+</script>

@@ -18,7 +18,8 @@ import {
   visitorHash,
 } from '../../src/lib/stats/privacy';
 
-import type { StatsStore, Summary } from './store';
+import type { StatsStore } from './store';
+import type { Summary } from '../../src/lib/stats/summary';
 
 export interface HandlerOptions {
   readonly store: StatsStore;

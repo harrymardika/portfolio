@@ -9,6 +9,8 @@ import { Database } from 'bun:sqlite';
 
 import { dayKey } from '../../src/lib/stats/privacy';
 
+import type { Ranked, Summary } from '../../src/lib/stats/summary';
+
 export interface StoredEvent {
   readonly type: 'pageview' | 'download' | 'outbound';
   readonly path: string;
@@ -18,22 +20,6 @@ export interface StoredEvent {
   readonly country: string | null;
   readonly ref: string | null;
   readonly visitor: string;
-}
-
-export interface Ranked {
-  readonly key: string;
-  readonly count: number;
-}
-
-export interface Summary {
-  readonly generatedAt: string;
-  readonly since: string | null;
-  readonly visitors: { readonly total: number; readonly last30Days: number };
-  readonly pageviews: { readonly total: number; readonly last30Days: number };
-  readonly downloads: { readonly cv: number; readonly portfolio: number };
-  readonly topPages: Ranked[];
-  readonly topReferrers: Ranked[];
-  readonly topCountries: Ranked[];
 }
 
 export interface RefReport {

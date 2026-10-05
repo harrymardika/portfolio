@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 test('the homelab page explains the pipeline and stack', async ({ page }) => {
   await page.goto('/homelab/');
   await expect(page.getByRole('heading', { level: 1, name: 'Homelab' })).toBeVisible();
-  await expect(page.locator('ol > li')).toHaveCount(4);
+  await expect(page.locator('section[aria-labelledby="pipeline-title"] ol > li')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 3, name: 'Through a Cloudflare Tunnel' })).toBeVisible();
   await expect(page.getByText('Cloudflare Tunnel', { exact: true })).toBeVisible();
   // Real specs from content/homelab.yaml (read from the server).

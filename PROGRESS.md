@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 5 · **Tugas berikutnya:** `T5.4` (T5.2 bersama Fase 6; T3.3 menunggu T6.2)
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 5 · **Tugas berikutnya:** `T5.5` (T5.2 bersama Fase 6; T3.3 menunggu T6.2)
 
 ## Ringkasan
 
@@ -14,7 +14,7 @@
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
-| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | 🔄 2/5 tugas |
+| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | 🔄 3/5 tugas |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
@@ -85,7 +85,7 @@ Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 men
   - Kriteria: hash pengunjung harian dengan salt yang berganti & dibuang, tanpa IP tersimpan; filter bot; rate limit; validasi input (Zod); unit test untuk agregasi & privasi; RAM ≤ 96 MB *(direvisi dari 64 MB setelah diukur: runtime Bun 36 MB + Zod 32 MB + layanan ±4 MB)*.
 - [ ] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats` (`bun services/stats/server.ts`), volume `stats-data` (`STATS_DB_PATH`), route `/api/stats/*`, batas memori 128 MB, panduan backup SQLite *(dikerjakan bersama T6.1/T6.4)*
 - [x] **T5.3** Skrip beacon di situs: `pageview`, `download-cv`, `download-portfolio`, `outbound` (konstanta di `src/lib/stats/events.ts`); hormati DNT/GPC; tidak aktif di dev dan `/print/*`
-- [ ] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
+- [x] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
 - [ ] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
 
 ## Fase 6: Docker, CI/CD, deploy
@@ -136,6 +136,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T5.4
+- **Dikerjakan:** `src/lib/stats/summary.ts` (skema Zod ringkasan dipakai bersama layanan & halaman; `formatCount`, `countryName` via `Intl.DisplayNames`, `formatSince`); `SiteStats.astro` di `/homelab` (4 angka + 3 daftar teratas + "dihitung sejak"; HTML awal "—", diisi dari `/api/stats/summary`; status `aria-busy`/`role=status`; hanya ter-build bila statistik aktif).
+- **Verifikasi:** unit (format EN/ID, nama negara, skema cocok dengan output layanan); e2e 5 (angka & format per bahasa, layanan 502 → pesan tidak tersedia, respons rusak/berbahaya ditolak tanpa merender HTML, daftar kosong, axe); screenshot desktop & HP gelap. Tes homelab lama diperketat (menghitung `li` hanya di bagian pipeline).
 
 ### 2026-10-05 · Claude Code (Opus) · T5.3
 - **Dikerjakan:** `src/lib/stats/beacon.ts` (murni: `shouldSend` — build aktif, DNT/GPC, localhost hanya dengan flag `stats:debug`; `pageviewPayload` — path tanpa query, `ref` valid), `StatsBeacon.astro` (hanya ter-build bila `PUBLIC_STATS_ENABLED=true`; `sendBeacon` pageview + klik `data-download`/`data-outbound`), `BaseLayout` prop `track` (off untuk halaman cetak), `data-outbound` di Footer & Contact, proxy dev `/api/stats` → :8787, `src/env.d.ts`. E2E build kini `PUBLIC_STATS_ENABLED=true` (beacon tetap diam di localhost tanpa flag).

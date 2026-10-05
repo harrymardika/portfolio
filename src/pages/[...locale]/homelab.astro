@@ -3,6 +3,7 @@
  * How this site is built and served (SRS FR-14). Live uptime status arrives in T6.5;
  * the hardware section appears once content/homelab.yaml lists real specs.
  */
+import SiteStats from '@/components/stats/SiteStats.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getHomelab, getProfile } from '@/lib/content/queries';
@@ -48,6 +49,8 @@ const intro = localize(homelab.intro, locale);
         ))}
       </ol>
     </section>
+
+    <SiteStats locale={locale} />
 
     <section aria-labelledby="stack-title" class="grid gap-4">
       <h2 id="stack-title" class="text-h3">
