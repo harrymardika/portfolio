@@ -67,6 +67,15 @@ projects:
     en: Selected work across computer vision, language, and AI products, from research prototypes to launched software.
     id: Karya pilihan di bidang computer vision, bahasa, dan produk AI, dari prototipe riset hingga perangkat lunak yang sudah diluncurkan.
 
+# Contact section at the bottom of the home page. No phone number, by design.
+contact:
+  title:
+    en: Let's *talk.*
+    id: Mari *ngobrol.*
+  intro:
+    en: Open to conversations about computer vision, applied AI, and building products. Email is the fastest way to reach me.
+    id: Terbuka untuk berdiskusi tentang computer vision, penerapan AI, dan membangun produk. Email adalah cara tercepat menghubungi saya.
+
 # Exactly three, shown under the hero buttons.
 stats:
   - value: "92.5%"

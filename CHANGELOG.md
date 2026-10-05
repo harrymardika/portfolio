@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Contact section with email (copy button), LinkedIn, Instagram, and GitHub; no phone number (T2.6).
 - Mobile navigation menu built on the Popover API (works without JavaScript) (T2.8).
 - About page with summary, experience, leadership and teaching, education, training, awards, active certifications, and skills (T2.5).
 - Projects list with tag filter, case study pages, and selected projects on the home page (T2.4).

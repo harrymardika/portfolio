@@ -1,0 +1,96 @@
+---
+/**
+ * Contact section (FR-02): one card per channel from profile.yaml socials. No phone number.
+ * The copy-email button is shown only when JavaScript runs.
+ */
+import Icon from '@/components/ui/Icon.astro';
+import { localize, splitEmphasis, type Profile } from '@/lib/content';
+import { type Locale, UI } from '@/lib/i18n';
+import { SOCIAL_LABELS } from '@/lib/navigation';
+
+interface Props {
+  locale: Locale;
+  profile: Pick<Profile, 'contact' | 'socials' | 'email'>;
+}
+
+const { locale, profile } = Astro.props;
+const t = UI[locale];
+const title = splitEmphasis(localize(profile.contact.title, locale));
+// Email first: it is the primary channel.
+const channels = [...profile.socials].sort(
+  (a, b) => Number(b.platform === 'email') - Number(a.platform === 'email'),
+);
+---
+
+<section id="contact" aria-labelledby="contact-title" class="scroll-mt-20 bg-forest text-on-forest">
+  <div class="mx-auto grid max-w-[1120px] gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.9fr_1.1fr] lg:py-24">
+    <div class="grid content-start gap-4">
+      <p class="font-mono text-eyebrow text-amber uppercase">{t['contact.eyebrow']}</p>
+      <h2 id="contact-title" class="text-h2 text-on-forest">
+        {title.map((segment) =>
+          segment.emphasis ? <span class="text-amber">{segment.text}</span> : segment.text,
+        )}
+      </h2>
+      <p class="max-w-[42ch] text-on-forest-muted">{localize(profile.contact.intro, locale)}</p>
+    </div>
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {channels.map((social) => (
+        <li
+          class:list={[
+            'relative flex items-center gap-4 rounded-xl border border-on-forest/20 bg-on-forest/5 p-4 transition-colors hover:bg-on-forest/10',
+            // Email is the primary channel: full width so the address is never truncated.
+            social.platform === 'email' && 'sm:col-span-2',
+          ]}
+        >
+          <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-amber text-forest">
+            <Icon name={social.platform} />
+          </span>
+          <span class="grid min-w-0">
+            <a
+              href={social.url}
+              rel={social.platform === 'email' ? undefined : 'me noopener'}
+              class="font-semibold text-on-forest after:absolute after:inset-0 after:rounded-xl"
+            >
+              {SOCIAL_LABELS[social.platform]}
+            </a>
+            {social.handle && <span class="truncate text-sm text-on-forest-muted">{social.handle}</span>}
+          </span>
+          {social.platform === 'email' && (
+            <button
+              type="button"
+              data-copy={profile.email}
+              data-label-copied={t['contact.copied']}
+              aria-label={t['contact.copyEmail']}
+              class="relative z-10 ml-auto hidden min-h-9 rounded-full border border-on-forest/40 px-3 text-xs font-semibold text-on-forest hover:bg-on-forest/10 [.js_&]:inline-flex [.js_&]:items-center"
+            >
+              <span data-copy-label>{t['contact.copy']}</span>
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  li:has(a:focus-visible) {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = button.querySelector<HTMLElement>('[data-copy-label]');
+    const original = label?.textContent ?? '';
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset['copy'] ?? '');
+        if (label) label.textContent = button.dataset['labelCopied'] ?? original;
+        setTimeout(() => label && (label.textContent = original), 2000);
+      } catch {
+        // Clipboard blocked: the mailto link next to the button still works.
+      }
+    });
+  }
+</script>

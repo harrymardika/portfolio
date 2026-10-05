@@ -62,6 +62,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero |
 | `journey` | `{ title, intro }` (LocalizedText) | ✔ | Judul (boleh `*penekanan*`) dan paragraf bagian Journey |
 | `projects` | `{ intro }` (LocalizedText) | ✔ | Paragraf pembuka halaman Projects dan bagian proyek pilihan di beranda |
+| `contact` | `{ title, intro }` (LocalizedText) | ✔ | Bagian Contact di beranda (judul boleh `*penekanan*`). Kanal kontak diambil dari `socials` |
 
 ### `experience.yaml`
 List `items[]`:
