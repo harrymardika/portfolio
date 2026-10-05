@@ -30,6 +30,7 @@ const year = new Date().getUTCFullYear();
             <a
               href={social.url}
               rel={social.platform === 'email' ? undefined : 'me noopener'}
+              data-outbound={social.platform}
               aria-label={`${SOCIAL_LABELS[social.platform]}${social.handle ? `: ${social.handle}` : ''}`}
               class="inline-flex size-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:bg-surface"
             >

@@ -1,0 +1,60 @@
+---
+/**
+ * Statistics beacon (ADR 0009, docs/08-analytics.md). Included only when PUBLIC_STATS_ENABLED=true
+ * at build time. Sends a page view on load, plus download and outbound-link clicks, with
+ * navigator.sendBeacon (no cookies, no storage, same origin). All rules live in @/lib/stats/beacon.
+ */
+const enabled = import.meta.env.PUBLIC_STATS_ENABLED === 'true';
+---
+
+{enabled && <script>
+  import { pageviewPayload, shouldSend, STATS_DEBUG_KEY } from '@/lib/stats/beacon';
+  import { STATS_EVENT_URL, type EventPayload } from '@/lib/stats/events';
+  import { isLocale } from '@/lib/i18n/locales';
+
+  function readDebug(): boolean {
+    try {
+      return localStorage.getItem(STATS_DEBUG_KEY) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
+  const htmlLang = document.documentElement.lang.slice(0, 2);
+  const lang = isLocale(htmlLang) ? htmlLang : 'en';
+  const active = shouldSend({
+    enabled: true,
+    hostname: location.hostname,
+    doNotTrack: nav.doNotTrack === '1',
+    globalPrivacyControl: nav.globalPrivacyControl === true,
+    debug: readDebug(),
+  });
+
+  function send(payload: EventPayload): void {
+    const body = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    navigator.sendBeacon(STATS_EVENT_URL, body);
+  }
+
+  if (active) {
+    send(pageviewPayload(location, lang, document.referrer));
+    document.addEventListener('click', (event) => {
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>(
+        'a[data-download], a[data-outbound]',
+      );
+      if (!link) return;
+      const download = link.dataset['download'];
+      const outbound = link.dataset['outbound'];
+      if (download === 'cv' || download === 'portfolio') {
+        send({ type: 'download', path: location.pathname, lang, detail: download });
+      } else if (
+        outbound === 'linkedin' ||
+        outbound === 'instagram' ||
+        outbound === 'github' ||
+        outbound === 'email'
+      ) {
+        send({ type: 'outbound', path: location.pathname, lang, detail: outbound });
+      }
+    });
+  }
+</script>}

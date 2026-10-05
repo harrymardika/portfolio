@@ -16,7 +16,7 @@ interface Props {
 const { locale, title, size } = Astro.props;
 ---
 
-<BaseLayout locale={locale} title={title} noindex linkAlternates={false} forceTheme="light">
+<BaseLayout locale={locale} title={title} noindex linkAlternates={false} forceTheme="light" track={false}>
   <div class:list={['print-root', size]}>
     <slot />
   </div>

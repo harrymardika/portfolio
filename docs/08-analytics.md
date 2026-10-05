@@ -25,7 +25,23 @@ Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──
 | `outbound` | `{ platform: linkedin \| instagram \| github \| email }` | Klik tautan sosial |
 | `ref` *(privat)* | nilai `?ref=` | Kunjungan dari tautan lamaran |
 
-Nama event akan didefinisikan di satu tempat, `src/lib/stats/events.ts` (dibuat di T5.3). Komponen memakai helper, tidak menulis string sendiri.
+Nama dan bentuk event didefinisikan di satu tempat, `src/lib/stats/events.ts` (skema Zod yang dipakai beacon dan layanan). Beacon (`src/components/layout/StatsBeacon.astro`, aturan murni di `src/lib/stats/beacon.ts`) mendengarkan klik pada elemen dengan atribut:
+- `data-download="cv|portfolio"` (tombol unduh), dan
+- `data-outbound="linkedin|instagram|github|email"` (tautan sosial di footer dan bagian Contact).
+
+Kapan beacon mengirim:
+- hanya jika build dibuat dengan `PUBLIC_STATS_ENABLED=true` (production);
+- **tidak pernah dari `localhost`**, kecuali di browser di-set `localStorage['stats:debug'] = '1'`;
+- tidak pernah jika *Do Not Track* / *Global Privacy Control* aktif;
+- tidak pernah dari halaman `/print/*`.
+Layanan juga menolak browser *headless* dan bot lain berdasarkan User-Agent.
+
+### Mencoba secara lokal
+```bash
+bun run stats:dev                                   # terminal 1: layanan di :8787 (data di .data/)
+STATS_SITE_HOST=localhost PUBLIC_STATS_ENABLED=true bun run dev   # terminal 2 (lihat catatan)
+```
+Di browser (DevTools → Console): `localStorage.setItem('stats:debug', '1')`, lalu buka beberapa halaman. Lihat hasil di http://localhost:4321/api/stats/summary (cache 5 menit). Untuk dev, Astro memakai `trailingSlash: 'ignore'` agar proxy `/api/stats` di `astro.config.ts` bisa dijangkau; build tetap `always`. Catatan: `STATS_SITE_HOST` milik layanan (terminal 1) harus `localhost` agar pemeriksaan origin menerima beacon lokal.
 
 ## 3. Yang ditampilkan publik
 

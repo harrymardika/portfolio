@@ -49,6 +49,7 @@ const channels = [...profile.socials].sort(
             <a
               href={social.url}
               rel={social.platform === 'email' ? undefined : 'me noopener'}
+              data-outbound={social.platform}
               class="font-semibold text-on-forest after:absolute after:inset-0 after:rounded-xl"
             >
               {SOCIAL_LABELS[social.platform]}

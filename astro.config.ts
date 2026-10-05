@@ -14,7 +14,8 @@ export default defineConfig({
   output: 'static',
   // BUILD_OUT_DIR lets e2e build into dist-e2e/ (scripts/generate-pdf.ts reads the same variable).
   outDir: process.env['BUILD_OUT_DIR'] ?? './dist',
-  trailingSlash: 'always',
+  // Dev uses 'ignore' so the /api/stats proxy below is reachable; builds enforce 'always'.
+  trailingSlash: process.argv.includes('dev') ? 'ignore' : 'always',
   build: {
     format: 'directory',
   },
@@ -26,6 +27,8 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // Dev only: forward stats calls to `bun run stats:dev` (production routes them through Caddy).
+    server: { proxy: { '/api/stats': 'http://localhost:8787' } },
   },
   server: {
     port: 4321,

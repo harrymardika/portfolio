@@ -5,6 +5,7 @@
  * OG images, sitemap, and JSON-LD are added in T7.1.
  */
 import '@/styles/global.css';
+import StatsBeacon from '@/components/layout/StatsBeacon.astro';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
 import { THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
 
@@ -18,9 +19,19 @@ interface Props {
   linkAlternates?: boolean;
   /** Pin the theme and ignore the visitor's choice (print pages are always light). */
   forceTheme?: Theme;
+  /** Include the statistics beacon (off for print pages that become PDFs). */
+  track?: boolean;
 }
 
-const { locale, title, description, noindex = false, linkAlternates = true, forceTheme } = Astro.props;
+const {
+  locale,
+  title,
+  description,
+  noindex = false,
+  linkAlternates = true,
+  forceTheme,
+  track = true,
+} = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
 const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_');
@@ -71,5 +82,6 @@ const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_')
   </head>
   <body>
     <slot />
+    {track && <StatsBeacon />}
   </body>
 </html>
