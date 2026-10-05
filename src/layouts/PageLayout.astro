@@ -1,0 +1,32 @@
+---
+/**
+ * Standard page frame: skip link, header, main landmark, footer.
+ * Pages pass the profile so the layout itself does not fetch data.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Header from '@/components/layout/Header.astro';
+import SkipLink from '@/components/layout/SkipLink.astro';
+
+import type { Profile } from '@/lib/content';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  profile: Pick<Profile, 'name' | 'socials'>;
+}
+
+const { profile, ...base } = Astro.props;
+---
+
+<BaseLayout {...base}>
+  <SkipLink locale={base.locale} />
+  <Header locale={base.locale} siteName={profile.name} />
+  <main id="main" tabindex="-1" class="focus:outline-none">
+    <slot />
+  </main>
+  <Footer locale={base.locale} profile={profile} />
+</BaseLayout>

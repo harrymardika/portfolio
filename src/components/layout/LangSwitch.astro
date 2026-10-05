@@ -24,7 +24,7 @@ const paths = alternates(Astro.url.pathname);
       lang={target}
       aria-current={target === locale ? 'true' : undefined}
       title={UI[target]['lang.readIn']}
-      class="rounded-full px-2.5 py-1 text-ink-muted transition-colors hover:text-ink aria-[current=true]:bg-forest aria-[current=true]:text-on-forest"
+      class="rounded-full px-2.5 py-1 text-ink-muted transition-colors hover:text-ink aria-[current=true]:bg-forest aria-[current=true]:text-on-forest dark:aria-[current=true]:bg-amber dark:aria-[current=true]:text-forest"
     >
       <span aria-hidden="true">{UI[target]['lang.short']}</span>
       <span class="sr-only">{UI[target]['lang.name']}</span>

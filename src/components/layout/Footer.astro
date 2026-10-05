@@ -1,0 +1,43 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { type Locale, UI } from '@/lib/i18n';
+import { SOCIAL_LABELS } from '@/lib/navigation';
+
+import type { Profile } from '@/lib/content';
+
+interface Props {
+  locale: Locale;
+  profile: Pick<Profile, 'name' | 'socials'>;
+}
+
+const { locale, profile } = Astro.props;
+const t = UI[locale];
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="mt-24 border-t border-line">
+  <div class="mx-auto flex max-w-[1120px] flex-col gap-6 px-[clamp(16px,4vw,40px)] py-10 sm:flex-row sm:items-center sm:justify-between">
+    <div class="grid gap-1 text-sm text-ink-muted">
+      <p>
+        © {year} {profile.name}
+      </p>
+      <p>{t['footer.builtWith']}</p>
+    </div>
+    <nav aria-label={t['footer.socials']}>
+      <ul class="flex gap-2">
+        {profile.socials.map((social) => (
+          <li>
+            <a
+              href={social.url}
+              rel={social.platform === 'email' ? undefined : 'me noopener'}
+              aria-label={`${SOCIAL_LABELS[social.platform]}${social.handle ? `: ${social.handle}` : ''}`}
+              class="inline-flex size-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:bg-surface"
+            >
+              <Icon name={social.platform} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</footer>

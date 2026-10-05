@@ -69,7 +69,8 @@ src/scenes/**            ← modul 3D imperatif; hanya diimpor oleh <script> di 
 Aturan:
 - Panah hanya boleh ke bawah. `lib` tidak boleh mengimpor `components`; `components` tidak boleh mengimpor `pages`.
 - `scenes` tidak boleh mengimpor `components` atau `astro:*`. Data masuk lewat parameter atau atribut `data-*`.
-- Komponen tidak memanggil `getCollection` secara langsung. Ambil data lewat `@/lib/content/queries` (sudah difilter dan diurutkan).
+- Komponen tidak memanggil `getCollection` atau `queries` sendiri. **Halaman** mengambil data lewat `@/lib/content/queries` lalu meneruskannya lewat props (contoh: halaman → `PageLayout profile={…}` → `Footer`).
+- Menu utama hanya berisi halaman yang sudah ada. Saat membuat halaman baru, tambahkan item ke `NAV_ITEMS` di `src/lib/navigation.ts` dan kunci labelnya di kamus UI.
 - Helper murni diimpor dari `@/lib/content` (aman untuk unit test). `@/lib/content/queries` memakai `astro:content`, jadi **tidak** boleh diimpor oleh unit test atau oleh helper murni.
 - Fungsi yang bergantung pada waktu (mis. sertifikat kedaluwarsa) menerima `now: Date` sebagai parameter agar hasil build dan tes dapat direproduksi.
 
@@ -92,6 +93,8 @@ Aturan:
 │   ├── content.config.ts        # mendaftarkan collection + loader (skema diimpor dari lib/content/schemas)
 │   ├── lib/
 │   │   ├── content/             # schemas/ (Zod, murni), yaml.ts (parser), helper murni, queries (astro:content)
+│   │   ├── navigation.ts        # NAV_ITEMS (menu utama) dan label platform sosial
+│   │   ├── theme.ts             # logika tema terang/gelap
 │   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
 │   │   ├── github/              # client.ts (I/O) + map.ts (murni)
 │   │   ├── analytics/           # events.ts (konstanta nama event), track.ts
@@ -108,7 +111,7 @@ Aturan:
 │   │   ├── core/                # createRenderer, loop, visibility, reducedMotion, webglSupport, dispose
 │   │   ├── photo-card/          # kartu foto 3D + kotak deteksi
 │   │   └── journey-path/        # jalur karier 3D
-│   ├── layouts/                 # BaseLayout (dokumen HTML, head, hreflang)
+│   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   ├── pages/
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
 │   │   │   ├── index.astro, about.astro, homelab.astro

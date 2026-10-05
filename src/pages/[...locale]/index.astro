@@ -2,9 +2,7 @@
 /**
  * Home page in every locale. Temporary content from profile.yaml until the real hero (T2.2).
  */
-import LangSwitch from '@/components/layout/LangSwitch.astro';
-import ThemeToggle from '@/components/layout/ThemeToggle.astro';
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
 import { localize, stripEmphasis } from '@/lib/content';
 import { getProfile } from '@/lib/content/queries';
 import { localeStaticPaths, type Locale } from '@/lib/i18n';
@@ -19,19 +17,16 @@ const { locale } = Astro.props;
 const profile = await getProfile();
 ---
 
-<BaseLayout
+<PageLayout
   locale={locale}
   title={`${profile.name} · ${localize(profile.role, locale)}`}
   description={localize(profile.tagline, locale)}
+  profile={profile}
   noindex
 >
-  <div class="mx-auto flex max-w-[1120px] items-center justify-end gap-3 px-[clamp(16px,4vw,40px)] py-4">
-    <LangSwitch locale={locale} />
-    <ThemeToggle locale={locale} />
-  </div>
-  <main class="mx-auto grid max-w-[1120px] gap-4 px-[clamp(16px,4vw,40px)] py-16">
+  <section class="mx-auto grid max-w-[1120px] gap-4 px-[clamp(16px,4vw,40px)] py-16">
     <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
     <h1 class="text-hero">{profile.name}</h1>
     <p class="max-w-[65ch] text-ink-muted">{stripEmphasis(localize(profile.headline, locale))}</p>
-  </main>
-</BaseLayout>
+  </section>
+</PageLayout>

@@ -1,0 +1,52 @@
+---
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+import { NAV_ITEMS } from '@/lib/navigation';
+
+interface Props {
+  locale: Locale;
+  /** Shown as the home link; comes from profile.yaml. */
+  siteName: string;
+}
+
+const { locale, siteName } = Astro.props;
+const t = UI[locale];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="border-b border-line">
+  <div class="mx-auto flex max-w-[1120px] items-center justify-between gap-4 px-[clamp(16px,4vw,40px)] py-4">
+    <a
+      href={localizePath('/', locale)}
+      class="font-display text-lg text-forest-ink"
+      aria-label={`${siteName} · ${t['nav.home']}`}
+    >
+      {siteName}
+    </a>
+    <div class="flex items-center gap-3">
+      {NAV_ITEMS.length > 0 && (
+        <nav aria-label={t['nav.primary']} class="hidden md:block">
+          <ul class="flex gap-6 text-sm text-ink-muted">
+            {NAV_ITEMS.map((item) => {
+              const href = localizePath(item.path, locale);
+              return (
+                <li>
+                  <a
+                    href={href}
+                    aria-current={currentPath === href ? 'page' : undefined}
+                    class="hover:text-ink aria-[current=page]:text-ink"
+                  >
+                    {t[item.labelKey]}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
+      <LangSwitch locale={locale} />
+      <ThemeToggle locale={locale} />
+    </div>
+  </div>
+</header>

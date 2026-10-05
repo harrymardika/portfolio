@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.7`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.8`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 6/8 tugas |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 7/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -45,7 +45,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: setiap halaman punya `hreflang` alternatif; teks UI tidak ada yang hardcode.
 - [x] **T1.6** Design tokens & Tailwind: tokens dari `docs/03-design-system.md` di `src/styles/tokens.css`, font dimuat (self-host via Fontsource)
   - Kriteria: tidak ada hex mentah di komponen; mode gelap/terang berfungsi.
-- [ ] **T1.7** Layout dasar: `BaseLayout`, `Header`, `Footer` (ikon sosial: LinkedIn, Instagram @harry.mrdk, GitHub, email), skip-link, meta SEO dasar
+- [x] **T1.7** Layout dasar: `BaseLayout`, `Header`, `Footer` (ikon sosial: LinkedIn, Instagram @harry.mrdk, GitHub, email), skip-link, meta SEO dasar
   - Kriteria: lolos axe tanpa pelanggaran serius; navigasi keyboard berfungsi.
 - [ ] **T1.8** Docker dev: `docker/compose.dev.yml` dengan hot reload *(independen, boleh dikerjakan paralel)*
   - Kriteria: `docker compose -f docker/compose.dev.yml up` menjalankan dev server di port 4321.
@@ -58,8 +58,9 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
 - [ ] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
-- [ ] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`)
-- [ ] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills
+- [ ] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
+- [ ] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
+- [ ] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
 - [ ] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
 - [ ] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
 
@@ -129,6 +130,11 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.7
+- **Dikerjakan:** `PageLayout` (SkipLink → Header → `main#main` → Footer); `Header` (nama → beranda, menu dari `NAV_ITEMS`, LangSwitch, ThemeToggle); `Footer` (tahun, kalimat "self-hosted", ikon sosial dari `profile.yaml` dengan `rel="me"`); `SkipLink`; `Icon.astro` (ikon garis LinkedIn/Instagram/GitHub/Email, digambar sendiri karena LinkedIn sudah dihapus dari simple-icons); `BaseLayout` + meta Open Graph/Twitter. `src/lib/navigation.ts` (`NAV_ITEMS` sengaja kosong sampai halamannya ada). Varian `dark:` kini juga berlaku untuk mode gelap OS tanpa JS.
+- **Verifikasi:** e2e 35 lulus + 1 dilewati (tes keyboard di HP): axe tanpa pelanggaran serious/critical di `/` & `/id/` × terang/gelap; Tab pertama fokus ke skip link, Enter memindahkan fokus ke `main`; landmark tunggal; tautan sosial sesuai; teks ID; tidak ada nomor HP. Screenshot desktop/HP/gelap/skip link dicek visual (dua perbaikan: padding skip link, pil bahasa aktif di mode gelap).
+- **Catatan:** `theme-color` meta belum ada (butuh nilai warna; tambahkan di T7.1 lewat token). OG image, sitemap, JSON-LD: T7.1. Menu HP ditambahkan sebagai T2.8.
 
 ### 2026-10-05 · Claude Code (Opus) · T1.6
 - **Dikerjakan:** Tailwind 4.3 via `@tailwindcss/vite`; `src/styles/tokens.css` (satu-satunya tempat hex; terang, gelap via OS, gelap/terang eksplisit via `data-theme`); `src/styles/global.css` (`@theme inline` memetakan token ke utilitas, skala tipe `text-hero/h2/h3/eyebrow`, varian `dark:` mengikuti `data-theme`, base style, fokus terlihat, reduced-motion). Font self-host Fontsource (subset Latin). `src/lib/theme.ts` (murni) + `ThemeToggle.astro` (tersembunyi tanpa JS, `aria-pressed`, label EN/ID) + skrip pre-paint di `BaseLayout` (kelas `js`, tema tersimpan). `scripts/check-tokens.ts` (`bun run lint:tokens`, termasuk dalam `check`).

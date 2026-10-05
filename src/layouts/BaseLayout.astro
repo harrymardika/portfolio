@@ -1,7 +1,8 @@
 ---
 /**
- * Document shell for every page: language, canonical URL, and hreflang alternates.
- * Extended with header, footer, skip link, and SEO meta in T1.7.
+ * Document shell for every page: language, theme bootstrap, canonical URL, hreflang alternates,
+ * and social/SEO meta. Page chrome (header, footer, skip link) lives in PageLayout.
+ * OG images, sitemap, and JSON-LD are added in T7.1.
  */
 import '@/styles/global.css';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
@@ -18,6 +19,7 @@ interface Props {
 const { locale, title, description, noindex = false } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
+const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_');
 ---
 
 <!doctype html>
@@ -44,6 +46,16 @@ const absolute = (path: string): string => new URL(path, Astro.site).href;
       <link rel="alternate" hreflang={alt} href={absolute(paths[alt])} />
     ))}
     <link rel="alternate" hreflang="x-default" href={absolute(paths[DEFAULT_LOCALE])} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={absolute(paths[locale])} />
+    <meta property="og:locale" content={ogLocale(locale)} />
+    {LOCALES.filter((alt) => alt !== locale).map((alt) => (
+      <meta property="og:locale:alternate" content={ogLocale(alt)} />
+    ))}
+    <meta name="twitter:card" content="summary" />
   </head>
   <body>
     <slot />

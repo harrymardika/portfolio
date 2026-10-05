@@ -1,0 +1,16 @@
+---
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<a
+  href="#main"
+  class="sr-only z-50 rounded-full bg-forest px-4 py-2 text-on-forest focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:px-4 focus:py-2"
+>
+  {UI[locale]['a11y.skipToContent']}
+</a>
