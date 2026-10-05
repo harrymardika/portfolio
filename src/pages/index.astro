@@ -1,16 +1,16 @@
 ---
 // Temporary placeholder page for the scaffold (T1.1).
 // Replaced by the real home page in T2.2; text moves to content/ and src/lib/i18n/.
-import { SITE } from '@/lib/site';
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={SITE.defaultLocale}>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={SITE.url.href} />
+    <link rel="canonical" href={canonical.href} />
     <meta name="robots" content="noindex" />
     <title>Harry Mardika</title>
   </head>

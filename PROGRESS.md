@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.2`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.3`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 1/8 tugas |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 2/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -35,7 +35,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 
 - [x] **T1.1** Scaffold Astro + Bun + TypeScript strict
   - Kriteria: `bun run dev` jalan; `tsconfig` strict (`strict`, `noUncheckedIndexedAccess`); struktur folder sesuai `docs/02-architecture.md` §4; path alias `@/` → `src/`.
-- [ ] **T1.2** Tooling kualitas
+- [x] **T1.2** Tooling kualitas
   - Kriteria: ESLint (+ plugin astro), Prettier (+ plugin astro), script `bun run check` = typecheck + lint + format:check; `bun test` jalan dengan 1 contoh tes; Playwright terpasang dengan 1 smoke test.
 - [ ] **T1.3** Skema konten (Zod) untuk semua file di `content/` + loader Astro Content Layer
   - Kriteria: build gagal dengan pesan jelas jika data salah; tipe TS diekspor; tes unit untuk validasi `LocalizedText`, tanggal `YYYY-MM`, dan sertifikat kedaluwarsa.
@@ -129,6 +129,11 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.2
+- **Dikerjakan:** ESLint 10 flat config (`@eslint/js`, `typescript-eslint` strict, `eslint-plugin-astro` + a11y via `eslint-plugin-jsx-a11y-x`, `eslint-config-prettier`), aturan: tanpa `any`, tanpa `console.log`, `consistent-type-imports`, `eqeqeq`. Prettier + plugin Astro. Script `check`, `lint`, `format`, `test:coverage`, `test:e2e`. `bunfig.toml` membatasi `bun test` ke `tests/unit`. Playwright (desktop + Pixel 7) dengan smoke test 200/404. `src/lib/site.ts` dibuat murni (`resolveSiteUrl`) dan dipakai `astro.config.ts`.
+- **Verifikasi:** `bun run check` lulus; probe membuktikan lint menolak `any` dan `console.log`; `bun test` 3/3; `bun run test:e2e` 4/4.
+- **Catatan:** `eslint-plugin-jsx-a11y` asli belum mendukung ESLint 10, sehingga dipakai fork `-x`. TS 6 tidak memuat `@types/*` otomatis, jadi `types: ["node","bun"]` ditulis eksplisit di `tsconfig.json`. Auto-background Astro dipicu oleh deteksi AI agent (bukan TTY); `--ignore-lock` memaksa foreground.
 
 ### 2026-10-05 · Claude Code (Opus) · T1.1
 - **Dikerjakan:** Astro 7.3.5 (static, `trailingSlash: 'always'`), TypeScript 6.0.3 dengan preset `astro/tsconfigs/strictest` (sudah termasuk `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), alias `@/` → `src/`, `@types/node` 22, struktur folder sesuai arsitektur §4 (`.gitkeep` di folder kosong), placeholder `src/pages/index.astro`, favicon.

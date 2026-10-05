@@ -1,0 +1,12 @@
+dist/
+.astro/
+node_modules/
+bun.lock
+coverage/
+playwright-report/
+test-results/
+# Generated prototype, kept as-is for reference
+docs/design/
+# Hand-written docs and content: formatting is reviewed by humans
+*.md
+content/

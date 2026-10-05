@@ -1,8 +1,10 @@
 import { defineConfig } from 'astro/config';
 
+import { resolveSiteUrl } from './src/lib/site';
+
 // Public URL of the deployed site. Used for canonical URLs, sitemap, and OG tags.
 // Override with SITE_URL (see .env.example) for previews.
-const SITE_URL = process.env['SITE_URL'] ?? 'https://harry.mardika.my.id';
+const SITE_URL = resolveSiteUrl(process.env['SITE_URL']);
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({

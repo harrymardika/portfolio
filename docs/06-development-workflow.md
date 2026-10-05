@@ -20,10 +20,12 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run build` | Build (nanti: GitHub sync → Astro → PDF) | T1.1 ✅ |
 | `bun run preview` | Menyajikan hasil build | T1.1 ✅ |
 | `bun run typecheck` | `astro check` (TypeScript + file .astro) | T1.1 ✅ |
-| `bun run check` | Typecheck + lint + format check (wajib sebelum commit) | T1.2 |
-| `bun run format` | Merapikan format otomatis | T1.2 |
-| `bun test` | Unit test | T1.2 |
-| `bun run test:e2e` | Playwright e2e + a11y | T1.2 |
+| `bun run check` | Typecheck + lint + format check (wajib sebelum commit) | T1.2 ✅ |
+| `bun run lint` / `lint:fix` | ESLint (tanpa warning) / perbaiki otomatis | T1.2 ✅ |
+| `bun run format` | Merapikan format otomatis (Prettier) | T1.2 ✅ |
+| `bun test` | Unit test (`tests/unit`, diatur di `bunfig.toml`) | T1.2 ✅ |
+| `bun run test:coverage` | Unit test + laporan cakupan | T1.2 ✅ |
+| `bun run test:e2e` | Playwright e2e (build + preview otomatis, desktop & mobile) | T1.2 ✅ |
 | `bun run fetch:github` | Hanya sinkronisasi GitHub | T3.1 |
 | `bun run pdf` | Hanya generate PDF (butuh hasil build) | T4.3 |
 | `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload | T1.8 |
@@ -76,5 +78,6 @@ Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run 
 | Build gagal: "Invalid content in content/…" | Baca pesan Zod; perbaiki field yang disebut (sering: format tanggal atau `en` yang hilang) |
 | 3D tidak muncul | Cek console. Pastikan WebGL aktif (hardware acceleration). Fallback HTML harus tetap tampil. |
 | GitHub sync gagal | Cek `GITHUB_TOKEN` di `.env`. Build tetap jalan dengan cache terakhir. |
-| `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Tanpa terminal interaktif (mis. dijalankan AI agent), Astro 7 menjalankan dev server di background. Cek `bunx astro dev status`, lihat log `bunx astro dev logs`, hentikan `bunx astro dev stop`. |
+| `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Jika mendeteksi AI agent (mis. Claude Code), Astro 7 otomatis menjalankan dev/preview server di background. Cek `bunx astro dev status`, log `bunx astro dev logs`, hentikan `bunx astro dev stop`. Tambahkan `--ignore-lock` untuk memaksa foreground (dipakai `playwright.config.ts`). Saat dijalankan manusia atau Docker, server berjalan normal di foreground. |
+| Browser Playwright belum ada | `bunx playwright install chromium` |
 | PDF kosong/terpotong | Jalankan `bun run preview` dan buka `/print/cv` di browser untuk melihat sumbernya |
