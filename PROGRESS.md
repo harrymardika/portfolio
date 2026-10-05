@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.1`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.2`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⏳ Berikutnya |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 1/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -52,7 +52,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 
 ## Fase 2: Halaman & UI
 
-- [ ] **T2.1** Modul inti 3D `src/scenes/core/` (renderer, loop, pause saat offscreen, reduced-motion, deteksi WebGL, dispose)
+- [x] **T2.1** Modul inti 3D `src/scenes/core/` (renderer, loop, pause saat offscreen, reduced-motion, deteksi WebGL, dispose)
   - Kriteria: kontrak `SceneHandle` sesuai `docs/02-architecture.md` §6; tes unit untuk util non-WebGL.
 - [ ] **T2.2** Hero: kartu foto 3D + kotak deteksi wajah + statistik
   - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
@@ -130,6 +130,11 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.1
+- **Dikerjakan:** `three` 0.186.1 + `@types/three`. `src/scenes/core/`: `math.ts` (`frameDelta` dijepit, `damp`, `smoothstep`, `cappedPixelRatio`), `capabilities.ts` (`decide3D` murni + deteksi browser), `palette.ts` (warna dari token CSS), `pointer.ts`, `loop.ts` (rAF dapat diinjeksi, idempoten, error per frame tidak mematikan loop), `dispose.ts`, `mount.ts` (`mountScene` → `SceneHandle | null`), `types.ts` (`SceneModule`, `FrameContext`, `SceneSetup`).
+- **Verifikasi:** `bun test` 114/114 (math, decide3D, parseCssColor, pointer, loop dengan rAF palsu, dispose dengan objek Three asli); `bun run check` lulus.
+- **Catatan:** bagian yang butuh DOM/WebGL (`mountScene`, `hasWebGL`, `readPalette`) baru dites e2e di browser pada T2.2. Arsitektur §6 diperbarui sesuai implementasi.
 
 ### 2026-10-05 · Claude Code (Opus) · T1.8 (Fase 1 selesai)
 - **Dikerjakan:** `docker/Dockerfile.dev` (`node:22-bookworm-slim` + Bun 1.3.9 disalin dari `oven/bun`), `docker/compose.dev.yml` (bind mount, volume `node_modules`, `DEV_PORT`), `.dockerignore`.

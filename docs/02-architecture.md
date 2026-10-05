@@ -139,24 +139,30 @@ bun run build
 
 ## 6. Kontrak modul 3D
 
-Setiap scene di `src/scenes/<nama>/index.ts` mengekspor satu fungsi:
+Semua scene memakai `src/scenes/core/` (T2.1). Scene konkret hanya membangun objek dan menganimasikannya; urusan umum ditangani `mountScene`.
 
 ```ts
-export interface SceneHandle {
-  /** Stop the loop and free GPU resources. Must be safe to call twice. */
-  destroy(): void;
-}
+// src/scenes/core/mount.ts: dipanggil dari <script> komponen island
+const handle = mountScene({ stage, canvas, create: createPhotoCard }); // SceneHandle | null
+handle?.destroy(); // aman dipanggil dua kali
 
-export interface SceneOptions {
-  reducedMotion: boolean;   // true → render a single still frame
-  palette: ScenePalette;    // colors resolved from CSS tokens, never hardcoded
+// Scene konkret (mis. src/scenes/photo-card/index.ts) mengembalikan SceneModule:
+interface SceneModule {
+  scene: Scene; camera: Camera;
+  update(frame: { dt; elapsed; pointer: { x; y } }): void; // dt sudah dijepit [0, 0.05]
+  resize(width: number, height: number): void;
+  dispose?(): void; // listener/timer/canvas texture; geometry & material dibersihkan otomatis
 }
-
-export function mountPhotoCard(canvas: HTMLCanvasElement, opts: SceneOptions & { photoUrl: string }): SceneHandle;
+// create(setup) menerima { palette, mode: 'animated' | 'still', invalidate }
 ```
 
-Wajib di `core/`: deteksi WebGL (gagal → biarkan fallback HTML), pause saat tidak terlihat (`IntersectionObserver`), `devicePixelRatio` maksimal 2, `dt` dijepit `[0, 0.05]`, dan `try/catch` per frame agar satu scene tidak mematikan scene lain.
-Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi. Selalu jepit nilainya.
+`mountScene` menangani:
+- **Keputusan 3D** (`decide3D`, murni): `off` tanpa WebGL, dengan Save-Data, atau CPU ≤ 2 core → mengembalikan `null` dan HTML fallback tetap tampil; `still` untuk `prefers-reduced-motion` (satu frame diam); selain itu `animated`. Status ditulis ke `stage.dataset.scene` (`animated`/`still`/`off`) untuk CSS dan tes.
+- Renderer (`alpha`, DPR maksimal 2), ukuran mengikuti `stage` (`ResizeObserver`), pointer ternormalisasi -1..1, loop yang **berhenti saat stage tidak terlihat** (`IntersectionObserver`), dan error per frame yang dilaporkan tanpa menghentikan loop.
+- Warna dari token CSS (`readPalette`), tidak pernah ditulis di kode scene.
+- `destroy()`: hentikan loop, lepas observer/listener, `disposeObject3D(scene)`, `renderer.dispose()`.
+
+Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi; `frameDelta` kini selalu menjepitnya dan dites.
 
 ## 7. i18n
 
