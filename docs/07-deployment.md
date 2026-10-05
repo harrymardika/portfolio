@@ -21,7 +21,9 @@ Alasan build di GitHub, bukan di server: ADR 0005.
 | `docker/Dockerfile` | Multi-stage: `deps` (bun install) → `build` (fetch GitHub, astro build, Playwright PDF) → `runtime` (Caddy alpine + `dist/`) |
 | `docker/Caddyfile` | Static file server, kompresi, cache header, header keamanan, `try_files` untuk 404 |
 | `docker/compose.yml` | Produksi: `web`, `watchtower`, `umami`, `umami-db` |
-| `docker/compose.dev.yml` | Dev: Bun + bind mount + hot reload |
+| `docker/Dockerfile.dev` ✅ | Image dev: `node:22-bookworm-slim` + binary Bun 1.3.9 (Astro butuh Node asli; `node` di image `oven/bun` hanya pembungkus Bun) |
+| `docker/compose.dev.yml` ✅ | Dev: bind mount kode, volume `node_modules`, hot reload, port `DEV_PORT` (default 4321) |
+| `.dockerignore` ✅ | Mengecualikan `node_modules`, `dist`, `.env`, `CV/`, `Photos/`, `.git` dari build context |
 | `.github/workflows/ci.yml` | PR: check, test, build |
 | `.github/workflows/deploy.yml` | `main` + cron: build & push image |
 

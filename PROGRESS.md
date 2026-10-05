@@ -3,15 +3,15 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.8`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.1`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 7/8 tugas |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⏳ Berikutnya |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -19,7 +19,7 @@
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
-Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
+Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 
 ---
 
@@ -31,7 +31,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 - [x] **T0.4** Ekstrak data CV ke `content/` (EN lengkap, ID sebagian), dengan koreksi data yang disetujui pemilik
 - [x] **T0.5** Subagent reviewer (`.claude/agents/reviewer.md`), `.gitignore`, `.editorconfig`, `.env.example`
 
-## Fase 1: Scaffold & fondasi kode
+## Fase 1: Scaffold & fondasi kode ✅
 
 - [x] **T1.1** Scaffold Astro + Bun + TypeScript strict
   - Kriteria: `bun run dev` jalan; `tsconfig` strict (`strict`, `noUncheckedIndexedAccess`); struktur folder sesuai `docs/02-architecture.md` §4; path alias `@/` → `src/`.
@@ -47,7 +47,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: tidak ada hex mentah di komponen; mode gelap/terang berfungsi.
 - [x] **T1.7** Layout dasar: `BaseLayout`, `Header`, `Footer` (ikon sosial: LinkedIn, Instagram @harry.mrdk, GitHub, email), skip-link, meta SEO dasar
   - Kriteria: lolos axe tanpa pelanggaran serius; navigasi keyboard berfungsi.
-- [ ] **T1.8** Docker dev: `docker/compose.dev.yml` dengan hot reload *(independen, boleh dikerjakan paralel)*
+- [x] **T1.8** Docker dev: `docker/compose.dev.yml` dengan hot reload *(independen, boleh dikerjakan paralel)*
   - Kriteria: `docker compose -f docker/compose.dev.yml up` menjalankan dev server di port 4321.
 
 ## Fase 2: Halaman & UI
@@ -130,6 +130,13 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.8 (Fase 1 selesai)
+- **Dikerjakan:** `docker/Dockerfile.dev` (`node:22-bookworm-slim` + Bun 1.3.9 disalin dari `oven/bun`), `docker/compose.dev.yml` (bind mount, volume `node_modules`, `DEV_PORT`), `.dockerignore`.
+- **Verifikasi:** `compose config` valid; container start → `/` dan `/id/` 200; Astro berjalan di foreground di dalam container; edit `content/profile.yaml` dari host terlihat di container dalam ±2 s (data dikembalikan); file yang dibuat container dimiliki user host (Docker rootless); container dihentikan.
+- **Catatan:** Port 4321 di host sedang dipakai dev server lokal yang tidak dijalankan oleh agent (kemungkinan dibuka pemilik), jadi pengujian memakai `DEV_PORT=4331` dan proses tersebut tidak dihentikan.
+- **Ringkasan Fase 1:** 8/8 tugas; 98 unit test (cakupan `src/lib` 100%), 35 e2e (+1 skip HP), `bun run check` bersih.
+- **Langkah berikutnya:** Fase 2, mulai `T2.1` (modul inti 3D).
 
 ### 2026-10-05 · Claude Code (Opus) · T1.7
 - **Dikerjakan:** `PageLayout` (SkipLink → Header → `main#main` → Footer); `Header` (nama → beranda, menu dari `NAV_ITEMS`, LangSwitch, ThemeToggle); `Footer` (tahun, kalimat "self-hosted", ikon sosial dari `profile.yaml` dengan `rel="me"`); `SkipLink`; `Icon.astro` (ikon garis LinkedIn/Instagram/GitHub/Email, digambar sendiri karena LinkedIn sudah dihapus dari simple-icons); `BaseLayout` + meta Open Graph/Twitter. `src/lib/navigation.ts` (`NAV_ITEMS` sengaja kosong sampai halamannya ada). Varian `dark:` kini juga berlaku untuk mode gelap OS tanpa JS.

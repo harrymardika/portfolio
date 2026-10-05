@@ -29,7 +29,9 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run test:e2e` | Playwright e2e (build + preview otomatis, desktop & mobile) | T1.2 ✅ |
 | `bun run fetch:github` | Hanya sinkronisasi GitHub | T3.1 |
 | `bun run pdf` | Hanya generate PDF (butuh hasil build) | T4.3 |
-| `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload | T1.8 |
+| `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload (http://localhost:4321) | T1.8 ✅ |
+| `DEV_PORT=4331 docker compose -f docker/compose.dev.yml up` | Sama, di port host lain jika 4321 terpakai | T1.8 ✅ |
+| `docker compose -f docker/compose.dev.yml down` | Hentikan container dev | T1.8 ✅ |
 | `docker compose -f docker/compose.yml up -d --build` | Simulasi produksi secara lokal | T6.4 |
 
 > Saat mengubah perintah, perbarui tabel ini dan `README.md`.
@@ -81,4 +83,6 @@ Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run 
 | GitHub sync gagal | Cek `GITHUB_TOKEN` di `.env`. Build tetap jalan dengan cache terakhir. |
 | `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Jika mendeteksi AI agent (mis. Claude Code), Astro 7 otomatis menjalankan dev/preview server di background. Cek `bunx astro dev status`, log `bunx astro dev logs`, hentikan `bunx astro dev stop`. Tambahkan `--ignore-lock` untuk memaksa foreground (dipakai `playwright.config.ts`). Saat dijalankan manusia atau Docker, server berjalan normal di foreground. |
 | Browser Playwright belum ada | `bunx playwright install chromium` |
+| Docker: `address already in use` port 4321 | Dev server lokal masih jalan (`bunx astro dev status` / `stop`) atau pakai `DEV_PORT=4331`. |
+| Docker: dependency tidak sinkron setelah `bun add` | Container menjalankan `bun install --frozen-lockfile` setiap start; restart container. Jika tetap error: `docker compose -f docker/compose.dev.yml down -v` (menghapus volume `node_modules`). |
 | PDF kosong/terpotong | Jalankan `bun run preview` dan buka `/print/cv` di browser untuk melihat sumbernya |

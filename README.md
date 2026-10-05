@@ -28,11 +28,11 @@ Astro (SSG) · TypeScript strict · Bun · Tailwind CSS · Three.js (vanilla) ·
 bun install
 bun run dev          # http://localhost:4321
 
-# Dengan Docker (tersedia setelah T1.8)
-docker compose -f docker/compose.dev.yml up
+# Atau dengan Docker (tanpa memasang Bun/Node di laptop)
+docker compose -f docker/compose.dev.yml up   # http://localhost:4321
 ```
 
-Syarat: Bun 1.3+ dan Node.js 22.12+.
+Syarat tanpa Docker: Bun 1.3+ dan Node.js 22.12+. Sebelum commit: `bun run check && bun test && bun run test:e2e`.
 
 Perintah lengkap ada di [docs/06-development-workflow.md](docs/06-development-workflow.md).
 
@@ -57,8 +57,8 @@ Baca **[`AGENTS.md`](AGENTS.md)** terlebih dahulu. Isinya urutan membaca dokumen
 │   └── design/theme-prototypes.html   # Prototipe tema (buka di browser)
 ├── src/                 # Kode aplikasi Astro (lib, components, scenes, pages)
 ├── scripts/             # (Fase 3–4) Script build: GitHub sync, PDF
-├── tests/               # (Fase 1+) Unit & e2e
-├── docker/              # (Fase 6) Dockerfile, compose, Caddyfile
+├── tests/               # unit (bun test) & e2e (Playwright + axe)
+├── docker/              # Dockerfile.dev + compose.dev.yml (Fase 1); produksi di Fase 6
 └── .github/workflows/   # (Fase 6) CI/CD
 ```
 
