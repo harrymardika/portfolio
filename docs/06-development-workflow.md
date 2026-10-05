@@ -20,7 +20,8 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run build` | Build (nanti: GitHub sync → Astro → PDF) | T1.1 ✅ |
 | `bun run preview` | Menyajikan hasil build | T1.1 ✅ |
 | `bun run typecheck` | `astro check` (TypeScript + file .astro) | T1.1 ✅ |
-| `bun run check` | Typecheck + lint + format check (wajib sebelum commit) | T1.2 ✅ |
+| `bun run check` | Typecheck + lint + cek warna hex + format check (wajib sebelum commit) | T1.2 ✅ |
+| `bun run lint:tokens` | Gagal jika ada warna hex di luar `src/styles/tokens.css` | T1.6 ✅ |
 | `bun run lint` / `lint:fix` | ESLint (tanpa warning) / perbaiki otomatis | T1.2 ✅ |
 | `bun run format` | Merapikan format otomatis (Prettier) | T1.2 ✅ |
 | `bun test` | Unit test (`tests/unit`, diatur di `bunfig.toml`) | T1.2 ✅ |

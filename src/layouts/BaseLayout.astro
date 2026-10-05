@@ -3,7 +3,9 @@
  * Document shell for every page: language, canonical URL, and hreflang alternates.
  * Extended with header, footer, skip link, and SEO meta in T1.7.
  */
+import '@/styles/global.css';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
+import { THEME_STORAGE_KEY } from '@/lib/theme';
 
 interface Props {
   locale: Locale;
@@ -23,6 +25,16 @@ const absolute = (path: string): string => new URL(path, Astro.site).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Runs before first paint: marks JS as available and applies a stored theme without a flash. -->
+    <script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+      document.documentElement.classList.add('js');
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
+      } catch {
+        /* Storage blocked: follow the OS theme. */
+      }
+    </script>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}

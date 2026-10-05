@@ -1,0 +1,90 @@
+---
+/**
+ * Light/dark toggle. Without JS the page simply follows the OS theme and the button stays hidden.
+ * Labels for both directions are rendered so the script never needs UI strings of its own.
+ */
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  data-label-to-dark={UI[locale]['theme.toDark']}
+  data-label-to-light={UI[locale]['theme.toLight']}
+  aria-label={UI[locale]['theme.toDark']}
+  class="hidden size-10 items-center justify-center rounded-full border border-line text-ink transition-colors hover:bg-surface [.js_&]:inline-flex"
+>
+  <svg
+    class="size-5 dark-only"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg
+    class="size-5 light-only"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+</button>
+
+<script>
+  import { effectiveTheme, THEME_STORAGE_KEY, toggledTheme, type Theme } from '@/lib/theme';
+
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function readStored(): string | null {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY);
+    } catch {
+      return null; // Storage can be blocked (private mode); fall back to the OS theme.
+    }
+  }
+
+  function render(theme: Theme): void {
+    root.dataset['theme'] = theme;
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
+      const label = theme === 'dark' ? button.dataset['labelToLight'] : button.dataset['labelToDark'];
+      if (label) button.setAttribute('aria-label', label);
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+    }
+  }
+
+  render(effectiveTheme(readStored(), media.matches));
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
+    button.addEventListener('click', () => {
+      const next = toggledTheme(effectiveTheme(root.dataset['theme'], media.matches));
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch {
+        // Not persisted; the choice still applies to this page view.
+      }
+      render(next);
+    });
+  }
+</script>
+
+<style>
+  /* Show the icon of the theme the button switches to. */
+  :global([data-theme='dark']) .light-only,
+  :global(:root:not([data-theme='dark'])) .dark-only {
+    display: none;
+  }
+</style>

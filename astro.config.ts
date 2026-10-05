@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 import { DEFAULT_LOCALE, LOCALES } from './src/lib/i18n/locales';
@@ -20,6 +21,9 @@ export default defineConfig({
     locales: [...LOCALES],
     defaultLocale: DEFAULT_LOCALE,
     routing: { prefixDefaultLocale: false },
+  },
+  vite: {
+    plugins: [tailwindcss()],
   },
   server: {
     port: 4321,

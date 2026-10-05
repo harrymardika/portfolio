@@ -1,0 +1,47 @@
+/*
+ * Design tokens: the ONLY place raw colors are allowed (docs/03-design-system.md §2).
+ * Theme: light by default, dark via the OS setting or an explicit choice stored by ThemeToggle.
+ *   - no data-theme      → follows prefers-color-scheme
+ *   - data-theme="light" → always light
+ *   - data-theme="dark"  → always dark
+ */
+
+:root {
+  --forest: #173d32;
+  --forest-ink: #12302a;
+  --amber: #f2b134;
+  --amber-deep: #8a5a00; /* darker amber: 4.5:1+ for small text on sage/surface */
+  --sage: #eef3ef;
+  --surface: #ffffff;
+  --ink: #173d32;
+  --ink-muted: #3f5d52;
+  --line: #d6e2d9;
+  --on-forest: #ffffff;
+  --on-forest-muted: #d3e2d9;
+  --success: #7ee2a8;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --forest-ink: #e7efe9;
+    --amber-deep: #f2b134;
+    --sage: #111a17;
+    --surface: #18231f;
+    --ink: #e7efe9;
+    --ink-muted: #a9c4b6;
+    --line: #2a3a33;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --forest-ink: #e7efe9;
+  --amber-deep: #f2b134;
+  --sage: #111a17;
+  --surface: #18231f;
+  --ink: #e7efe9;
+  --ink-muted: #a9c4b6;
+  --line: #2a3a33;
+  color-scheme: dark;
+}

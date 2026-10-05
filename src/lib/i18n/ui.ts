@@ -11,6 +11,8 @@ const en = {
   'lang.switchLabel': 'Language',
   'lang.readIn': 'Read this page in English',
   'date.present': 'Present',
+  'theme.toDark': 'Switch to dark theme',
+  'theme.toLight': 'Switch to light theme',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -21,6 +23,8 @@ const id: Record<UiKey, string> = {
   'lang.switchLabel': 'Bahasa',
   'lang.readIn': 'Baca halaman ini dalam Bahasa Indonesia',
   'date.present': 'Sekarang',
+  'theme.toDark': 'Ganti ke tema gelap',
+  'theme.toLight': 'Ganti ke tema terang',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

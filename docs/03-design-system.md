@@ -11,26 +11,27 @@ Nada: tenang, dewasa, ramah. Tidak "neon", tidak gelap pekat.
 
 ## 2. Token warna
 
-Semua warna di komponen **wajib** memakai token ini (CSS custom properties di `src/styles/tokens.css`, dipetakan ke Tailwind). Hex mentah di komponen dilarang.
+Semua warna di komponen **wajib** memakai token ini. Nilainya ada di `src/styles/tokens.css` (satu-satunya tempat hex diizinkan; dijaga oleh `bun run lint:tokens`) dan dipetakan ke utilitas Tailwind di `src/styles/global.css`: `bg-forest`, `text-amber-deep`, `border-line`, `text-ink-muted`, dst.
 
 | Token | Terang | Gelap | Pemakaian |
 |---|---|---|---|
 | `--color-forest` | `#173d32` | `#173d32` | Latar hero, tombol utama di bagian terang |
 | `--color-forest-ink` | `#12302a` | `#e7efe9` | Judul di latar terang |
 | `--color-amber` | `#f2b134` | `#f2b134` | Aksen: kata kunci judul, tombol CTA di hero, titik jalur, kotak deteksi |
-| `--color-amber-deep` | `#d48a00` | `#f2b134` | Aksen teks di latar terang (kontras lebih baik) |
+| `--color-amber-deep` | `#8a5a00` | `#f2b134` | Aksen **teks** di latar terang (eyebrow, tahun journey). Prototipe memakai `#d48a00`, tetapi kontrasnya hanya 2,5:1, jadi diganti. |
 | `--color-sage` | `#eef3ef` | `#111a17` | Latar bagian terang (journey, konten) |
 | `--color-surface` | `#ffffff` | `#18231f` | Kartu, label |
-| `--color-text` | `#173d32` | `#e7efe9` | Teks utama |
-| `--color-text-muted` | `#3f5d52` | `#a9c4b6` | Teks sekunder |
+| `--color-ink` | `#173d32` | `#e7efe9` | Teks utama (`text-ink`) |
+| `--color-ink-muted` | `#3f5d52` | `#a9c4b6` | Teks sekunder (`text-ink-muted`) |
 | `--color-line` | `#d6e2d9` | `#2a3a33` | Garis, border |
 | `--color-on-forest` | `#ffffff` | `#ffffff` | Teks di atas `forest` |
 | `--color-on-forest-muted` | `#d3e2d9` | `#d3e2d9` | Teks sekunder di atas `forest` |
 | `--color-success` | `#7ee2a8` | `#7ee2a8` | Indikator status |
 
 Kontras minimal: teks normal 4.5:1, teks besar 3:1. `amber` di atas `sage` **tidak** lolos untuk teks kecil; gunakan `amber-deep`.
+Semua pasangan teks/latar di atas dicek otomatis untuk kedua tema oleh `tests/unit/tokens-contrast.test.ts`. Jika menambah pasangan baru, tambahkan juga ke tes itu.
 
-Mode gelap: hero tetap `forest`; bagian terang berganti ke `sage` gelap. Default mengikuti `prefers-color-scheme`, dengan tombol override disimpan di `localStorage`.
+Mode gelap: hero tetap `forest`; bagian terang berganti ke `sage` gelap. Default mengikuti `prefers-color-scheme`; tombol `ThemeToggle` menyimpan pilihan di `localStorage` (kunci `theme`) dan skrip kecil di `<head>` menerapkannya sebelum halaman tampil (tanpa kedip). Varian Tailwind `dark:` mengikuti `data-theme`.
 
 ## 3. Tipografi
 
@@ -40,7 +41,7 @@ Mode gelap: hero tetap `forest`; bagian terang berganti ke `sage` gelap. Default
 | Body | **Plus Jakarta Sans** 400/500/600/700 | Paragraf, navigasi, tombol |
 | Data | **IBM Plex Mono** 400/500 | Angka statistik, label teknis, eyebrow, tahun di journey |
 
-Self-host via Fontsource (tanpa request ke Google Fonts, demi privasi dan CSP). Selalu `font-display: swap` dengan fallback `Georgia, serif` / `system-ui, sans-serif` / `ui-monospace, monospace`.
+Self-host via Fontsource (tanpa request ke Google Fonts, demi privasi dan CSP), subset Latin saja, diimpor di `src/styles/global.css`. Kelas: `font-display`, `font-sans` (default body), `font-mono`. Selalu `font-display: swap` dengan fallback `Georgia, serif` / `system-ui, sans-serif` / `ui-monospace, monospace`.
 
 Skala (fluid, `clamp`):
 
@@ -52,6 +53,8 @@ Skala (fluid, `clamp`):
 | `--text-body` | `1rem`–`1.0625rem` / 1.6 |
 | `--text-small` | `0.8125rem` |
 | `--text-eyebrow` | `0.75rem` mono, uppercase, letter-spacing `0.08em` |
+
+Kelas Tailwind: `text-hero`, `text-h2`, `text-h3`, `text-eyebrow` (line-height dan letter-spacing ikut).
 
 Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 

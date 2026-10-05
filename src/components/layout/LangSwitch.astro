@@ -13,7 +13,10 @@ const { locale } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 ---
 
-<nav aria-label={UI[locale]['lang.switchLabel']} class="lang-switch">
+<nav
+  aria-label={UI[locale]['lang.switchLabel']}
+  class="flex rounded-full border border-line p-0.5 font-mono text-xs"
+>
   {LOCALES.map((target) => (
     <a
       href={paths[target]}
@@ -21,6 +24,7 @@ const paths = alternates(Astro.url.pathname);
       lang={target}
       aria-current={target === locale ? 'true' : undefined}
       title={UI[target]['lang.readIn']}
+      class="rounded-full px-2.5 py-1 text-ink-muted transition-colors hover:text-ink aria-[current=true]:bg-forest aria-[current=true]:text-on-forest"
     >
       <span aria-hidden="true">{UI[target]['lang.short']}</span>
       <span class="sr-only">{UI[target]['lang.name']}</span>
