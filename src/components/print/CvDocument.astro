@@ -1,0 +1,277 @@
+---
+/**
+ * ATS-friendly CV (docs/09-pdf-generation.md §2): one column, real text, standard headings,
+ * no photo, no graphics, no phone number. Data comes from content/ via the page.
+ */
+import CvEntry from './CvEntry.astro';
+import {
+  formatDateRange,
+  formatYearMonth,
+  localize,
+  splitExperience,
+  type Award,
+  type Certification,
+  type Education,
+  type Experience,
+  type Profile,
+  type SkillGroup,
+  type Training,
+} from '@/lib/content';
+import { type Locale, UI } from '@/lib/i18n';
+import { SOCIAL_LABELS } from '@/lib/navigation';
+
+interface Props {
+  locale: Locale;
+  profile: Profile;
+  siteUrl: string;
+  experience: Experience[];
+  education: Education[];
+  trainings: Training[];
+  awards: Award[];
+  certifications: Certification[];
+  skills: SkillGroup[];
+}
+
+const { locale, profile, siteUrl, experience, education, trainings, awards, certifications, skills } =
+  Astro.props;
+const t = UI[locale];
+const present = t['date.present'];
+const range = (item: { start: string; end: string }): string => formatDateRange(item, locale, present);
+const { professional, leadership } = splitExperience(experience);
+// Shown as readable text (ATS parsers read the visible text, not the href).
+const contacts = [
+  { label: profile.email, href: `mailto:${profile.email}` },
+  ...profile.socials
+    .filter((social) => social.platform === 'linkedin' || social.platform === 'github')
+    .map((social) => ({
+      label: social.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''),
+      href: social.url,
+      platform: social.platform,
+    })),
+  { label: siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''), href: siteUrl },
+];
+const awardDate = (date: string): string => (date.length === 4 ? date : formatYearMonth(date, locale));
+---
+
+<div class="cv">
+  <header class="cv-header">
+    <h1>{profile.name}</h1>
+    <p class="cv-role">{localize(profile.role, locale)}</p>
+    <p class="cv-contacts">
+      <span>{profile.location}</span>
+      {contacts.map((contact) => (
+        <>
+          <span aria-hidden="true">|</span>
+          <a
+            href={contact.href}
+            aria-label={'platform' in contact ? SOCIAL_LABELS[contact.platform] : undefined}
+          >
+            {contact.label}
+          </a>
+        </>
+      ))}
+    </p>
+  </header>
+
+  <section>
+    <h2>{t['cv.summary']}</h2>
+    <p>{localize(profile.summary, locale)}</p>
+  </section>
+
+  <section>
+    <h2>{t['about.experience']}</h2>
+    {professional.map((item) => (
+      <CvEntry
+        locale={locale}
+        title={localize(item.role, locale)}
+        subtitle={item.organization}
+        location={item.location}
+        dates={range(item)}
+        highlights={item.highlights}
+      />
+    ))}
+  </section>
+
+  {leadership.length > 0 && (
+    <section>
+      <h2>{t['about.leadership']}</h2>
+      {leadership.map((item) => (
+        <CvEntry
+          locale={locale}
+          title={localize(item.role, locale)}
+          subtitle={item.organization}
+          location={item.location}
+          dates={range(item)}
+          highlights={item.highlights}
+        />
+      ))}
+    </section>
+  )}
+
+  <section>
+    <h2>{t['about.education']}</h2>
+    {education.map((item) => (
+      <CvEntry
+        locale={locale}
+        title={`${localize(item.degree, locale)}${item.gpa ? ` · ${t['common.gpa']} ${item.gpa}` : ''}`}
+        subtitle={item.institution}
+        location={item.location}
+        dates={range(item)}
+        highlights={item.highlights}
+      />
+    ))}
+  </section>
+
+  {trainings.length > 0 && (
+    <section>
+      <h2>{t['about.training']}</h2>
+      {trainings.map((item) => (
+        <CvEntry
+          locale={locale}
+          title={localize(item.program, locale)}
+          subtitle={item.institution}
+          location={item.location}
+          dates={range(item)}
+          highlights={item.highlights}
+        />
+      ))}
+    </section>
+  )}
+
+  <section>
+    <h2>{t['about.awards']}</h2>
+    <ul class="cv-list">
+      {awards.map((award) => (
+        <li>
+          {localize(award.title, locale)} · {award.issuer} · {awardDate(award.date)}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {certifications.length > 0 && (
+    <section>
+      <h2>{t['about.certifications']}</h2>
+      <ul class="cv-list">
+        {certifications.map((cert) => (
+          <li>
+            {cert.name} · {cert.issuer} · {formatYearMonth(cert.issued, locale)}
+            {cert.expires && `–${formatYearMonth(cert.expires, locale)}`}
+            {cert.credential_id && ` · ${t['about.credential']}: ${cert.credential_id}`}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section>
+    <h2>{t['about.skills']}</h2>
+    <ul class="cv-list">
+      {skills.map((group) => (
+        <li>
+          <strong>{localize(group.name, locale)}:</strong> {group.items.join(', ')}
+        </li>
+      ))}
+    </ul>
+  </section>
+</div>
+
+<style>
+  .cv {
+    font-family: var(--font-sans);
+    font-size: 8.7pt;
+    line-height: 1.25;
+    color: var(--forest-ink);
+  }
+
+  .cv-header {
+    text-align: center;
+    margin-bottom: 5pt;
+  }
+
+  .cv h1 {
+    font-family: var(--font-display);
+    font-size: 18pt;
+    line-height: 1.1;
+    color: var(--forest-ink);
+  }
+
+  .cv-role {
+    margin-top: 2pt;
+    font-weight: 600;
+  }
+
+  .cv-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 5pt;
+    margin-top: 3pt;
+    font-size: 8.2pt;
+  }
+
+  .cv a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cv section {
+    margin-top: 4pt;
+  }
+
+  .cv h2 {
+    font-family: var(--font-sans);
+    font-size: 9pt;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 0.75pt solid var(--forest-ink);
+    padding-bottom: 1pt;
+    margin-bottom: 3pt;
+    color: var(--forest-ink);
+  }
+
+  .cv :global(.cv-entry) {
+    margin-top: 3pt;
+    break-inside: avoid;
+  }
+
+  .cv :global(.cv-line) {
+    display: flex;
+    justify-content: space-between;
+    gap: 8pt;
+  }
+
+  .cv :global(.cv-entry h3) {
+    font-family: var(--font-sans);
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--forest-ink);
+  }
+
+  .cv :global(.cv-dates) {
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .cv :global(.cv-org) {
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .cv :global(.cv-entry ul),
+  .cv-list {
+    list-style: disc;
+    padding-left: 12pt;
+    margin-top: 1.5pt;
+  }
+
+  .cv :global(.cv-entry li + li),
+  .cv-list li + li {
+    margin-top: 0.5pt;
+  }
+
+  .cv h2 {
+    break-after: avoid;
+  }
+</style>

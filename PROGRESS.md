@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.3` *(bergantung T6.2)* → lanjut Fase 4 `T4.1`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** terjemahan highlight (T8.3 lebih awal) → `T4.2`
 
 ## Ringkasan
 
@@ -13,7 +13,7 @@
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
-| 4 | Generate PDF CV & Portfolio | ⬜ |
+| 4 | Generate PDF CV & Portfolio | 🔄 1/4 tugas |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
@@ -73,7 +73,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 ## Fase 4: PDF CV & Portfolio
 
-- [ ] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
+- [x] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
 - [ ] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
 - [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T4.1
+- **Dikerjakan:** `PrintLayout` (selalu terang lewat opsi baru `forceTheme` di `BaseLayout`, noindex, tanpa canonical/hreflang, `@page` A4 dengan margin 10/11 mm, tampilan "kertas" di layar), `CvDocument` + `CvEntry` (satu kolom; judul standar; satu baris kepala per entri "Peran · Organisasi … Lokasi · Tanggal"; kontak sebagai teks; tanpa foto/ikon/grafik; tanpa nomor HP), halaman `/print/cv/` dan `/id/print/cv/` (data `show_on_cv`, sertifikat aktif).
+- **Penyesuaian setelah render PDF uji:** awalnya 3 halaman; CV asli pemilik 2 halaman dengan jumlah kata yang sama (1.345 vs 1.318). Dirapatkan (8,7 pt, line-height 1,25, kepala entri satu baris, margin 10/11 mm) → **2 halaman, ±150 KB** untuk EN dan ID.
+- **Verifikasi:** e2e halaman cetak (judul bagian EN/ID, tanpa img/svg/canvas, noindex, tanpa canonical, tanpa nomor HP, tema terang walau OS gelap, kontak teks, sertifikat kedaluwarsa tersembunyi); `bun run verify` lulus.
+- **Catatan:** CV-ID masih memakai highlight bahasa Inggris (fallback); diterjemahkan pada tugas berikutnya.
 
 ### 2026-10-05 · Claude Code (Opus) · Kurasi repo GitHub (lanjutan T3.2)
 - **Diminta pemilik:** memilih repo sendiri; beberapa proyek dipecah ke banyak repo.

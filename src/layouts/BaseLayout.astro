@@ -6,7 +6,7 @@
  */
 import '@/styles/global.css';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
-import { THEME_STORAGE_KEY } from '@/lib/theme';
+import { THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
 
 interface Props {
   locale: Locale;
@@ -16,29 +16,35 @@ interface Props {
   noindex?: boolean;
   /** Write canonical and hreflang links. Off for pages without a fixed URL, such as 404. */
   linkAlternates?: boolean;
+  /** Pin the theme and ignore the visitor's choice (print pages are always light). */
+  forceTheme?: Theme;
 }
 
-const { locale, title, description, noindex = false, linkAlternates = true } = Astro.props;
+const { locale, title, description, noindex = false, linkAlternates = true, forceTheme } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
 const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_');
 ---
 
 <!doctype html>
-<html lang={LOCALE_TAGS[locale]}>
+<html lang={LOCALE_TAGS[locale]} data-theme={forceTheme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Runs before first paint: marks JS as available and applies a stored theme without a flash. -->
-    <script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
-      document.documentElement.classList.add('js');
-      try {
-        const stored = localStorage.getItem(storageKey);
-        if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
-      } catch {
-        /* Storage blocked: follow the OS theme. */
-      }
-    </script>
+    {!forceTheme && (
+      <>
+        <!-- Runs before first paint: marks JS as available and applies a stored theme without a flash. -->
+        <script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+          document.documentElement.classList.add('js');
+          try {
+            const stored = localStorage.getItem(storageKey);
+            if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
+          } catch {
+            /* Storage blocked: follow the OS theme. */
+          }
+        </script>
+      </>
+    )}
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}

@@ -1,0 +1,37 @@
+---
+/**
+ * One CV entry on a single header line ("Role · Organization ... Location · Dates"), then bullets.
+ * One line per entry keeps the CV within two pages, like the owner's original CV.
+ */
+import { isFallback, localize, type LocalizedText } from '@/lib/content';
+
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  dates: string;
+  subtitle?: string;
+  location?: string;
+  highlights?: LocalizedText[];
+}
+
+const { locale, title, dates, subtitle, location, highlights = [] } = Astro.props;
+---
+
+<article class="cv-entry">
+  <div class="cv-line">
+    <h3>
+      {title}
+      {subtitle && <span class="cv-org"> · {subtitle}</span>}
+    </h3>
+    <span class="cv-dates">{[location, dates].filter(Boolean).join(' · ')}</span>
+  </div>
+  {highlights.length > 0 && (
+    <ul>
+      {highlights.map((highlight) => (
+        <li lang={isFallback(highlight, locale) ? 'en' : undefined}>{localize(highlight, locale)}</li>
+      ))}
+    </ul>
+  )}
+</article>

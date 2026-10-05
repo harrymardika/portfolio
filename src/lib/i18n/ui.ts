@@ -70,6 +70,9 @@ const en = {
   'about.verify': 'Verify',
   'about.issued': 'Issued',
   'about.expires': 'Valid until',
+  'cv.title': 'CV',
+  'cv.summary': 'Summary',
+  'cv.website': 'Website',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -139,6 +142,9 @@ const id: Record<UiKey, string> = {
   'about.verify': 'Verifikasi',
   'about.issued': 'Terbit',
   'about.expires': 'Berlaku hingga',
+  'cv.title': 'CV',
+  'cv.summary': 'Ringkasan',
+  'cv.website': 'Situs web',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };
