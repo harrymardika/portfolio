@@ -54,7 +54,7 @@ function describe(): { meta: string[]; highlights: string[] } {
       return {
         meta: [
           localize(source.item.title, locale),
-          source.item.issuer,
+          localize(source.item.issuer, locale),
           source.item.date.length === 4 ? source.item.date : formatYearMonth(source.item.date, locale),
         ],
         highlights: [],

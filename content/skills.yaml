@@ -15,8 +15,14 @@ groups:
 
   - id: leadership
     name: { en: Leadership & communication, id: Kepemimpinan & komunikasi }
-    items: [Team mentoring, Curriculum design, Technical facilitation, Public speaking]
+    items:
+      - { en: Team mentoring, id: Mentoring tim }
+      - { en: Curriculum design, id: Desain kurikulum }
+      - { en: Technical facilitation, id: Fasilitasi teknis }
+      - { en: Public speaking, id: Berbicara di depan umum }
 
   - id: languages
     name: { en: Languages, id: Bahasa }
-    items: [Indonesian (native), English (professional working, B2)]
+    items:
+      - { en: Indonesian (native), id: Bahasa Indonesia (penutur asli) }
+      - { en: "English (professional working, B2)", id: "Bahasa Inggris (profesional, B2)" }

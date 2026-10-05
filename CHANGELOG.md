@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Indonesian translations for all experience, education, and training highlights (draft, pending owner review); translatable skill items and award issuers.
 - ATS-friendly CV print pages in English and Indonesian that fit on two A4 pages (T4.1).
 - Curated GitHub projects: owner descriptions (EN/ID) and multi-repo project groups in `content/github.yaml`; four more case studies linked to their repos.
 - Selected GitHub repositories appear on the Projects page (GitHub badge, language, stars, topics); case studies linked to a repo show its stars (T3.2).

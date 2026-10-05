@@ -94,7 +94,8 @@ export const trainingSchema = z
 export const awardSchema = z.strictObject({
   id: slug,
   title: localizedText,
-  issuer: z.string().trim().min(1),
+  /** Plain string for names that are the same in both languages; translated for e.g. ministries. */
+  issuer: z.union([z.string().trim().min(1), localizedText]),
   date: yearOrYearMonth,
   rank: z.string().trim().min(1).optional(),
   ...visibility,
@@ -122,7 +123,8 @@ export const skillGroupSchema = z.strictObject({
   id: slug,
   position,
   name: localizedText,
-  items: z.array(z.string().trim().min(1)).min(1),
+  /** Technology names stay plain strings; everyday words (languages, soft skills) can be translated. */
+  items: z.array(z.union([z.string().trim().min(1), localizedText])).min(1),
 });
 
 export const milestoneSchema = z.strictObject({

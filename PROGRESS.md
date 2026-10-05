@@ -107,7 +107,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 - [ ] **T8.1** CMS berbasis Git (Keystatic atau Pages CMS) untuk mengedit `content/` dari browser
 - [ ] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge)
-- [ ] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia (bisa dibantu AI, wajib direview pemilik)
+- [x] **T8.3** *(draf, 2026-10-05; **menunggu review pemilik**)* Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia (bisa dibantu AI, wajib direview pemilik)
 
 ---
 
@@ -128,7 +128,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Catatan data
 
 - Alibaba Cloud Certified Associate **kedaluwarsa Nov 2026**. Setelah lewat tanggalnya, sertifikat otomatis hilang dari web dan CV (`expires` di `content/certifications.yaml`).
-- `highlights` pengalaman baru tersedia dalam EN (fallback). Terjemahan ID: T8.3.
+- **Perlu review pemilik:** 55 terjemahan `highlights` (EN → ID) di `experience.yaml`, `education.yaml`, `trainings.yaml` dibuat oleh AI pada 2026-10-05. Periksa terutama istilah dan angka.
 - Proyek dengan `draft: true` di `content/projects/` butuh detail/tautan dari pemilik sebelum ditampilkan.
 
 ---
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · Terjemahan highlight (T8.3 dimajukan untuk CV-ID)
+- **Alasan:** CV-ID (T4.1) bercampur bahasa karena highlight hanya EN.
+- **Dikerjakan:** 55 highlight diterjemahkan (gaya CV: kata kerja aktif, desimal koma, angka/nama teknologi tetap). Item skill kini boleh `string | LocalizedText` (grup Bahasa & Kepemimpinan diterjemahkan); penerbit penghargaan boleh `LocalizedText` (Kemdiktisaintek). Kalimat skripsi diselaraskan ke "YOLO26".
+- **Verifikasi:** CV-ID semula meluber 1 baris → font CV 8,6 pt → **EN & ID tetap 2 halaman**; sisa kata Inggris di CV-ID hanya nama resmi (program/sertifikat); `bun run verify` lulus.
 
 ### 2026-10-05 · Claude Code (Opus) · T4.1
 - **Dikerjakan:** `PrintLayout` (selalu terang lewat opsi baru `forceTheme` di `BaseLayout`, noindex, tanpa canonical/hreflang, `@page` A4 dengan margin 10/11 mm, tampilan "kertas" di layar), `CvDocument` + `CvEntry` (satu kolom; judul standar; satu baris kepala per entri "Peran · Organisasi … Lokasi · Tanggal"; kontak sebagai teks; tanpa foto/ikon/grafik; tanpa nomor HP), halaman `/print/cv/` dan `/id/print/cv/` (data `show_on_cv`, sertifikat aktif).

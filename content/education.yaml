@@ -10,7 +10,9 @@ items:
     gpa: "3.99/4.00"
     highlights:
       - en: Four-time Most Outstanding Student (MAPRES), 4th to 7th semester.
-      - en: "Undergraduate thesis: Javanese script (Aksara Jawa) classification with a YOLO-based model."
+        id: "Empat kali Mahasiswa Berprestasi (MAPRES), semester 4 hingga 7."
+      - en: "Undergraduate thesis: Javanese script (Aksara Jawa) classification with YOLO26."
+        id: "Skripsi: klasifikasi aksara Jawa dengan model YOLO26."
 
   - id: sman2-mandau
     institution: SMA Negeri 2 Mandau

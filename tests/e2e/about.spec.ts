@@ -30,12 +30,15 @@ test('expired certifications are hidden and active ones shown', async ({ page })
   await expect(certs).not.toContainText('Azure AI Engineer');
 });
 
-test('Indonesian page translates headings and marks untranslated highlights as English', async ({ page }) => {
+test('Indonesian page shows translated headings, highlights, and skills', async ({ page }) => {
   await page.goto('/id/about/');
   await expect(page.getByRole('heading', { level: 1, name: 'Tentang saya' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Pengalaman' })).toBeVisible();
-  await expect(page.locator('#experience li[lang="en"]').first()).toBeAttached();
-  await expect(page.locator('#experience').first()).toContainText('Sekarang');
+  await expect(page.locator('#experience')).toContainText('Memimpin pengembangan Decklify');
+  await expect(page.locator('#experience')).toContainText('Sekarang');
+  await expect(page.locator('#skills')).toContainText('Bahasa Indonesia (penutur asli)');
+  // Every highlight is translated now; untranslated ones would be marked lang="en" (see TimelineItem).
+  await expect(page.locator('#experience li[lang="en"]')).toHaveCount(0);
 });
 
 test('the header links to About', async ({ page, isMobile }) => {

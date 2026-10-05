@@ -115,7 +115,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
           <li class="grid gap-0.5 rounded-lg border border-line bg-surface px-4 py-3">
             <span class="font-semibold">{localize(award.title, locale)}</span>
             <span class="font-mono text-xs text-amber-deep">
-              {award.issuer} · {formatDate(award.date)}
+              {localize(award.issuer, locale)} · {formatDate(award.date)}
             </span>
           </li>
         ))}
@@ -160,7 +160,9 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
             <h3 class="font-sans text-sm font-semibold text-ink-muted">{localize(group.name, locale)}</h3>
             <ul class="flex flex-wrap gap-2">
               {group.items.map((item) => (
-                <li class="rounded-full border border-line bg-surface px-3 py-1 text-sm">{item}</li>
+                <li class="rounded-full border border-line bg-surface px-3 py-1 text-sm">
+                  {localize(item, locale)}
+                </li>
               ))}
             </ul>
           </div>

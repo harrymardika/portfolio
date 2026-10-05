@@ -11,10 +11,15 @@ items:
     tags: [FastAPI, TensorFlow, React.js, Hapi.js, Supabase, PWA]
     highlights:
       - en: Selected as 1 of 2,500 students from 63,000 applicants nationwide.
+        id: "Terpilih sebagai 1 dari 2.500 peserta dari 63.000 pendaftar di seluruh Indonesia."
       - en: Graduated with Distinction (average score 94.5/100).
+        id: "Lulus dengan predikat Distinction (rata-rata nilai 94,5/100)."
       - en: Built Dompet Juara, a personal finance web app that uses ML to analyze spending behavior and personalize financial advice.
+        id: "Membangun Dompet Juara, aplikasi web keuangan pribadi yang memakai ML untuk menganalisis pola pengeluaran dan memberi saran keuangan yang personal."
       - en: Led the ML team through an end-to-end pipeline (preparation, modeling, evaluation, deployment) with 90% model accuracy.
+        id: "Memimpin tim ML melalui pipeline end-to-end (persiapan data, pemodelan, evaluasi, deployment) dengan akurasi model 90%."
       - en: Deployed inference services with FastAPI and TensorFlow, integrated with React.js, Hapi.js, and Supabase, delivered as a PWA.
+        id: "Men-deploy layanan inferensi dengan FastAPI dan TensorFlow yang terintegrasi dengan React.js, Hapi.js, dan Supabase, disajikan sebagai PWA."
 
   - id: tbi-english
     institution: TBI Bandung
@@ -24,6 +29,7 @@ items:
     end: 2025-01
     highlights:
       - en: "Completed at B2 level with a score of 94%."
+        id: "Lulus pada level B2 dengan skor 94%."
 
   - id: samsung-innovation-campus
     institution: Samsung Innovation Campus
@@ -35,6 +41,7 @@ items:
     tags: [Python, ESP32, IoT, Machine Learning, Streamlit]
     highlights:
       - en: Completed three stages covering Python, algorithms, IoT with ESP32, data science, and deep learning.
+        id: "Menyelesaikan tiga tahap yang mencakup Python, algoritma, IoT dengan ESP32, data science, dan deep learning."
 
   - id: idcamp-ml-developer
     institution: Indosat Ooredoo Hutchison Digital Camp
@@ -45,7 +52,12 @@ items:
     tags: [TensorFlow, PyTorch, Optuna, Keras, TFX, Docker, MLOps, Prometheus, Grafana]
     highlights:
       - en: Selected as Top Participant from 90,000+ applicants and awarded Best Student.
+        id: "Terpilih sebagai Top Participant dari 90.000+ pendaftar dan meraih penghargaan Best Student."
       - en: Completed all levels (Beginner, Intermediate, Expert) with 5-star ratings on every project.
+        id: "Menyelesaikan semua level (Beginner, Intermediate, Expert) dengan rating bintang 5 di setiap proyek."
       - en: Built a stock price prediction system with LSTM in TensorFlow (KerasTuner) and PyTorch (Optuna).
+        id: "Membangun sistem prediksi harga saham dengan LSTM di TensorFlow (KerasTuner) dan PyTorch (Optuna)."
       - en: Developed a film recommendation system using content-based and collaborative filtering (K-Means + deep learning).
+        id: "Mengembangkan sistem rekomendasi film dengan content-based dan collaborative filtering (K-Means + deep learning)."
       - en: Designed end-to-end ML pipelines with TensorFlow Extended (TFX), cloud deployment, and monitoring with Prometheus and Grafana.
+        id: "Merancang pipeline ML end-to-end dengan TensorFlow Extended (TFX), deployment cloud, serta pemantauan dengan Prometheus dan Grafana."

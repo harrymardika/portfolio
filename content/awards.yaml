@@ -6,7 +6,9 @@ items:
     title:
       en: Nationally Funded, PKM-Kewirausahaan (PKM-K) 2026
       id: Lolos Pendanaan Nasional PKM-Kewirausahaan (PKM-K) 2026
-    issuer: Ministry of Higher Education, Science, and Technology
+    issuer:
+      en: Ministry of Higher Education, Science, and Technology
+      id: Kementerian Pendidikan Tinggi, Sains, dan Teknologi
     date: 2026
 
   - id: gemastik-xviii

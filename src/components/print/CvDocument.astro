@@ -143,7 +143,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
     <ul class="cv-list">
       {awards.map((award) => (
         <li>
-          {localize(award.title, locale)} · {award.issuer} · {awardDate(award.date)}
+          {localize(award.title, locale)} · {localize(award.issuer, locale)} · {awardDate(award.date)}
         </li>
       ))}
     </ul>
@@ -169,7 +169,8 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
     <ul class="cv-list">
       {skills.map((group) => (
         <li>
-          <strong>{localize(group.name, locale)}:</strong> {group.items.join(', ')}
+          <strong>{localize(group.name, locale)}:</strong>{' '}
+          {group.items.map((item) => localize(item, locale)).join(', ')}
         </li>
       ))}
     </ul>
@@ -179,7 +180,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
 <style>
   .cv {
     font-family: var(--font-sans);
-    font-size: 8.7pt;
+    font-size: 8.6pt;
     line-height: 1.25;
     color: var(--forest-ink);
   }

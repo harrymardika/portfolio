@@ -83,14 +83,14 @@ List `items[]`:
 Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `location`, `start`, `end`, `gpa?`, `highlights[]`.
 
 ### `awards.yaml`
-`items[]`: `id`, `title` (LocalizedText), `issuer`, `date` (`YYYY` atau `YYYY-MM`), `rank?`, `show_on_cv?`.
+`items[]`: `id`, `title` (LocalizedText), `issuer` (teks biasa atau LocalizedText untuk nama yang berbeda per bahasa, mis. kementerian), `date` (`YYYY` atau `YYYY-MM`), `rank?`, `show_on_cv?`.
 
 ### `certifications.yaml`
 `items[]`: `id`, `name`, `issuer`, `issued` (`YYYY-MM`), `expires?` (`YYYY-MM`), `credential_id?`, `url?`.
 **Sertifikat yang `expires`-nya sudah lewat otomatis disembunyikan** dari web dan CV. Untuk menampilkannya lagi setelah diperpanjang, cukup perbarui `expires`.
 
 ### `skills.yaml`
-`groups[]`: `{ id, name: LocalizedText, items: string[] }`. Urutan grup di file = urutan tampil.
+`groups[]`: `{ id, name: LocalizedText, items: (string | LocalizedText)[] }`. Nama teknologi cukup ditulis biasa (`PyTorch`); kata sehari-hari ditulis dwibahasa (`{ en: Public speaking, id: Berbicara di depan umum }`). Urutan grup di file = urutan tampil.
 
 ### `journey.yaml`
 `milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
