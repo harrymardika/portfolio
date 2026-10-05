@@ -45,3 +45,51 @@ export function formatSince(day: string, locale: Locale): string {
     timeZone: 'UTC',
   }).format(new Date(`${day}T00:00:00Z`));
 }
+
+/** One tracking link (?ref=) in the owner-only report from GET /api/stats/private. */
+export const refReportSchema = z.strictObject({
+  ref: z.string(),
+  firstSeen: z.string(),
+  lastSeen: z.string(),
+  visits: z.number().int().min(0),
+  pageviews: z.number().int().min(0),
+  downloadedCv: z.boolean(),
+  downloadedPortfolio: z.boolean(),
+});
+
+export const privateReportSchema = z.strictObject({
+  generatedAt: z.string(),
+  refs: z.array(refReportSchema),
+});
+
+export type RefReport = z.infer<typeof refReportSchema>;
+
+/** Plain-text table for the terminal, newest first. Times in UTC, minute precision. */
+export function formatRefReport(refs: readonly RefReport[]): string {
+  if (refs.length === 0) return 'No tracking links have been opened yet.';
+  const time = (iso: string): string => iso.slice(0, 16).replace('T', ' ');
+  const rows = [
+    ['ref', 'first opened (UTC)', 'last opened (UTC)', 'visits', 'pages', 'CV', 'portfolio'],
+    ...[...refs]
+      .sort((a, b) => b.lastSeen.localeCompare(a.lastSeen))
+      .map((r) => [
+        r.ref,
+        time(r.firstSeen),
+        time(r.lastSeen),
+        String(r.visits),
+        String(r.pageviews),
+        r.downloadedCv ? 'yes' : '-',
+        r.downloadedPortfolio ? 'yes' : '-',
+      ]),
+  ];
+  const widths =
+    rows[0]?.map((_, column) => Math.max(...rows.map((row) => (row[column] ?? '').length))) ?? [];
+  return rows
+    .map((row) =>
+      row
+        .map((cell, column) => cell.padEnd(widths[column] ?? 0))
+        .join('  ')
+        .trimEnd(),
+    )
+    .join('\n');
+}

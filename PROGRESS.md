@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 5 · **Tugas berikutnya:** `T5.5` (T5.2 bersama Fase 6; T3.3 menunggu T6.2)
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 6 · **Tugas berikutnya:** `T6.1` (sekaligus T5.2; lalu T3.3 setelah T6.2)
 
 ## Ringkasan
 
@@ -14,8 +14,8 @@
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
-| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | 🔄 3/5 tugas |
-| 6 | Docker, CI/CD, deploy ke home server | ⬜ |
+| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | 🔄 4/5 tugas (T5.2 bersama Fase 6) |
+| 6 | Docker, CI/CD, deploy ke home server | ⏳ Berikutnya |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
@@ -86,7 +86,7 @@ Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 men
 - [ ] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats` (`bun services/stats/server.ts`), volume `stats-data` (`STATS_DB_PATH`), route `/api/stats/*`, batas memori 128 MB, panduan backup SQLite *(dikerjakan bersama T6.1/T6.4)*
 - [x] **T5.3** Skrip beacon di situs: `pageview`, `download-cv`, `download-portfolio`, `outbound` (konstanta di `src/lib/stats/events.ts`); hormati DNT/GPC; tidak aktif di dev dan `/print/*`
 - [x] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
-- [ ] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
+- [x] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
 
 ## Fase 6: Docker, CI/CD, deploy
 
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T5.5 (Fase 5 selesai kecuali T5.2)
+- **Dikerjakan:** `refReportSchema`/`privateReportSchema` + `formatRefReport` (murni, tabel rata, terbaru dulu) di `src/lib/stats/summary.ts` (tipe juga dipakai layanan); `scripts/stats-report.ts` (`bun run stats:report`; `STATS_ADMIN_TOKEN` wajib, `STATS_URL` opsional; pesan jelas untuk token kosong/salah, server tak terjangkau, HTTP error). Panduan di `docs/08-analytics.md` §4.
+- **Verifikasi:** unit 3 (tabel, kosong, cocok dengan output layanan); uji nyata terhadap layanan lokal: 2 ref tampil, unduhan CV tercatat "yes", token salah → pesan + exit 1, tanpa token → pesan + exit 1; `bun run verify` lulus.
+- **Sisa Fase 5:** T5.2 (service `stats` di compose + route Caddy + batas memori + backup) dikerjakan bersama T6.1/T6.4.
 
 ### 2026-10-05 · Claude Code (Opus) · T5.4
 - **Dikerjakan:** `src/lib/stats/summary.ts` (skema Zod ringkasan dipakai bersama layanan & halaman; `formatCount`, `countryName` via `Intl.DisplayNames`, `formatSince`); `SiteStats.astro` di `/homelab` (4 angka + 3 daftar teratas + "dihitung sejak"; HTML awal "—", diisi dari `/api/stats/summary`; status `aria-busy`/`role=status`; hanya ter-build bila statistik aktif).

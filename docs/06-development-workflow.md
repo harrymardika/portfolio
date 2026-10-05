@@ -31,6 +31,7 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run fetch:github` | Sinkronisasi repo GitHub ke `src/data/generated/github.json` (pakai cache < 1 jam) | T3.1 ✅ |
 | `bun run fetch:github --force` | Sinkronisasi tanpa memakai cache | T3.1 ✅ |
 | `bun run stats:dev` | Layanan statistik lokal di :8787 (lihat `docs/08-analytics.md` §2 untuk mencobanya) | T5.1 ✅ |
+| `bun run stats:report` | Laporan privat tautan `?ref=` (butuh `STATS_ADMIN_TOKEN`, opsional `STATS_URL`) | T5.5 ✅ |
 | `bun run pdf` | Generate 4 PDF dari build yang sudah ada (`BUILD_OUT_DIR`, default `dist`) | T4.3 ✅ |
 | `docker compose -f docker/compose.dev.yml up` | Dev di Docker dengan hot reload (http://localhost:4321) | T1.8 ✅ |
 | `DEV_PORT=4331 docker compose -f docker/compose.dev.yml up` | Sama, di port host lain jika 4321 terpakai | T1.8 ✅ |

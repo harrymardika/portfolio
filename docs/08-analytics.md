@@ -57,9 +57,19 @@ Kirim tautan dengan parameter `ref` saat melamar:
 https://harry.mardika.my.id/?ref=tokopedia-ml-engineer
 ```
 
-Formatnya `<perusahaan>-<posisi>`, huruf kecil, tanpa spasi. Data `ref` hanya bisa dilihat oleh pemilik:
-- `GET /api/stats/private` dengan header `Authorization: Bearer $STATS_ADMIN_TOKEN`, atau
-- skrip laporan (T5.5), yang menampilkan kapan tautan dibuka dan apakah CV diunduh pada sesi yang sama.
+Formatnya `<perusahaan>-<posisi>`: huruf kecil, angka, dan tanda `-` saja (maks. 60 karakter; nilai lain diabaikan). Data `ref` hanya bisa dilihat oleh pemilik:
+
+```bash
+# .env lokal: STATS_ADMIN_TOKEN=<token yang sama dengan server>
+bun run stats:report
+```
+
+```
+ref                    first opened (UTC)  last opened (UTC)  visits  pages  CV   portfolio
+tokopedia-ml-engineer  2026-10-05 08:41    2026-10-05 08:41   1       2      yes  -
+```
+
+"CV/portfolio = yes" berarti pengunjung yang sama (pada hari yang sama) mengunduh file itu. Alternatif tanpa skrip: `curl -H "Authorization: Bearer $STATS_ADMIN_TOKEN" https://harry.mardika.my.id/api/stats/private`. Membuat token: `openssl rand -hex 32`.
 
 ## 5. Privasi
 

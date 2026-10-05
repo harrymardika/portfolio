@@ -9,7 +9,7 @@ import { Database } from 'bun:sqlite';
 
 import { dayKey } from '../../src/lib/stats/privacy';
 
-import type { Ranked, Summary } from '../../src/lib/stats/summary';
+import type { Ranked, RefReport, Summary } from '../../src/lib/stats/summary';
 
 export interface StoredEvent {
   readonly type: 'pageview' | 'download' | 'outbound';
@@ -20,16 +20,6 @@ export interface StoredEvent {
   readonly country: string | null;
   readonly ref: string | null;
   readonly visitor: string;
-}
-
-export interface RefReport {
-  readonly ref: string;
-  readonly firstSeen: string;
-  readonly lastSeen: string;
-  readonly visits: number;
-  readonly pageviews: number;
-  readonly downloadedCv: boolean;
-  readonly downloadedPortfolio: boolean;
 }
 
 const SCHEMA = `
