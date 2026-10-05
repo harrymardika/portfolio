@@ -1,0 +1,59 @@
+# Awards, competitions, and recognitions. Newest first.
+# Schema: docs/04-content-guide.md §3.
+
+items:
+  - id: pkm-k-2026
+    title:
+      en: Nationally Funded, PKM-Kewirausahaan (PKM-K) 2026
+      id: Lolos Pendanaan Nasional PKM-Kewirausahaan (PKM-K) 2026
+    issuer: Ministry of Higher Education, Science, and Technology
+    date: 2026
+
+  - id: gemastik-xviii
+    title:
+      en: Finalist, Data Mining, GEMASTIK XVIII
+      id: Finalis Data Mining GEMASTIK XVIII
+    issuer: GEMASTIK
+    date: 2025
+
+  - id: gunadarma-business-idea-2025
+    title:
+      en: Finalist Team, Gunadarma Business Idea Competition
+      id: Tim Finalis Gunadarma Business Idea Competition
+    issuer: Universitas Gunadarma
+    date: 2025
+
+  - id: neurontara-2025
+    title:
+      en: Top 5 of 40 Teams, Regression Rumble, Neurontara Data Clash
+      id: 5 Besar dari 40 Tim, Regression Rumble, Neurontara Data Clash
+    issuer: Neurontara
+    date: 2025
+
+  - id: mapres
+    title:
+      en: Most Outstanding Student (MAPRES), 4th, 5th, 6th, and 7th semester
+      id: Mahasiswa Berprestasi (MAPRES) semester 4, 5, 6, dan 7
+    issuer: Universitas Gunadarma
+    date: 2024
+
+  - id: kompres-15
+    title:
+      en: 2nd Place, Machine Learning Category, KOMPRES 15
+      id: Juara 2 Kategori Machine Learning, KOMPRES 15
+    issuer: Universitas Gunadarma
+    date: 2024
+
+  - id: samsung-innovation-campus-5
+    title:
+      en: Top 10 of 100 Teams, Samsung Innovation Campus Batch 5
+      id: 10 Besar dari 100 Tim, Samsung Innovation Campus Batch 5
+    issuer: Samsung Indonesia
+    date: 2024
+
+  - id: idcamp-best-student
+    title:
+      en: Best Student, Machine Learning Developer Cohort (90,000+ applicants)
+      id: Best Student, Machine Learning Developer Cohort (90.000+ pendaftar)
+    issuer: Indosat Ooredoo Hutchison Digital Camp
+    date: 2024-04

@@ -1,0 +1,15 @@
+# Changelog
+
+Format mengikuti [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versi mengikuti [SemVer](https://semver.org/).
+Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
+
+## [Unreleased]
+
+### Added
+- Project foundation (Phase 0): README, AGENTS.md, CLAUDE.md, PROGRESS.md, full documentation in `docs/`, ADR 0001–0008.
+- Content source in `content/` extracted from the owner's CV (profile, experience, education, awards, trainings, certifications, skills, journey, projects).
+- Theme prototypes (`docs/design/theme-prototypes.html`); chosen theme: F + E, green palette.
+- Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
+
+### Removed
+- Previous "Temporal Portal" React/Vite codebase (fresh start).

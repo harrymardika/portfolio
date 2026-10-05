@@ -1,0 +1,22 @@
+# Skill groups. Schema: docs/04-content-guide.md §3.
+
+groups:
+  - id: ml-cv
+    name: { en: Machine learning & computer vision, id: Machine learning & computer vision }
+    items: [PyTorch, TensorFlow / Keras, YOLO, Computer Vision, NLP, RAG, Deep Learning, Multimodal AI]
+
+  - id: deploy-infra
+    name: { en: Deployment & infrastructure, id: Deployment & infrastruktur }
+    items: [Docker, MLOps, TFX, FastAPI, Edge AI (Hailo-8L), Qdrant / FAISS, Microsoft Azure, Alibaba Cloud]
+
+  - id: product-web
+    name: { en: Product & web, id: Produk & web }
+    items: [Next.js, Go, PostgreSQL, React.js, Supabase]
+
+  - id: leadership
+    name: { en: Leadership & communication, id: Kepemimpinan & komunikasi }
+    items: [Team mentoring, Curriculum design, Technical facilitation, Public speaking]
+
+  - id: languages
+    name: { en: Languages, id: Bahasa }
+    items: [Indonesian (native), English (professional working, B2)]

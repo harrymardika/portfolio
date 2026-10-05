@@ -1,0 +1,51 @@
+# Training programs and bootcamps (as a participant). Newest first.
+# Schema: docs/04-content-guide.md §3.
+
+items:
+  - id: dbs-coding-camp-ml
+    institution: Coding Camp powered by DBS Foundation
+    program: { en: Machine Learning Engineer Cohort, id: Machine Learning Engineer Cohort }
+    location: Jakarta, Indonesia
+    start: 2025-02
+    end: 2025-06
+    tags: [FastAPI, TensorFlow, React.js, Hapi.js, Supabase, PWA]
+    highlights:
+      - en: Selected as 1 of 2,500 students from 63,000 applicants nationwide.
+      - en: Graduated with Distinction (average score 94.5/100).
+      - en: Built Dompet Juara, a personal finance web app that uses ML to analyze spending behavior and personalize financial advice.
+      - en: Led the ML team through an end-to-end pipeline (preparation, modeling, evaluation, deployment) with 90% model accuracy.
+      - en: Deployed inference services with FastAPI and TensorFlow, integrated with React.js, Hapi.js, and Supabase, delivered as a PWA.
+
+  - id: tbi-english
+    institution: TBI Bandung
+    program: { en: English for Business Communication, id: English for Business Communication }
+    location: Bandung, Indonesia
+    start: 2025-01   # TODO(owner): confirm month (CV only says 2025)
+    end: 2025-01
+    highlights:
+      - en: "Completed at B2 level with a score of 94%."
+
+  - id: samsung-innovation-campus
+    institution: Samsung Innovation Campus
+    program: { en: AI & IoT Development, id: Pengembangan AI & IoT }
+    location: Indonesia
+    start: 2024-03
+    end: 2024-09
+    show_on_cv: false
+    tags: [Python, ESP32, IoT, Machine Learning, Streamlit]
+    highlights:
+      - en: Completed three stages covering Python, algorithms, IoT with ESP32, data science, and deep learning.
+
+  - id: idcamp-ml-developer
+    institution: Indosat Ooredoo Hutchison Digital Camp
+    program: { en: Machine Learning Developer Cohort (Beginner to Expert), id: Machine Learning Developer Cohort (Pemula hingga Expert) }
+    location: Jakarta, Indonesia
+    start: 2023-11
+    end: 2024-04
+    tags: [TensorFlow, PyTorch, Optuna, Keras, TFX, Docker, MLOps, Prometheus, Grafana]
+    highlights:
+      - en: Selected as Top Participant from 90,000+ applicants and awarded Best Student.
+      - en: Completed all levels (Beginner, Intermediate, Expert) with 5-star ratings on every project.
+      - en: Built a stock price prediction system with LSTM in TensorFlow (KerasTuner) and PyTorch (Optuna).
+      - en: Developed a film recommendation system using content-based and collaborative filtering (K-Means + deep learning).
+      - en: Designed end-to-end ML pipelines with TensorFlow Extended (TFX), cloud deployment, and monitoring with Prometheus and Grafana.

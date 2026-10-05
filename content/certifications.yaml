@@ -1,0 +1,29 @@
+# Certifications. Items whose `expires` date has passed are hidden automatically
+# from the website and CV. After renewing, update `expires` to show it again.
+# Schema: docs/04-content-guide.md §3.
+
+items:
+  - id: alibaba-cloud-associate
+    name: "Alibaba Cloud Certified Associate: Cloud Computing"
+    issuer: Alibaba Cloud
+    issued: 2024-11
+    expires: 2026-11
+    credential_id: IACA01241100178183L
+
+  - id: nvidia-cv-industrial-inspection
+    name: Computer Vision for Industrial Inspection
+    issuer: NVIDIA
+    issued: 2025-01   # TODO(owner): confirm the month
+
+  - id: digitalent-cloud-networking
+    name: Cloud Computing & Networking
+    issuer: Digital Talent Scholarship
+    issued: 2024-01   # TODO(owner): confirm the month
+
+  # Expired July 2026, so hidden automatically. Owner decision D6 in PROGRESS.md.
+  - id: azure-ai-engineer
+    name: "Microsoft Certified: Azure AI Engineer Associate"
+    issuer: Microsoft
+    issued: 2025-07
+    expires: 2026-07
+    credential_id: EFA28ADDBE884E

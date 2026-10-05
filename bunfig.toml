@@ -1,5 +1,0 @@
-# Bun configuration file
-[install]
-optional = true
-dev = true
-peer = true

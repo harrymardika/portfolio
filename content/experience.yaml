@@ -1,0 +1,156 @@
+# Work, research, leadership, and teaching experience. Newest first.
+# Schema: docs/04-content-guide.md §3. `highlights` are English-only for now (Indonesian: task T8.3).
+# Corrections approved by the owner on 2026-10-05: see PROGRESS.md session log.
+
+items:
+  - id: decklify
+    organization: Decklify
+    role: { en: Founder & CEO, id: Pendiri & CEO }
+    category: founder
+    location: Jakarta, Indonesia
+    start: 2026-05
+    end: present
+    tags: [Next.js, Go, PostgreSQL, Generative AI, Product]
+    highlights:
+      - en: Leading development of Decklify, an AI-powered SaaS platform that automates presentation creation from text, documents, or legacy PPTX files.
+      - en: Built and launched the product from scratch to commercial launch at decklify.id within 3 months (Next.js, Go, PostgreSQL).
+      - en: "Validated product-market fit: +45 NPS, 8.39/10 satisfaction score, and 100+ decks generated for 50+ users in the first 2 weeks."
+      - en: Designed a business model with an 83.68% contribution margin and break-even at 11 transactions per month.
+      - en: Led a 5-person team and managed IDR 5.85M in national grant funding with 100% accountability.
+
+  - id: mitra-teknologi-gemilang
+    organization: PT. Mitra Teknologi Gemilang
+    role: { en: AI Engineer, id: AI Engineer }
+    category: work
+    location: Depok, Indonesia
+    start: 2026-04
+    end: 2026-07
+    tags: [YOLO, Temporal Shift Module, ByteTrack, RTSP, Gemini API, Qdrant, RAG]
+    highlights:
+      - en: Engineered a real-time crowd violence detection engine combining YOLO and a Temporal Shift Module (TSM) to process concurrent RTSP CCTV streams.
+      - en: Architected an optimized video pipeline using Grid-9-Modified (5 active cells) frame decomposition, reducing computational overhead by 45% while keeping tracking accurate with ByteTrack.
+      - en: Integrated the Google Gemini API into the surveillance architecture for automated multimodal reasoning on live camera feeds.
+      - en: Migrated the multi-agent orchestrator's RAG storage from local FAISS to a scalable Qdrant vector database, speeding up semantic search for real-time event and location queries.
+
+  - id: google-student-ambassador
+    organization: Google
+    role: { en: Student Ambassador, id: Student Ambassador }
+    category: leadership
+    location: Jakarta, Indonesia
+    start: 2025-09
+    end: 2026-02
+    tags: [AI Advocacy, Community, Public Speaking]
+    highlights:
+      - en: Selected as 1 of 800 Ambassadors from 12,000+ applicants nationwide for leadership and AI advocacy.
+      - en: Co-coordinated the campus team for the Google Gemini Arena, helping the university secure 1st place in the Gemini Arena Challenge.
+      - en: Co-created content featured on @googleindonesia that generated 5k+ engagements and 100k+ views.
+      - en: Led referral and on-campus advocacy campaigns, engaging 300+ students through events and AI workshops.
+
+  - id: gunadarma-ai-researcher
+    organization: Universitas Gunadarma
+    role: { en: AI Researcher (Grant Project), id: Peneliti AI (Proyek Hibah) }
+    category: research
+    location: Depok, Indonesia
+    start: 2025-09
+    end: 2025-12
+    tags: [Multimodal AI, MobileNetV3, NLP, Edge AI, Hailo-8L, Quantization]
+    highlights:
+      - en: Built a real-time multimodal crisis-detection system fusing facial emotion, body-pose cues, and speech sentiment, achieving 92.5% accuracy (AUC 0.96) and 0.92 F1-score in early suicide-risk detection.
+      - en: Designed optimized MobileNetV3 CNNs and a precision-tuned fusion mechanism, cutting life-critical false negatives by 35%.
+      - en: Optimized Edge AI deployment on Hailo-8L, reaching 5–8 ms latency and 30+ FPS at about 2 W, a 300–500% improvement over CPU.
+      - en: Led the full data and optimization pipeline (11k+ images, 1k+ transcripts) and applied 8-bit quantization, cutting model size by 40% with no accuracy drop.
+
+  - id: gdgoc-director-ml
+    organization: Google Developer Groups on Campus Universitas Gunadarma
+    role: { en: Director of Machine Learning, id: Director of Machine Learning }
+    category: leadership
+    location: Depok, Indonesia
+    start: 2025-09
+    end: 2026-09
+    tags: [Leadership, Curriculum Design, GenAI, RAG, Mentoring]
+    highlights:
+      - en: Led machine learning strategy, curriculum development, and community growth.
+      - en: Oversaw ML education programs (GenAI, LLMs, RAG) and ensured consistent learning quality.
+      - en: Mentored 24 participants in a bootcamp through practical ML workflows and real-world projects.
+      - en: Developed an automated certificate generation system that reduced manual administrative work.
+      - en: Managed cross-functional teams organizing workshops, technical events, and competition preparation programs.
+
+  - id: gdgoc-ml-associate
+    organization: Google Developer Groups on Campus Universitas Gunadarma
+    role: { en: Machine Learning Associate, id: Machine Learning Associate }
+    category: teaching
+    location: Depok, Indonesia
+    start: 2024-11
+    end: 2025-09
+    tags: [Teaching, GenAI, RAG, Hackathon]
+    highlights:
+      - en: Designed and delivered weekly classes on Machine Learning and AI, including GenAI and Retrieval-Augmented Generation.
+      - en: Mentored Competemate participants through hands-on project guidance and collaborative problem-solving.
+      - en: Led the Gunadarma Code Week (GCW) 2025 Hackathon, managing end-to-end operations for 100+ participants and 30 teams.
+
+  - id: lepkom-lab-assistant
+    organization: LePKom Universitas Gunadarma
+    role: { en: Laboratory Assistant, id: Asisten Laboratorium }
+    category: teaching
+    location: Depok, Indonesia
+    start: 2024-05
+    end: 2025-07
+    tags: [HTML, JavaScript, Teaching]
+    highlights:
+      - en: Guided and mentored 30+ students in developing foundational HTML and JavaScript skills.
+      - en: Managed laboratory systems for LSP certification exams, keeping exam environments stable for 40+ students.
+
+  - id: idcamp-facilitator
+    organization: Indosat Ooredoo Hutchison Digital Camp
+    role: { en: Machine Learning Engineer Facilitator, id: Fasilitator Machine Learning Engineer }
+    category: teaching
+    location: Jakarta, Indonesia
+    start: 2025-01
+    end: 2025-04
+    tags: [Mentoring, Machine Learning]
+    highlights:
+      - en: Mentored 25 intermediate-level participants, ensuring timely course completion and strong engagement.
+      - en: Managed live sessions and resolved participant questions in under 24 hours.
+      - en: Supported program growth by engaging networks, contributing to a measurable increase in enrollment.
+
+  - id: dbs-coding-camp-facilitator
+    organization: Coding Camp powered by DBS Foundation
+    role: { en: Machine Learning Engineer Facilitator, id: Fasilitator Machine Learning Engineer }
+    category: teaching
+    location: Jakarta, Indonesia
+    start: 2024-07
+    end: 2025-01
+    tags: [Mentoring, Machine Learning]
+    highlights:
+      - en: Mentored 27 intermediate-level participants, achieving a 65% graduation rate through structured guidance.
+      - en: Led advanced training for 25 expert-level participants, driving a 60% graduation rate in an applied Machine Learning course.
+      - en: Built a collaborative and inclusive learning environment that strengthened technical skills and learner outcomes.
+
+  - id: gunadarma-research-assistant
+    organization: Universitas Gunadarma
+    role: { en: Research Assistant (Doctoral Project), id: Asisten Peneliti (Proyek Doktoral) }
+    category: research
+    location: Depok, Indonesia
+    start: 2024-09
+    end: 2024-10
+    tags: [NLP, BERT, Summarization, LSA]
+    highlights:
+      - en: Developed an AI-powered summarization system using BERT that automates the review of academic proposals and reduces manual evaluation time.
+      - en: "Achieved ROUGE-1 56.63%, ROUGE-2 47.38%, and ROUGE-L 51.14%."
+      - en: Designed hybrid algorithms to improve sentence weighting and summary coherence.
+      - en: Applied cosine similarity and semantic analysis to preserve meaning and structure in summaries.
+      - en: Served as the primary developer in a doctoral research team, turning research concepts into a working ML pipeline.
+
+  - id: green-leadership-indonesia
+    organization: Green Leadership Indonesia
+    role: { en: Participant, id: Peserta }
+    category: program
+    location: Jakarta, Indonesia
+    start: 2024-06
+    end: 2024-09
+    tags: [Leadership, Sustainability]
+    show_on_cv: true
+    highlights:
+      - en: Organized "Eco Warrior", an environmental education event with the Ministry of Environment and Forestry that engaged 40+ children in sustainability practices.
+      - en: Strengthened leadership values grounded in environmental stewardship and Pancasila-based principles.
+      - en: Developed research, critical thinking, and problem-solving skills on climate and environmental issues.

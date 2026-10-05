@@ -1,0 +1,22 @@
+# Schema: docs/04-content-guide.md §3. Newest first.
+
+items:
+  - id: gunadarma
+    institution: Universitas Gunadarma
+    degree: { en: Bachelor of Informatics, id: Sarjana Informatika }
+    location: Depok, Indonesia
+    start: 2022-09
+    end: 2026-08
+    gpa: "3.99/4.00"
+    highlights:
+      - en: Four-time Most Outstanding Student (MAPRES), 4th to 7th semester.
+      - en: "Undergraduate thesis: Javanese script (Aksara Jawa) classification with a YOLO-based model."
+
+  - id: sman2-mandau
+    institution: SMA Negeri 2 Mandau
+    degree: { en: Natural Sciences, id: IPA }
+    location: Riau, Indonesia
+    start: 2019-07   # TODO(owner): confirm months
+    end: 2022-06
+    show_on_cv: false
+    highlights: []

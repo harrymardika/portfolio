@@ -1,0 +1,96 @@
+# 03 · Design system: tema "F + E", palet Hijau
+
+Referensi visual: buka `docs/design/theme-prototypes.html` di browser, bagian **F + E**, tombol warna **Hijau (E)**.
+Keputusan: `docs/adr/0006-visual-theme.md`.
+
+## 1. Konsep
+
+**"Kartu personal + perjalanan."** Bagian atas memperkenalkan *siapa* (foto sebagai kartu 3D, kalimat ajakan). Bagian berikutnya menceritakan *perjalanan* (jalur karier 3D). Kesan umum dan hangat, dengan detail teknis yang halus: kotak deteksi wajah ala computer vision dan angka berfont monospace.
+
+Nada: tenang, dewasa, ramah. Tidak "neon", tidak gelap pekat.
+
+## 2. Token warna
+
+Semua warna di komponen **wajib** memakai token ini (CSS custom properties di `src/styles/tokens.css`, dipetakan ke Tailwind). Hex mentah di komponen dilarang.
+
+| Token | Terang | Gelap | Pemakaian |
+|---|---|---|---|
+| `--color-forest` | `#173d32` | `#173d32` | Latar hero, tombol utama di bagian terang |
+| `--color-forest-ink` | `#12302a` | `#e7efe9` | Judul di latar terang |
+| `--color-amber` | `#f2b134` | `#f2b134` | Aksen: kata kunci judul, tombol CTA di hero, titik jalur, kotak deteksi |
+| `--color-amber-deep` | `#d48a00` | `#f2b134` | Aksen teks di latar terang (kontras lebih baik) |
+| `--color-sage` | `#eef3ef` | `#111a17` | Latar bagian terang (journey, konten) |
+| `--color-surface` | `#ffffff` | `#18231f` | Kartu, label |
+| `--color-text` | `#173d32` | `#e7efe9` | Teks utama |
+| `--color-text-muted` | `#3f5d52` | `#a9c4b6` | Teks sekunder |
+| `--color-line` | `#d6e2d9` | `#2a3a33` | Garis, border |
+| `--color-on-forest` | `#ffffff` | `#ffffff` | Teks di atas `forest` |
+| `--color-on-forest-muted` | `#d3e2d9` | `#d3e2d9` | Teks sekunder di atas `forest` |
+| `--color-success` | `#7ee2a8` | `#7ee2a8` | Indikator status |
+
+Kontras minimal: teks normal 4.5:1, teks besar 3:1. `amber` di atas `sage` **tidak** lolos untuk teks kecil; gunakan `amber-deep`.
+
+Mode gelap: hero tetap `forest`; bagian terang berganti ke `sage` gelap. Default mengikuti `prefers-color-scheme`, dengan tombol override disimpan di `localStorage`.
+
+## 3. Tipografi
+
+| Peran | Font | Pemakaian |
+|---|---|---|
+| Display | **Young Serif** 400 | H1–H2, nama di kartu |
+| Body | **Plus Jakarta Sans** 400/500/600/700 | Paragraf, navigasi, tombol |
+| Data | **IBM Plex Mono** 400/500 | Angka statistik, label teknis, eyebrow, tahun di journey |
+
+Self-host via Fontsource (tanpa request ke Google Fonts, demi privasi dan CSP). Selalu `font-display: swap` dengan fallback `Georgia, serif` / `system-ui, sans-serif` / `ui-monospace, monospace`.
+
+Skala (fluid, `clamp`):
+
+| Token | Ukuran |
+|---|---|
+| `--text-hero` | `clamp(2.125rem, 5vw, 4rem)` / line-height 1.02 |
+| `--text-h2` | `clamp(1.75rem, 3.8vw, 2.875rem)` / 1.05 |
+| `--text-h3` | `1.25rem` / 1.3 |
+| `--text-body` | `1rem`–`1.0625rem` / 1.6 |
+| `--text-small` | `0.8125rem` |
+| `--text-eyebrow` | `0.75rem` mono, uppercase, letter-spacing `0.08em` |
+
+Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
+
+## 4. Layout & spacing
+
+- Kontainer maksimal `1120px`, gutter samping `clamp(16px, 4vw, 40px)`.
+- Skala spacing kelipatan 4px (pakai skala Tailwind).
+- Radius: tombol & badge `999px` (pil); kartu `12px`; label journey `10px`.
+- Breakpoint: `sm 640`, `md 768`, `lg 1024`, `xl 1280`. Hero & journey berubah dari dua kolom menjadi satu kolom di bawah `lg`.
+
+## 5. Komponen kunci
+
+| Komponen | Spesifikasi |
+|---|---|
+| **Hero** | Latar `forest`. Kiri: badge peran (mono), H1 dengan kata terakhir `amber`, paragraf, tombol "Download CV" (amber) + "View Portfolio" (outline putih), 3 statistik mono dari `profile.yaml → stats`. Kanan: kartu foto 3D. |
+| **Kartu foto 3D** | Kartu putih radius besar, foto persegi, nama (Young Serif), peran, chip lokasi `amber`. Kotak deteksi: 4 sudut `amber` + label mono `person · AI eng 0.99`, "mengunci" setiap ±4 s. Miring mengikuti pointer (maks ±0.45 rad). Dekorasi: 2 bola amber, 1 bola putih, 1 bola hijau muda, cincin orbit tipis. |
+| **Journey** | Latar `sage`. Kiri: eyebrow mono "Journey · 2022 → 2026", H2, paragraf. Kanan: tabung jalur `forest`, titik milestone `amber` dengan cincin `forest`, label kartu putih di sisi kanan titik (tahun mono `amber-deep`, judul, sub-judul `muted`). Bola cahaya bergerak mengikuti progres scroll. Klik titik membuka dialog detail. |
+| **Fallback Journey** | `<ol>` timeline vertikal biasa dengan data yang sama. Selalu ada di HTML; disembunyikan secara visual hanya saat 3D aktif. |
+| **Button** | Varian `primary` (amber di forest / forest di terang), `outline`. Tinggi min 44px. Fokus: outline 2px `currentColor`, offset 2px. |
+| **Stat** | Angka mono 500 + label kecil. |
+
+## 6. Aturan 3D
+
+1. **Progressive enhancement.** HTML statis yang setara selalu ada. 3D dimuat dengan `client:visible`/dynamic import setelah LCP.
+2. **Matikan otomatis** jika: tidak ada WebGL, `prefers-reduced-motion: reduce` (tampilkan satu frame diam), `navigator.hardwareConcurrency <= 2`, atau `saveData`.
+3. **Anggaran:** JS 3D ≤ 180 KB gzip per halaman; ≤ 60 fps; pause saat di luar layar; DPR maksimal 2.
+4. **Warna** dibaca dari token CSS saat mount (`getComputedStyle`), bukan ditulis di kode scene.
+5. **Interaksi tidak wajib.** Semua informasi juga ada dalam teks; 3D tidak boleh menjadi satu-satunya cara mengakses konten.
+6. **Label HTML** di atas kanvas (milestone) harus tetap berupa teks yang bisa dibaca screen reader, atau duplikat dari fallback.
+
+## 7. Aksesibilitas
+
+- Target WCAG 2.2 AA. Kanvas 3D diberi `aria-hidden="true"`; makna disampaikan oleh HTML.
+- Semua gambar punya `alt` (foto profil: "Foto Harry Mardika"/"Photo of Harry Mardika").
+- Gerakan menghormati `prefers-reduced-motion` (CSS dan JS).
+- Skip link ke `#main`, `lang` di `<html>` sesuai locale, fokus terlihat di semua elemen interaktif.
+
+## 8. Ikon & media
+
+- Ikon: satu set konsisten (Lucide via `astro-icon` atau SVG inline). Logo sosial resmi untuk LinkedIn, Instagram, dan GitHub.
+- Foto profil: `content/media/profile.jpg` (1024×1024). Gunakan `astro:assets` untuk varian AVIF/WebP responsif.
+- Latar foto saat ini biru. Ini sengaja dibiarkan kontras di atas hijau (keputusan tertunda D3 di `PROGRESS.md`).

@@ -1,0 +1,34 @@
+# Milestones on the 3D Journey path (oldest first). Keep 4–6 items.
+# `ref` points to an id in experience/awards/education/trainings for the detail dialog.
+# Schema: docs/04-content-guide.md §3.
+
+milestones:
+  - id: start-informatics
+    year: 2022
+    title: { en: Started Informatics, id: Mulai kuliah Informatika }
+    subtitle: { en: Universitas Gunadarma, id: Universitas Gunadarma }
+    ref: gunadarma
+
+  - id: idcamp-best-student
+    year: 2024
+    title: { en: Best Student, id: Best Student }
+    subtitle: { en: "IDCamp, 90,000+ applicants", id: "IDCamp, 90.000+ pendaftar" }
+    ref: idcamp-best-student
+
+  - id: google-student-ambassador
+    year: 2025
+    title: { en: Google Student Ambassador, id: Google Student Ambassador }
+    subtitle: { en: 1 of 800 selected, id: 1 dari 800 terpilih }
+    ref: google-student-ambassador
+
+  - id: director-ml
+    year: 2025
+    title: { en: Director of ML, id: Director of ML }
+    subtitle: { en: GDG on Campus, id: GDG on Campus }
+    ref: gdgoc-director-ml
+
+  - id: founder-decklify
+    year: 2026
+    title: { en: Founder, id: Pendiri }
+    subtitle: { en: Decklify, id: Decklify }
+    ref: decklify

@@ -1,0 +1,62 @@
+# Profile shown in the hero, about page, CV header, and portfolio cover.
+# Schema: docs/04-content-guide.md §3. Never add a phone number here.
+
+name: Harry Mardika
+
+role:
+  en: AI Engineer · Founder, Decklify
+  id: AI Engineer · Pendiri Decklify
+
+# Words wrapped in *asterisks* get the accent color.
+headline:
+  en: Let's build something *useful.*
+  id: Mari membangun sesuatu yang *bermanfaat.*
+
+tagline:
+  en: I turn video, speech, and text into AI products people can actually use, and I love teaching others to do the same.
+  id: Saya mengubah video, suara, dan teks menjadi produk AI yang benar-benar dipakai orang, dan saya senang mengajarkannya kepada orang lain.
+
+summary:
+  en: >-
+    Informatics graduate (GPA 3.99/4.00) who turns ideas into launched products. Experienced across
+    research, product development, and applied AI, including real-time video analytics, language
+    processing, and edge deployment. Led a team to launch a commercial product in 3 months and mentored
+    75+ learners through bootcamps and community programs. Recognized through national grant funding,
+    competition placements including Data Mining finalist at GEMASTIK XVIII, four-time Most Outstanding
+    Student (MAPRES), and selection as a Google Student Ambassador.
+  id: >-
+    Lulusan Informatika (IPK 3,99/4,00) yang mengubah ide menjadi produk nyata. Berpengalaman di riset,
+    pengembangan produk, dan penerapan AI, termasuk analitik video real-time, pemrosesan bahasa, dan
+    deployment di perangkat edge. Memimpin tim meluncurkan produk komersial dalam 3 bulan dan membimbing
+    75+ peserta lewat bootcamp dan program komunitas. Meraih pendanaan hibah nasional, finalis Data Mining
+    GEMASTIK XVIII, empat kali Mahasiswa Berprestasi (MAPRES), dan terpilih sebagai Google Student Ambassador.
+
+location: Jakarta, Indonesia
+email: harrymardika48@gmail.com
+photo: media/profile.jpg
+
+# Decision D2 in PROGRESS.md. Leave empty to hide.
+status_badge:
+
+socials:
+  - platform: linkedin
+    url: https://www.linkedin.com/in/harry-mardika/
+    handle: harry-mardika
+  - platform: instagram
+    url: https://www.instagram.com/harry.mrdk/
+    handle: "@harry.mrdk"
+  - platform: github
+    url: https://github.com/harrymardika
+    handle: harrymardika
+  - platform: email
+    url: mailto:harrymardika48@gmail.com
+    handle: harrymardika48@gmail.com
+
+# Exactly three, shown under the hero buttons.
+stats:
+  - value: "92.5%"
+    label: { en: detection accuracy, id: akurasi deteksi }
+  - value: "5–8 ms"
+    label: { en: edge latency, id: latensi di edge }
+  - value: "75+"
+    label: { en: learners mentored, id: peserta dibimbing }

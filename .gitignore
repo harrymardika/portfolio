@@ -1,42 +1,36 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies & build output
+node_modules/
+dist/
+.astro/
+.output/
+coverage/
+playwright-report/
+test-results/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Generated at build time (see docs/09-pdf-generation.md and docs/02-architecture.md)
+public/downloads/
+src/data/generated/
 
-# Editor directories and files
-/.vscode
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Bun
-bun.lockb
-
-# Environment variables
+# Environment & secrets
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
 
-# Generated data
-data/projects.json
+# Private source material (raw CV files contain a phone number; data is extracted into content/)
+CV/
+# Raw original photos; optimized copies live in content/media/
+Photos/
+*.docx
+/Dokumen Perencanaan*.pdf
 
-# Testing
-coverage
-.nyc_output
+# Editors & OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
 
-# Build artifacts
-*.tsbuildinfo
+# Claude Code local settings
+.claude/settings.local.json
