@@ -1,0 +1,103 @@
+---
+/**
+ * Project case study. The Markdown body is English for now; Indonesian pages say so and mark the
+ * body with lang="en" so screen readers pronounce it correctly.
+ */
+import { render } from 'astro:content';
+
+import PageLayout from '@/layouts/PageLayout.astro';
+import { localize } from '@/lib/content';
+import { getProfile, getProjects } from '@/lib/content/queries';
+import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return localeStaticPaths().flatMap(({ params, props }) =>
+    projects.map((entry) => ({ params: { ...params, slug: entry.id }, props: { ...props, entry } })),
+  );
+}
+
+type Entry = Awaited<ReturnType<typeof getProjects>>[number];
+
+interface Props {
+  locale: Locale;
+  entry: Entry;
+}
+
+const { locale, entry } = Astro.props;
+const t = UI[locale];
+const project = entry.data;
+const profile = await getProfile();
+const { Content } = await render(entry);
+const summary = localize(project.summary, locale);
+const links = (
+  [
+    ['live', t['projects.live']],
+    ['demo', t['projects.demo']],
+    ['repo', t['projects.repo']],
+  ] as const
+).flatMap(([key, label]) => (project.links[key] ? [{ href: project.links[key], label }] : []));
+---
+
+<PageLayout
+  locale={locale}
+  title={`${project.title} · ${profile.name}`}
+  description={summary}
+  profile={profile}
+>
+  <article class="mx-auto grid max-w-[760px] gap-8 px-[clamp(16px,4vw,40px)] py-14">
+    <a href={localizePath('/projects/', locale)} class="w-max text-sm text-ink-muted hover:text-ink">
+      ← {t['projects.back']}
+    </a>
+    <header class="grid gap-4">
+      <h1 class="text-h2">{project.title}</h1>
+      <p class="text-lg text-ink-muted">{summary}</p>
+      <dl class="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+        <div>
+          <dt class="font-mono text-eyebrow text-amber-deep uppercase">{t['projects.role']}</dt>
+          <dd>{localize(project.role, locale)}</dd>
+        </div>
+        <div>
+          <dt class="font-mono text-eyebrow text-amber-deep uppercase">{t['projects.year']}</dt>
+          <dd>{project.year}</dd>
+        </div>
+      </dl>
+      {project.metrics.length > 0 && (
+        <ul class="grid gap-4 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
+          {project.metrics.map((metric) => (
+            <li class="grid">
+              <span class="font-mono text-2xl font-medium text-forest-ink">{metric.value}</span>
+              <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <ul class="flex flex-wrap gap-1.5" aria-label={t['projects.tags']}>
+        {project.tags.map((tag) => (
+          <li class="rounded-full bg-surface px-2.5 py-0.5 text-xs text-ink-muted">{tag}</li>
+        ))}
+      </ul>
+      {links.length > 0 && (
+        <p class="flex flex-wrap gap-3">
+          {links.map((link) => (
+            <a
+              href={link.href}
+              rel="noopener"
+              class="inline-flex min-h-11 items-center rounded-full bg-forest px-5 font-semibold text-on-forest hover:brightness-110"
+            >
+              {link.label} ↗
+            </a>
+          ))}
+        </p>
+      )}
+    </header>
+    {locale !== 'en' && (
+      <p class="rounded-lg border border-line px-4 py-3 text-sm text-ink-muted">
+        {t['projects.englishOnly']}
+      </p>
+    )}
+    <div class="prose" lang={locale !== 'en' ? 'en' : undefined}>
+      <Content />
+    </div>
+  </article>
+</PageLayout>

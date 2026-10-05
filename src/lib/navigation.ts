@@ -9,7 +9,7 @@ export interface NavItem {
   readonly path: string;
 }
 
-export const NAV_ITEMS: readonly NavItem[] = [];
+export const NAV_ITEMS: readonly NavItem[] = [{ labelKey: 'nav.projects', path: '/projects/' }];
 
 /** Display names for social platforms (proper nouns, identical in every locale). */
 export const SOCIAL_LABELS = {

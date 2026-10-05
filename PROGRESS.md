@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.4`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 2 · **Tugas berikutnya:** `T2.5`
 
 ## Ringkasan
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
-| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 3/8 tugas |
+| 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | 🔄 4/8 tugas |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Analytics (Umami) & link pelacak | ⬜ |
@@ -58,7 +58,7 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
   - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
 - [x] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
   - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
-- [ ] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
+- [x] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
 - [ ] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
 - [ ] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
 - [ ] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
@@ -130,6 +130,12 @@ Progres keseluruhan: **Fase 0–1 selesai, 2 dari 9 fase (≈20%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T2.4
+- **Dikerjakan:** `/projects/` (grid + filter tag), `/projects/<slug>/` (case study Markdown via `render()`, metrik, tautan, kembali ke daftar; di `/id/` ada catatan bahasa dan `lang="en"` pada body), bagian "Proyek pilihan" di beranda (maks. 3 `featured`). Komponen `ProjectCard` (seluruh kartu dapat diklik lewat tautan judul), `ProjectGrid`, `TagFilter` (hanya untuk pengguna JS), `SelectedProjects`. Helper murni `collectTags(minCount)`, `filterByTag`, `tagKey`. `NAV_ITEMS` berisi Projects. Gaya `.prose` di `global.css`. Copy halaman di `profile.yaml → projects.intro`.
+- **Keputusan:** filter hanya menampilkan tag yang dipakai ≥ 2 proyek dan disembunyikan jika < 2 tag seperti itu (saat ini tersembunyi: 3 proyek tanpa tag bersama). Judul kosong "What I learned" di `decklify.md` dipindah ke komentar TODO.
+- **Verifikasi:** unit 139/139; e2e 80 lulus, 4 dilewati dengan alasan (filter belum punya data, menu HP = T2.8, keyboard di HP); axe bersih untuk daftar & detail (terang/gelap); `bun run check` lulus. Screenshot daftar/filter/detail ID/HP gelap/beranda dicek visual.
+- **Catatan:** 6 proyek masih `draft: true` (menunggu data pemilik). Menu "Projects" belum terlihat di HP sampai T2.8.
 
 ### 2026-10-05 · Claude Code (Opus) · T2.3
 - **Dikerjakan:** `Journey.astro` (satu `<ol>` = timeline fallback sekaligus label 3D), `MilestoneDetail.astro` (Popover API, tanpa JS), `src/scenes/journey-path/` (`layout.ts` murni: `pathPoints`, `sectionProgress`, `isReached`, `pathPlacement`; `index.ts` scene yang melaporkan posisi layar tiap titik). `resolveMilestoneSource`/`journeySpan` (murni) + `getJourney()`. Copy bagian di `profile.yaml → journey`.

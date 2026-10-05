@@ -1,0 +1,37 @@
+---
+/** Home page section with featured projects and a link to the full list. */
+import ProjectGrid from './ProjectGrid.astro';
+import { localize, type Project, type Profile } from '@/lib/content';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  copy: Profile['projects'];
+  projects: { id: string; data: Project }[];
+}
+
+const { locale, copy, projects } = Astro.props;
+const t = UI[locale];
+---
+
+{projects.length > 0 && (
+  <section id="projects" aria-labelledby="projects-title" class="scroll-mt-20 border-t border-line">
+    <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="grid max-w-[60ch] gap-3">
+          <h2 id="projects-title" class="text-h2">
+            {t['projects.selected']}
+          </h2>
+          <p class="text-ink-muted">{localize(copy.intro, locale)}</p>
+        </div>
+        <a
+          href={localizePath('/projects/', locale)}
+          class="font-semibold text-forest-ink underline-offset-4 hover:underline"
+        >
+          {t['projects.viewAll']} →
+        </a>
+      </div>
+      <ProjectGrid locale={locale} projects={projects} />
+    </div>
+  </section>
+)}

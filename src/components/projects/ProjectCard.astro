@@ -1,0 +1,54 @@
+---
+import { localize, tagKey, type Project } from '@/lib/content';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  slug: string;
+  project: Project;
+  /** Heading level inside the page outline. */
+  headingLevel?: 2 | 3;
+}
+
+const { locale, slug, project, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+const href = localizePath(`/projects/${slug}/`, locale);
+const metric = project.metrics[0];
+---
+
+<article
+  class="group relative flex flex-col gap-4 rounded-xl border border-line bg-surface p-6 transition-shadow hover:shadow-lg"
+  data-project
+  data-tags={project.tags.map(tagKey).join(' ')}
+>
+  {metric && (
+    <p class="grid">
+      <span class="font-mono text-2xl font-medium text-forest-ink">{metric.value}</span>
+      <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>
+    </p>
+  )}
+  <div class="grid gap-2">
+    <Heading class="text-h3">
+      <a href={href} class="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none">
+        {project.title}
+      </a>
+    </Heading>
+    <p class="text-sm text-ink-muted">{localize(project.summary, locale)}</p>
+  </div>
+  <p class="mt-auto font-mono text-xs text-amber-deep">
+    {localize(project.role, locale)} · {project.year}
+  </p>
+  <ul class="flex flex-wrap gap-1.5" aria-label={UI[locale]['projects.tags']}>
+    {project.tags.slice(0, 4).map((tag) => (
+      <li class="rounded-full bg-sage px-2.5 py-0.5 text-xs text-ink-muted">{tag}</li>
+    ))}
+  </ul>
+</article>
+
+<style>
+  /* The whole card is clickable via the stretched title link; show focus on the card. */
+  article:has(a:focus-visible) {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+</style>

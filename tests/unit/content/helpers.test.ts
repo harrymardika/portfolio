@@ -2,7 +2,9 @@ import { describe, expect, it } from 'bun:test';
 
 import {
   compareDatesDesc,
+  collectTags,
   compareProjects,
+  filterByTag,
   compareRangesDesc,
   formatDateRange,
   formatYearMonth,
@@ -13,6 +15,7 @@ import {
   sortedBy,
   splitEmphasis,
   stripEmphasis,
+  tagKey,
   toYearMonth,
   visibleOn,
 } from '@/lib/content';
@@ -160,5 +163,32 @@ describe('projects', () => {
       'Beta',
       'Old',
     ]);
+  });
+});
+
+describe('project tags', () => {
+  const projects = [
+    { title: 'A', tags: ['YOLO', 'RAG'] },
+    { title: 'B', tags: ['YOLO', 'Next.js'] },
+    { title: 'C', tags: ['Go'] },
+  ];
+
+  it('collects tags by frequency, then alphabetically', () => {
+    expect(collectTags(projects)).toEqual(['YOLO', 'Go', 'Next.js', 'RAG']);
+  });
+
+  it('keeps only tags shared by enough projects', () => {
+    expect(collectTags(projects, 2)).toEqual(['YOLO']);
+  });
+
+  it('filters by tag, or returns all for null', () => {
+    expect(filterByTag(projects, 'YOLO').map((p) => p.title)).toEqual(['A', 'B']);
+    expect(filterByTag(projects, null)).toHaveLength(3);
+    expect(filterByTag(projects, 'Rust')).toEqual([]);
+  });
+
+  it('turns tags into URL-safe keys', () => {
+    expect(tagKey('Next.js')).toBe('next-js');
+    expect(tagKey('Edge AI (Hailo-8L)')).toBe('edge-ai-hailo-8l');
   });
 });

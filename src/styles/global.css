@@ -74,6 +74,42 @@
   }
 }
 
+/* Long-form Markdown (project case studies). */
+@layer components {
+  .prose {
+    max-width: 65ch;
+    line-height: 1.7;
+  }
+
+  .prose > * + * {
+    margin-top: 1em;
+  }
+
+  .prose h2 {
+    margin-top: 2em;
+    font-size: var(--text-h3);
+  }
+
+  .prose ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+
+  .prose li + li {
+    margin-top: 0.35em;
+  }
+
+  .prose a {
+    color: var(--forest-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose strong {
+    color: var(--forest-ink);
+  }
+}
+
 /* Respect reduced motion everywhere (docs/03-design-system.md §7). */
 @media (prefers-reduced-motion: reduce) {
   *,

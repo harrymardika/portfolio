@@ -61,6 +61,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | `socials[]` | `{ platform, url, handle? }` | ✔ | `platform`: `linkedin` · `instagram` · `github` · `email` |
 | `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero |
 | `journey` | `{ title, intro }` (LocalizedText) | ✔ | Judul (boleh `*penekanan*`) dan paragraf bagian Journey |
+| `projects` | `{ intro }` (LocalizedText) | ✔ | Paragraf pembuka halaman Projects dan bagian proyek pilihan di beranda |
 
 ### `experience.yaml`
 List `items[]`:
@@ -117,7 +118,11 @@ draft: false                 # true = tidak tampil di mana pun
 ---
 ```
 
-Isi (body) dalam Markdown, versi English. Versi Indonesia opsional di file `projects/<slug>.id.md` dengan frontmatter yang hanya berisi `title`/`summary` yang diterjemahkan.
+Isi (body) dalam Markdown, versi English. Di halaman `/id/` body ini tetap tampil (diberi `lang="en"`) dengan catatan bahwa studi kasus ditulis dalam bahasa Inggris; `summary`, `role`, dan label metrik sudah dwibahasa lewat frontmatter. *(Terjemahan body `projects/<slug>.id.md` belum didukung; tambahkan sebagai tugas baru bila dibutuhkan.)*
+
+Catatan tampilan:
+- Jangan menulis judul bagian (`## ...`) yang isinya kosong; tulis TODO di dalam komentar `<!-- -->`.
+- Filter tag di halaman Projects hanya muncul jika minimal dua tag masing-masing dipakai oleh dua proyek atau lebih.
 Struktur body yang disarankan: **Problem → Approach → Result → What I learned**.
 
 ## 4. Proyek dari GitHub

@@ -44,6 +44,7 @@ export const profileSchema = z.strictObject({
     .array(z.strictObject({ value: z.string().trim().min(1), label: localizedText }))
     .length(3, 'The hero shows exactly 3 stats'),
   journey: z.strictObject({ title: localizedText, intro: localizedText }),
+  projects: z.strictObject({ intro: localizedText }),
 });
 
 export const experienceSchema = z

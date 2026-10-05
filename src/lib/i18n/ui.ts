@@ -27,6 +27,20 @@ const en = {
   'journey.openDetail': 'Read the story',
   'journey.gpa': 'GPA',
   'common.close': 'Close',
+  'nav.projects': 'Projects',
+  'projects.title': 'Projects',
+  'projects.selected': 'Selected projects',
+  'projects.viewAll': 'View all projects',
+  'projects.filterLabel': 'Filter by technology',
+  'projects.all': 'All',
+  'projects.back': 'All projects',
+  'projects.live': 'Visit site',
+  'projects.repo': 'Source code',
+  'projects.demo': 'Demo',
+  'projects.role': 'Role',
+  'projects.year': 'Year',
+  'projects.tags': 'Technologies',
+  'projects.englishOnly': 'This case study is written in English.',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -53,6 +67,20 @@ const id: Record<UiKey, string> = {
   'journey.openDetail': 'Baca ceritanya',
   'journey.gpa': 'IPK',
   'common.close': 'Tutup',
+  'nav.projects': 'Proyek',
+  'projects.title': 'Proyek',
+  'projects.selected': 'Proyek pilihan',
+  'projects.viewAll': 'Lihat semua proyek',
+  'projects.filterLabel': 'Saring berdasarkan teknologi',
+  'projects.all': 'Semua',
+  'projects.back': 'Semua proyek',
+  'projects.live': 'Kunjungi situs',
+  'projects.repo': 'Kode sumber',
+  'projects.demo': 'Demo',
+  'projects.role': 'Peran',
+  'projects.year': 'Tahun',
+  'projects.tags': 'Teknologi',
+  'projects.englishOnly': 'Studi kasus ini ditulis dalam bahasa Inggris.',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

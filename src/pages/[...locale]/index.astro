@@ -4,9 +4,10 @@
  */
 import Hero from '@/components/hero/Hero.astro';
 import Journey from '@/components/journey/Journey.astro';
+import SelectedProjects from '@/components/projects/SelectedProjects.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
-import { getJourney, getProfile } from '@/lib/content/queries';
+import { getJourney, getProfile, getProjects } from '@/lib/content/queries';
 import { localeStaticPaths, type Locale } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -16,7 +17,8 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const [profile, journey] = await Promise.all([getProfile(), getJourney()]);
+const [profile, journey, projects] = await Promise.all([getProfile(), getJourney(), getProjects()]);
+const featured = projects.filter((entry) => entry.data.featured).slice(0, 3);
 ---
 
 <PageLayout
@@ -27,4 +29,5 @@ const [profile, journey] = await Promise.all([getProfile(), getJourney()]);
 >
   <Hero locale={locale} profile={profile} />
   <Journey locale={locale} copy={profile.journey} entries={journey} />
+  <SelectedProjects locale={locale} copy={profile.projects} projects={featured} />
 </PageLayout>

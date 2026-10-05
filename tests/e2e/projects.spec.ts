@@ -1,0 +1,74 @@
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+test('the header links to Projects and marks the current page', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The primary nav is hidden on small screens until the mobile menu (T2.8)');
+  await page.goto('/');
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Projects' }).click();
+  await expect(page).toHaveURL(/\/projects\/$/);
+  await expect(
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Projects' }),
+  ).toHaveAttribute('aria-current', 'page');
+});
+
+test('the list shows published projects only, featured first', async ({ page }) => {
+  await page.goto('/projects/');
+  await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
+  const titles = await page.locator('[data-project] h2').allTextContents();
+  expect(titles.map((t) => t.trim())).toEqual([
+    'Decklify',
+    'Real-time crowd violence detection',
+    'Multimodal crisis-detection model',
+  ]);
+  await expect(page.getByText('Reclaimyt')).toHaveCount(0); // draft
+});
+
+test('a card opens its case study, which links back to the list', async ({ page }) => {
+  await page.goto('/projects/');
+  await page.getByRole('link', { name: 'Decklify' }).click();
+  await expect(page).toHaveURL(/\/projects\/decklify\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Decklify' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Visit site/ })).toHaveAttribute('href', 'https://decklify.id');
+  await expect(page.getByRole('heading', { level: 2, name: 'Problem' })).toBeVisible();
+  await page.getByRole('link', { name: /All projects/ }).click();
+  await expect(page).toHaveURL(/\/projects\/$/);
+});
+
+test('Indonesian case studies say the body is in English and mark it lang="en"', async ({ page }) => {
+  await page.goto('/id/projects/decklify/');
+  await expect(page.getByText('Studi kasus ini ditulis dalam bahasa Inggris.')).toBeVisible();
+  await expect(page.locator('.prose')).toHaveAttribute('lang', 'en');
+  await expect(page.getByRole('link', { name: /Kunjungi situs/ })).toBeVisible();
+});
+
+test('the home page shows selected projects with a link to all projects', async ({ page }) => {
+  await page.goto('/');
+  const section = page.locator('#projects');
+  await expect(section.locator('[data-project]')).toHaveCount(3);
+  await section.getByRole('link', { name: /View all projects/ }).click();
+  await expect(page).toHaveURL(/\/projects\/$/);
+});
+
+test('the tag filter narrows the grid when enough projects share tags', async ({ page }) => {
+  await page.goto('/projects/');
+  const filter = page.locator('[data-tag-filter]');
+  test.skip((await filter.count()) === 0, 'Fewer than two shared tags in content/projects; filter is hidden');
+  const total = await page.locator('[data-project]').count();
+  await filter.getByRole('button').nth(1).click();
+  await expect(filter.getByRole('button').nth(1)).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.locator('li:not([hidden]) > [data-project]').count()).toBeLessThan(total);
+});
+
+for (const path of ['/projects/', '/id/projects/decklify/']) {
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`${path} has no serious accessibility violations (${colorScheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme });
+      await page.goto(path);
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag22aa']).analyze();
+      const serious = results.violations
+        .filter((v) => v.impact === 'serious' || v.impact === 'critical')
+        .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
+      expect(serious).toEqual([]);
+    });
+  }
+}

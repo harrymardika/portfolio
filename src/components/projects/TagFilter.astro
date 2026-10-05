@@ -1,0 +1,73 @@
+---
+/**
+ * Tag filter for the project grid. Rendered only for JS users (hidden until the script runs),
+ * so visitors without JS simply see every project.
+ */
+import { tagKey } from '@/lib/content';
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  tags: string[];
+}
+
+const { locale, tags } = Astro.props;
+const t = UI[locale];
+---
+
+<div
+  role="group"
+  aria-label={t['projects.filterLabel']}
+  class="hidden flex-wrap gap-2 [.js_&]:flex"
+  data-tag-filter
+>
+  <button type="button" data-tag="" aria-pressed="true" class="chip">
+    {t['projects.all']}
+  </button>
+  {tags.map((tag) => (
+    <button type="button" data-tag={tagKey(tag)} aria-pressed="false" class="chip">
+      {tag}
+    </button>
+  ))}
+</div>
+
+<style>
+  .chip {
+    min-height: 2.25rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 0.9rem;
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed='true'] {
+    border-color: var(--forest);
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+</style>
+
+<script>
+  for (const filter of document.querySelectorAll<HTMLElement>('[data-tag-filter]')) {
+    const grid = filter.parentElement?.querySelector('[data-project-grid]');
+    const buttons = [...filter.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
+    filter.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button[data-tag]');
+      if (!button || !grid) return;
+      const tag = button.dataset['tag'] ?? '';
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+      for (const card of grid.querySelectorAll<HTMLElement>('[data-project]')) {
+        const tags = (card.dataset['tags'] ?? '').split(' ');
+        const item = card.closest('li');
+        if (item) item.hidden = tag !== '' && !tags.includes(tag);
+      }
+    });
+  }
+</script>
