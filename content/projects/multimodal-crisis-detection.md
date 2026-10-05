@@ -7,7 +7,7 @@ role: { en: AI Researcher, id: Peneliti AI }
 year: 2025
 tags: [MobileNetV3, Multimodal AI, NLP, Edge AI, Hailo-8L, Quantization]
 metrics:
-  - { value: "92.5%", label: { en: accuracy (AUC 0.96), id: akurasi (AUC 0,96) } }
+  - { value: "92.5%", label: { en: "accuracy (AUC 0.96)", id: "akurasi (AUC 0,96)" } }
   - { value: "5–8 ms", label: { en: latency on Hailo-8L, id: latensi di Hailo-8L } }
   - { value: "−35%", label: { en: false negatives, id: false negative } }
 links: {}

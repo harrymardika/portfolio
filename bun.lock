@@ -6,12 +6,14 @@
       "name": "harry-mardika-portfolio",
       "dependencies": {
         "astro": "7.3.5",
+        "js-yaml": "4.3.2",
       },
       "devDependencies": {
         "@astrojs/check": "0.9.10",
         "@eslint/js": "10.0.1",
         "@playwright/test": "1.63.0",
         "@types/bun": "1.4.2",
+        "@types/js-yaml": "4.0.9",
         "@types/node": "22.20.5",
         "eslint": "10.12.0",
         "eslint-config-prettier": "10.1.8",
@@ -331,6 +333,8 @@
     "@types/estree-jsx": ["@types/estree-jsx@1.0.5", "", { "dependencies": { "@types/estree": "*" } }, "sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg=="],
 
     "@types/hast": ["@types/hast@3.0.5", "", { "dependencies": { "@types/unist": "*" } }, "sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g=="],
+
+    "@types/js-yaml": ["@types/js-yaml@4.0.9", "", {}, "sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg=="],
 
     "@types/json-schema": ["@types/json-schema@7.0.15", "", {}, "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="],
 

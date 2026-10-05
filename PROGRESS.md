@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.3`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.4`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 2/8 tugas |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 3/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -37,7 +37,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: `bun run dev` jalan; `tsconfig` strict (`strict`, `noUncheckedIndexedAccess`); struktur folder sesuai `docs/02-architecture.md` §4; path alias `@/` → `src/`.
 - [x] **T1.2** Tooling kualitas
   - Kriteria: ESLint (+ plugin astro), Prettier (+ plugin astro), script `bun run check` = typecheck + lint + format:check; `bun test` jalan dengan 1 contoh tes; Playwright terpasang dengan 1 smoke test.
-- [ ] **T1.3** Skema konten (Zod) untuk semua file di `content/` + loader Astro Content Layer
+- [x] **T1.3** Skema konten (Zod) untuk semua file di `content/` + loader Astro Content Layer
   - Kriteria: build gagal dengan pesan jelas jika data salah; tipe TS diekspor; tes unit untuk validasi `LocalizedText`, tanggal `YYYY-MM`, dan sertifikat kedaluwarsa.
 - [ ] **T1.4** Helper konten murni di `src/lib/content/` (`localize`, `formatDateRange`, `isActiveCertification`, `sortByDateDesc`, dll.)
   - Kriteria: fungsi murni tanpa I/O, cakupan tes ≥ 90%.
@@ -129,6 +129,12 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.3
+- **Dikerjakan:** skema Zod 4 (`astro/zod`) di `src/lib/content/schemas/` (`primitives.ts`: `localizedText`, `yearMonth`, `endDate`, `slug`, dll.; `entities.ts`: semua entitas + tipe hasil `z.infer`). Semua objek `strictObject` agar salah ketik field ketahuan. Parser YAML murni `src/lib/content/yaml.ts` (`items:`/`groups:`/`milestones:`; singleton untuk `profile`). `src/content.config.ts` mendaftarkan 9 collection (`file()` + `glob()`). `js-yaml` 4.3.2 ditambahkan sebagai dependency langsung (versi sama dengan Astro).
+- **Verifikasi:** build sukses; probe data salah menghasilkan pesan jelas (`experience → decklify … start: Use the YYYY-MM format`); `bun test` 36/36, termasuk tes integritas yang memvalidasi file `content/` asli (skema, id unik, `ref` Journey, tanpa nomor HP); `bun run check` lulus.
+- **Perbaikan data:** label metrik di `projects/multimodal-crisis-detection.md` diberi tanda kutip (koma di `0,96` memecah objek YAML).
+- **Catatan:** file terjemahan proyek `*.id.md` belum didaftarkan (T2.4). `photo`/`cover` masih string path; konversi ke `astro:assets` di T2.2.
 
 ### 2026-10-05 · Claude Code (Opus) · T1.2
 - **Dikerjakan:** ESLint 10 flat config (`@eslint/js`, `typescript-eslint` strict, `eslint-plugin-astro` + a11y via `eslint-plugin-jsx-a11y-x`, `eslint-config-prettier`), aturan: tanpa `any`, tanpa `console.log`, `consistent-type-imports`, `eqeqeq`. Prettier + plugin Astro. Script `check`, `lint`, `format`, `test:coverage`, `test:e2e`. `bunfig.toml` membatasi `bun test` ke `tests/unit`. Playwright (desktop + Pixel 7) dengan smoke test 200/404. `src/lib/site.ts` dibuat murni (`resolveSiteUrl`) dan dipakai `astro.config.ts`.

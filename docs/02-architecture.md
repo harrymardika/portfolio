@@ -87,9 +87,9 @@ Aturan:
 │   ├── projects/*.md
 │   └── media/                   # foto & gambar yang dipakai konten
 ├── src/
-│   ├── content.config.ts        # skema Zod + loader
+│   ├── content.config.ts        # mendaftarkan collection + loader (skema diimpor dari lib/content/schemas)
 │   ├── lib/
-│   │   ├── content/             # query & transformasi: localize, dates, certifications, projects
+│   │   ├── content/             # schemas/ (Zod, murni), yaml.ts (parser), helper murni, queries (astro:content)
 │   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
 │   │   ├── github/              # client.ts (I/O) + map.ts (murni)
 │   │   ├── analytics/           # events.ts (konstanta nama event), track.ts

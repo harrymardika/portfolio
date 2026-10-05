@@ -6,7 +6,7 @@ Semua isi website, CV, dan Portfolio PDF berasal dari folder `content/`. **Tidak
 
 1. Buka file yang relevan di `content/` (tabel di bawah).
 2. Edit, lalu simpan. Pertahankan format YAML: indentasi 2 spasi, tanda `-` untuk item daftar.
-3. Jalankan `bun run dev` untuk melihat hasilnya. Jika data salah, terminal menampilkan file dan baris yang bermasalah.
+3. Jalankan `bun test` untuk mengecek data dalam hitungan detik (skema, id unik, referensi Journey, dan tidak ada nomor HP), lalu `bun run dev` untuk melihat hasilnya. Jika data salah, pesan error menyebut file, item, dan field-nya, misalnya `experience → decklify … start: Use the YYYY-MM format`.
 4. Commit dan push ke `main`. GitHub Actions akan build dan deploy, dan PDF ikut diperbarui.
 
 Bisa juga langsung lewat web GitHub (tombol ✏️ di file), bahkan dari HP.
@@ -126,6 +126,9 @@ Repo publik milik `harrymardika` yang diberi **topic `portfolio`** akan otomatis
 - Jika ada `content/projects/*.md` dengan `links.repo` yang sama, data lokal menang dan data GitHub hanya melengkapi (bintang, bahasa, tanggal update).
 
 ## 5. Aturan isi
+
+- Teks yang mengandung koma, titik dua, atau tanda kurung di dalam `{ ... }` satu baris **harus diberi tanda kutip**: `{ en: "accuracy (AUC 0.96)", id: "akurasi (AUC 0,96)" }`.
+- Field yang tidak dikenal (misalnya salah ketik `show_on_cvv`) akan ditolak.
 
 - **Tidak ada nomor HP** di file mana pun.
 - Gunakan angka nyata dan bisa dipertanggungjawabkan; jangan dibulatkan ke atas.
