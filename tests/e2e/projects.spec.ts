@@ -16,7 +16,7 @@ test('the header links to Projects and marks the current page', async ({ page, i
   );
 });
 
-test('the list shows published projects only, featured first', async ({ page }) => {
+test('the list shows case studies first (drafts hidden), then GitHub repos', async ({ page }) => {
   await page.goto('/projects/');
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
   const titles = await page.locator('[data-project] h2').allTextContents();
@@ -24,8 +24,37 @@ test('the list shows published projects only, featured first', async ({ page }) 
     'Decklify',
     'Real-time crowd violence detection',
     'Multimodal crisis-detection model',
+    // From tests/fixtures/github.json (e2e builds never call the GitHub API).
+    'fixture-vision-toolkit',
   ]);
   await expect(page.getByText('Reclaimyt')).toHaveCount(0); // draft
+});
+
+test('a GitHub repo card links to GitHub and shows its language, stars, and topics', async ({ page }) => {
+  await page.goto('/projects/');
+  const card = page.locator('[data-project-kind="github"]');
+  await expect(card).toHaveCount(1);
+  await expect(card.getByRole('link', { name: 'fixture-vision-toolkit' })).toHaveAttribute(
+    'href',
+    'https://github.com/harrymardika/fixture-vision-toolkit',
+  );
+  await expect(card).toContainText('GitHub');
+  await expect(card).toContainText('Python · 2026 · ★ 3 stars');
+  await expect(card.getByRole('list', { name: 'Technologies' }).getByRole('listitem')).toHaveText([
+    'Python',
+    'computer-vision',
+  ]);
+});
+
+test('GitHub repos stay off the home page, which shows featured case studies only', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#projects [data-project-kind="github"]')).toHaveCount(0);
+  await expect(page.locator('#projects [data-project-kind="local"]')).toHaveCount(3);
+});
+
+test('GitHub cards are translated on /id/', async ({ page }) => {
+  await page.goto('/id/projects/');
+  await expect(page.locator('[data-project-kind="github"]')).toContainText('★ 3 bintang');
 });
 
 test('a card opens its case study, which links back to the list', async ({ page }) => {

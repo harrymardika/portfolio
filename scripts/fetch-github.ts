@@ -3,7 +3,8 @@
  * Refresh src/data/generated/github.json from the GitHub API (docs/04-content-guide.md §4).
  *   bun run fetch:github            use the cache if it is younger than 1 hour
  *   bun run fetch:github --force    always call the API
- * Env: GITHUB_TOKEN (optional, raises the rate limit), GITHUB_FIXTURE (path; tests use a fixed file).
+ * Env: GITHUB_TOKEN (optional, raises the rate limit), GITHUB_FIXTURE (path; tests use a fixed file),
+ *      GITHUB_CACHE (output path, default src/data/generated/github.json; e2e uses a separate file).
  * Exits 0 on network problems so builds never depend on GitHub.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -15,7 +16,8 @@ import { githubConfigSchema, syncGithub } from '../src/lib/github';
 
 const ROOT = join(import.meta.dir, '..');
 const CONFIG_PATH = join(ROOT, 'content/github.yaml');
-const CACHE_PATH = join(ROOT, 'src/data/generated/github.json');
+// Must match the path read in src/content.config.ts.
+const CACHE_PATH = join(ROOT, process.env['GITHUB_CACHE'] ?? 'src/data/generated/github.json');
 const ONE_HOUR = 60 * 60 * 1000;
 
 const config = githubConfigSchema.parse(load(await readFile(CONFIG_PATH, 'utf8')));

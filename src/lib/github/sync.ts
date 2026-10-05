@@ -49,13 +49,14 @@ export async function syncGithub(options: SyncOptions): Promise<SyncResult> {
   if (fixturePath) {
     const fixture = parseCache(await io.readText(fixturePath));
     if (!fixture) throw new Error(`Fixture ${fixturePath} is missing or does not match the cache schema`);
-    await io.writeText(cachePath, serialize(fixture));
+    await io.writeText(cachePath, serialize({ ...fixture, source: 'fixture' }));
     io.log(`GitHub: using fixture ${fixturePath} (${fixture.repos.length} repos)`);
     return { source: 'fixture', count: fixture.repos.length };
   }
 
   const cached = parseCache(await io.readText(cachePath));
-  const sameUser = cached?.username === config.username;
+  // A cache left by a test run (fixture) or for another account is not a valid fallback.
+  const sameUser = cached?.username === config.username && cached.source === 'api';
   if (cached && sameUser && maxAgeMs > 0 && now.getTime() - Date.parse(cached.generatedAt) < maxAgeMs) {
     io.log(`GitHub: cache is fresh (${cached.repos.length} repos), skipping the API`);
     return { source: 'fresh-cache', count: cached.repos.length };
@@ -68,10 +69,13 @@ export async function syncGithub(options: SyncOptions): Promise<SyncResult> {
         `GitHub: warning: "${name}" in content/github.yaml include was not found (typo, renamed, or private?)`,
       );
     }
-    const repos = selectRepos(all, config).map(toGithubRepo);
+    // The selection topic is bookkeeping, not a technology: drop it from the displayed topics.
+    const repos = selectRepos(all, config)
+      .map(toGithubRepo)
+      .map((repo) => ({ ...repo, topics: repo.topics.filter((topic) => topic !== config.topic) }));
     await io.writeText(
       cachePath,
-      serialize({ generatedAt: now.toISOString(), username: config.username, repos }),
+      serialize({ generatedAt: now.toISOString(), username: config.username, source: 'api', repos }),
     );
     io.log(`GitHub: ${repos.length} of ${all.length} public repos selected`);
     return { source: 'api', count: repos.length };
@@ -83,7 +87,7 @@ export async function syncGithub(options: SyncOptions): Promise<SyncResult> {
     }
     await io.writeText(
       cachePath,
-      serialize({ generatedAt: now.toISOString(), username: config.username, repos: [] }),
+      serialize({ generatedAt: now.toISOString(), username: config.username, source: 'api', repos: [] }),
     );
     io.log('GitHub: no cache available, continuing without GitHub projects');
     return { source: 'empty', count: 0 };

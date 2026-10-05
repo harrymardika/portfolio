@@ -81,6 +81,31 @@ describe('syncGithub', () => {
     expect(read('c.json')?.generatedAt).toBe(NOW.toISOString());
   });
 
+  it('drops the selection topic from the stored topics', async () => {
+    const { io, read } = memoryIO();
+    const fetchImpl = (async () =>
+      new Response(
+        JSON.stringify([
+          {
+            name: 'a',
+            description: null,
+            html_url: 'https://github.com/harrymardika/a',
+            homepage: null,
+            topics: ['portfolio', 'computer-vision'],
+            language: null,
+            stargazers_count: 0,
+            fork: false,
+            archived: false,
+            private: false,
+            created_at: '2025-01-01T00:00:00Z',
+            pushed_at: null,
+          },
+        ]),
+      )) as unknown as typeof fetch;
+    await syncGithub({ config, cachePath: 'c.json', io, client: client(fetchImpl) });
+    expect(read('c.json')?.repos[0]?.topics).toEqual(['computer-vision']);
+  });
+
   it('warns about included names that do not exist', async () => {
     const { io, logs } = memoryIO();
     await syncGithub({
@@ -132,6 +157,24 @@ describe('syncGithub', () => {
     expect(result.source).toBe('empty');
   });
 
+  it('never falls back to data written by a fixture run', async () => {
+    const fixtureCache = JSON.stringify({
+      ...JSON.parse(cache('2026-10-05T11:59:00Z', ['fake'])),
+      source: 'fixture',
+    });
+    const { io, read } = memoryIO({ 'c.json': fixtureCache });
+    const result = await syncGithub({
+      config,
+      cachePath: 'c.json',
+      io,
+      now: NOW,
+      maxAgeMs: 60 * 60 * 1000,
+      client: client(apiDown),
+    });
+    expect(result.source).toBe('empty');
+    expect(read('c.json')?.repos).toEqual([]);
+  });
+
   it('uses a fixture instead of the API when given', async () => {
     const { io, read } = memoryIO({ 'f.json': cache('2026-10-05T00:00:00Z', ['fixture']) });
     const result = await syncGithub({
@@ -143,6 +186,7 @@ describe('syncGithub', () => {
     });
     expect(result).toEqual({ source: 'fixture', count: 1 });
     expect(read('c.json')?.repos[0]?.name).toBe('fixture');
+    expect(read('c.json')?.source).toBe('fixture');
   });
 
   it('rejects an invalid fixture loudly', async () => {

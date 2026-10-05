@@ -8,6 +8,7 @@ import { getCollection, getEntry } from 'astro:content';
 import { isActiveCertification } from './certifications';
 import { resolveMilestoneSource, type MilestoneSource } from './journey';
 import { compareDatesDesc, compareRangesDesc, sortedBy } from './ordering';
+import { mergeProjects, type ProjectItem } from './project-items';
 import { compareProjects, isPublished } from './projects';
 import { visibleOn, type Surface } from './visibility';
 
@@ -22,6 +23,7 @@ import type {
   SkillGroup,
   Training,
 } from './schemas';
+import type { GithubRepo } from '@/lib/github/schemas';
 
 const dataOf = async <T>(entries: Promise<{ data: T }[]>): Promise<T[]> => (await entries).map((e) => e.data);
 
@@ -90,4 +92,15 @@ export async function getJourney(): Promise<{ milestone: Milestone; source: Mile
   ]);
   const sources = { experience, education, trainings, awards };
   return milestones.map((milestone) => ({ milestone, source: resolveMilestoneSource(milestone, sources) }));
+}
+
+/** Repos selected in content/github.yaml, as synced before the build (empty if never synced). */
+export async function getGithubRepos(): Promise<GithubRepo[]> {
+  return (await getCollection('githubRepos')).map(({ data: { id: _id, ...repo } }) => repo);
+}
+
+/** Every project for the Projects page: case studies (with their repo data) and GitHub-only repos. */
+export async function getProjectItems(): Promise<ProjectItem[]> {
+  const [local, repos] = await Promise.all([getProjects(), getGithubRepos()]);
+  return mergeProjects(local, repos);
 }

@@ -1,25 +1,43 @@
 ---
-import { localize, tagKey, type Project } from '@/lib/content';
+/**
+ * Card for a project item: a local case study (links to its page) or a GitHub repository
+ * without a case study (links straight to GitHub). The whole card is clickable via the title link.
+ */
+import { itemTags, itemYear, localize, tagKey, type ProjectItem } from '@/lib/content';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
-  slug: string;
-  project: Project;
+  item: ProjectItem;
   /** Heading level inside the page outline. */
   headingLevel?: 2 | 3;
 }
 
-const { locale, slug, project, headingLevel = 3 } = Astro.props;
+const { locale, item, headingLevel = 3 } = Astro.props;
+const t = UI[locale];
 const Heading = `h${headingLevel}` as const;
-const href = localizePath(`/projects/${slug}/`, locale);
-const metric = project.metrics[0];
+const tags = itemTags(item);
+const isGithub = item.kind === 'github';
+const href = item.kind === 'local' ? localizePath(`/projects/${item.slug}/`, locale) : item.repo.url;
+const title = item.kind === 'local' ? item.project.title : item.repo.name;
+const summary =
+  item.kind === 'local'
+    ? localize(item.project.summary, locale)
+    : (item.repo.description ?? t['projects.noDescription']);
+const metric = item.kind === 'local' ? item.project.metrics[0] : undefined;
+const stars = item.repo?.stars ?? 0;
+const meta = [
+  item.kind === 'local' ? localize(item.project.role, locale) : item.repo.language,
+  String(itemYear(item)),
+  stars > 0 ? `★ ${stars} ${t['projects.stars']}` : null,
+].filter(Boolean);
 ---
 
 <article
   class="group relative flex flex-col gap-4 rounded-xl border border-line bg-surface p-6 transition-shadow hover:shadow-lg"
   data-project
-  data-tags={project.tags.map(tagKey).join(' ')}
+  data-project-kind={item.kind}
+  data-tags={tags.map(tagKey).join(' ')}
 >
   {metric && (
     <p class="grid">
@@ -27,22 +45,31 @@ const metric = project.metrics[0];
       <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>
     </p>
   )}
+  {isGithub && (
+    <p class="w-max rounded-full border border-line px-2.5 py-0.5 font-mono text-[11px] text-ink-muted">
+      {t['projects.githubBadge']} ↗
+    </p>
+  )}
   <div class="grid gap-2">
-    <Heading class="text-h3">
-      <a href={href} class="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none">
-        {project.title}
+    <Heading class="text-h3 break-words">
+      <a
+        href={href}
+        rel={isGithub ? 'noopener' : undefined}
+        class="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none"
+      >
+        {title}
       </a>
     </Heading>
-    <p class="text-sm text-ink-muted">{localize(project.summary, locale)}</p>
+    <p class="text-sm text-ink-muted">{summary}</p>
   </div>
-  <p class="mt-auto font-mono text-xs text-amber-deep">
-    {localize(project.role, locale)} · {project.year}
-  </p>
-  <ul class="flex flex-wrap gap-1.5" aria-label={UI[locale]['projects.tags']}>
-    {project.tags.slice(0, 4).map((tag) => (
-      <li class="rounded-full bg-sage px-2.5 py-0.5 text-xs text-ink-muted">{tag}</li>
-    ))}
-  </ul>
+  <p class="mt-auto font-mono text-xs text-amber-deep">{meta.join(' · ')}</p>
+  {tags.length > 0 && (
+    <ul class="flex flex-wrap gap-1.5" aria-label={t['projects.tags']}>
+      {tags.slice(0, 4).map((tag) => (
+        <li class="rounded-full bg-sage px-2.5 py-0.5 text-xs text-ink-muted">{tag}</li>
+      ))}
+    </ul>
+  )}
 </article>
 
 <style>

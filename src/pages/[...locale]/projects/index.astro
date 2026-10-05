@@ -2,8 +2,8 @@
 import ProjectGrid from '@/components/projects/ProjectGrid.astro';
 import TagFilter from '@/components/projects/TagFilter.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { collectTags, localize } from '@/lib/content';
-import { getProfile, getProjects } from '@/lib/content/queries';
+import { collectTags, itemTags, localize } from '@/lib/content';
+import { getProfile, getProjectItems } from '@/lib/content/queries';
 import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -14,10 +14,10 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = UI[locale];
-const [profile, projects] = await Promise.all([getProfile(), getProjects()]);
+const [profile, items] = await Promise.all([getProfile(), getProjectItems()]);
 // Only tags shared by 2+ projects are useful filters; with fewer than two such tags, hide the filter.
 const tags = collectTags(
-  projects.map((entry) => entry.data),
+  items.map((item) => ({ tags: itemTags(item) })),
   2,
 );
 const intro = localize(profile.projects.intro, locale);
@@ -36,7 +36,7 @@ const intro = localize(profile.projects.intro, locale);
     </header>
     <div class="grid gap-6">
       {tags.length >= 2 && <TagFilter locale={locale} tags={tags} />}
-      <ProjectGrid locale={locale} projects={projects} headingLevel={2} />
+      <ProjectGrid locale={locale} items={items} headingLevel={2} />
     </div>
   </section>
 </PageLayout>

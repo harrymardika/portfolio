@@ -137,7 +137,8 @@ bun run build
   1. scripts/fetch-github.ts     → src/data/generated/github.json
                                    REST API, token opsional; repo dipilih lewat content/github.yaml;
                                    cache < 1 jam dipakai ulang; gagal → cache terakhir → daftar kosong;
-                                   e2e memakai GITHUB_FIXTURE=tests/fixtures/github.json
+                                   e2e terisolasi: GITHUB_FIXTURE=tests/fixtures/github.json,
+                                   GITHUB_CACHE=…/github.e2e.json, output dist-e2e/ (tidak menyentuh dist/)
   2. astro build                 → dist/  (validasi Zod terjadi di sini)
   3. scripts/generate-pdf.ts     → dist/downloads/*.pdf (serve dist/, cetak /print/*)
 ```

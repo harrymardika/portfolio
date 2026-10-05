@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.2`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T3.3` *(bergantung T6.2)* → lanjut Fase 4 `T4.1`
 
 ## Ringkasan
 
@@ -12,7 +12,7 @@
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
-| 3 | Sinkronisasi proyek dari GitHub | 🔄 1/3 tugas |
+| 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
@@ -68,7 +68,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 
 - [x] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (REST, token opsional), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
   - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
-- [ ] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
+- [x] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
 - [ ] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam) *(bergantung T6.2)*
 
 ## Fase 4: PDF CV & Portfolio
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T3.2
+- **Dikerjakan:** collection `githubRepos` (loader membaca cache; tidak ada file → kosong); `mergeProjects`/`itemTags`/`itemYear`/`normalizeRepoUrl` murni (`src/lib/content/project-items.ts`); `getGithubRepos`/`getProjectItems`; `ProjectCard` mendukung case study dan repo GitHub (badge "GitHub ↗", bahasa · tahun · ★ bintang, tag dari bahasa + topics); halaman Projects memakai item gabungan; beranda tetap hanya case study `featured`. Topic seleksi dibuang saat sinkron.
+- **Isolasi data uji (ditemukan saat mengerjakan):** mode fixture semula menimpa cache asli, sehingga (a) repo palsu bisa dipakai sebagai "cache lama" saat GitHub tidak terjangkau, (b) `bun run dev` dan `dist/` menampilkan repo palsu setelah e2e. Perbaikan: cache mencatat `source` (`api`/`fixture`) dan fixture tidak pernah dipakai sebagai cadangan; `GITHUB_CACHE` + `--outDir dist-e2e` memisahkan build e2e; `bun run dev` menyinkron GitHub dulu.
+- **Verifikasi:** unit 176/176; e2e 136 lulus + 4 dilewati (kartu GitHub: tautan, meta, tag, ID; beranda tanpa repo GitHub; urutan daftar); setelah e2e, `dist/` tidak dibuat dan cache asli tetap `source: api`; screenshot dicek; `bun run verify` lulus.
 
 ### 2026-10-05 · Claude Code (Opus) · T3.1
 - **Dikerjakan:** `content/github.yaml` (username, topic, `include`, `exclude` [default: `harrymardika`, `portfolio`], opsi fork/arsip) + `githubConfigSchema`; `src/lib/github/` (`schemas`, `select` murni: seleksi + `missingIncludes` + `toGithubRepo`; `client` REST dengan paginasi, retry/backoff 500 ms → 1 s, gagal cepat saat rate limit/4xx, timeout 10 s; `sync` dengan I/O diinjeksi: fixture → cache segar → API → cache lama → daftar kosong); `scripts/fetch-github.ts` (`bun run fetch:github [--force]`), dijalankan sebelum `astro build`. E2E memakai `GITHUB_FIXTURE=tests/fixtures/github.json`.

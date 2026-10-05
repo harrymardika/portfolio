@@ -10,6 +10,7 @@ export default defineConfig(
   {
     ignores: [
       'dist/',
+      'dist-e2e/',
       '.astro/',
       'node_modules/',
       'docs/design/',

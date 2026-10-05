@@ -16,7 +16,7 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | Perintah | Fungsi | Sejak |
 |---|---|---|
 | `bun install` | Pasang dependency | T1.1 ✅ |
-| `bun run dev` | Dev server di http://localhost:4321 | T1.1 ✅ |
+| `bun run dev` | Sinkron GitHub (cache < 1 jam) lalu dev server di http://localhost:4321 | T1.1 ✅ |
 | `bun run build` | Build: GitHub sync → Astro (PDF menyusul di T4.3) | T1.1 ✅ |
 | `bun run preview` | Menyajikan hasil build | T1.1 ✅ |
 | `bun run typecheck` | `astro check` (TypeScript + file .astro) | T1.1 ✅ |
@@ -27,7 +27,7 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 | `bun run format` | Merapikan format otomatis (Prettier) | T1.2 ✅ |
 | `bun test` | Unit test (`tests/unit`, diatur di `bunfig.toml`) | T1.2 ✅ |
 | `bun run test:coverage` | Unit test + laporan cakupan | T1.2 ✅ |
-| `bun run test:e2e` | Playwright e2e (build + preview otomatis, desktop & mobile) | T1.2 ✅ |
+| `bun run test:e2e` | Playwright e2e (build terisolasi ke `dist-e2e/` dengan data GitHub fixture, desktop & mobile) | T1.2 ✅ |
 | `bun run fetch:github` | Sinkronisasi repo GitHub ke `src/data/generated/github.json` (pakai cache < 1 jam) | T3.1 ✅ |
 | `bun run fetch:github --force` | Sinkronisasi tanpa memakai cache | T3.1 ✅ |
 | `bun run pdf` | Hanya generate PDF (butuh hasil build) | T4.3 |

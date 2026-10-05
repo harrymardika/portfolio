@@ -1,22 +1,22 @@
 ---
 import ProjectCard from './ProjectCard.astro';
 
-import type { Project } from '@/lib/content';
+import type { ProjectItem } from '@/lib/content';
 import type { Locale } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
-  projects: { id: string; data: Project }[];
+  items: ProjectItem[];
   headingLevel?: 2 | 3;
 }
 
-const { locale, projects, headingLevel = 3 } = Astro.props;
+const { locale, items, headingLevel = 3 } = Astro.props;
 ---
 
 <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
-  {projects.map((entry) => (
+  {items.map((item) => (
     <li class="grid">
-      <ProjectCard locale={locale} slug={entry.id} project={entry.data} headingLevel={headingLevel} />
+      <ProjectCard locale={locale} item={item} headingLevel={headingLevel} />
     </li>
   ))}
 </ul>

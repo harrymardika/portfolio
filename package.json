@@ -10,7 +10,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "bun run fetch:github && astro dev",
     "build": "bun run fetch:github && astro build",
     "preview": "astro preview",
     "astro": "astro",

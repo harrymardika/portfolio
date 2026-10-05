@@ -47,6 +47,8 @@ export const githubRepoSchema = z.strictObject({
 export const githubCacheSchema = z.strictObject({
   generatedAt: z.string(),
   username: z.string(),
+  /** Where the data came from; fixture data must never be reused as a fallback for real builds. */
+  source: z.enum(['api', 'fixture']).default('api'),
   repos: z.array(githubRepoSchema),
 });
 
