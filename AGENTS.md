@@ -30,6 +30,7 @@ Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan
 6. **Verifikasi** (wajib, lihat Definition of Done di `docs/05-coding-standards.md`):
    `bun run verify` (= `check` → `bun test` → `test:e2e`, berhenti di langkah pertama yang gagal).
    Commit **hanya** jika perintah itu sukses. Saat merangkai perintah di shell, gunakan `bun run verify && git commit ...`, jangan `;`.
+   Hati-hati dengan heredoc (`git commit -F - <<'EOF'`): baris setelah penutup `EOF` adalah perintah **baru** di luar rantai `&&`. Lebih aman memakai skrip dengan `set -e`.
 7. **Perbarui dokumentasi** yang terdampak (arsitektur, content guide, dll.).
 8. **Tutup:** ubah `[~]` menjadi `[x]`, tambah entri di **Log sesi** `PROGRESS.md` dan `CHANGELOG.md` (bagian *Unreleased*).
 9. **Commit** dengan Conventional Commits: `feat(journey): add 3D career path section (T2.3)`.

@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Visual portfolio print pages (A4 landscape, 8 pages) in English and Indonesian (T4.2).
 - Indonesian translations for all experience, education, and training highlights (draft, pending owner review); translatable skill items and award issuers.
 - ATS-friendly CV print pages in English and Indonesian that fit on two A4 pages (T4.1).
 - Curated GitHub projects: owner descriptions (EN/ID) and multi-repo project groups in `content/github.yaml`; four more case studies linked to their repos.

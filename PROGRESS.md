@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** terjemahan highlight (T8.3 lebih awal) → `T4.2`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 3 · **Tugas berikutnya:** `T4.3`
 
 ## Ringkasan
 
@@ -13,7 +13,7 @@
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
-| 4 | Generate PDF CV & Portfolio | 🔄 1/4 tugas |
+| 4 | Generate PDF CV & Portfolio | 🔄 2/4 tugas |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ⬜ |
 | 6 | Docker, CI/CD, deploy ke home server | ⬜ |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
@@ -74,7 +74,7 @@ Progres keseluruhan: **Fase 0–2 selesai, 3 dari 9 fase (≈35%)**
 ## Fase 4: PDF CV & Portfolio
 
 - [x] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
-- [ ] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
+- [x] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
 - [ ] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
   - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
 - [ ] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T4.2
+- **Dikerjakan:** `PortfolioDocument` + `/print/portfolio/` dan `/id/print/portfolio/` (A4 landscape, 8 halaman: sampul dengan foto, profil + statistik + 5 penghargaan teratas, journey statis pengganti 3D, 3 proyek featured dengan isi case study, grid "proyek lainnya" 4×4 (case study non-featured + repo GitHub), keahlian & kontak).
+- **Penyesuaian:** grid semula dibatasi 12 kartu → 2 dari 14 proyek asli terpotong diam-diam; kini 4 kolom, maks. 16, ringkasan dipotong 4 baris. Huruf halaman proyek diperbesar.
+- **Verifikasi:** dengan data asli: 14/14 kartu, **0 elemen melewati tepi halaman** di 8 halaman (EN & ID), PDF uji ±400 KB; e2e halaman portfolio (8 halaman, foto, 5 milestone, noindex, tanpa nomor HP, jumlah kartu); `bun run verify` lulus.
+- **Catatan proses:** di sesi ini ditemukan bahwa baris setelah heredoc `git commit -F - <<'EOF'` berada di luar rantai `&&`; tidak ada commit gagal yang masuk, tetapi kini dipakai skrip `ship` dengan `set -e` dan aturannya dicatat di `AGENTS.md`.
 
 ### 2026-10-05 · Claude Code (Opus) · Terjemahan highlight (T8.3 dimajukan untuk CV-ID)
 - **Alasan:** CV-ID (T4.1) bercampur bahasa karena highlight hanya EN.

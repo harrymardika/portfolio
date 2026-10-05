@@ -1,0 +1,552 @@
+---
+/**
+ * Visual portfolio PDF (docs/09-pdf-generation.md §3): A4 landscape pages built from the same
+ * content as the site. 3D elements are replaced by static equivalents.
+ */
+import { Image } from 'astro:assets';
+
+import {
+  formatYearMonth,
+  itemTags,
+  itemYear,
+  localize,
+  splitEmphasis,
+  type Award,
+  type Milestone,
+  type Profile,
+  type ProjectItem,
+  type SkillGroup,
+} from '@/lib/content';
+import { contentImage } from '@/lib/content/media';
+import { type Locale, UI } from '@/lib/i18n';
+import { SOCIAL_LABELS } from '@/lib/navigation';
+
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+
+interface FeaturedProject {
+  item: Extract<ProjectItem, { kind: 'local' }>;
+  Content: AstroComponentFactory;
+}
+
+interface Props {
+  locale: Locale;
+  profile: Profile;
+  siteUrl: string;
+  milestones: Milestone[];
+  awards: Award[];
+  featured: FeaturedProject[];
+  more: ProjectItem[];
+  skills: SkillGroup[];
+}
+
+const { locale, profile, siteUrl, milestones, awards, featured, more, skills } = Astro.props;
+const t = UI[locale];
+const headline = splitEmphasis(localize(profile.headline, locale));
+const site = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const awardDate = (date: string): string => (date.length === 4 ? date : formatYearMonth(date, locale));
+const topAwards = awards.slice(0, 5);
+/** 4 columns × 4 rows fit one landscape page. */
+const MORE_LIMIT = 16;
+const contacts = profile.socials.map((social) => ({
+  label: SOCIAL_LABELS[social.platform],
+  value: social.handle ?? social.url,
+  href: social.url,
+}));
+const moreTitle = (item: ProjectItem): string =>
+  item.kind === 'local' ? item.project.title : (item.repo.title ?? item.repo.name);
+const moreSummary = (item: ProjectItem): string =>
+  item.kind === 'local'
+    ? localize(item.project.summary, locale)
+    : item.repo.summary
+      ? localize(item.repo.summary, locale)
+      : (item.repo.description ?? '');
+---
+
+<div class="pf">
+  <!-- 1. Cover -->
+  <section class="pf-page pf-dark pf-cover">
+    <div class="pf-cover-text">
+      <p class="pf-eyebrow">
+        {t['portfolio.title']} · {new Date().getUTCFullYear()}
+      </p>
+      <h1>{profile.name}</h1>
+      <p class="pf-role">{localize(profile.role, locale)}</p>
+      <p class="pf-headline">
+        {headline.map((segment) =>
+          segment.emphasis ? <span class="pf-accent">{segment.text}</span> : segment.text,
+        )}
+      </p>
+      <p class="pf-muted">{localize(profile.tagline, locale)}</p>
+      <p class="pf-meta">
+        {profile.location} · {profile.email} · {site}
+      </p>
+    </div>
+    <div class="pf-photo">
+      <Image src={contentImage(profile.photo)} alt={profile.name} width={560} height={560} loading="eager" />
+    </div>
+  </section>
+
+  <!-- 2. Profile -->
+  <section class="pf-page">
+    <p class="pf-eyebrow">01 · {t['portfolio.profile']}</p>
+    <div class="pf-two">
+      <div>
+        <h2>{localize(profile.role, locale)}</h2>
+        <p class="pf-lead">{localize(profile.summary, locale)}</p>
+      </div>
+      <div class="pf-stack">
+        <ul class="pf-stats">
+          {profile.stats.map((stat) => (
+            <li>
+              <span class="pf-stat-value">{stat.value}</span>
+              <span class="pf-muted-ink">{localize(stat.label, locale)}</span>
+            </li>
+          ))}
+        </ul>
+        <div>
+          <h3>{t['portfolio.highlights']}</h3>
+          <ul class="pf-list">
+            {topAwards.map((award) => (
+              <li>
+                <strong>{localize(award.title, locale)}</strong>
+                <span class="pf-muted-ink"> · {awardDate(award.date)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Journey (static version of the 3D path) -->
+  <section class="pf-page">
+    <p class="pf-eyebrow">02 · {t['portfolio.journey']}</p>
+    <h2>
+      {splitEmphasis(localize(profile.journey.title, locale))
+        .map((s) => s.text)
+        .join('')}
+    </h2>
+    <ol class="pf-journey">
+      {milestones.map((milestone) => (
+        <li>
+          <span class="pf-dot" aria-hidden="true" />
+          <span class="pf-year">{milestone.year}</span>
+          <strong>{localize(milestone.title, locale)}</strong>
+          <span class="pf-muted-ink">{localize(milestone.subtitle, locale)}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 4. One page per featured project -->
+  {featured.map(({ item, Content }, index) => (
+    <section class="pf-page pf-project">
+      <p class="pf-eyebrow">
+        {String(index + 3).padStart(2, '0')} · {t['portfolio.selected']}
+      </p>
+      <div class="pf-two">
+        <div class="pf-stack">
+          <h2>{item.project.title}</h2>
+          <p class="pf-lead">{localize(item.project.summary, locale)}</p>
+          <p class="pf-muted-ink">
+            {localize(item.project.role, locale)} · {item.project.year}
+          </p>
+          {item.project.metrics.length > 0 && (
+            <ul class="pf-stats">
+              {item.project.metrics.map((metric) => (
+                <li>
+                  <span class="pf-stat-value">{metric.value}</span>
+                  <span class="pf-muted-ink">{localize(metric.label, locale)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <ul class="pf-tags">
+            {itemTags(item).map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+          {(item.project.links.live ?? item.project.links.repo) && (
+            <p class="pf-link">{item.project.links.live ?? item.project.links.repo}</p>
+          )}
+        </div>
+        <div class="pf-body" lang={locale === 'en' ? undefined : 'en'}>
+          <Content />
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- 5. More projects -->
+  {more.length > 0 && (
+    <section class="pf-page">
+      <p class="pf-eyebrow">
+        {String(featured.length + 3).padStart(2, '0')} · {t['portfolio.more']}
+      </p>
+      <ul class="pf-grid">
+        {more.slice(0, MORE_LIMIT).map((item) => (
+          <li>
+            <strong>{moreTitle(item)}</strong>
+            <span class="pf-small">{moreSummary(item)}</span>
+            <span class="pf-muted-ink pf-small">
+              {[
+                item.kind === 'local' ? localize(item.project.role, locale) : item.repo.language,
+                itemYear(item),
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- 6. Skills and contact -->
+  <section class="pf-page pf-dark">
+    <div class="pf-two">
+      <div class="pf-stack">
+        <h2 class="pf-on-dark">{t['about.skills']}</h2>
+        {skills.map((group) => (
+          <div>
+            <h3 class="pf-on-dark">{localize(group.name, locale)}</h3>
+            <p class="pf-muted">{group.items.map((skill) => localize(skill, locale)).join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+      <div class="pf-stack">
+        <h2 class="pf-on-dark">{t['portfolio.contact']}</h2>
+        <ul class="pf-contacts">
+          {contacts.map((contact) => (
+            <li>
+              <span class="pf-eyebrow">{contact.label}</span>
+              <a href={contact.href}>{contact.value}</a>
+            </li>
+          ))}
+          <li>
+            <span class="pf-eyebrow">{t['cv.website']}</span>
+            <a href={siteUrl}>{site}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .pf {
+    font-family: var(--font-sans);
+    color: var(--forest-ink);
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  .pf-page {
+    position: relative;
+    width: 297mm;
+    height: 210mm;
+    padding: 16mm 18mm;
+    overflow: hidden;
+    break-after: page;
+    background: var(--sage);
+    display: flex;
+    flex-direction: column;
+    gap: 6mm;
+  }
+
+  .pf-page:last-child {
+    break-after: auto;
+  }
+
+  @media screen {
+    .pf-page + .pf-page {
+      margin-top: 12px;
+    }
+  }
+
+  .pf-dark {
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+
+  .pf h1,
+  .pf h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.05;
+    color: inherit;
+  }
+
+  .pf h1 {
+    font-size: 38pt;
+  }
+
+  .pf h2 {
+    font-size: 24pt;
+    color: var(--forest-ink);
+  }
+
+  .pf h2.pf-on-dark,
+  .pf h3.pf-on-dark {
+    color: var(--on-forest);
+  }
+
+  .pf h3 {
+    font-family: var(--font-sans);
+    font-size: 11pt;
+    font-weight: 700;
+    margin-bottom: 1.5mm;
+  }
+
+  .pf-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 8.5pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber-deep);
+  }
+
+  .pf-dark .pf-eyebrow {
+    color: var(--amber);
+  }
+
+  .pf-accent {
+    color: var(--amber);
+  }
+
+  .pf-muted {
+    color: var(--on-forest-muted);
+  }
+
+  .pf-muted-ink {
+    color: var(--ink-muted);
+  }
+
+  .pf-small {
+    font-size: 9pt;
+  }
+
+  .pf-lead {
+    font-size: 13pt;
+    line-height: 1.55;
+    margin-top: 4mm;
+  }
+
+  .pf-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14mm;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .pf-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 5mm;
+  }
+
+  .pf-cover {
+    flex-direction: row;
+    align-items: center;
+    gap: 14mm;
+  }
+
+  .pf-cover-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+  }
+
+  .pf-role {
+    font-family: var(--font-mono);
+    font-size: 10pt;
+  }
+
+  .pf-headline {
+    font-family: var(--font-display);
+    font-size: 22pt;
+    line-height: 1.15;
+    margin-top: 6mm;
+  }
+
+  .pf-meta {
+    margin-top: 8mm;
+    font-family: var(--font-mono);
+    font-size: 8.5pt;
+    color: var(--on-forest-muted);
+  }
+
+  .pf-photo {
+    width: 92mm;
+    flex-shrink: 0;
+    border-radius: 6mm;
+    background: var(--on-forest);
+    padding: 3.5mm;
+  }
+
+  .pf-photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4mm;
+  }
+
+  .pf-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4mm 10mm;
+  }
+
+  .pf-stats li {
+    display: grid;
+  }
+
+  .pf-stat-value {
+    font-family: var(--font-mono);
+    font-size: 20pt;
+    font-weight: 500;
+    color: var(--forest-ink);
+  }
+
+  .pf-list {
+    display: grid;
+    gap: 1.5mm;
+    font-size: 9.5pt;
+  }
+
+  .pf-journey {
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 6mm;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 10mm;
+  }
+
+  .pf-journey::before {
+    content: '';
+    position: absolute;
+    top: 3.4mm;
+    left: 3mm;
+    right: 3mm;
+    height: 1mm;
+    border-radius: 1mm;
+    background: var(--forest);
+  }
+
+  .pf-journey li {
+    position: relative;
+    display: grid;
+    gap: 1mm;
+    align-content: start;
+  }
+
+  .pf-dot {
+    position: absolute;
+    top: -9.2mm;
+    left: 0;
+    width: 6mm;
+    height: 6mm;
+    border-radius: 50%;
+    background: var(--amber);
+    border: 1.2mm solid var(--forest);
+  }
+
+  .pf-year {
+    font-family: var(--font-mono);
+    color: var(--amber-deep);
+    font-size: 9pt;
+  }
+
+  .pf-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5mm;
+  }
+
+  .pf-tags li {
+    border-radius: 99px;
+    background: var(--surface);
+    border: 0.3mm solid var(--line);
+    padding: 0.6mm 2.5mm;
+    font-size: 8.5pt;
+  }
+
+  .pf-link {
+    font-family: var(--font-mono);
+    font-size: 8.5pt;
+    color: var(--ink-muted);
+    margin-top: auto;
+  }
+
+  .pf-body {
+    font-size: 10.5pt;
+    line-height: 1.5;
+    border-left: 0.4mm solid var(--line);
+    padding-left: 8mm;
+    overflow: hidden;
+  }
+
+  .pf-body :global(h2) {
+    font-family: var(--font-sans);
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin-top: 4mm;
+  }
+
+  .pf-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .pf-body :global(p),
+  .pf-body :global(ul) {
+    margin-top: 1.5mm;
+  }
+
+  .pf-body :global(ul) {
+    list-style: disc;
+    padding-left: 4.5mm;
+  }
+
+  .pf-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+  }
+
+  .pf-grid .pf-small:first-of-type {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+  }
+
+  .pf-grid li {
+    display: grid;
+    gap: 1mm;
+    align-content: start;
+    background: var(--surface);
+    border: 0.3mm solid var(--line);
+    border-radius: 3mm;
+    padding: 3mm;
+  }
+
+  .pf-contacts {
+    display: grid;
+    gap: 4mm;
+  }
+
+  .pf-contacts li {
+    display: grid;
+  }
+
+  .pf-contacts a {
+    color: var(--on-forest);
+    font-size: 12pt;
+    text-decoration: none;
+  }
+</style>

@@ -73,6 +73,14 @@ const en = {
   'cv.title': 'CV',
   'cv.summary': 'Summary',
   'cv.website': 'Website',
+  'portfolio.title': 'Portfolio',
+  'portfolio.profile': 'Profile',
+  'portfolio.highlights': 'Highlights',
+  'portfolio.journey': 'Journey',
+  'portfolio.selected': 'Selected work',
+  'portfolio.more': 'More projects',
+  'portfolio.contact': "Let's work together",
+  'portfolio.page': 'Page',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -145,6 +153,14 @@ const id: Record<UiKey, string> = {
   'cv.title': 'CV',
   'cv.summary': 'Ringkasan',
   'cv.website': 'Situs web',
+  'portfolio.title': 'Portofolio',
+  'portfolio.profile': 'Profil',
+  'portfolio.highlights': 'Sorotan',
+  'portfolio.journey': 'Perjalanan',
+  'portfolio.selected': 'Karya pilihan',
+  'portfolio.more': 'Proyek lainnya',
+  'portfolio.contact': 'Mari bekerja sama',
+  'portfolio.page': 'Halaman',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

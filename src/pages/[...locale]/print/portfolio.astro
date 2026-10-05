@@ -1,0 +1,59 @@
+---
+/** Source page for the portfolio PDF (scripts/generate-pdf.ts). Not linked in the navigation; noindex. */
+import { render } from 'astro:content';
+
+import PortfolioDocument from '@/components/print/PortfolioDocument.astro';
+import PrintLayout from '@/layouts/PrintLayout.astro';
+import {
+  getAwards,
+  getMilestones,
+  getProfile,
+  getProjectItems,
+  getProjects,
+  getSkillGroups,
+} from '@/lib/content/queries';
+import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const [profile, milestones, awards, items, entries, skills] = await Promise.all([
+  getProfile(),
+  getMilestones(),
+  getAwards('cv'),
+  getProjectItems(),
+  getProjects(),
+  getSkillGroups(),
+]);
+const isFeatured = (
+  item: (typeof items)[number],
+): item is Extract<(typeof items)[number], { kind: 'local' }> =>
+  item.kind === 'local' && item.project.featured;
+const featuredItems = items.filter(isFeatured).slice(0, 3);
+const featured = await Promise.all(
+  featuredItems.map(async (item) => {
+    const entry = entries.find((candidate) => candidate.id === item.slug);
+    if (!entry) throw new Error(`Project entry ${item.slug} not found`);
+    return { item, Content: (await render(entry)).Content };
+  }),
+);
+const more = items.filter((item) => !featuredItems.includes(item as (typeof featuredItems)[number]));
+const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
+---
+
+<PrintLayout locale={locale} title={`${profile.name} · ${UI[locale]['portfolio.title']}`} size="landscape">
+  <PortfolioDocument
+    locale={locale}
+    profile={profile}
+    siteUrl={siteUrl}
+    milestones={milestones}
+    awards={awards}
+    featured={featured}
+    more={more}
+    skills={skills}
+  />
+</PrintLayout>
