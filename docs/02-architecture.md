@@ -69,7 +69,9 @@ src/scenes/**            ← modul 3D imperatif; hanya diimpor oleh <script> di 
 Aturan:
 - Panah hanya boleh ke bawah. `lib` tidak boleh mengimpor `components`; `components` tidak boleh mengimpor `pages`.
 - `scenes` tidak boleh mengimpor `components` atau `astro:*`. Data masuk lewat parameter atau atribut `data-*`.
-- Komponen tidak memanggil `getCollection` secara langsung. Ambil data di `pages` atau lewat helper di `src/lib/content/`.
+- Komponen tidak memanggil `getCollection` secara langsung. Ambil data lewat `@/lib/content/queries` (sudah difilter dan diurutkan).
+- Helper murni diimpor dari `@/lib/content` (aman untuk unit test). `@/lib/content/queries` memakai `astro:content`, jadi **tidak** boleh diimpor oleh unit test atau oleh helper murni.
+- Fungsi yang bergantung pada waktu (mis. sertifikat kedaluwarsa) menerima `now: Date` sebagai parameter agar hasil build dan tes dapat direproduksi.
 
 ## 4. Struktur folder (target)
 

@@ -3,14 +3,14 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.4`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 1 · **Tugas berikutnya:** `T1.5`
 
 ## Ringkasan
 
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
-| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 3/8 tugas |
+| 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | 🔄 4/8 tugas |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ⬜ |
 | 3 | Sinkronisasi proyek dari GitHub | ⬜ |
 | 4 | Generate PDF CV & Portfolio | ⬜ |
@@ -39,7 +39,7 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
   - Kriteria: ESLint (+ plugin astro), Prettier (+ plugin astro), script `bun run check` = typecheck + lint + format:check; `bun test` jalan dengan 1 contoh tes; Playwright terpasang dengan 1 smoke test.
 - [x] **T1.3** Skema konten (Zod) untuk semua file di `content/` + loader Astro Content Layer
   - Kriteria: build gagal dengan pesan jelas jika data salah; tipe TS diekspor; tes unit untuk validasi `LocalizedText`, tanggal `YYYY-MM`, dan sertifikat kedaluwarsa.
-- [ ] **T1.4** Helper konten murni di `src/lib/content/` (`localize`, `formatDateRange`, `isActiveCertification`, `sortByDateDesc`, dll.)
+- [x] **T1.4** Helper konten murni di `src/lib/content/` (`localize`, `formatDateRange`, `isActiveCertification`, `sortByDateDesc`, dll.)
   - Kriteria: fungsi murni tanpa I/O, cakupan tes ≥ 90%.
 - [ ] **T1.5** i18n: routing `en` (default `/`) + `id` (`/id/`), kamus UI di `src/lib/i18n/`, tombol ganti bahasa
   - Kriteria: setiap halaman punya `hreflang` alternatif; teks UI tidak ada yang hardcode.
@@ -129,6 +129,11 @@ Progres keseluruhan: **Fase 0 dari 8 selesai (≈10%)**
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T1.4
+- **Dikerjakan:** helper murni di `src/lib/content/`: `localize`/`isFallback`, `toYearMonth`/`formatYearMonth`/`formatDateRange` (Intl, UTC; label "Present" dari luar), `isActiveCertification` (berlaku sampai akhir bulan `expires`), `compareRangesDesc`/`compareDatesDesc`/`sortedBy`, `visibleOn` (web/cv), `splitEmphasis`/`stripEmphasis` (untuk `*kata*` di headline), `isPublished`/`compareProjects`. Barrel `@/lib/content` hanya berisi modul murni. `queries.ts` (getProfile, getExperience, getCertifications(now), getProjects, dll.) adalah satu-satunya yang memakai `astro:content`. `src/lib/i18n/locales.ts` (`LOCALES`, `Locale`, `isLocale`) dibuat lebih awal untuk dipakai T1.5.
+- **Verifikasi:** `bun test` 62/62, cakupan `src/lib` 100% baris & fungsi; `bun run check` lulus (queries.ts lolos typecheck terhadap collection asli).
+- **Catatan:** `queries.ts` belum dipanggil di runtime; pemakaian pertama di T1.7 (Footer).
 
 ### 2026-10-05 · Claude Code (Opus) · T1.3
 - **Dikerjakan:** skema Zod 4 (`astro/zod`) di `src/lib/content/schemas/` (`primitives.ts`: `localizedText`, `yearMonth`, `endDate`, `slug`, dll.; `entities.ts`: semua entitas + tipe hasil `z.infer`). Semua objek `strictObject` agar salah ketik field ketahuan. Parser YAML murni `src/lib/content/yaml.ts` (`items:`/`groups:`/`milestones:`; singleton untuk `profile`). `src/content.config.ts` mendaftarkan 9 collection (`file()` + `glob()`). `js-yaml` 4.3.2 ditambahkan sebagai dependency langsung (versi sama dengan Astro).
