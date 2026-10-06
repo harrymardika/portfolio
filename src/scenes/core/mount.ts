@@ -29,15 +29,19 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
   stage.dataset['scene'] = choice.mode;
   if (choice.mode === 'off') return null;
 
+  // Without a GPU every pixel is computed (and, in headless browsers, read back) by the CPU: render
+  // the still frame at 1x and without multisampling, which cuts its cost roughly threefold.
+  const software = choice.mode === 'still' && choice.reason === 'software-renderer';
+
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+    renderer = new WebGLRenderer({ canvas, antialias: !software, alpha: true, powerPreference: 'low-power' });
   } catch (error) {
     console.warn('3D disabled: could not create a WebGL renderer', error);
     stage.dataset['scene'] = 'off';
     return null;
   }
-  renderer.setPixelRatio(cappedPixelRatio(window.devicePixelRatio));
+  renderer.setPixelRatio(software ? 1 : cappedPixelRatio(window.devicePixelRatio));
   // Checking each shader after linking waits synchronously for the GPU to compile it (hundreds of ms
   // on slow phones). Shaders are fixed at build time, so check them in development only; a broken
   // shader in production shows an empty canvas while the HTML labels stay readable.
