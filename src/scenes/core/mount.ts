@@ -38,13 +38,20 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
     return null;
   }
   renderer.setPixelRatio(cappedPixelRatio(window.devicePixelRatio));
+  // Checking each shader after linking waits synchronously for the GPU to compile it (hundreds of ms
+  // on slow phones). Shaders are fixed at build time, so check them in development only; a broken
+  // shader in production shows an empty canvas while the HTML labels stay readable.
+  renderer.debug.checkShaderErrors = import.meta.env.DEV;
 
   const pointer = { x: 0, y: 0 };
   let elapsed = 0;
   let module: SceneModule | null = null;
+  // Frames wait until the shaders are compiled (see compileAsync below).
+  let compiled = false;
+  let destroyed = false;
 
   const renderFrame = (dt: number): void => {
-    if (!module) return;
+    if (!module || !compiled || destroyed) return;
     elapsed += dt;
     module.update({ dt, elapsed, pointer });
     renderer.render(module.scene, module.camera);
@@ -61,6 +68,19 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
   };
 
   module = create({ palette: readPalette(), mode: choice.mode, invalidate, ready });
+  // Compile every shader up front without blocking the main thread (KHR_parallel_shader_compile
+  // where available). Otherwise the first frame compiles them synchronously: one long task that
+  // can also coincide with the photo texture upload.
+  const { scene, camera } = module;
+  // Promise.resolve() also turns a synchronous throw inside compileAsync into a rejection.
+  void Promise.resolve()
+    .then(() => renderer.compileAsync(scene, camera))
+    .catch((error: unknown) => console.warn('3D: shader precompile failed, compiling on first frame', error))
+    .finally(() => {
+      if (destroyed) return;
+      compiled = true;
+      invalidate();
+    });
 
   const resize = (): void => {
     const { width, height } = stage.getBoundingClientRect();
@@ -92,7 +112,6 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
   if (choice.mode === 'still') invalidate();
 
   stage.dataset['scene'] = choice.mode;
-  let destroyed = false;
   return {
     destroy() {
       if (destroyed) return;

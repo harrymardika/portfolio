@@ -230,6 +230,22 @@ const title = splitEmphasis(localize(copy.title, locale));
     });
   }
 
-  if (document.readyState === 'complete') void start();
-  else window.addEventListener('load', () => void start(), { once: true });
+  // The section is below the fold: build the scene only when the visitor scrolls near it, so its
+  // setup (WebGL context, shaders, first frame) never competes with the first screen.
+  function startWhenNear(): void {
+    const stage = document.querySelector<HTMLElement>('[data-journey-stage]');
+    if (!stage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        void start();
+      },
+      { rootMargin: '50% 0px' },
+    );
+    observer.observe(stage);
+  }
+
+  if (document.readyState === 'complete') startWhenNear();
+  else window.addEventListener('load', startWhenNear, { once: true });
 </script>

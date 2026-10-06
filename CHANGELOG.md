@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Lighthouse CI on every pull request and before every deploy: performance, accessibility, best practices, and SEO budgets for six key pages (T7.2).
 - Search and sharing: sitemap with language alternates, robots.txt, a generated 1200×630 preview image for every page in both languages, and structured data for the person, the website, and each case study (T7.1).
 - Production Docker images (Caddy web + Bun stats) built and published to GHCR by GitHub Actions on every push to `main`, every 6 hours (fresh GitHub projects and PDFs), and on demand; pull requests run the full verify suite (T6.1–T6.3, T3.3).
 - Production compose stack for the home server with memory limits, read-only containers, a systemd update timer instead of Watchtower (ADR 0010), and a daily SQLite backup script (T6.4, T5.2).
@@ -45,6 +46,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Content source in `content/` extracted from the owner's CV (profile, experience, education, awards, trainings, certifications, skills, journey, projects).
 - Theme prototypes (`docs/design/theme-prototypes.html`); chosen theme: F + E, green palette.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
+
+### Changed
+- The journey 3D scene starts only when scrolled near, and shaders compile ahead of the first frame, cutting main-thread blocking on the home page by about three quarters.
 
 ### Fixed
 - Hoax and BCA case study metrics now say they are training values and show the validation values from the repos.

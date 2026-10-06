@@ -1,4 +1,4 @@
-# Quality gate (docs/05-coding-standards.md §9): typecheck, lint, unit, e2e (with PDFs and axe).
+# Quality gate (docs/05-coding-standards.md §9): typecheck, lint, unit, e2e (with PDFs and axe), Lighthouse.
 # Runs on pull requests, and is called by deploy.yml before every image build.
 name: CI
 
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
 
@@ -36,6 +36,22 @@ jobs:
 
       - name: Verify (check, unit, e2e)
         run: bun run verify
+
+      # Reuses the build the e2e step made (fixture GitHub data); thresholds in lighthouserc.cjs.
+      - name: Lighthouse (performance, accessibility, best practices, SEO)
+        timeout-minutes: 15
+        run: bun run lighthouse
+        env:
+          BUILD_OUT_DIR: dist-e2e
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload Playwright report on failure
         if: failure()

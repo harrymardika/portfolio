@@ -43,5 +43,11 @@ export default defineConfig(
     files: ['scripts/**', 'services/**', 'tests/**', '*.config.*'],
     rules: { 'no-console': 'off' },
   },
+  {
+    // CommonJS config files for tools that load them with require() (lighthouserc.cjs).
+    files: ['**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs' },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
   prettier,
 );

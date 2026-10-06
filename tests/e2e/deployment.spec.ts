@@ -34,6 +34,11 @@ test('no page triggers a Content Security Policy violation, including the 3D sce
   await expect(page.locator('[data-photo-card]')).toHaveAttribute('data-scene-ready', 'true', {
     timeout: 30_000,
   });
+  // The journey scene starts only when scrolled near (Journey.astro).
+  await page.locator('[data-journey-stage]').scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-journey-stage]')).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: 30_000,
+  });
   expect(violations).toEqual([]);
 });
 

@@ -81,6 +81,7 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 1. **Progressive enhancement.** HTML statis yang setara selalu ada. 3D dimuat dengan `client:visible`/dynamic import setelah LCP.
 2. **Matikan otomatis** jika: tidak ada WebGL, `prefers-reduced-motion: reduce` (tampilkan satu frame diam), `navigator.hardwareConcurrency <= 2`, atau `saveData`.
 3. **Anggaran:** JS 3D ≤ 180 KB gzip per halaman; ≤ 60 fps; pause saat di luar layar; DPR maksimal 2.
+   Scene di bawah layar pertama (journey) baru dibuat saat pengunjung menggulir mendekatinya; shader dikompilasi lebih dulu dengan `renderer.compileAsync` agar frame pertama tidak menjadi long task (T7.2).
 4. **Warna** dibaca dari token CSS saat mount (`getComputedStyle`), bukan ditulis di kode scene.
 5. **Interaksi tidak wajib.** Semua informasi juga ada dalam teks; 3D tidak boleh menjadi satu-satunya cara mengakses konten.
 6. **Label HTML** di atas kanvas (milestone) harus tetap berupa teks yang bisa dibaca screen reader, atau duplikat dari fallback.

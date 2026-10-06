@@ -12,3 +12,4 @@ docs/design/
 # Hand-written docs and content: formatting is reviewed by humans
 *.md
 content/
+.lighthouseci/

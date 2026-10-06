@@ -89,6 +89,7 @@ Sebuah tugas **selesai** hanya jika semua poin ini terpenuhi:
 - [ ] `bun run check` lulus (typecheck, lint, format)
 - [ ] `bun test` lulus; fungsi baru di `lib/` punya tes
 - [ ] E2E lulus jika menyentuh UI; dicek visual di desktop dan HP
+- [ ] Jika menyentuh tampilan, 3D, atau aset: `bun run build && bun run lighthouse` lulus (juga dijalankan CI; ambang di `lighthouserc.cjs`)
 - [ ] Tidak ada teks hardcode, hex mentah, `any`, `console.log` sisa debug, atau secret
 - [ ] Aksesibel: keyboard, fokus terlihat, alt text, kontras
 - [ ] Dokumentasi terdampak diperbarui

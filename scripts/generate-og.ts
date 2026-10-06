@@ -5,7 +5,7 @@
  * title, description, and language, and writes <outDir>/og/*.jpg (src/lib/seo/og.ts).
  *   bun run og                        uses BUILD_OUT_DIR or ./dist
  */
-import { mkdir, readdir, readFile, stat } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 import { chromium } from '@playwright/test';
@@ -75,5 +75,7 @@ try {
   await server.stop(true);
 }
 
+// The template is a build tool, not a page: keep it out of the published site.
+await rm(join(OUT_DIR, 'og-template'), { recursive: true, force: true });
 console.log(`OG: ${pages.length} images → ${join(OUT_DIR, OG_DIR)}`);
 if (failed) process.exit(1);

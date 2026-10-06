@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.2` (pemilik: pasang di server Debian 13, docs/07 §3)
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.3` (cek securityheaders.com setelah online) / `T7.4` (pemilik: pasang di server Debian 13, docs/07 §3)
 
 ## Ringkasan
 
@@ -99,7 +99,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 ## Fase 7: Kualitas
 
 - [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
-- [ ] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95)
+- [x] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95): `lighthouserc.cjs`, langkah di `ci.yml` (menahan deploy). Beranda (3D) gagal di < 80 dan memberi peringatan di < 90; lihat log 2026-10-06
 - [ ] **T7.3** Header keamanan (CSP, HSTS, dll.), target nilai A di securityheaders.com
 - [ ] **T7.4** Uji e2e utama: ganti bahasa, download CV, navigasi keyboard, fallback tanpa WebGL
 
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · T7.2
+- **Dikerjakan:** `lighthouserc.cjs` (6 halaman, median 3 run, Chromium Playwright, laporan lokal/artifact; tanpa dependency baru: `bunx @lhci/cli@0.15.1`); `scripts/serve-build.ts` (build + `/api/health` + API stats asli in-memory + Brotli, seperti Caddy); aturan kompresi dipindah ke `scripts/lib/compression.ts` (dipakai `precompress.ts` dan server preview); langkah Lighthouse + artifact di `ci.yml`.
+- **Perbaikan performa yang ditemukan:** (1) scene journey (di bawah layar pertama) kini baru dibuat saat digulir mendekat; (2) shader dikompilasi lebih dulu dengan `renderer.compileAsync` sehingga frame pertama tidak memblokir; (3) `checkShaderErrors` hanya di dev. Beranda: median 84 → 97 (TBT ±600 → ±160 ms).
+- **Skor (lokal, mobile):** `/` 97, `/id/` 97, `/about/` 100, `/projects/` 100, studi kasus 100, `/homelab/` 99–100; A11y/BP/SEO 100 di semua halaman.
+- **Catatan jujur:** di CI, WebGL berjalan di CPU (SwiftShader) dan Chromium headless membaca balik tiap frame ke CPU (±130 ms, tidak terjadi di GPU sungguhan), sehingga run beranda kadang 83–88. Karena itu beranda: gagal < 80, peringatan < 90; halaman lain tetap gagal < 90. Ide lanjutan (belum dikerjakan): mode `still` untuk renderer software (llvmpipe/SwiftShader) demi pengguna tanpa GPU.
 
 ### 2026-10-06 · Claude Code (Opus) · T7.1
 - **Dikerjakan:** `src/lib/seo/` murni (`og.ts`: nama gambar per halaman + pembaca meta; `sitemap.ts`: sitemap + robots; `json-ld.ts`: Person/WebSite/CreativeWork, tanpa email, `<` di-escape) + `person.ts` (khusus Astro); `BaseLayout` menulis `og:image` (+ ukuran, alt), `twitter:card=summary_large_image`, dan blok JSON-LD; `src/pages/og-template.astro` + `scripts/generate-og.ts` (Chromium, JPEG 1200×630, anggaran 150 KB; terbesar 64 KB); `scripts/generate-sitemap.ts`; `src/pages/robots.txt.ts`; server statis dipindah ke `scripts/lib/static-server.ts` (dipakai PDF & OG); Caddy: `/og/*` cache 1 hari.

@@ -7,26 +7,23 @@
  */
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { brotliCompressSync, constants, gzipSync } from 'node:zlib';
+
+import { brotli, gzip, isCompressible, MIN_COMPRESS_BYTES } from './lib/compression';
 
 const ROOT = join(import.meta.dir, '..');
 const OUT_DIR = resolve(ROOT, process.env['BUILD_OUT_DIR'] ?? 'dist');
-/** Already-compressed formats (images, fonts, PDFs) gain nothing and are skipped. */
-const TEXT = /\.(html|css|js|mjs|json|svg|xml|txt|webmanifest)$/;
-/** Below this size the compressed copy saves less than a network packet. */
-const MIN_BYTES = 1024;
 
 let count = 0;
 let before = 0;
 let after = 0;
 for (const file of await readdir(OUT_DIR, { recursive: true })) {
-  if (!TEXT.test(file)) continue;
+  if (!isCompressible(file)) continue;
   const path = join(OUT_DIR, file);
-  if ((await stat(path)).size < MIN_BYTES) continue;
+  if ((await stat(path)).size < MIN_COMPRESS_BYTES) continue;
   const data = await readFile(path);
-  const br = brotliCompressSync(data, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } });
+  const br = brotli(data);
   await writeFile(`${path}.br`, br);
-  await writeFile(`${path}.gz`, gzipSync(data, { level: 9 }));
+  await writeFile(`${path}.gz`, gzip(data));
   count += 1;
   before += data.length;
   after += br.length;

@@ -82,6 +82,14 @@ describe('pageFromHtml', () => {
   });
 });
 
+describe('pageFromHtml entities', () => {
+  it('decodes attribute values so the sitemap escapes them only once', () => {
+    const page = pageFromHtml(`<html><head><link rel="canonical" href="${SITE}/?a=1&amp;b=2"></head></html>`);
+    expect(page?.url).toBe(`${SITE}/?a=1&b=2`);
+    expect(buildSitemap(page ? [page] : [])).toContain('?a=1&amp;b=2</loc>');
+  });
+});
+
 describe('buildSitemap', () => {
   it('lists pages in a stable order with escaped hreflang links', () => {
     const xml = buildSitemap([

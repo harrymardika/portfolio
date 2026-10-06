@@ -3,6 +3,8 @@
  * The page and the generator both derive the file name from the page path, so they always agree.
  */
 
+import { decodeEntities as decode } from './html';
+
 export const OG_DIR = 'og';
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
@@ -34,15 +36,6 @@ export interface PageMeta {
   /** Path of the page's og:image, e.g. `/og/about.jpg`. */
   image: string | null;
 }
-
-const decode = (text: string): string =>
-  text
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCodePoint(Number.parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&');
 
 /** What the image generator needs from a built page. */
 export function readPageMeta(html: string): PageMeta {

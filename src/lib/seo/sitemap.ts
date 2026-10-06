@@ -10,8 +10,13 @@ export interface SitemapPage {
   alternates: Record<string, string>;
 }
 
-const attribute = (tag: string, name: string): string | undefined =>
-  new RegExp(`\\b${name}\\s*=\\s*"([^"]*)"`, 'i').exec(tag)?.[1];
+import { decodeEntities } from './html';
+
+/** Attribute value with HTML entities decoded (buildSitemap escapes again for XML). */
+const attribute = (tag: string, name: string): string | undefined => {
+  const value = new RegExp(`\\b${name}\\s*=\\s*"([^"]*)"`, 'i').exec(tag)?.[1];
+  return value === undefined ? undefined : decodeEntities(value);
+};
 
 /** Read the canonical URL and hreflang alternates of a page; null when it should not be listed. */
 export function pageFromHtml(html: string): SitemapPage | null {

@@ -8,7 +8,7 @@
 
 ```
 push ke main  /  jadwal tiap 6 jam (sinkron GitHub + PDF, T3.3)  /  manual (tab Actions)
-   → GitHub Actions deploy.yml: job verify (= ci.yml: check, unit, e2e)
+   → GitHub Actions deploy.yml: job verify (= ci.yml: check, unit, e2e, Lighthouse)
    → build 2 image (docker/Dockerfile) → ghcr.io/harrymardika/portfolio-web  & portfolio-stats
                                           tag: latest + sha-<commit>
    → server rumah: portfolio-update.timer (tiap 10 menit) → update.sh → docker compose pull && up -d
@@ -27,7 +27,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 | `docker/deploy/update.sh` | `pull` → `up -d` → hapus image lama (> 7 hari) |
 | `docker/deploy/portfolio-update.{service,timer}` | systemd: jalankan `update.sh` tiap 10 menit |
 | `docker/deploy/backup-stats.sh` | Backup SQLite konsisten (`VACUUM INTO`), simpan 14 terakhir |
-| `.github/workflows/ci.yml` | Pull request: `bun run verify` |
+| `.github/workflows/ci.yml` | Pull request (dan sebelum setiap deploy): `bun run verify`, lalu Lighthouse CI (`lighthouserc.cjs`); laporan sebagai artifact `lighthouse-reports` |
 | `.github/workflows/deploy.yml` | `main` + tiap 6 jam + manual: verify → build & push image |
 | `docker/Dockerfile.dev`, `docker/compose.dev.yml` | Development (Fase 1) |
 
