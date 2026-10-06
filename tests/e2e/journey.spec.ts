@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { force3DMode, SCENE_READY_TIMEOUT } from './helpers';
+import { disableWebGL, force3DMode, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test, type Page } from '@playwright/test';
 
 const stage = '[data-journey-stage]';
@@ -39,6 +39,19 @@ test.describe('without JavaScript', () => {
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });
+});
+
+test('without WebGL the timeline stays and the 3D path is never downloaded', async ({ page }) => {
+  await disableWebGL(page);
+  const scripts: string[] = [];
+  page.on('request', (request) => request.resourceType() === 'script' && scripts.push(request.url()));
+
+  await page.goto('/');
+  await scrollJourney(page, 0.3);
+  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'off');
+  await expect(page.locator(`${stage} ol`).getByRole('listitem')).toHaveCount(5);
+  await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '0');
+  expect(scripts.filter((url) => /journey-path|mount/.test(url))).toEqual([]);
 });
 
 test('the 3D path places labels and reaches milestones as you scroll', async ({ page }) => {

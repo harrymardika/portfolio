@@ -17,6 +17,20 @@ test('every page declares hreflang alternates for both locales', async ({ page }
   }
 });
 
+test('switching language keeps the visitor on the same page', async ({ page }) => {
+  for (const [from, to] of [
+    ['/about/', '/id/about/'],
+    ['/projects/decklify/', '/id/projects/decklify/'],
+    ['/id/homelab/', '/homelab/'],
+  ] as const) {
+    await page.goto(from);
+    const target = to.startsWith('/id/') ? 'id' : 'en';
+    await page.locator(`a[hreflang="${target}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`${to}$`));
+    await expect(page.locator('html')).toHaveAttribute('lang', target === 'id' ? 'id-ID' : 'en-US');
+  }
+});
+
 test('the language switch moves between locales and marks the current one', async ({ page }) => {
   await page.goto('/');
   await page.locator('a[hreflang="id"]').click();

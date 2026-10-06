@@ -1,4 +1,4 @@
-import { force3DMode, SCENE_READY_TIMEOUT } from './helpers';
+import { disableWebGL, force3DMode, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test } from '@playwright/test';
 
 const stage = '[data-photo-card]';
@@ -71,16 +71,7 @@ test('reduced motion renders a still 3D frame', async ({ page }) => {
 });
 
 test('without WebGL the static card stays and three.js is never downloaded', async ({ page }) => {
-  await page.addInitScript(() => {
-    const original = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function (
-      this: HTMLCanvasElement,
-      type: string,
-      ...rest: unknown[]
-    ) {
-      return type.startsWith('webgl') ? null : original.call(this, type as '2d', ...(rest as []));
-    } as typeof original;
-  });
+  await disableWebGL(page);
   const scripts: string[] = [];
   page.on('request', (request) => request.resourceType() === 'script' && scripts.push(request.url()));
 

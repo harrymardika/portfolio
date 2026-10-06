@@ -101,7 +101,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 - [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
 - [x] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95): `lighthouserc.cjs`, langkah di `ci.yml` (menahan deploy). Beranda (3D) gagal di < 80 dan memberi peringatan di < 90; lihat log 2026-10-06
 - [ ] **T7.3** Header keamanan (CSP, HSTS, dll.), target nilai A di securityheaders.com
-- [ ] **T7.4** Uji e2e utama: ganti bahasa, download CV, navigasi keyboard, fallback tanpa WebGL
+- [x] **T7.4** Uji e2e utama: ganti bahasa (tetap di halaman yang sama), download CV, navigasi keyboard (`keyboard.spec.ts`), fallback tanpa WebGL (hero + journey)
 
 ## Fase 8: Otomasi lanjutan
 
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · T7.4
+- **Dikerjakan:** `tests/e2e/keyboard.spec.ts` (Tab ke navigasi utama dengan cincin fokus terlihat + Enter; tombol tema dengan Space; ganti bahasa dengan Enter; cerita journey dibuka Enter, Escape mengembalikan fokus ke tombolnya; unduh CV ID dengan keyboard; menu HP: Enter membuka, Tab masuk ke tautannya, Escape menutup dan mengembalikan fokus); `i18n.spec.ts`: ganti bahasa tetap di halaman yang sama (About, studi kasus, Homelab); `journey.spec.ts`: tanpa WebGL timeline tetap tampil dan chunk 3D tidak diunduh; helper `disableWebGL` dan `force3DMode` di `tests/e2e/helpers.ts`.
+- **Sudah ada sebelumnya:** skip link (layout), tombol unduh + unduhan nyata (hero), hero tanpa WebGL, tanpa JavaScript (hero, journey, menu, tema, kontak).
+- **Verifikasi:** spec terkait 49 lulus (5 dilewati di profil mobile secara sengaja); `bun run verify` lulus.
 
 ### 2026-10-06 · Claude Code (Opus) · T7.2
 - **Dikerjakan:** `lighthouserc.cjs` (6 halaman, median 3 run, Chromium Playwright, laporan lokal/artifact; tanpa dependency baru: `bunx @lhci/cli@0.15.1`); `scripts/serve-build.ts` (build + `/api/health` + API stats asli in-memory + Brotli, seperti Caddy); aturan kompresi dipindah ke `scripts/lib/compression.ts` (dipakai `precompress.ts` dan server preview); langkah Lighthouse + artifact di `ci.yml`.

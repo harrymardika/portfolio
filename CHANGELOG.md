@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- End-to-end tests for the main journeys with a keyboard only, language switching that keeps the current page, and the journey section without WebGL (T7.4).
 - Lighthouse CI on every pull request and before every deploy: performance, accessibility, best practices, and SEO budgets for six key pages (T7.2).
 - Search and sharing: sitemap with language alternates, robots.txt, a generated 1200×630 preview image for every page in both languages, and structured data for the person, the website, and each case study (T7.1).
 - Production Docker images (Caddy web + Bun stats) built and published to GHCR by GitHub Actions on every push to `main`, every 6 hours (fresh GitHub projects and PDFs), and on demand; pull requests run the full verify suite (T6.1–T6.3, T3.3).
