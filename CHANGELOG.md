@@ -6,6 +6,11 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Production Docker images (Caddy web + Bun stats) built and published to GHCR by GitHub Actions on every push to `main`, every 6 hours (fresh GitHub projects and PDFs), and on demand; pull requests run the full verify suite (T6.1–T6.3, T3.3).
+- Production compose stack for the home server with memory limits, read-only containers, a systemd update timer instead of Watchtower (ADR 0010), and a daily SQLite backup script (T6.4, T5.2).
+- Hash-based Content Security Policy generated from each build, plus security and cache headers; text files are compressed at build time so the server never compresses on request.
+- Live server status on the Homelab page (T6.5).
+- Deployment tests that run against the real containers (`bun run test:e2e:docker`).
 - Owner-only tracking-link report: `bun run stats:report` shows which `?ref=` links were opened and whether the CV was downloaded (T5.5).
 - Live site statistics on the Homelab page, formatted per language, with a graceful fallback when the service is down (T5.4).
 - Statistics beacon: page views (with private tracking ref), downloads, and social link clicks; respects DNT/GPC, never sends from localhost or print pages (T5.3).

@@ -70,7 +70,9 @@ for (const path of ['/print/portfolio/', '/id/print/portfolio/']) {
   });
 }
 
-test('the portfolio lists every non-featured project on the "more projects" page', async ({ page }) => {
+test('the portfolio lists every non-featured project on the "more projects" page @fixture', async ({
+  page,
+}) => {
   await page.goto('/print/portfolio/');
   // e2e fixture: 4 non-featured case studies + 2 GitHub entries.
   await expect(page.locator('.pf-grid li')).toHaveCount(6);

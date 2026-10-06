@@ -1,0 +1,44 @@
+# Production stack for the home server (docs/07-deployment.md §3).
+#   cp docker/compose.yml docker/deploy/* /opt/portfolio/ && cd /opt/portfolio && docker compose up -d
+# Images are built by GitHub Actions and pulled from GHCR; the server never builds.
+# Cloudflare Tunnel (managed by the owner) points at http://localhost:8080.
+name: harry-portfolio
+
+x-hardening: &hardening
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  logging:
+    driver: json-file
+    options: { max-size: 5m, max-file: '3' }
+
+services:
+  web:
+    <<: *hardening
+    image: ghcr.io/harrymardika/portfolio-web:${TAG:-latest}
+    ports:
+      # Only reachable from the server itself (cloudflared); never exposed on the LAN or router.
+      - '127.0.0.1:${WEB_PORT:-8080}:8080'
+    # Caddy's binary carries the bind capability; keep only that one.
+    cap_add: [NET_BIND_SERVICE]
+    tmpfs: [/tmp, /data, /config]
+    # Soft limit for Go's garbage collector, well below the hard container limit.
+    environment:
+      GOMEMLIMIT: 48MiB
+    mem_limit: 96m
+    depends_on: [stats]
+
+  stats:
+    <<: *hardening
+    image: ghcr.io/harrymardika/portfolio-stats:${TAG:-latest}
+    environment:
+      STATS_SITE_HOST: ${STATS_SITE_HOST:-harry.mardika.my.id}
+      STATS_ADMIN_TOKEN: ${STATS_ADMIN_TOKEN:-}
+    volumes:
+      - stats-data:/data
+    mem_limit: 128m
+
+volumes:
+  stats-data:

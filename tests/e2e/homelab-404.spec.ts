@@ -41,3 +41,19 @@ for (const path of ['/homelab/', '/id/homelab/', '/missing/']) {
     expect(serious).toEqual([]);
   });
 }
+
+test('the server status shows online when the home server answers', async ({ page }) => {
+  await page.route('**/api/health', (route) => route.fulfill({ json: { ok: true } }));
+  await page.goto('/homelab/');
+  const badge = page.locator('[data-server-status]');
+  await expect(badge).toHaveAttribute('data-server-status', 'online');
+  await expect(badge).toContainText('Online, served from my home server');
+});
+
+test('the server status explains the cached copy when the home server is down', async ({ page }) => {
+  await page.route('**/api/health', (route) => route.abort('connectionrefused'));
+  await page.goto('/id/homelab/');
+  const badge = page.locator('[data-server-status]');
+  await expect(badge).toHaveAttribute('data-server-status', 'offline');
+  await expect(badge).toContainText('salinan yang disimpan Cloudflare');
+});

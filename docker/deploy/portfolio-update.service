@@ -1,0 +1,11 @@
+# Install: sudo cp portfolio-update.{service,timer} /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now portfolio-update.timer
+[Unit]
+Description=Pull and restart the portfolio containers
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/portfolio
+ExecStart=/opt/portfolio/update.sh

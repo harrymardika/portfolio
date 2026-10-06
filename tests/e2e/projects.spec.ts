@@ -16,7 +16,7 @@ test('the header links to Projects and marks the current page', async ({ page, i
   );
 });
 
-test('the list shows case studies first (drafts hidden), then GitHub repos', async ({ page }) => {
+test('the list shows case studies first (drafts hidden), then GitHub repos @fixture', async ({ page }) => {
   await page.goto('/projects/');
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
   const titles = await page.locator('[data-project] h2').allTextContents();
@@ -36,7 +36,9 @@ test('the list shows case studies first (drafts hidden), then GitHub repos', asy
   await expect(page.getByText('Reclaimyt')).toHaveCount(0); // draft
 });
 
-test('a GitHub repo card links to GitHub and shows its language, stars, and topics', async ({ page }) => {
+test('a GitHub repo card links to GitHub and shows its language, stars, and topics @fixture', async ({
+  page,
+}) => {
   await page.goto('/projects/');
   const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'fixture-vision-toolkit' });
   await expect(card).toHaveCount(1);
@@ -54,7 +56,9 @@ test('a GitHub repo card links to GitHub and shows its language, stars, and topi
   ]);
 });
 
-test('a project split across repositories shows as one card linked to its first repo', async ({ page }) => {
+test('a project split across repositories shows as one card linked to its first repo @fixture', async ({
+  page,
+}) => {
   await page.goto('/projects/');
   const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'Fixture grouped project' });
   await expect(card).toHaveCount(1);
@@ -71,7 +75,7 @@ test('GitHub repos stay off the home page, which shows featured case studies onl
   await expect(page.locator('#projects [data-project-kind="local"]')).toHaveCount(3);
 });
 
-test('GitHub cards are translated on /id/', async ({ page }) => {
+test('GitHub cards are translated on /id/ @fixture', async ({ page }) => {
   await page.goto('/id/projects/');
   const card = page.locator('[data-project-kind="github"]').filter({ hasText: 'fixture-vision-toolkit' });
   await expect(card).toContainText('★ 3');

@@ -48,8 +48,8 @@ export class StatsStore {
 
   constructor(path = ':memory:') {
     this.db = new Database(path, { create: true, strict: true });
-    this.db.exec('PRAGMA journal_mode = WAL;');
-    this.db.exec(SCHEMA);
+    this.db.run('PRAGMA journal_mode = WAL;');
+    this.db.run(SCHEMA);
   }
 
   /** Today's secret salt; created on first use and every earlier salt is deleted. */

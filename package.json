@@ -11,11 +11,12 @@
   },
   "scripts": {
     "dev": "bun run fetch:github && astro dev",
-    "build": "bun run fetch:github && astro build && bun run pdf",
+    "build": "bun run fetch:github && astro build && bun run pdf && bun run csp",
     "preview": "astro preview",
     "astro": "astro",
     "fetch:github": "bun scripts/fetch-github.ts",
     "pdf": "bun scripts/generate-pdf.ts",
+    "csp": "bun scripts/generate-csp.ts",
     "stats:dev": "bun services/stats/server.ts",
     "stats:report": "bun scripts/stats-report.ts",
     "typecheck": "astro check",
@@ -28,6 +29,7 @@
     "test:unit": "bun test",
     "test:coverage": "bun test --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:docker": "E2E_BASE_URL=http://localhost:${WEB_PORT:-8080} playwright test --project=desktop --grep-invert @fixture",
     "verify": "bun run check && bun test && bun run test:e2e"
   },
   "dependencies": {

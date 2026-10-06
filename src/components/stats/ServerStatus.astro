@@ -1,0 +1,50 @@
+---
+/**
+ * Live server status (T6.5). Caddy answers /api/health directly and uncached; if it fails, the page
+ * itself came from Cloudflare's cache while the home server is down. Without JS the badge stays neutral.
+ */
+import { type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+---
+
+<p
+  class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm"
+  data-server-status="checking"
+  data-label-online={t['status.online']}
+  data-label-offline={t['status.offline']}
+  role="status"
+>
+  <span class="dot size-2 shrink-0 rounded-full bg-line" aria-hidden="true"></span>
+  <span class="font-semibold">{t['status.label']}:</span>
+  <span data-status-text>{t['status.checking']}</span>
+</p>
+
+<style>
+  [data-server-status='online'] .dot {
+    background: var(--success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 30%, transparent);
+  }
+
+  [data-server-status='offline'] .dot {
+    background: var(--amber);
+  }
+</style>
+
+<script>
+  for (const badge of document.querySelectorAll<HTMLElement>('[data-server-status]')) {
+    const text = badge.querySelector('[data-status-text]');
+    const show = (state: 'online' | 'offline'): void => {
+      badge.dataset['serverStatus'] = state;
+      if (text) text.textContent = badge.dataset[state === 'online' ? 'labelOnline' : 'labelOffline'] ?? '';
+    };
+    fetch('/api/health', { cache: 'no-store', signal: AbortSignal.timeout(5000) })
+      .then((response) => show(response.ok ? 'online' : 'offline'))
+      .catch(() => show('offline'));
+  }
+</script>

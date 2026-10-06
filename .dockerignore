@@ -2,6 +2,10 @@
 .git
 node_modules
 dist
+dist-e2e
+build-meta
+.data
+test-results
 .astro
 coverage
 playwright-report

@@ -1,6 +1,6 @@
 # 0005 · Build di GitHub Actions, image di GHCR, server hanya menarik image
 
-- **Status:** Accepted
+- **Status:** Accepted (the Watchtower part is replaced by [0010](0010-update-timer-instead-of-watchtower.md))
 - **Tanggal:** 2026-10-05
 - **Mengubah:** SRS PDF §5.4 Opsi 2 (self-hosted runner)
 

@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 6 · **Tugas berikutnya:** `T6.1` (sekaligus T5.2; lalu T3.3 setelah T6.2)
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 6 (menunggu run pertama di GitHub) · **Tugas berikutnya:** push → cek workflow Deploy → pasang di server (docs/07 §3) → Fase 7 `T7.1`
 
 ## Ringkasan
 
@@ -12,14 +12,14 @@
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
-| 3 | Sinkronisasi proyek dari GitHub | 🔄 2/3 tugas (T3.3 menunggu CI di Fase 6) |
+| 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3 siap (cron di `deploy.yml`), menunggu run pertama |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
-| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | 🔄 4/5 tugas (T5.2 bersama Fase 6) |
-| 6 | Docker, CI/CD, deploy ke home server | ⏳ Berikutnya |
+| 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
+| 6 | Docker, CI/CD, deploy ke home server | 🔄 Teruji lokal; workflow menunggu push pertama |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
-Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 menunggu CI) — ≈55%**
+Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run pertama GitHub Actions — ≈70%**
 
 ---
 
@@ -69,7 +69,7 @@ Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 men
 - [x] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (REST, token opsional), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
   - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
 - [x] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
-- [ ] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam) *(bergantung T6.2)*
+- [~] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam): jadwal `17 */6 * * *` di `deploy.yml` membangun ulang image (GitHub + PDF). *Selesai setelah run terjadwal pertama berhasil.*
 
 ## Fase 4: PDF CV & Portfolio ✅
 
@@ -83,18 +83,18 @@ Progres keseluruhan: **Fase 0–2 dan 4 selesai, Fase 3 hampir selesai (T3.3 men
 
 - [x] **T5.1** Service `services/stats/` (Bun + SQLite): `POST /api/stats/event`, `GET /api/stats/summary`, `GET /api/stats/private` (token)
   - Kriteria: hash pengunjung harian dengan salt yang berganti & dibuang, tanpa IP tersimpan; filter bot; rate limit; validasi input (Zod); unit test untuk agregasi & privasi; RAM ≤ 96 MB *(direvisi dari 64 MB setelah diukur: runtime Bun 36 MB + Zod 32 MB + layanan ±4 MB)*.
-- [ ] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats` (`bun services/stats/server.ts`), volume `stats-data` (`STATS_DB_PATH`), route `/api/stats/*`, batas memori 128 MB, panduan backup SQLite *(dikerjakan bersama T6.1/T6.4)*
+- [x] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats` (bundel `server.js`), volume `stats-data` (`STATS_DB_PATH`), route `/api/stats/*`, batas memori 128 MB (terukur 17 MiB), backup SQLite `docker/deploy/backup-stats.sh` (diuji)
 - [x] **T5.3** Skrip beacon di situs: `pageview`, `download-cv`, `download-portfolio`, `outbound` (konstanta di `src/lib/stats/events.ts`); hormati DNT/GPC; tidak aktif di dev dan `/print/*`
 - [x] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
 - [x] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
 
 ## Fase 6: Docker, CI/CD, deploy
 
-- [ ] **T6.1** `docker/Dockerfile` multi-stage (deps → build → PDF → Caddy) + `Caddyfile` dengan header keamanan
-- [ ] **T6.2** GitHub Actions `ci.yml`: check, test, build pada setiap PR
-- [ ] **T6.3** GitHub Actions `deploy.yml`: build image dan push ke GHCR saat push ke `main` dan terjadwal
-- [ ] **T6.4** `docker/compose.yml` produksi: `web` (Caddy) + `stats` + `watchtower`, dengan batas memori per container (server RAM 1,8 GB); Cloudflare Tunnel diurus pemilik
-- [ ] **T6.5** Halaman `/homelab`: status uptime live (Uptime Kuma badge/API)
+- [x] **T6.1** `docker/Dockerfile` multi-stage (build: Node + Bun + Chromium → GitHub, Astro, PDF, CSP, kompresi → `web` Caddy / `stats` Bun) + `Caddyfile` dengan header keamanan dan CSP berbasis hash
+- [~] **T6.2** GitHub Actions `ci.yml`: `bun run verify` pada setiap PR (lolos `actionlint`; *selesai setelah run pertama di GitHub*)
+- [~] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (*selesai setelah run pertama*)
+- [x] **T6.4** `docker/compose.yml` produksi: `web` (96 MB) + `stats` (128 MB), read-only, tanpa capability; update lewat systemd timer, **bukan Watchtower** (diarsipkan; ADR 0010). Cloudflare Tunnel diurus pemilik
+- [x] **T6.5** Halaman `/homelab`: status server live dari `/api/health` (tanpa Uptime Kuma: tidak perlu container tambahan; saat server mati, Cloudflare menyajikan salinan dan badge menulis offline)
 
 ## Fase 7: Kualitas
 
@@ -136,6 +136,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-05 · Claude Code (Opus) · T6.1–T6.5, T5.2, T3.3 (Fase 6 lokal)
+- **Dikerjakan:** `docker/Dockerfile` (stage `build`/`web`/`stats`), `docker/Caddyfile`, `docker/compose.yml`, `docker/deploy/` (update.sh, backup-stats.sh, systemd service + timer), `.github/workflows/ci.yml` + `deploy.yml`, ADR 0010 (timer menggantikan Watchtower yang diarsipkan), `src/lib/security/csp.ts` + `scripts/generate-csp.ts` (CSP hash, tanpa `unsafe-inline` untuk script), `scripts/precompress.ts`, `ServerStatus` di `/homelab`, `tests/e2e/deployment.spec.ts` + `bun run test:e2e:docker`, docs/07 ditulis ulang.
+- **Bug yang tertangkap saat uji container:** (1) font Plus Jakarta Sans kecil di-*inline* Vite sebagai `data:` → diblokir CSP → `assetsInlineLimit` tidak meng-inline font + `generate-csp.ts` gagal jika ada `data:font`; (2) `encode zstd gzip` membuat Caddy 74 MB RAM → kompresi saat build (`precompressed br gzip`) + `GOMEMLIMIT` → 22 MB; (3) `backup-stats.sh` memakai `docker compose cp` yang tidak bisa membaca tmpfs → dialirkan lewat `exec cat` + file `.part`, dan sisa run gagal dibersihkan dulu.
+- **Verifikasi:** `bun run verify` lulus; image dibangun lokal (web ±100 MB, stats ±260 MB); stack `-p portfolio-local`: 98 tes e2e lulus terhadap container (header, CSP tanpa pelanggaran di semua halaman + 3D, cache, kompresi, 404, API stats lewat Caddy, health); event nyata tercatat dan muncul di laporan privat; backup dua kali berturut-turut, `integrity_check: ok`; `actionlint` bersih.
+- **Belum:** run pertama `deploy.yml` di GitHub (T6.2/T6.3/T3.3), lalu pemilik: jadikan package GHCR **Public**, pasang di server (docs/07 §3), arahkan Cloudflare Tunnel ke `http://localhost:8080`.
+- **Catatan:** run terjadwal membuat image baru tiap 6 jam (PDF tidak byte-identik), jadi server me-restart container ±4×/hari selama beberapa detik; Cloudflare *Always Online* menutupinya.
 
 ### 2026-10-05 · Claude Code (Opus) · T5.5 (Fase 5 selesai kecuali T5.2)
 - **Dikerjakan:** `refReportSchema`/`privateReportSchema` + `formatRefReport` (murni, tabel rata, terbaru dulu) di `src/lib/stats/summary.ts` (tipe juga dipakai layanan); `scripts/stats-report.ts` (`bun run stats:report`; `STATS_ADMIN_TOKEN` wajib, `STATS_URL` opsional; pesan jelas untuk token kosong/salah, server tak terjangkau, HTTP error). Panduan di `docs/08-analytics.md` §4.

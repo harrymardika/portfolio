@@ -15,18 +15,20 @@ flowchart LR
     V --> A[Astro SSG<br/>halaman EN + ID]
     A --> P[scripts/generate-pdf.ts<br/>Playwright]
     P --> D[dist/downloads/*.pdf]
+    A --> CSP[scripts/generate-csp.ts<br/>build-meta/csp.caddy]
   end
   G --> F
   A --> I[(Image Docker<br/>Caddy + file statis)]
   D --> I
+  CSP --> I
   I -->|push| R[GHCR]
-  R -->|pull, Watchtower| S[Home server]
+  R -->|pull, systemd timer| S[Home server]
   S -->|Cloudflare Tunnel| CF[Cloudflare CDN] --> U((Pengunjung))
   U -.->|beacon /api/stats| ST[stats<br/>Bun + SQLite]
 ```
 
 Prinsip utama:
-1. **Statis terlebih dahulu.** Semua halaman di-render saat build. Tidak ada server aplikasi di runtime. Ini cepat, aman, dan cocok dengan cache CDN.
+1. **Statis terlebih dahulu.** Semua halaman di-render saat build dan disajikan Caddy. Satu-satunya proses aplikasi di runtime adalah service statistik kecil (`services/stats/`, ADR 0009); jika ia mati, situs tetap utuh. Ini cepat, aman, dan cocok dengan cache CDN.
 2. **Satu sumber data.** `content/` adalah satu-satunya tempat isi. Web, CV, dan Portfolio membaca data yang sama.
 3. **Validasi saat build.** Data salah berarti build gagal, sehingga tidak pernah sampai ke production.
 4. **3D adalah lapisan tambahan.** HTML statis sudah lengkap. Three.js hanya "menghias" jika perangkat mampu.
@@ -44,7 +46,7 @@ Prinsip utama:
 | PDF | Playwright mencetak halaman `/print/*` | 0003 |
 | Statistik | Service kecil Bun + SQLite di domain yang sama | 0009 |
 | Server web | Caddy (dalam image) | 0005 |
-| CI/CD | GitHub Actions → GHCR → Watchtower | 0005 |
+| CI/CD | GitHub Actions → GHCR → systemd timer (`docker compose pull`) | 0005, 0010 |
 | Tes | `bun test` (unit), Playwright (e2e), axe (a11y) | – |
 | Lint/format | ESLint + Prettier (dengan plugin Astro) | – |
 
@@ -98,7 +100,8 @@ Aturan:
 │   │   ├── theme.ts             # logika tema terang/gelap
 │   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
 │   │   ├── github/              # schemas, select (murni), client (REST, retry), sync (I/O diinjeksi)
-│   │   ├── stats/               # (T5.3) events.ts (konstanta nama event), beacon
+│   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
+│   │   ├── security/            # csp.ts: hash script inline → header CSP
 │   │   └── seo/                 # meta, JSON-LD builders
 │   ├── components/
 │   │   ├── layout/              # BaseLayout, Header, Footer, LangSwitch, ThemeToggle, SkipLink
@@ -122,11 +125,12 @@ Aturan:
 │   │   └── 404.astro
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
-├── scripts/                     # fetch-github.ts, generate-pdf.ts (CLI, dipanggil saat build)
+├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
+├── scripts/                     # fetch-github, generate-pdf, generate-csp, precompress, stats-report, check-tokens
 ├── tests/
 │   ├── unit/                    # cermin struktur src/lib
 │   └── e2e/                     # Playwright: smoke, i18n, download, a11y
-├── docker/                      # Dockerfile, Caddyfile, compose.yml, compose.dev.yml
+├── docker/                      # Dockerfile, Caddyfile, compose.yml, compose.dev.yml, deploy/ (timer, update, backup)
 └── .github/workflows/           # ci.yml, deploy.yml
 ```
 
@@ -141,6 +145,8 @@ bun run build
                                    GITHUB_CACHE=…/github.e2e.json, output dist-e2e/ (tidak menyentuh dist/)
   2. astro build                 → dist/  (validasi Zod terjadi di sini)
   3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
+  4. scripts/generate-csp.ts     → build-meta/csp.caddy (hash setiap script inline; gagal jika ada font data:)
+  Hanya di Docker: scripts/precompress.ts → salinan .br/.gz di samping file teks (docs/07 §4)
   BUILD_OUT_DIR mengganti folder output (Astro dan skrip PDF membaca variabel yang sama)
 ```
 

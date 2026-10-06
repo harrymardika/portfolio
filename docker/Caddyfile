@@ -1,0 +1,63 @@
+# Production web server (docs/07-deployment.md). Serves the static build from /srv and forwards
+# /api/stats/* to the stats service. HTTPS is terminated by Cloudflare; Caddy listens on plain :8080.
+{
+	admin off
+	auto_https off
+	servers {
+		# Requests arrive through cloudflared on the same host/network.
+		trusted_proxies static private_ranges
+	}
+}
+
+:8080 {
+	# Security headers (target: A on securityheaders.com). CSP is generated per build with script hashes.
+	import /etc/caddy/csp.caddy
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		-Server
+	}
+
+	# Liveness of the home server itself. Never cached, so a failure means the origin is down and
+	# Cloudflare is serving a cached copy of the page (shown on /homelab).
+	handle /api/health {
+		header Cache-Control "no-store"
+		respond `{"ok":true}` 200
+	}
+
+	handle /api/stats/* {
+		reverse_proxy stats:8787 {
+			# Keep the visitor's address for the daily hash (never stored).
+			header_up X-Forwarded-For {client_ip}
+		}
+	}
+
+	handle {
+		root * /srv
+
+		# Fingerprinted assets never change; PDFs may be refreshed by each build; pages always revalidate.
+		@assets path /_astro/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@pdf path /downloads/*
+		header @pdf Cache-Control "public, max-age=3600"
+		@pages not path /_astro/* /downloads/*
+		header @pages Cache-Control "public, max-age=0, must-revalidate"
+
+		# Compressed once at build time (scripts/precompress.ts); the home server's CPU stays idle.
+		file_server {
+			precompressed br gzip
+		}
+	}
+
+	handle_errors 404 {
+		root * /srv
+		rewrite * /404.html
+		file_server {
+			precompressed br gzip
+		}
+	}
+}

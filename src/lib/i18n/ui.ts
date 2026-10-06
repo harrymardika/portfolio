@@ -51,6 +51,10 @@ const en = {
   'homelab.pipeline': 'From a git push to your browser',
   'homelab.stack': 'Stack',
   'homelab.hardware': 'The server',
+  'status.label': 'Server status',
+  'status.checking': 'Checking…',
+  'status.online': 'Online, served from my home server',
+  'status.offline': 'Offline right now. You are reading a copy cached by Cloudflare.',
   'stats.title': 'Site statistics',
   'stats.intro':
     "Live numbers from this site's own counter. No cookies, no IP addresses stored, and Do Not Track is respected.",
@@ -146,6 +150,10 @@ const id: Record<UiKey, string> = {
   'homelab.pipeline': 'Dari git push sampai ke browser Anda',
   'homelab.stack': 'Stack',
   'homelab.hardware': 'Servernya',
+  'status.label': 'Status server',
+  'status.checking': 'Memeriksa…',
+  'status.online': 'Online, disajikan dari server rumah saya',
+  'status.offline': 'Sedang offline. Anda membaca salinan yang disimpan Cloudflare.',
   'stats.title': 'Statistik situs',
   'stats.intro':
     'Angka langsung dari penghitung milik situs ini sendiri. Tanpa cookie, tanpa menyimpan alamat IP, dan menghormati Do Not Track.',
