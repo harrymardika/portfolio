@@ -12,14 +12,14 @@
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
-| 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3 siap (cron di `deploy.yml`), menunggu run pertama |
+| 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3: jadwal sudah ada, GitHub belum pernah menjalankannya (cek berikutnya) |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
-| 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
-| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
+| 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
+| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | 🔄 T8.1 (Pages CMS) dan T8.3 selesai; T8.2 menunggu keputusan pemilik (API key AI) |
 
-Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run pertama GitHub Actions — ≈70%**
+Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T3.3 (run terjadwal pertama) dan T8.2 — ≈95%**
 
 ---
 
