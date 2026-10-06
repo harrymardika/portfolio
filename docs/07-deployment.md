@@ -24,7 +24,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 | `docker/Dockerfile` | Multi-stage: `build` (Node 22 + Bun + Chromium → GitHub sync, Astro, PDF, CSP, kompresi `.br`/`.gz`, bundle stats) → `web` (Caddy + `dist/`) dan `stats` (Bun + 1 file `server.js`) |
 | `docker/Caddyfile` | File statis terkompresi (`precompressed br gzip`), `/api/health`, proxy `/api/stats/*`, header keamanan, CSP hasil build, cache header, halaman 404 |
 | `docker/compose.yml` | Produksi: `web` (port `127.0.0.1:8080`, 96 MB, `GOMEMLIMIT=48MiB`) + `stats` (128 MB, volume `stats-data`); semua *read-only*, tanpa capability, `no-new-privileges` |
-| `docker/deploy/update.sh` | `pull` → `up -d` → hapus image lama (> 7 hari) |
+| `docker/deploy/update.sh` | `pull` → `up -d --wait` → hapus image lama (> 7 hari) → jika image `web` berubah, hapus cache Cloudflare untuk situs ini (ADR 0012; dites di `tests/unit/deploy-update.test.ts`) |
 | `docker/deploy/portfolio-update.{service,timer}` | systemd: jalankan `update.sh` tiap 10 menit |
 | `docker/deploy/backup-stats.sh` | Backup SQLite konsisten (`VACUUM INTO`), simpan 14 terakhir |
 | `.github/workflows/ci.yml` | Pull request (dan sebelum setiap deploy): `bun run verify`, lalu Lighthouse CI (`lighthouserc.cjs`); laporan sebagai artifact `lighthouse-reports` |
@@ -49,6 +49,10 @@ cat > .env <<'ENV'
 STATS_ADMIN_TOKEN=<hasil: openssl rand -hex 32>
 STATS_SITE_HOST=harry.mardika.my.id
 # TAG=sha-abc1234   # opsional: kunci ke versi tertentu (rollback)
+# Hapus cache Cloudflare setiap deploy (ADR 0012, §4). Token: izin Zone · Cache Purge · Purge saja.
+CF_API_TOKEN=
+CF_ZONE_ID=
+SITE_HOST=harry.mardika.my.id
 ENV
 chmod 600 .env
 
@@ -71,7 +75,14 @@ systemctl list-timers portfolio-update.timer
 
 ## 4. Cache & ketersediaan
 
-- HTML: `Cache-Control: public, max-age=0, must-revalidate`. Aktifkan aturan cache Cloudflare + *Always Online* agar halaman tetap tersaji saat server mati; badge di `/homelab` akan menulis "Sedang offline… salinan Cloudflare". Cek 2026-10-06: HTML masih `cf-cache-status: DYNAMIC` (belum di-cache di edge), jadi saat server mati halaman belum tersaji dari Cloudflare.
+- HTML: Caddy mengirim `Cache-Control: public, max-age=0, must-revalidate` (browser selalu memvalidasi ulang). **Cloudflare menyimpannya 7 hari dan cache dihapus otomatis setiap deploy** (ADR 0012), jadi situs tetap tersaji saat server mati dan update tetap langsung terlihat. Badge di `/homelab` menulis "Sedang offline… salinan Cloudflare" saat `/api/health` gagal.
+
+  **Pengaturan Cloudflare (sekali, oleh pemilik):**
+  1. *Caching → Cache Rules → Create rule.* Kondisi (*Edit expression*): `(http.host eq "harry.mardika.my.id" and not starts_with(http.request.uri.path, "/api/"))`. Aksi: *Eligible for cache*; *Edge TTL* → *Ignore cache-control header and use this TTL* → 7 hari; *Browser TTL* → *Respect origin TTL*.
+  2. *My Profile → API Tokens → Create Token → Custom token:* izin **Zone · Cache Purge · Purge**, *Zone Resources* → *Specific zone* → `mardika.my.id`. Tanpa izin lain.
+  3. Isi `CF_API_TOKEN` dan `CF_ZONE_ID` (halaman *Overview* zona, kolom kanan) di `/opt/portfolio/.env`, salin `update.sh` terbaru ke `/opt/portfolio/`, lalu jalankan `./update.sh` sekali.
+  4. Cek: `curl -sI https://harry.mardika.my.id/ | grep cf-cache-status` → `MISS` lalu `HIT` di permintaan berikutnya.
+- *Always Online* (aktif) hanya cadangan: ia menyajikan salinan dari Wayback Machine, yang perlu disimpan dulu lewat web.archive.org/save.
 - **Cloudflare → Caching → Configuration → Browser Cache TTL: pilih "Respect Existing Headers".** Nilai bawaan (4 jam) menimpa header dari Caddy; terukur 2026-10-06: PDF `max-age=14400`, sehingga CV yang diperbarui bisa baru terlihat 4 jam kemudian.
 - Aset ber-hash (`/_astro/*`): `public, max-age=31536000, immutable`.
 - PDF (`/downloads/*`): `public, max-age=3600`.
