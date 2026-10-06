@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 6 (menunggu run pertama di GitHub) · **Tugas berikutnya:** push → cek workflow Deploy → pasang di server (docs/07 §3) → Fase 7 `T7.1`
+**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.1` (pemilik: pasang di server, docs/07 §3)
 
 ## Ringkasan
 
@@ -15,7 +15,7 @@
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3 siap (cron di `deploy.yml`), menunggu run pertama |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
-| 6 | Docker, CI/CD, deploy ke home server | 🔄 Teruji lokal; workflow menunggu push pertama |
+| 6 | Docker, CI/CD, deploy ke home server | ✅ Image terbit di GHCR; tinggal pemasangan di server oleh pemilik |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
@@ -91,8 +91,8 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 ## Fase 6: Docker, CI/CD, deploy
 
 - [x] **T6.1** `docker/Dockerfile` multi-stage (build: Node + Bun + Chromium → GitHub, Astro, PDF, CSP, kompresi → `web` Caddy / `stats` Bun) + `Caddyfile` dengan header keamanan dan CSP berbasis hash
-- [~] **T6.2** GitHub Actions `ci.yml`: `bun run verify` pada setiap PR (lolos `actionlint`; *selesai setelah run pertama di GitHub*)
-- [~] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (*selesai setelah run pertama*)
+- [x] **T6.2** GitHub Actions `ci.yml`: `bun run verify` pada setiap PR (dipanggil juga oleh `deploy.yml`; lulus di GitHub 2026-10-06)
+- [~] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (run pertama sukses 2026-10-06; image bisa ditarik tanpa login)
 - [x] **T6.4** `docker/compose.yml` produksi: `web` (96 MB) + `stats` (128 MB), read-only, tanpa capability; update lewat systemd timer, **bukan Watchtower** (diarsipkan; ADR 0010). Cloudflare Tunnel diurus pemilik
 - [x] **T6.5** Halaman `/homelab`: status server live dari `/api/health` (tanpa Uptime Kuma: tidak perlu container tambahan; saat server mati, Cloudflare menyajikan salinan dan badge menulis offline)
 
@@ -141,7 +141,8 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Dikerjakan:** `docker/Dockerfile` (stage `build`/`web`/`stats`), `docker/Caddyfile`, `docker/compose.yml`, `docker/deploy/` (update.sh, backup-stats.sh, systemd service + timer), `.github/workflows/ci.yml` + `deploy.yml`, ADR 0010 (timer menggantikan Watchtower yang diarsipkan), `src/lib/security/csp.ts` + `scripts/generate-csp.ts` (CSP hash, tanpa `unsafe-inline` untuk script), `scripts/precompress.ts`, `ServerStatus` di `/homelab`, `tests/e2e/deployment.spec.ts` + `bun run test:e2e:docker`, docs/07 ditulis ulang.
 - **Bug yang tertangkap saat uji container:** (1) font Plus Jakarta Sans kecil di-*inline* Vite sebagai `data:` → diblokir CSP → `assetsInlineLimit` tidak meng-inline font + `generate-csp.ts` gagal jika ada `data:font`; (2) `encode zstd gzip` membuat Caddy 74 MB RAM → kompresi saat build (`precompressed br gzip`) + `GOMEMLIMIT` → 22 MB; (3) `backup-stats.sh` memakai `docker compose cp` yang tidak bisa membaca tmpfs → dialirkan lewat `exec cat` + file `.part`, dan sisa run gagal dibersihkan dulu.
 - **Verifikasi:** `bun run verify` lulus; image dibangun lokal (web ±100 MB, stats ±260 MB); stack `-p portfolio-local`: 98 tes e2e lulus terhadap container (header, CSP tanpa pelanggaran di semua halaman + 3D, cache, kompresi, 404, API stats lewat Caddy, health); event nyata tercatat dan muncul di laporan privat; backup dua kali berturut-turut, `integrity_check: ok`; `actionlint` bersih.
-- **Belum:** run pertama `deploy.yml` di GitHub (T6.2/T6.3/T3.3), lalu pemilik: jadikan package GHCR **Public**, pasang di server (docs/07 §3), arahkan Cloudflare Tunnel ke `http://localhost:8080`.
+- **Update 2026-10-06:** run Deploy pertama sukses (verify + publish web & stats); package GHCR sudah publik (pull anonim 200). T3.3 selesai setelah run terjadwal pertama.
+- **Belum:** pemilik: pasang di server (docs/07 §3), arahkan Cloudflare Tunnel ke `http://localhost:8080`.
 - **Catatan:** run terjadwal membuat image baru tiap 6 jam (PDF tidak byte-identik), jadi server me-restart container ±4×/hari selama beberapa detik; Cloudflare *Always Online* menutupinya.
 
 ### 2026-10-05 · Claude Code (Opus) · T5.5 (Fase 5 selesai kecuali T5.2)
