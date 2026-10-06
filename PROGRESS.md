@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.2` (draf studi kasus oleh AI); `T7.3` setelah situs online (deploy ke server Debian 13 sedang dikerjakan pemilik)
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.2` (draf studi kasus oleh AI). Situs **online** di https://harry.mardika.my.id sejak 2026-10-06
 
 ## Ringkasan
 
@@ -15,7 +15,7 @@
 | 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3 siap (cron di `deploy.yml`), menunggu run pertama |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
-| 6 | Docker, CI/CD, deploy ke home server | ✅ Image terbit di GHCR; tinggal pemasangan di server oleh pemilik |
+| 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ⬜ |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ⬜ |
 
@@ -100,7 +100,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 
 - [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
 - [x] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95): `lighthouserc.cjs`, langkah di `ci.yml` (menahan deploy). Beranda (3D) gagal di < 80 dan memberi peringatan di < 90; lihat log 2026-10-06
-- [ ] **T7.3** Header keamanan (CSP, HSTS, dll.), target nilai A di securityheaders.com
+- [x] **T7.3** Header keamanan (CSP, HSTS, dll.): situs live mendapat **A+ (120, 12/12)** di Mozilla HTTP Observatory (2026-10-06); securityheaders.com menolak akses otomatis, cek manual oleh pemilik bila perlu
 - [x] **T7.4** Uji e2e utama: ganti bahasa (tetap di halaman yang sama), download CV, navigasi keyboard (`keyboard.spec.ts`), fallback tanpa WebGL (hero + journey)
 
 ## Fase 8: Otomasi lanjutan
@@ -123,7 +123,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D4 | Analytics | **Tanpa layanan analytics terpisah.** Statistik tampil langsung di situs (ADR 0009 menggantikan 0004; Fase 5 ditulis ulang) |
 | D5 | Memilih repo GitHub | **Bisa:** `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` (T3.1) |
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
-| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (`content/homelab.yaml`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); versi Docker diisi setelah deploy |
+| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (`content/homelab.yaml`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
 
 ## Catatan data
 
@@ -144,6 +144,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · Cek situs live + T7.3
+- **Deploy pemilik (agent lain) sukses:** semua halaman, PDF, sitemap, robots, gambar OG, `/api/health`, API stats lewat Cloudflare → 200; 404 benar; statistik sudah merekam pengunjung. Di server (SSH): Docker 29.8.2, Compose 5.6.0, `web` dan `stats` healthy, `portfolio-update.timer` aktif.
+- **Tes live** (`E2E_BASE_URL=https://harry.mardika.my.id`, deployment + seo): 13/15 lulus, termasuk **tanpa pelanggaran CSP di semua halaman dengan 3D**. Dua selisih karena Cloudflare: header `server: cloudflare` (normal) dan PDF `max-age=14400` dari *Browser Cache TTL* → tes dibuat sadar Cloudflare, saran pengaturan di docs/07 §4.
+- **T7.3:** Mozilla HTTP Observatory **A+** (120, 12/12).
+- **Untuk pemilik (Cloudflare):** Browser Cache TTL → "Respect Existing Headers"; aturan cache HTML + Always Online (HTML masih `DYNAMIC`).
 
 ### 2026-10-06 · Claude Code (Opus) · T8.1
 - **Dikerjakan:** ADR 0011 (Pages CMS; Keystatic ditolak karena mode GitHub butuh server runtime); `.pages.yml` (12 entri: 10 file YAML + studi kasus; komponen `localized`/`localizedLong`/`slug`/`yearMonth`/`endDate` dengan pola validasi; label dan petunjuk dalam bahasa Indonesia); `pruneEmpty` di parser konten (nilai kosong dari editor = tidak diisi), juga untuk frontmatter proyek dan `github.yaml`; `awards.date` menerima tahun sebagai string; data `skills.items`, `awards.issuer`, `github.yaml include` dinormalisasi ke bentuk objek (union tidak bisa ditampilkan editor).

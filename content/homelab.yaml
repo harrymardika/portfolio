@@ -39,4 +39,4 @@ hardware:
   - label: { en: Operating system, id: Sistem operasi }
     value: Debian 13 (trixie)
   - label: { en: Runtime, id: Runtime }
-    value: Docker + Docker Compose
+    value: Docker 29 + Docker Compose 5

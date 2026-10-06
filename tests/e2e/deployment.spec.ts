@@ -9,6 +9,10 @@ import { assumeGpu } from './helpers';
 
 test.skip(!process.env['E2E_BASE_URL'], 'Runs only against a deployed stack (E2E_BASE_URL)');
 
+/** The live site sits behind Cloudflare, which names itself as the server and may lengthen browser caching. */
+const behindCloudflare = (headers: Record<string, string>): boolean => headers['server'] === 'cloudflare';
+const maxAge = (header = ''): number => Number(/max-age=(\d+)/.exec(header)?.[1] ?? Number.NaN);
+
 test('pages carry the security headers and a hash-based CSP', async ({ request }) => {
   const response = await request.get('/');
   const headers = response.headers();
@@ -17,7 +21,8 @@ test('pages carry the security headers and a hash-based CSP', async ({ request }
   expect(headers['x-frame-options']).toBe('DENY');
   expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
   expect(headers['permissions-policy']).toContain('camera=()');
-  expect(headers['server']).toBeUndefined();
+  // Caddy drops its Server header; Cloudflare adds its own name, which reveals nothing about the origin.
+  if (!behindCloudflare(headers)) expect(headers['server']).toBeUndefined();
   const csp = headers['content-security-policy'] ?? '';
   expect(csp).toMatch(/script-src 'self'( 'sha256-[A-Za-z0-9+/=]+')+;/);
   expect(csp).not.toMatch(/script-src[^;]*unsafe-inline/);
@@ -56,7 +61,10 @@ test('assets are cached for a year, preview images for a day, and PDFs for an ho
   );
   const pdf = await request.get('/downloads/Harry-Mardika-CV-EN.pdf');
   expect(pdf.status()).toBe(200);
-  expect(pdf.headers()['cache-control']).toBe('public, max-age=3600');
+  // Cloudflare's "Browser Cache TTL" may raise this (docs/07 §4: set it to "Respect Existing Headers").
+  if (behindCloudflare(pdf.headers()))
+    expect(maxAge(pdf.headers()['cache-control'])).toBeGreaterThanOrEqual(3600);
+  else expect(pdf.headers()['cache-control']).toBe('public, max-age=3600');
   const og = await request.get('/og/home.jpg');
   expect(og.status()).toBe(200);
   expect(og.headers()['cache-control']).toBe('public, max-age=86400');

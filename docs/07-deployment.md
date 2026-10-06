@@ -2,7 +2,7 @@
 
 > Pengaturan Cloudflare (DNS, Tunnel, aturan cache) **diurus langsung oleh pemilik** di servernya. Dokumen ini menjelaskan bagian yang disediakan repo dan titik integrasinya.
 >
-> **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04, Docker 29 (lihat `content/homelab.yaml`). Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
+> **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Debian 13 (trixie), Docker 29 + Compose 5 (lihat `content/homelab.yaml`). Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
 
 ## 1. Alur
 
@@ -35,7 +35,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 
 > **Sebelum langkah 3, sekali saja di GitHub:** setelah workflow Deploy pertama selesai, buka github.com/harrymardika → *Packages* → `portfolio-web` dan `portfolio-stats` → *Package settings* → *Change visibility* → **Public**. Package GHCR baru biasanya privat; tanpa ini server perlu `docker login ghcr.io`.
 
-Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, Ubuntu 24.04, Docker 29 + Compose. Karena RAM kecil: **jangan pernah build di server**; batas memori container sudah diset.
+Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, Debian 13 (trixie), Docker 29 + Compose 5 (terpasang 2026-10-06). Pasang Docker dari repo resmi Docker untuk Debian, bukan paket `docker.io`. Karena RAM kecil: **jangan pernah build di server**; batas memori container sudah diset.
 
 ```bash
 # 1. Folder kerja
@@ -71,7 +71,8 @@ systemctl list-timers portfolio-update.timer
 
 ## 4. Cache & ketersediaan
 
-- HTML: `Cache-Control: public, max-age=0, must-revalidate`. Aktifkan aturan cache Cloudflare + *Always Online* agar halaman tetap tersaji saat server mati; badge di `/homelab` akan menulis "Sedang offline… salinan Cloudflare".
+- HTML: `Cache-Control: public, max-age=0, must-revalidate`. Aktifkan aturan cache Cloudflare + *Always Online* agar halaman tetap tersaji saat server mati; badge di `/homelab` akan menulis "Sedang offline… salinan Cloudflare". Cek 2026-10-06: HTML masih `cf-cache-status: DYNAMIC` (belum di-cache di edge), jadi saat server mati halaman belum tersaji dari Cloudflare.
+- **Cloudflare → Caching → Configuration → Browser Cache TTL: pilih "Respect Existing Headers".** Nilai bawaan (4 jam) menimpa header dari Caddy; terukur 2026-10-06: PDF `max-age=14400`, sehingga CV yang diperbarui bisa baru terlihat 4 jam kemudian.
 - Aset ber-hash (`/_astro/*`): `public, max-age=31536000, immutable`.
 - PDF (`/downloads/*`): `public, max-age=3600`.
 - Gambar pratinjau sosial (`/og/*`): `public, max-age=86400`.
