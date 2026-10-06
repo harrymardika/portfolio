@@ -3,8 +3,6 @@
 # before publishing, so invalid content never goes live. Mirrors src/lib/content/schemas: when a schema
 # changes, update this file too (tests/unit/cms-config.test.ts fails otherwise).
 
-#ini tulisan manual (silahkan dihapus)
-
 media:
   input: content/media
   output: media
