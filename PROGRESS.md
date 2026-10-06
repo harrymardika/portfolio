@@ -101,7 +101,7 @@ Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T3.3 
 - [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
 - [x] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95): `lighthouserc.cjs`, langkah di `ci.yml` (menahan deploy). Beranda (3D) gagal di < 80 dan memberi peringatan di < 90; lihat log 2026-10-06
 - [x] **T7.3** Header keamanan (CSP, HSTS, dll.): situs live mendapat **A+ (120, 12/12)** di Mozilla HTTP Observatory (2026-10-06); securityheaders.com menolak akses otomatis, cek manual oleh pemilik bila perlu
-- [~] **T7.5** (Claude Code) Ketersediaan saat server mati: HTML di-cache Cloudflare 7 hari + purge otomatis saat deploy (ADR 0012). *Kode selesai; menunggu pemilik: Cache Rule, token, salin `update.sh` (docs/07 §4).*
+- [x] **T7.5** Ketersediaan saat server mati: HTML di-cache Cloudflare 7 hari + purge otomatis saat deploy (ADR 0012). Aktif dan diuji di produksi 2026-10-06
 - [x] **T7.4** Uji e2e utama: ganti bahasa (tetap di halaman yang sama), download CV, navigasi keyboard (`keyboard.spec.ts`), fallback tanpa WebGL (hero + journey)
 
 ## Fase 8: Otomasi lanjutan
@@ -149,7 +149,8 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 ### 2026-10-06 · Claude Code (Opus) · T7.5 (pilihan C)
 - **Pemicu:** server mati ±15 menit (log berhenti mendadak 15:26:43, tanpa shutdown/suspend → daya terputus atau hang), situs ikut mati (1033): HTML `DYNAMIC`, Always Online belum punya salinan Wayback.
 - **Dikerjakan:** `update.sh` mencatat image `web` sebelum/sesudah pull, `up --wait`, lalu purge cache Cloudflare untuk hostname situs (purge by hostname tersedia di paket gratis sejak 2025-04); gagal → `.purge-pending` + exit 1, dicoba lagi 10 menit kemudian; `.env` dibaca tanpa dieksekusi, token lewat stdin. Tes `tests/unit/deploy-update.test.ts` (docker/curl palsu, 5 kasus). ADR 0012, docs/07 §4 (aturan cache persis + token), `.env.example`.
-- **Menunggu pemilik:** Cache Rule, token Cloudflare, isi `.env`, salin `update.sh` (atau izinkan saya menyalin lewat SSH).
+- **Pemasangan (2026-10-06):** pemilik membuat Cache Rule `portfolio-html-cache` (Edge TTL 7 hari, 500–526 tidak di-cache, `/api/` dikecualikan) dan token `portfolio-cache-purge`, mengisi `.env`; saya menyalin `update.sh` lewat SSH (versi lama: `update.sh.bak-2026-10-06`).
+- **Uji produksi:** run normal → tanpa purge; purge paksa → `purged …`, beranda `HIT` → `MISS` → `HIT`. **Container `web` dihentikan ±40 detik:** `/`, `/id/`, `/about/`, `/homelab/` tetap 200 dari cache (`HIT`), `/api/health` 502, badge /homelab menulis "Offline right now. You are reading a copy cached by Cloudflare."; container dinyalakan lagi, health 200. Skenario tunnel/laptop mati belum diuji langsung, tetapi halaman yang `HIT` dilayani dari edge tanpa menghubungi origin.
 
 ### 2026-10-06 · Claude Code (Opus) · Cek situs live + T7.3
 - **Deploy pemilik (agent lain) sukses:** semua halaman, PDF, sitemap, robots, gambar OG, `/api/health`, API stats lewat Cloudflare → 200; 404 benar; statistik sudah merekam pengunjung. Di server (SSH): Docker 29.8.2, Compose 5.6.0, `web` dan `stats` healthy, `portfolio-update.timer` aktif.
