@@ -1,0 +1,65 @@
+---
+/**
+ * Template for the social preview images (1200×630), never shown to visitors.
+ * scripts/generate-og.ts opens it in Chromium, fills in each page's title, description, and
+ * language through the data-og-* elements, and saves a screenshot to /og/*.jpg.
+ */
+import { Image } from 'astro:assets';
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localize } from '@/lib/content';
+import { contentImage } from '@/lib/content/media';
+import { getProfile } from '@/lib/content/queries';
+import { LOCALE_TAGS, LOCALES, UI } from '@/lib/i18n';
+import { OG_HEIGHT, OG_WIDTH } from '@/lib/seo';
+
+const profile = await getProfile();
+if (!Astro.site) throw new Error('The social preview template needs `site` in astro.config.ts');
+const host = Astro.site.host;
+---
+
+<BaseLayout
+  locale="en"
+  title="Social preview template"
+  noindex
+  linkAlternates={false}
+  forceTheme="light"
+  track={false}
+>
+  <div
+    class="og grid grid-cols-[1fr_auto] items-center gap-16 bg-forest px-[72px] py-[64px] text-on-forest"
+    style={`width:${OG_WIDTH}px;height:${OG_HEIGHT}px`}
+  >
+    <div class="grid h-full grid-rows-[auto_1fr_auto] gap-8">
+      <p class="font-mono text-[22px] tracking-wide text-amber">{host}</p>
+      <div class="grid content-center gap-6">
+        <h1 class="line-clamp-3 text-[64px] leading-[1.05] font-bold text-on-forest" data-og-title>
+          {profile.name}
+        </h1>
+        <p class="line-clamp-3 text-[28px] leading-snug text-on-forest-muted" data-og-description>
+          {localize(profile.tagline, 'en')}
+        </p>
+      </div>
+      {LOCALES.map((locale) => (
+        <p class="text-[24px] font-semibold" data-og-lang={LOCALE_TAGS[locale]} hidden={locale !== 'en'}>
+          {profile.name} <span class="text-amber">·</span> {localize(profile.role, locale)}
+        </p>
+      ))}
+    </div>
+    <div class="w-[300px] -rotate-3 rounded-[24px] bg-on-forest p-[14px] shadow-2xl">
+      <Image
+        src={contentImage(profile.photo)}
+        alt={`${UI.en['hero.photoAlt']} ${profile.name}`}
+        width={544}
+        class="aspect-[4/5] w-full rounded-[14px] object-cover"
+        loading="eager"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .og {
+    overflow: hidden;
+  }
+</style>

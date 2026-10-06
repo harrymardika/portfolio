@@ -9,6 +9,8 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getProfile, getProjects } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
+import { ogImagePath, projectJsonLd } from '@/lib/seo';
+import { requireSite } from '@/lib/seo/person';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -37,6 +39,16 @@ const links = (
     ['repo', t['projects.repo']],
   ] as const
 ).flatMap(([key, label]) => (project.links[key] ? [{ href: project.links[key], label }] : []));
+const site = requireSite(Astro.site);
+const jsonLd = [
+  projectJsonLd({
+    project,
+    locale,
+    site,
+    url: new URL(Astro.url.pathname, site).href,
+    image: new URL(ogImagePath(Astro.url.pathname), site).href,
+  }),
+];
 ---
 
 <PageLayout
@@ -44,6 +56,7 @@ const links = (
   title={`${project.title} · ${profile.name}`}
   description={summary}
   profile={profile}
+  jsonLd={jsonLd}
 >
   <article class="mx-auto grid max-w-[760px] gap-8 px-[clamp(16px,4vw,40px)] py-14">
     <a href={localizePath('/projects/', locale)} class="w-max text-sm text-ink-muted hover:text-ink">

@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Search and sharing: sitemap with language alternates, robots.txt, a generated 1200×630 preview image for every page in both languages, and structured data for the person, the website, and each case study (T7.1).
 - Production Docker images (Caddy web + Bun stats) built and published to GHCR by GitHub Actions on every push to `main`, every 6 hours (fresh GitHub projects and PDFs), and on demand; pull requests run the full verify suite (T6.1–T6.3, T3.3).
 - Production compose stack for the home server with memory limits, read-only containers, a systemd update timer instead of Watchtower (ADR 0010), and a daily SQLite backup script (T6.4, T5.2).
 - Hash-based Content Security Policy generated from each build, plus security and cache headers; text files are compressed at build time so the server never compresses on request.

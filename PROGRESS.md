@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-05 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.1` (pemilik: pasang di server, docs/07 §3)
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.2` (pemilik: pasang di server Debian 13, docs/07 §3)
 
 ## Ringkasan
 
@@ -98,7 +98,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 
 ## Fase 7: Kualitas
 
-- [ ] **T7.1** SEO: sitemap, robots, OG image per halaman, JSON-LD `Person`, canonical + hreflang
+- [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
 - [ ] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95)
 - [ ] **T7.3** Header keamanan (CSP, HSTS, dll.), target nilai A di securityheaders.com
 - [ ] **T7.4** Uji e2e utama: ganti bahasa, download CV, navigasi keyboard, fallback tanpa WebGL
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · T7.1
+- **Dikerjakan:** `src/lib/seo/` murni (`og.ts`: nama gambar per halaman + pembaca meta; `sitemap.ts`: sitemap + robots; `json-ld.ts`: Person/WebSite/CreativeWork, tanpa email, `<` di-escape) + `person.ts` (khusus Astro); `BaseLayout` menulis `og:image` (+ ukuran, alt), `twitter:card=summary_large_image`, dan blok JSON-LD; `src/pages/og-template.astro` + `scripts/generate-og.ts` (Chromium, JPEG 1200×630, anggaran 150 KB; terbesar 64 KB); `scripts/generate-sitemap.ts`; `src/pages/robots.txt.ts`; server statis dipindah ke `scripts/lib/static-server.ts` (dipakai PDF & OG); Caddy: `/og/*` cache 1 hari.
+- **Verifikasi:** unit 12 (`tests/unit/seo`), e2e `seo.spec.ts` 16 (robots, sitemap tanpa halaman cetak/404, gambar 1200×630 per halaman, JSON-LD); gambar EN/ID diperiksa visual (bug: judul gelap karena gaya global `h1` → diperbaiki).
+- **Catatan:** pemilik tidak perlu mengisi apa pun; judul/deskripsi diambil dari konten (docs/04 §5). Setelah situs online: daftarkan `sitemap.xml` di Google Search Console.
 
 ### 2026-10-05 · Claude Code (Opus) · T6.1–T6.5, T5.2, T3.3 (Fase 6 lokal)
 - **Dikerjakan:** `docker/Dockerfile` (stage `build`/`web`/`stats`), `docker/Caddyfile`, `docker/compose.yml`, `docker/deploy/` (update.sh, backup-stats.sh, systemd service + timer), `.github/workflows/ci.yml` + `deploy.yml`, ADR 0010 (timer menggantikan Watchtower yang diarsipkan), `src/lib/security/csp.ts` + `scripts/generate-csp.ts` (CSP hash, tanpa `unsafe-inline` untuk script), `scripts/precompress.ts`, `ServerStatus` di `/homelab`, `tests/e2e/deployment.spec.ts` + `bun run test:e2e:docker`, docs/07 ditulis ulang.

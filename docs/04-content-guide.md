@@ -155,7 +155,21 @@ Cara tampilnya:
 - Repo **dengan** case study: tulis `links.repo` di `content/projects/<slug>.md` dengan URL repo. Case study tetap yang tampil (tanpa duplikat), dan jumlah bintang dari GitHub ikut ditampilkan.
 - Beranda hanya menampilkan case study `featured`, bukan repo GitHub.
 
-## 5. Aturan isi
+## 5. Mesin pencari dan pratinjau tautan (T7.1)
+
+Tidak ada file SEO terpisah yang perlu diisi; semuanya diturunkan dari konten:
+
+| Yang tampil di Google / WhatsApp / LinkedIn | Diambil dari |
+|---|---|
+| Judul dan deskripsi beranda & About | `profile.yaml`: `name`, `role`, `tagline` |
+| Judul dan deskripsi studi kasus | `projects/<slug>.md`: `title`, `summary` |
+| Gambar pratinjau (1200×630) | dibuat otomatis saat build dari judul + deskripsi halaman + foto `profile.photo` |
+| Data terstruktur `Person` | `profile.yaml` (tanpa email) + institusi di `education.yaml` |
+| `sitemap.xml` | semua halaman yang dibangun, kecuali halaman cetak dan 404 |
+
+Tips: `summary` proyek idealnya 1–2 kalimat (± 160 karakter); di gambar pratinjau teks dipotong setelah 3 baris.
+
+## 6. Aturan isi
 
 - Teks yang mengandung koma, titik dua, atau tanda kurung di dalam `{ ... }` satu baris **harus diberi tanda kutip**: `{ en: "accuracy (AUC 0.96)", id: "akurasi (AUC 0,96)" }`.
 - Field yang tidak dikenal (misalnya salah ketik `show_on_cvv`) akan ditolak.

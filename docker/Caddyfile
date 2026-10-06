@@ -39,12 +39,15 @@
 	handle {
 		root * /srv
 
-		# Fingerprinted assets never change; PDFs may be refreshed by each build; pages always revalidate.
+		# Fingerprinted assets never change; PDFs and preview images may be refreshed by each build;
+		# pages always revalidate.
 		@assets path /_astro/*
 		header @assets Cache-Control "public, max-age=31536000, immutable"
 		@pdf path /downloads/*
 		header @pdf Cache-Control "public, max-age=3600"
-		@pages not path /_astro/* /downloads/*
+		@og path /og/*
+		header @og Cache-Control "public, max-age=86400"
+		@pages not path /_astro/* /downloads/* /og/*
 		header @pages Cache-Control "public, max-age=0, must-revalidate"
 
 		# Compressed once at build time (scripts/precompress.ts); the home server's CPU stays idle.

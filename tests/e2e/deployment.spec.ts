@@ -37,7 +37,10 @@ test('no page triggers a Content Security Policy violation, including the 3D sce
   expect(violations).toEqual([]);
 });
 
-test('assets are cached for a year and PDFs for an hour', async ({ page, request }) => {
+test('assets are cached for a year, preview images for a day, and PDFs for an hour', async ({
+  page,
+  request,
+}) => {
   await page.goto('/');
   const asset = await page.locator('script[src^="/_astro/"]').first().getAttribute('src');
   expect((await request.get(asset ?? '')).headers()['cache-control']).toBe(
@@ -46,6 +49,9 @@ test('assets are cached for a year and PDFs for an hour', async ({ page, request
   const pdf = await request.get('/downloads/Harry-Mardika-CV-EN.pdf');
   expect(pdf.status()).toBe(200);
   expect(pdf.headers()['cache-control']).toBe('public, max-age=3600');
+  const og = await request.get('/og/home.jpg');
+  expect(og.status()).toBe(200);
+  expect(og.headers()['cache-control']).toBe('public, max-age=86400');
 });
 
 test('text files are served precompressed, Brotli first', async ({ request }) => {

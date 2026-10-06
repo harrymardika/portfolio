@@ -74,6 +74,7 @@ systemctl list-timers portfolio-update.timer
 - HTML: `Cache-Control: public, max-age=0, must-revalidate`. Aktifkan aturan cache Cloudflare + *Always Online* agar halaman tetap tersaji saat server mati; badge di `/homelab` akan menulis "Sedang offline… salinan Cloudflare".
 - Aset ber-hash (`/_astro/*`): `public, max-age=31536000, immutable`.
 - PDF (`/downloads/*`): `public, max-age=3600`.
+- Gambar pratinjau sosial (`/og/*`): `public, max-age=86400`.
 - `/api/health`, `/api/stats/private`: `no-store`. `/api/stats/summary`: 5 menit.
 - **Kompresi saat build, bukan saat request.** `scripts/precompress.ts` menulis salinan `.br` (Brotli 11) dan `.gz` untuk file teks ≥ 1 KB (±1,2 MB → ±0,25 MB). Caddy menyajikannya apa adanya, jadi CPU Celeron tidak mengompresi apa pun. Dulu `encode zstd gzip` membuat Caddy memakai ±74 MB RAM setelah satu putaran e2e; kini ±22 MB.
 

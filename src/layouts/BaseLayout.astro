@@ -2,11 +2,13 @@
 /**
  * Document shell for every page: language, theme bootstrap, canonical URL, hreflang alternates,
  * and social/SEO meta. Page chrome (header, footer, skip link) lives in PageLayout.
- * OG images, sitemap, and JSON-LD are added in T7.1.
+ * Each indexable page gets its own social preview image (scripts/generate-og.ts) and optional
+ * JSON-LD; the sitemap is built from these heads after the build (scripts/generate-sitemap.ts).
  */
 import '@/styles/global.css';
 import StatsBeacon from '@/components/layout/StatsBeacon.astro';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
+import { DEFAULT_OG_IMAGE, type JsonLd, OG_HEIGHT, OG_WIDTH, ogImagePath, serializeJsonLd } from '@/lib/seo';
 import { THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
 
 interface Props {
@@ -21,6 +23,8 @@ interface Props {
   forceTheme?: Theme;
   /** Include the statistics beacon (off for print pages that become PDFs). */
   track?: boolean;
+  /** Structured data for search engines (src/lib/seo/json-ld.ts). */
+  jsonLd?: JsonLd[];
 }
 
 const {
@@ -31,10 +35,13 @@ const {
   linkAlternates = true,
   forceTheme,
   track = true,
+  jsonLd = [],
 } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
 const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_');
+// Indexable pages have their own preview image; utility pages share the home page's.
+const ogImage = absolute(linkAlternates && !noindex ? ogImagePath(Astro.url.pathname) : DEFAULT_OG_IMAGE);
 ---
 
 <!doctype html>
@@ -78,7 +85,15 @@ const ogLocale = (value: Locale): string => LOCALE_TAGS[value].replace('-', '_')
     {LOCALES.filter((alt) => alt !== locale).map((alt) => (
       <meta property="og:locale:alternate" content={ogLocale(alt)} />
     ))}
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content={String(OG_WIDTH)} />
+    <meta property="og:image:height" content={String(OG_HEIGHT)} />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd.map((data) => (
+      <script type="application/ld+json" is:inline set:html={serializeJsonLd(data)} />
+    ))}
   </head>
   <body>
     <slot />

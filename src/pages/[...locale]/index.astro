@@ -9,7 +9,9 @@ import SelectedProjects from '@/components/projects/SelectedProjects.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getJourney, getProfile, getProjectItems } from '@/lib/content/queries';
-import { localeStaticPaths, type Locale } from '@/lib/i18n';
+import { localeStaticPaths, localizePath, type Locale } from '@/lib/i18n';
+import { websiteJsonLd } from '@/lib/seo';
+import { getPersonJsonLd, requireSite } from '@/lib/seo/person';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -21,6 +23,11 @@ const { locale } = Astro.props;
 const [profile, journey, items] = await Promise.all([getProfile(), getJourney(), getProjectItems()]);
 // Home shows featured case studies only; GitHub-only repos appear on the Projects page.
 const featured = items.filter((item) => item.kind === 'local' && item.project.featured).slice(0, 3);
+const site = requireSite(Astro.site);
+const jsonLd = [
+  await getPersonJsonLd(locale, site),
+  websiteJsonLd({ name: profile.name, site, locale, url: new URL(localizePath('/', locale), site).href }),
+];
 ---
 
 <PageLayout
@@ -28,6 +35,7 @@ const featured = items.filter((item) => item.kind === 'local' && item.project.fe
   title={`${profile.name} · ${localize(profile.role, locale)}`}
   description={localize(profile.tagline, locale)}
   profile={profile}
+  jsonLd={jsonLd}
 >
   <Hero locale={locale} profile={profile} />
   <Journey locale={locale} copy={profile.journey} entries={journey} />

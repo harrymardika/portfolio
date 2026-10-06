@@ -7,13 +7,14 @@
  * Requires Playwright's Chromium (`bunx playwright install chromium`).
  */
 import { mkdir, readFile, stat } from 'node:fs/promises';
-import { join, normalize, resolve, sep } from 'node:path';
+import { join, resolve } from 'node:path';
 
 import { chromium } from '@playwright/test';
 import { load } from 'js-yaml';
 
 import { profileSchema } from '../src/lib/content/schemas';
 import { allDownloads, DOWNLOADS_DIR } from '../src/lib/downloads';
+import { requireBuild, serveBuild } from './lib/static-server';
 
 const ROOT = join(import.meta.dir, '..');
 const OUT_DIR = resolve(ROOT, process.env['BUILD_OUT_DIR'] ?? 'dist');
@@ -21,37 +22,11 @@ const TARGET_DIR = join(OUT_DIR, DOWNLOADS_DIR);
 /** Size budgets from docs/09: the CV must stay light for applicant tracking systems. */
 const MAX_BYTES = { cv: 1_000_000, portfolio: 3_000_000 } as const;
 
-async function isFile(path: string): Promise<boolean> {
-  return stat(path)
-    .then((s) => s.isFile())
-    .catch(() => false);
-}
-
-/** Map a URL path to a file inside OUT_DIR, refusing anything that escapes it. */
-async function resolveFile(urlPath: string): Promise<string | null> {
-  const relative = normalize(decodeURIComponent(urlPath)).replace(/^(\.\.(\/|\\|$))+/, '');
-  const candidate = join(OUT_DIR, relative);
-  if (candidate !== OUT_DIR && !candidate.startsWith(OUT_DIR + sep)) return null;
-  if (await isFile(candidate)) return candidate;
-  const index = join(candidate, 'index.html');
-  return (await isFile(index)) ? index : null;
-}
-
-if (!(await isFile(join(OUT_DIR, 'index.html')))) {
-  console.error(`No build found in ${OUT_DIR}. Run \`astro build\` first.`);
-  process.exit(1);
-}
+await requireBuild(OUT_DIR);
 
 const profile = profileSchema.parse(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8')));
 
-const server = Bun.serve({
-  port: 0,
-  hostname: '127.0.0.1',
-  async fetch(request) {
-    const file = await resolveFile(new URL(request.url).pathname);
-    return file ? new Response(Bun.file(file)) : new Response('Not found', { status: 404 });
-  },
-});
+const server = serveBuild(OUT_DIR);
 
 await mkdir(TARGET_DIR, { recursive: true });
 const browser = await chromium.launch();
