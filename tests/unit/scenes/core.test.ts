@@ -7,6 +7,7 @@ import {
   damp,
   decide3D,
   frameDelta,
+  isSoftwareRenderer,
   MAX_FRAME_DELTA,
   normalizePointer,
   parseCssColor,
@@ -42,6 +43,19 @@ describe('math', () => {
   });
 });
 
+describe('isSoftwareRenderer', () => {
+  it('recognizes CPU WebGL implementations and not real GPUs', () => {
+    expect(
+      isSoftwareRenderer('ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)), SwiftShader driver)'),
+    ).toBe(true);
+    expect(isSoftwareRenderer('llvmpipe (LLVM 17.0.6, 256 bits)')).toBe(true);
+    expect(isSoftwareRenderer('ANGLE (Microsoft, Microsoft Basic Render Driver Direct3D11)')).toBe(true);
+    expect(isSoftwareRenderer('ANGLE (Intel, Mesa Intel(R) HD Graphics 400 (BSW), OpenGL 4.6)')).toBe(false);
+    expect(isSoftwareRenderer('Apple GPU')).toBe(false);
+    expect(isSoftwareRenderer('Adreno (TM) 610')).toBe(false);
+  });
+});
+
 describe('decide3D', () => {
   const capable = { webgl: true, reducedMotion: false, saveData: false, hardwareConcurrency: 8 };
 
@@ -60,6 +74,29 @@ describe('decide3D', () => {
     expect(decide3D({ ...capable, webgl: false })).toEqual({ mode: 'off', reason: 'no-webgl' });
     expect(decide3D({ ...capable, saveData: true })).toEqual({ mode: 'off', reason: 'save-data' });
     expect(decide3D({ ...capable, hardwareConcurrency: 2 })).toEqual({ mode: 'off', reason: 'low-power' });
+  });
+
+  it('renders a still frame when WebGL runs on the CPU', () => {
+    expect(decide3D({ ...capable, softwareRenderer: true })).toEqual({
+      mode: 'still',
+      reason: 'software-renderer',
+    });
+    expect(decide3D({ ...capable, softwareRenderer: true, saveData: true })).toEqual({
+      mode: 'off',
+      reason: 'save-data',
+    });
+  });
+
+  it('follows a forced mode, except that animation still needs WebGL', () => {
+    expect(decide3D({ ...capable, softwareRenderer: true, forced: 'animated' })).toEqual({
+      mode: 'animated',
+    });
+    expect(decide3D({ ...capable, forced: 'still' })).toEqual({ mode: 'still', reason: 'forced' });
+    expect(decide3D({ ...capable, forced: 'off' })).toEqual({ mode: 'off', reason: 'forced' });
+    expect(decide3D({ ...capable, webgl: false, forced: 'animated' })).toEqual({
+      mode: 'off',
+      reason: 'no-webgl',
+    });
   });
 
   it('treats an unknown core count as capable', () => {

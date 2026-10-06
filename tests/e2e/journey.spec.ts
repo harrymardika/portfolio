@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { SCENE_READY_TIMEOUT } from './helpers';
+import { force3DMode, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test, type Page } from '@playwright/test';
 
 const stage = '[data-journey-stage]';
@@ -42,6 +42,7 @@ test.describe('without JavaScript', () => {
 });
 
 test('the 3D path places labels and reaches milestones as you scroll', async ({ page }) => {
+  await force3DMode(page, 'animated');
   await page.goto('/');
   await scrollJourney(page, 0.2);
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {

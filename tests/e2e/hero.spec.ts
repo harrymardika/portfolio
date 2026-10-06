@@ -1,4 +1,4 @@
-import { SCENE_READY_TIMEOUT } from './helpers';
+import { force3DMode, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test } from '@playwright/test';
 
 const stage = '[data-photo-card]';
@@ -39,6 +39,7 @@ test('the 3D card replaces the static card once ready, without console errors', 
   page.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
   page.on('pageerror', (error) => errors.push(error.message));
 
+  await force3DMode(page, 'animated');
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'animated');
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
@@ -47,6 +48,17 @@ test('the 3D card replaces the static card once ready, without console errors', 
   await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '1');
   await expect(page.locator(`${stage} .static-card`)).toHaveCSS('opacity', '0');
   expect(errors).toEqual([]);
+});
+
+test('WebGL without a GPU (headless Chromium uses SwiftShader) renders a still 3D frame', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');
+  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
+  await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '1');
 });
 
 test('reduced motion renders a still 3D frame', async ({ page }) => {

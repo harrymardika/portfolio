@@ -58,8 +58,16 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
   };
 
   const loop = createLoop({ step: renderFrame });
+  // Still mode renders on demand; requests in the same frame (resize, compile done, texture ready)
+  // share one render instead of each paying for a full frame.
+  let framePending = false;
   const invalidate = (): void => {
-    if (choice.mode === 'still') requestAnimationFrame(() => renderFrame(0));
+    if (choice.mode !== 'still' || framePending) return;
+    framePending = true;
+    requestAnimationFrame(() => {
+      framePending = false;
+      renderFrame(0);
+    });
   };
 
   const ready = (): void => {
