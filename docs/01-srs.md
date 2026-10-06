@@ -88,7 +88,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 
 ## 6. Infrastruktur
 
-Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04. Lihat `docs/07-deployment.md`. Ringkasnya: build image di GitHub Actions → GHCR → home server menarik image baru (Watchtower) → Caddy menyajikan file statis → Cloudflare Tunnel → Cloudflare CDN.
+Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Debian 13 (trixie). Lihat `docs/07-deployment.md`. Ringkasnya: build image di GitHub Actions → GHCR → home server menarik image baru (systemd timer, ADR 0010) → Caddy menyajikan file statis → Cloudflare Tunnel → Cloudflare CDN.
 
 > Perubahan dari PDF: **self-hosted GitHub runner tidak digunakan** karena berisiko untuk repo publik (lihat ADR 0005).
 

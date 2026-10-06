@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T7.3` (cek securityheaders.com setelah online) / `T7.4` (pemilik: pasang di server Debian 13, docs/07 §3)
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.1` (CMS); `T7.3` setelah situs online (deploy ke server Debian 13 sedang dikerjakan pemilik)
 
 ## Ringkasan
 
@@ -92,7 +92,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 
 - [x] **T6.1** `docker/Dockerfile` multi-stage (build: Node + Bun + Chromium → GitHub, Astro, PDF, CSP, kompresi → `web` Caddy / `stats` Bun) + `Caddyfile` dengan header keamanan dan CSP berbasis hash
 - [x] **T6.2** GitHub Actions `ci.yml`: `bun run verify` pada setiap PR (dipanggil juga oleh `deploy.yml`; lulus di GitHub 2026-10-06)
-- [~] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (run pertama sukses 2026-10-06; image bisa ditarik tanpa login)
+- [x] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (run pertama sukses 2026-10-06; image bisa ditarik tanpa login)
 - [x] **T6.4** `docker/compose.yml` produksi: `web` (96 MB) + `stats` (128 MB), read-only, tanpa capability; update lewat systemd timer, **bukan Watchtower** (diarsipkan; ADR 0010). Cloudflare Tunnel diurus pemilik
 - [x] **T6.5** Halaman `/homelab`: status server live dari `/api/health` (tanpa Uptime Kuma: tidak perlu container tambahan; saat server mati, Cloudflare menyajikan salinan dan badge menulis offline)
 
@@ -123,7 +123,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D4 | Analytics | **Tanpa layanan analytics terpisah.** Statistik tampil langsung di situs (ADR 0009 menggantikan 0004; Fase 5 ditulis ulang) |
 | D5 | Memilih repo GitHub | **Bisa:** `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` (T3.1) |
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
-| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Ubuntu 24.04, Docker 29 (`content/homelab.yaml`) |
+| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (`content/homelab.yaml`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); versi Docker diisi setelah deploy |
 
 ## Catatan data
 
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · T7.2 (lanjutan): tanpa GPU → kartu statis
+- **Keputusan pemilik (pilihan 1):** perangkat yang merender WebGL di CPU (SwiftShader, llvmpipe, WARP) mendapat kartu foto statis (`off`, alasan `software-renderer`), bukan frame diam. Run CI terakhir dengan frame diam: beranda 79–83, di ujung batas. Kini lokal: semua halaman 99, TBT 0.
+- **Lighthouse:** kompromi batas 80 untuk beranda dihapus; satu standar untuk semua halaman (Performance ≥ 90, lainnya ≥ 95). CI mengukur beranda seperti pengunjung tanpa GPU; dengan GPU 93–98 (lokal).
+- **Tes:** `assumeGpu` (`localStorage['3d:gpu']`) untuk tes perilaku 3D, sehingga logika keputusan lain tetap diuji; tes baru: tanpa GPU kartu statis tetap dan three.js tidak diunduh.
+- **Data server:** `/homelab` dan docs/01 kini Debian 13 (trixie); versi Docker dikosongkan sampai terbaca dari server setelah deploy. docs/07 sengaja belum disentuh selama agent lain melakukan deploy.
 
 ### 2026-10-06 · Claude Code (Opus) · T7.4
 - **Dikerjakan:** `tests/e2e/keyboard.spec.ts` (Tab ke navigasi utama dengan cincin fokus terlihat + Enter; tombol tema dengan Space; ganti bahasa dengan Enter; cerita journey dibuka Enter, Escape mengembalikan fokus ke tombolnya; unduh CV ID dengan keyboard; menu HP: Enter membuka, Tab masuk ke tautannya, Escape menutup dan mengembalikan fokus); `i18n.spec.ts`: ganti bahasa tetap di halaman yang sama (About, studi kasus, Homelab); `journey.spec.ts`: tanpa WebGL timeline tetap tampil dan chunk 3D tidak diunduh; helper `disableWebGL` dan `force3DMode` di `tests/e2e/helpers.ts`.

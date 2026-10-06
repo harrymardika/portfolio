@@ -11,7 +11,7 @@ test('the homelab page explains the pipeline and stack', async ({ page }) => {
   const hardware = page.locator('section[aria-labelledby="hardware-title"]');
   await expect(hardware.getByRole('heading', { level: 2, name: 'The server' })).toBeVisible();
   await expect(hardware).toContainText('Intel Celeron N3050');
-  await expect(hardware).toContainText('Ubuntu 24.04 LTS');
+  await expect(hardware).toContainText('Debian 13 (trixie)');
 });
 
 test('the homelab page is translated', async ({ page }) => {

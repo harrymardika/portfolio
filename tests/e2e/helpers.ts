@@ -6,10 +6,6 @@ import type { Page } from '@playwright/test';
 
 export const SCENE_READY_TIMEOUT = 30_000;
 
-/**
- * Software WebGL gets a still frame (src/scenes/core/capabilities.ts), so tests of the animated
- * scenes force the mode the way a developer would: localStorage['3d:mode'].
- */
 /** Make every WebGL context request fail, like a browser or device without WebGL. */
 export async function disableWebGL(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -24,6 +20,11 @@ export async function disableWebGL(page: Page): Promise<void> {
   });
 }
 
-export async function force3DMode(page: Page, mode: 'animated' | 'still' | 'off'): Promise<void> {
-  await page.addInitScript((value) => localStorage.setItem('3d:mode', value), mode);
+/**
+ * Without a GPU the 3D stays off (src/scenes/core/capabilities.ts), and headless Chromium has none.
+ * Tests of the 3D behavior treat its CPU renderer as a GPU (localStorage['3d:gpu']), so the rest of
+ * the decision (reduced motion, low power) is still the real logic.
+ */
+export async function assumeGpu(page: Page): Promise<void> {
+  await page.addInitScript(() => localStorage.setItem('3d:gpu', '1'));
 }

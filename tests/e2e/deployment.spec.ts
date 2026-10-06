@@ -5,6 +5,8 @@
  */
 import { expect, test } from '@playwright/test';
 
+import { assumeGpu } from './helpers';
+
 test.skip(!process.env['E2E_BASE_URL'], 'Runs only against a deployed stack (E2E_BASE_URL)');
 
 test('pages carry the security headers and a hash-based CSP', async ({ request }) => {
@@ -27,6 +29,7 @@ test('no page triggers a Content Security Policy violation, including the 3D sce
   page.on('console', (message) => {
     if (/Content Security Policy|Refused to/i.test(message.text())) violations.push(message.text());
   });
+  await assumeGpu(page); // load the 3D scenes, as a visitor with a GPU would
   for (const path of ['/', '/id/', '/projects/', '/about/', '/homelab/', '/print/cv/', '/print/portfolio/']) {
     await page.goto(path, { waitUntil: 'networkidle' });
   }

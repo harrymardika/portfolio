@@ -37,6 +37,6 @@ hardware:
   - label: { en: Storage, id: Penyimpanan }
     value: 500 GB SanDisk Ultra 3D SSD
   - label: { en: Operating system, id: Sistem operasi }
-    value: Ubuntu 24.04 LTS
+    value: Debian 13 (trixie)
   - label: { en: Runtime, id: Runtime }
-    value: Docker 29 + Docker Compose
+    value: Docker + Docker Compose

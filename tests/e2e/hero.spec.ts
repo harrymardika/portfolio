@@ -1,4 +1,4 @@
-import { disableWebGL, force3DMode, SCENE_READY_TIMEOUT } from './helpers';
+import { assumeGpu, disableWebGL, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test } from '@playwright/test';
 
 const stage = '[data-photo-card]';
@@ -39,7 +39,7 @@ test('the 3D card replaces the static card once ready, without console errors', 
   page.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
   page.on('pageerror', (error) => errors.push(error.message));
 
-  await force3DMode(page, 'animated');
+  await assumeGpu(page);
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'animated');
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
@@ -50,18 +50,18 @@ test('the 3D card replaces the static card once ready, without console errors', 
   expect(errors).toEqual([]);
 });
 
-test('WebGL without a GPU (headless Chromium uses SwiftShader) renders a still 3D frame', async ({
-  page,
-}) => {
+test('without a GPU (headless Chromium renders WebGL on the CPU) the static card stays', async ({ page }) => {
+  const scripts: string[] = [];
+  page.on('request', (request) => request.resourceType() === 'script' && scripts.push(request.url()));
   await page.goto('/');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
-    timeout: SCENE_READY_TIMEOUT,
-  });
-  await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '1');
+  await page.waitForLoadState('load');
+  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'off');
+  await expect(page.locator(`${stage} .static-card`)).toHaveCSS('opacity', '1');
+  expect(scripts.filter((url) => /mount|photo-card/.test(url))).toEqual([]);
 });
 
 test('reduced motion renders a still 3D frame', async ({ page }) => {
+  await assumeGpu(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');

@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { disableWebGL, force3DMode, SCENE_READY_TIMEOUT } from './helpers';
+import { assumeGpu, disableWebGL, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test, type Page } from '@playwright/test';
 
 const stage = '[data-journey-stage]';
@@ -16,6 +16,9 @@ async function scrollJourney(page: Page, fraction: number): Promise<void> {
     );
   }, fraction);
 }
+
+// The 3D path needs a GPU; headless Chromium's CPU renderer is treated as one (see helpers.ts).
+test.beforeEach(({ page }) => assumeGpu(page));
 
 const years = (page: Page) => page.locator(`${milestones} .label span:first-child`).allTextContents();
 
@@ -55,7 +58,6 @@ test('without WebGL the timeline stays and the 3D path is never downloaded', asy
 });
 
 test('the 3D path places labels and reaches milestones as you scroll', async ({ page }) => {
-  await force3DMode(page, 'animated');
   await page.goto('/');
   await scrollJourney(page, 0.2);
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {

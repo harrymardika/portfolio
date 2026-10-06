@@ -76,14 +76,14 @@ describe('decide3D', () => {
     expect(decide3D({ ...capable, hardwareConcurrency: 2 })).toEqual({ mode: 'off', reason: 'low-power' });
   });
 
-  it('renders a still frame when WebGL runs on the CPU', () => {
+  it('turns 3D off when WebGL runs on the CPU, even for reduced motion', () => {
     expect(decide3D({ ...capable, softwareRenderer: true })).toEqual({
-      mode: 'still',
+      mode: 'off',
       reason: 'software-renderer',
     });
-    expect(decide3D({ ...capable, softwareRenderer: true, saveData: true })).toEqual({
+    expect(decide3D({ ...capable, softwareRenderer: true, reducedMotion: true })).toEqual({
       mode: 'off',
-      reason: 'save-data',
+      reason: 'software-renderer',
     });
   });
 

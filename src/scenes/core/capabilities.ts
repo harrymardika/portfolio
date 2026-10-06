@@ -7,7 +7,7 @@ export type Mode3D = 'animated' | 'still' | 'off';
 
 export interface DeviceCapabilities {
   readonly webgl: boolean;
-  /** WebGL runs on the CPU (no usable GPU), so every animated frame blocks the main thread. */
+  /** WebGL runs on the CPU (no usable GPU): even one frame blocks the main thread for long. */
   readonly softwareRenderer?: boolean;
   readonly reducedMotion: boolean;
   readonly saveData: boolean;
@@ -18,11 +18,16 @@ export interface DeviceCapabilities {
 
 export type Decision3D =
   | { readonly mode: 'animated' }
-  | { readonly mode: 'still'; readonly reason: 'reduced-motion' | 'software-renderer' | 'forced' }
-  | { readonly mode: 'off'; readonly reason: 'no-webgl' | 'save-data' | 'low-power' | 'forced' };
+  | { readonly mode: 'still'; readonly reason: 'reduced-motion' | 'forced' }
+  | {
+      readonly mode: 'off';
+      readonly reason: 'no-webgl' | 'save-data' | 'low-power' | 'software-renderer' | 'forced';
+    };
 
 /** localStorage key that forces a mode, e.g. `localStorage.setItem('3d:mode', 'animated')`. */
 export const FORCE_MODE_KEY = '3d:mode';
+/** localStorage key that treats a CPU renderer as a GPU (tests run in headless Chromium, which has none). */
+export const ASSUME_GPU_KEY = '3d:gpu';
 
 /** Devices with this many logical cores or fewer get the static fallback. */
 export const MIN_CORES_FOR_3D = 2;
@@ -36,10 +41,10 @@ export function decide3D(caps: DeviceCapabilities): Decision3D {
   if (caps.hardwareConcurrency > 0 && caps.hardwareConcurrency <= MIN_CORES_FOR_3D) {
     return { mode: 'off', reason: 'low-power' };
   }
+  // Without a GPU even a single WebGL frame blocks the page (seconds of main-thread time measured in
+  // CI); the static card is the same content, already on screen.
+  if (caps.softwareRenderer) return { mode: 'off', reason: 'software-renderer' };
   if (caps.reducedMotion) return { mode: 'still', reason: 'reduced-motion' };
-  // One frame is affordable on a CPU renderer; a continuous loop blocks the page (seconds of
-  // main-thread time on machines without a GPU, measured in CI).
-  if (caps.softwareRenderer) return { mode: 'still', reason: 'software-renderer' };
   return { mode: 'animated' };
 }
 
@@ -68,19 +73,25 @@ export function probeWebGL(doc: Document = document): { webgl: boolean; software
   }
 }
 
-function forcedMode(win: Window): Mode3D | null {
+function readStorage(win: Window, key: string): string | null {
   try {
-    const value = win.localStorage.getItem(FORCE_MODE_KEY);
-    return value === 'animated' || value === 'still' || value === 'off' ? value : null;
+    return win.localStorage.getItem(key);
   } catch {
     return null;
   }
 }
 
+function forcedMode(win: Window): Mode3D | null {
+  const value = readStorage(win, FORCE_MODE_KEY);
+  return value === 'animated' || value === 'still' || value === 'off' ? value : null;
+}
+
 export function detectCapabilities(win: Window = window): DeviceCapabilities {
   const connection = (win.navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const { webgl, softwareRenderer } = probeWebGL(win.document);
   return {
-    ...probeWebGL(win.document),
+    webgl,
+    softwareRenderer: softwareRenderer && readStorage(win, ASSUME_GPU_KEY) !== '1',
     forced: forcedMode(win),
     reducedMotion: win.matchMedia('(prefers-reduced-motion: reduce)').matches,
     saveData: connection?.saveData === true,
