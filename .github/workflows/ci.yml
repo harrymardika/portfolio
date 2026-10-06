@@ -44,6 +44,11 @@ jobs:
         env:
           BUILD_OUT_DIR: dist-e2e
 
+      # Scores as a table in the job summary and as annotations (readable without signing in).
+      - name: Lighthouse summary
+        if: ${{ !cancelled() }}
+        run: bun run lighthouse:summary
+
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v7
