@@ -16,12 +16,12 @@ topic: portfolio
 # Descriptions were written from each repo's README on 2026-10-05.
 include:
   # Repos that already have a case study in content/projects (linked via links.repo, so no duplicate card).
-  - tsm-grid-camera
-  - suicide-crisis-detection
-  - aksara-jawa
-  - hoax-detection
-  - xss-detection-pipeline
-  - BCA-Stock-Forecasting
+  - repo: tsm-grid-camera
+  - repo: suicide-crisis-detection
+  - repo: aksara-jawa
+  - repo: hoax-detection
+  - repo: xss-detection-pipeline
+  - repo: BCA-Stock-Forecasting
 
   # Projects split across several repos.
   - title: Chatbot RAG Universitas Gunadarma

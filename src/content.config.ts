@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { file, glob } from 'astro/loaders';
 
 import {
@@ -21,7 +22,7 @@ import {
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
-import { parseYamlList, parseYamlSingleton, type ListOptions } from '@/lib/content/yaml';
+import { parseYamlList, parseYamlSingleton, pruneEmpty, type ListOptions } from '@/lib/content/yaml';
 import { githubCacheSchema, githubRepoSchema } from '@/lib/github/schemas';
 
 const CONTENT_DIR = 'content';
@@ -73,6 +74,7 @@ export const collections = {
   projects: defineCollection({
     // `<slug>.id.md` translation files are handled separately (T2.4).
     loader: glob({ pattern: ['*.md', '!*.id.md'], base: `./${CONTENT_DIR}/projects` }),
-    schema: projectSchema,
+    // Frontmatter skips the YAML parsers above, so blank values from the browser editor are removed here.
+    schema: z.preprocess(pruneEmpty, projectSchema),
   }),
 };

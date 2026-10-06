@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 
 import { load } from 'js-yaml';
 
+import { pruneEmpty } from '../src/lib/content/yaml';
 import { githubConfigSchema, syncGithub } from '../src/lib/github';
 
 const ROOT = join(import.meta.dir, '..');
@@ -20,7 +21,7 @@ const CONFIG_PATH = join(ROOT, 'content/github.yaml');
 const CACHE_PATH = join(ROOT, process.env['GITHUB_CACHE'] ?? 'src/data/generated/github.json');
 const ONE_HOUR = 60 * 60 * 1000;
 
-const config = githubConfigSchema.parse(load(await readFile(CONFIG_PATH, 'utf8')));
+const config = githubConfigSchema.parse(pruneEmpty(load(await readFile(CONFIG_PATH, 'utf8'))));
 const fixture = process.env['GITHUB_FIXTURE'];
 
 const result = await syncGithub({

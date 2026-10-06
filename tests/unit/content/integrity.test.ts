@@ -21,7 +21,7 @@ import {
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
-import { parseYamlList, parseYamlSingleton } from '@/lib/content/yaml';
+import { parseYamlList, parseYamlSingleton, pruneEmpty } from '@/lib/content/yaml';
 import { githubConfigSchema } from '@/lib/github';
 
 import type { z } from 'astro/zod';
@@ -51,7 +51,8 @@ const LIST_FILES = [
 function readFrontmatter(path: string): unknown {
   const match = /^---\n([\s\S]*?)\n---/.exec(read(path));
   if (!match?.[1]) throw new Error(`${path} has no frontmatter`);
-  return load(match[1]);
+  // Same rule as src/content.config.ts: blank values from the browser editor count as not set.
+  return pruneEmpty(load(match[1]));
 }
 
 describe('content files', () => {
@@ -60,7 +61,7 @@ describe('content files', () => {
   });
 
   it('github.yaml matches the schema', () => {
-    expect(() => githubConfigSchema.parse(load(read('github.yaml')))).not.toThrow();
+    expect(() => githubConfigSchema.parse(pruneEmpty(load(read('github.yaml'))))).not.toThrow();
   });
 
   it('homelab.yaml matches the schema', () => {

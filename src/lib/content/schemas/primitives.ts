@@ -4,8 +4,9 @@
  */
 import { z } from 'astro/zod';
 
-const YEAR_MONTH = /^\d{4}-(0[1-9]|1[0-2])$/;
-const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/** Exported for tests that keep the browser editor's patterns (.pages.yml) in step. */
+export const YEAR_MONTH = /^\d{4}-(0[1-9]|1[0-2])$/;
+export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Text shown to visitors: English is required, Indonesian falls back to English. */
 export const localizedText = z.strictObject({
@@ -30,8 +31,8 @@ export const year = z
   .min(1990)
   .max(2100);
 
-/** Award dates may be a bare year (`2025`) or a month (`2025-04`); normalized to a string. */
-export const yearOrYearMonth = z.union([year.transform(String), yearMonth], {
+/** Award dates may be a bare year (`2025`, also as the string "2025" a browser editor saves) or a month (`2025-04`); normalized to a string. */
+export const yearOrYearMonth = z.union([year.transform(String), z.string().regex(/^\d{4}$/).transform(Number).pipe(year).transform(String), yearMonth], {
   error: 'Use a year (2025) or the YYYY-MM format (2025-04)',
 });
 

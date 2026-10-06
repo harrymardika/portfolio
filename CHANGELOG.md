@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Edit the site's content from the browser with Pages CMS: every save is a commit that is validated before it goes live (T8.1, ADR 0011).
 - End-to-end tests for the main journeys with a keyboard only, language switching that keeps the current page, and the journey section without WebGL (T7.4).
 - Lighthouse CI on every pull request and before every deploy: performance, accessibility, best practices, and SEO budgets for six key pages (T7.2).
 - Search and sharing: sitemap with language alternates, robots.txt, a generated 1200×630 preview image for every page in both languages, and structured data for the person, the website, and each case study (T7.1).

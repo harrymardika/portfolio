@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.1` (CMS); `T7.3` setelah situs online (deploy ke server Debian 13 sedang dikerjakan pemilik)
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.2` (draf studi kasus oleh AI); `T7.3` setelah situs online (deploy ke server Debian 13 sedang dikerjakan pemilik)
 
 ## Ringkasan
 
@@ -105,7 +105,7 @@ Progres keseluruhan: **Fase 0–2, 4, 5 selesai; Fase 3 dan 6 menunggu run perta
 
 ## Fase 8: Otomasi lanjutan
 
-- [ ] **T8.1** CMS berbasis Git (Keystatic atau Pages CMS) untuk mengedit `content/` dari browser
+- [x] **T8.1** CMS berbasis Git untuk mengedit `content/` dari browser: **Pages CMS** (ADR 0011), `.pages.yml`, penjaga drift `tests/unit/cms-config.test.ts`. *Pemilik: pasang GitHub App sekali (docs/04 §1).*
 - [ ] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge)
 - [x] **T8.3** *(draf, 2026-10-05; **menunggu review pemilik**)* Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia (bisa dibantu AI, wajib direview pemilik)
 
@@ -130,12 +130,27 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 - Alibaba Cloud Certified Associate **kedaluwarsa Nov 2026**. Setelah lewat tanggalnya, sertifikat otomatis hilang dari web dan CV (`expires` di `content/certifications.yaml`).
 - **Perlu review pemilik:** 55 terjemahan `highlights` (EN → ID) di `experience.yaml`, `education.yaml`, `trainings.yaml` dibuat oleh AI pada 2026-10-05. Periksa terutama istilah dan angka.
 - Proyek dengan `draft: true` di `content/projects/` butuh detail/tautan dari pemilik sebelum ditampilkan.
+- **Isian yang ditunggu dari pemilik** (dulu komentar `TODO(owner)` di `content/`; dipindah ke sini karena editor browser menghapus komentar YAML):
+  - `certifications.yaml`: bulan terbit dua sertifikat (`2025-01`, `2024-01`) belum pasti.
+  - `education.yaml`: bulan mulai/selesai SMA Negeri 2 Mandau.
+  - `trainings.yaml`: bulan mulai pelatihan yang di CV hanya tertulis 2025.
+  - `projects/decklify.md`: bagian "What I learned" (1–2 pelajaran jujur).
+  - `projects/aksara-jawa-yolo.md`: akurasi uji akhir dan contoh visualisasi.
+  - `projects/reclaimyt.md` (draf): detail peran, tim, dan foto perangkat.
+  - `projects/dompet-juara.md` (draf): tautan repo/demo dan screenshot.
 
 ---
 
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-06 · Claude Code (Opus) · T8.1
+- **Dikerjakan:** ADR 0011 (Pages CMS; Keystatic ditolak karena mode GitHub butuh server runtime); `.pages.yml` (12 entri: 10 file YAML + studi kasus; komponen `localized`/`localizedLong`/`slug`/`yearMonth`/`endDate` dengan pola validasi; label dan petunjuk dalam bahasa Indonesia); `pruneEmpty` di parser konten (nilai kosong dari editor = tidak diisi), juga untuk frontmatter proyek dan `github.yaml`; `awards.date` menerima tahun sebagai string; data `skills.items`, `awards.issuer`, `github.yaml include` dinormalisasi ke bentuk objek (union tidak bisa ditampilkan editor).
+- **Verifikasi:** `tests/unit/cms-config.test.ts` (setiap file punya entri, setiap field cocok dengan skema Zod sampai bersarang; diuji dengan menghapus satu field → gagal); normalisasi data: 0 perbedaan HTML; simulasi simpan ala CMS (tanpa komentar, gaya blok, tanggal sebagai string): 0 perbedaan HTML; `bun run verify` lulus.
+- **Langkah pemilik:** pasang GitHub App Pages CMS hanya untuk repo ini (docs/04 §1), lalu coba ubah satu kalimat dan lihat run Deploy.
+- **Review (reviewer membaca kode sumber Pages CMS dan menjalankan skema konfigurasinya):** 2 blocker diperbaiki: field opsional berpola tidak bisa dikosongkan (sertifikat tanpa `expires`, milestone tanpa `ref` gagal disimpan) → komponen `optionalYearMonth`/`optionalSlug`; tahun penghargaan berupa angka di field teks → ditulis `"2025"`. Juga: `pruneEmpty` tidak lagi membuang tanggal YAML dan menganggap spasi saja kosong; dipakai juga di skrip OG/PDF dan tes integritas; media hanya jpg/jpeg/png/webp/avif dengan nama aman; body tanpa unggah gambar; template commit Conventional Commits; izin GitHub App ditulis jujur di ADR. Penjaga drift kini juga memeriksa wajib/opsional, list, angka, `select`, dan pola (diuji dengan memasukkan kembali kedua blocker → gagal).
+- **Catatan:** tampilan editor belum dicoba langsung karena butuh login pemilik.
 
 ### 2026-10-06 · Claude Code (Opus) · T7.2 (lanjutan): tanpa GPU → kartu statis
 - **Keputusan pemilik (pilihan 1):** perangkat yang merender WebGL di CPU (SwiftShader, llvmpipe, WARP) mendapat kartu foto statis (`off`, alasan `software-renderer`), bukan frame diam. Run CI terakhir dengan frame diam: beranda 79–83, di ujung batas. Kini lokal: semua halaman 99, TBT 0.

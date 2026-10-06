@@ -12,5 +12,6 @@
 | 0008 | [i18n: English default di `/`, Bahasa Indonesia di `/id/`](0008-i18n-routing.md) | Accepted |
 | 0009 | [Statistik bawaan di situs, tanpa layanan analytics terpisah](0009-built-in-stats.md) | Accepted |
 | 0010 | [systemd timer, bukan Watchtower, untuk menarik image baru](0010-update-timer-instead-of-watchtower.md) | Accepted |
+| 0011 | [Pages CMS untuk mengedit `content/` dari browser](0011-pages-cms.md) | Accepted |
 
 Template: [0000-template.md](0000-template.md)

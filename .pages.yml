@@ -1,0 +1,383 @@
+# Pages CMS (ADR 0011): edit content/ from the browser at https://app.pagescms.org.
+# Every save is a commit to main; the Deploy workflow validates it (Zod schemas, tests, Lighthouse)
+# before publishing, so invalid content never goes live. Mirrors src/lib/content/schemas: when a schema
+# changes, update this file too (tests/unit/cms-config.test.ts fails otherwise).
+
+media:
+  input: content/media
+  output: media
+  # Only formats src/lib/content/media.ts loads; file names become lowercase-safe (phone uploads).
+  extensions: [jpg, jpeg, png, webp, avif]
+  rename: safe
+
+settings:
+  commit:
+    # Conventional Commits, like the rest of the history (docs/05 §10).
+    templates:
+      create: 'content: add {path} (via Pages CMS)'
+      update: 'content: update {path} (via Pages CMS)'
+      delete: 'content: remove {path} (via Pages CMS)'
+      rename: 'content: rename {oldPath} to {newPath} (via Pages CMS)'
+
+components:
+  # Text shown to visitors. English is required; Indonesian falls back to English when empty.
+  localized:
+    type: object
+    fields:
+      - { name: en, label: English, type: string, required: true }
+      - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: string }
+  localizedLong:
+    type: object
+    fields:
+      - { name: en, label: English, type: text, required: true }
+      - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: text }
+  slug:
+    type: string
+    required: true
+    description: Huruf kecil, angka, dan tanda hubung, mis. "crowd-violence-detection". Jangan diubah setelah dipakai.
+    pattern:
+      regex: '^[a-z0-9]+(-[a-z0-9]+)*$'
+      message: Gunakan huruf kecil, angka, dan tanda hubung.
+  yearMonth:
+    type: string
+    required: true
+    description: Format YYYY-MM, mis. 2025-09.
+    pattern:
+      regex: '^\d{4}-(0[1-9]|1[0-2])$'
+      message: Gunakan format YYYY-MM, mis. 2025-09.
+  endDate:
+    type: string
+    required: true
+    description: Format YYYY-MM, atau tulis present jika masih berjalan.
+    pattern:
+      regex: '^(\d{4}-(0[1-9]|1[0-2])|present)$'
+      message: Gunakan format YYYY-MM atau kata present.
+  # Optional variants: Pages CMS validates a blank field ("") against the pattern, so it must match.
+  optionalYearMonth:
+    type: string
+    description: Format YYYY-MM; kosongkan jika tidak ada.
+    pattern:
+      regex: '^(\d{4}-(0[1-9]|1[0-2]))?$'
+      message: Gunakan format YYYY-MM atau kosongkan.
+  optionalSlug:
+    type: string
+    pattern:
+      regex: '^([a-z0-9]+(-[a-z0-9]+)*)?$'
+      message: Gunakan huruf kecil, angka, dan tanda hubung, atau kosongkan.
+  showOnWeb:
+    type: boolean
+    label: Tampil di web
+    default: true
+  showOnCv:
+    type: boolean
+    label: Tampil di CV (PDF)
+    default: true
+
+content:
+  - name: profile
+    label: Profil
+    type: file
+    path: content/profile.yaml
+    format: yaml
+    fields:
+      - { name: name, label: Nama, type: string, required: true }
+      - { name: role, label: Peran, component: localized, required: true }
+      - name: headline
+        label: Judul besar di beranda
+        description: Kata di antara *bintang* diberi warna aksen.
+        component: localized
+        required: true
+      - { name: tagline, label: Tagline, component: localizedLong, required: true }
+      - { name: summary, label: Ringkasan (About dan CV), component: localizedLong, required: true }
+      - { name: location, label: Lokasi, type: string, required: true }
+      - { name: email, label: Email, type: string, required: true }
+      - { name: photo, label: Foto, type: image, required: true }
+      - name: status_badge
+        label: Badge status di hero
+        description: Kosongkan agar tidak tampil (keputusan D2).
+        component: localized
+      - name: socials
+        label: Media sosial
+        type: object
+        list: { min: 1, collapsible: { collapsed: true, summary: '{platform}' } }
+        fields:
+          - name: platform
+            type: select
+            required: true
+            options: { values: [linkedin, instagram, github, email] }
+          - { name: url, label: URL, type: string, required: true }
+          - { name: handle, label: Nama yang ditampilkan, type: string }
+      - name: stats
+        label: Tiga angka di hero
+        type: object
+        list: { min: 3, max: 3, collapsible: false }
+        fields:
+          - { name: value, label: Angka, type: string, required: true }
+          - { name: label, label: Keterangan, component: localized, required: true }
+      - name: journey
+        label: Bagian Journey
+        type: object
+        required: true
+        fields:
+          - { name: title, label: Judul, component: localized, required: true }
+          - { name: intro, label: Pengantar, component: localizedLong, required: true }
+      - name: projects
+        label: Bagian Projects
+        type: object
+        required: true
+        fields:
+          - { name: intro, label: Pengantar, component: localizedLong, required: true }
+      - name: contact
+        label: Bagian Kontak
+        type: object
+        required: true
+        fields:
+          - { name: title, label: Judul, component: localized, required: true }
+          - { name: intro, label: Pengantar, component: localizedLong, required: true }
+
+  - name: experience
+    label: Pengalaman
+    description: Terbaru di atas.
+    type: file
+    path: content/experience.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Pengalaman
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{organization} ({start})' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: organization, label: Organisasi, type: string, required: true }
+          - { name: role, label: Peran, component: localized, required: true }
+          - name: category
+            label: Kategori
+            type: select
+            required: true
+            options: { values: [work, founder, research, leadership, teaching, program] }
+          - { name: location, label: Lokasi, type: string, required: true }
+          - { name: start, label: Mulai, component: yearMonth }
+          - { name: end, label: Selesai, component: endDate }
+          - name: highlights
+            label: Pencapaian (satu kalimat, diawali kata kerja)
+            component: localizedLong
+            list: { min: 1, collapsible: false }
+          - { name: tags, label: Tag, type: string, list: true }
+          - { name: show_on_web, component: showOnWeb }
+          - { name: show_on_cv, component: showOnCv }
+
+  - name: education
+    label: Pendidikan
+    type: file
+    path: content/education.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Pendidikan
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{institution}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: institution, label: Institusi, type: string, required: true }
+          - { name: degree, label: Gelar / jurusan, component: localized, required: true }
+          - { name: location, label: Lokasi, type: string, required: true }
+          - { name: start, label: Mulai, component: yearMonth }
+          - { name: end, label: Selesai, component: endDate }
+          - { name: gpa, label: IPK, type: string }
+          - { name: highlights, label: Pencapaian, component: localizedLong, list: true }
+          - { name: show_on_web, component: showOnWeb }
+          - { name: show_on_cv, component: showOnCv }
+
+  - name: trainings
+    label: Pelatihan
+    type: file
+    path: content/trainings.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Pelatihan
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{institution}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: institution, label: Penyelenggara, type: string, required: true }
+          - { name: program, label: Program, component: localized, required: true }
+          - { name: location, label: Lokasi, type: string, required: true }
+          - { name: start, label: Mulai, component: yearMonth }
+          - { name: end, label: Selesai, component: endDate }
+          - { name: tags, label: Tag, type: string, list: true }
+          - { name: highlights, label: Pencapaian, component: localizedLong, list: true }
+          - { name: show_on_web, component: showOnWeb }
+          - { name: show_on_cv, component: showOnCv }
+
+  - name: awards
+    label: Penghargaan
+    type: file
+    path: content/awards.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Penghargaan
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{id} ({date})' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: title, label: Judul, component: localized, required: true }
+          - { name: issuer, label: Pemberi, component: localized, required: true }
+          - name: date
+            label: Tanggal
+            type: string
+            required: true
+            description: Tahun (2025) atau YYYY-MM (2025-04).
+            pattern:
+              regex: '^\d{4}(-(0[1-9]|1[0-2]))?$'
+              message: Gunakan tahun (2025) atau format YYYY-MM.
+          - { name: rank, label: Peringkat, type: string }
+          - { name: show_on_web, component: showOnWeb }
+          - { name: show_on_cv, component: showOnCv }
+
+  - name: certifications
+    label: Sertifikasi
+    description: Sertifikat yang sudah kedaluwarsa otomatis disembunyikan.
+    type: file
+    path: content/certifications.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Sertifikasi
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{name}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: name, label: Nama, type: string, required: true }
+          - { name: issuer, label: Penerbit, type: string, required: true }
+          - { name: issued, label: Terbit, component: yearMonth }
+          - { name: expires, label: Kedaluwarsa, component: optionalYearMonth }
+          - { name: credential_id, label: ID kredensial, type: string }
+          - { name: url, label: URL verifikasi, type: string }
+
+  - name: skills
+    label: Keahlian
+    description: Urutan grup di sini = urutan di web.
+    type: file
+    path: content/skills.yaml
+    format: yaml
+    fields:
+      - name: groups
+        label: Grup keahlian
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{id}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: name, label: Nama grup, component: localized, required: true }
+          - name: items
+            label: Keahlian
+            description: Nama teknologi cukup diisi bahasa Inggris.
+            component: localized
+            list: { min: 1, collapsible: false }
+
+  - name: journey
+    label: Journey (jalur karier 3D)
+    description: Urutan di sini = urutan di jalur.
+    type: file
+    path: content/journey.yaml
+    format: yaml
+    fields:
+      - name: milestones
+        label: Milestone
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{year} {id}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: year, label: Tahun, type: number, required: true, options: { min: 1990, max: 2100 } }
+          - { name: title, label: Judul, component: localized, required: true }
+          - { name: subtitle, label: Subjudul, component: localized, required: true }
+          - name: ref
+            label: Kaitan
+            description: id pengalaman atau slug proyek yang diceritakan milestone ini (opsional).
+            component: optionalSlug
+
+  - name: homelab
+    label: Homelab
+    type: file
+    path: content/homelab.yaml
+    format: yaml
+    fields:
+      - { name: intro, label: Pengantar, component: localizedLong, required: true }
+      - name: pipeline
+        label: Alur deploy
+        type: object
+        list: { min: 1, collapsible: false }
+        fields:
+          - { name: title, label: Judul, component: localized, required: true }
+          - { name: body, label: Isi, component: localizedLong, required: true }
+      - { name: stack, label: Teknologi, type: string, list: { min: 1, collapsible: false } }
+      - name: hardware
+        label: Spesifikasi server
+        type: object
+        list: { collapsible: false }
+        fields:
+          - { name: label, label: Nama, component: localized, required: true }
+          - { name: value, label: Nilai, type: string, required: true }
+
+  - name: github
+    label: Proyek dari GitHub
+    description: Repo yang tampil di halaman Projects (docs/04 §4). Isi repo saja, atau judul + beberapa repo untuk satu proyek.
+    type: file
+    path: content/github.yaml
+    format: yaml
+    fields:
+      - { name: username, label: Username GitHub, type: string, required: true }
+      - { name: topic, label: Topic repo yang otomatis tampil, type: string, required: true }
+      - name: include
+        label: Repo yang ditampilkan (berurutan)
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{repo}{title}' } }
+        fields:
+          - { name: repo, label: Nama repo (satu repo), type: string }
+          - { name: title, label: Judul proyek (beberapa repo), type: string }
+          - { name: repos, label: Repo-repo proyek ini (minimal 2), type: string, list: true }
+          - { name: description, label: Deskripsi sendiri, component: localizedLong }
+      - { name: exclude, label: Repo yang tidak pernah ditampilkan, type: string, list: true }
+      - { name: include_forks, label: Tampilkan fork, type: boolean, default: false }
+      - { name: include_archived, label: Tampilkan repo yang diarsipkan, type: boolean, default: false }
+
+  - name: projects
+    label: Studi kasus
+    type: collection
+    path: content/projects
+    format: yaml-frontmatter
+    filename: { template: '{primary}.md', field: create }
+    view:
+      primary: title
+      fields: [title, year, featured, draft]
+      sort: [year, title]
+      default: { sort: year, order: desc }
+    fields:
+      - { name: title, label: Judul, type: string, required: true }
+      - { name: summary, label: Ringkasan (1–2 kalimat), component: localizedLong, required: true }
+      - { name: role, label: Peran, component: localized, required: true }
+      - { name: year, label: Tahun, type: number, required: true, options: { min: 1990, max: 2100 } }
+      - { name: tags, label: Teknologi, type: string, list: true }
+      - name: metrics
+        label: Angka utama (maks. 3)
+        type: object
+        list: { max: 3, collapsible: false }
+        fields:
+          - { name: value, label: Angka, type: string, required: true }
+          - { name: label, label: Keterangan, component: localized, required: true }
+      - name: links
+        label: Tautan
+        type: object
+        fields:
+          - { name: live, label: Situs, type: string }
+          - { name: repo, label: Repo GitHub, type: string }
+          - { name: demo, label: Demo, type: string }
+      - { name: cover, label: Gambar sampul, type: image }
+      - { name: featured, label: Tampil di beranda, type: boolean, default: false }
+      - { name: order, label: Urutan di beranda (1 = pertama), type: number, options: { min: 1 } }
+      - { name: draft, label: Draf (belum tampil), type: boolean, default: false }
+      - name: body
+        label: Isi (bahasa Inggris)
+        type: rich-text
+        options: { format: markdown, media: false }

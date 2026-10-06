@@ -12,6 +12,7 @@ import { chromium } from '@playwright/test';
 import { load } from 'js-yaml';
 
 import { profileSchema } from '../src/lib/content/schemas';
+import { pruneEmpty } from '../src/lib/content/yaml';
 import { OG_DIR, OG_HEIGHT, OG_WIDTH, ogHeading, ogImagePath, readPageMeta } from '../src/lib/seo/og';
 import { requireBuild, serveBuild } from './lib/static-server';
 
@@ -21,7 +22,9 @@ const OUT_DIR = resolve(ROOT, process.env['BUILD_OUT_DIR'] ?? 'dist');
 const MAX_BYTES = 150_000;
 
 await requireBuild(OUT_DIR);
-const profile = profileSchema.parse(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8')));
+const profile = profileSchema.parse(
+  pruneEmpty(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8'))),
+);
 
 /** `about/index.html` → `/about/`. Only pages whose og:image is their own get one. */
 const pages = [];

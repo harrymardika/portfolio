@@ -13,6 +13,7 @@ import { chromium } from '@playwright/test';
 import { load } from 'js-yaml';
 
 import { profileSchema } from '../src/lib/content/schemas';
+import { pruneEmpty } from '../src/lib/content/yaml';
 import { allDownloads, DOWNLOADS_DIR } from '../src/lib/downloads';
 import { requireBuild, serveBuild } from './lib/static-server';
 
@@ -24,7 +25,9 @@ const MAX_BYTES = { cv: 1_000_000, portfolio: 3_000_000 } as const;
 
 await requireBuild(OUT_DIR);
 
-const profile = profileSchema.parse(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8')));
+const profile = profileSchema.parse(
+  pruneEmpty(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8'))),
+);
 
 const server = serveBuild(OUT_DIR);
 

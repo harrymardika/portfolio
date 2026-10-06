@@ -10,6 +10,30 @@ function isRecord(value: unknown): value is Entry {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/** Plain `{}` objects only: a YAML timestamp parses to a Date, which has no own keys but is a value. */
+const isPlainObject = (value: unknown): value is Entry =>
+  isRecord(value) && Object.getPrototypeOf(value) === Object.prototype;
+
+const isBlank = (value: unknown): boolean =>
+  value === null ||
+  value === undefined ||
+  (typeof value === 'string' && value.trim() === '') ||
+  (isPlainObject(value) && Object.keys(value).length === 0);
+
+/**
+ * Treat blank values as "not set": the browser editor (Pages CMS, ADR 0011) may save a cleared optional
+ * field as `""`, `null`, or `{}`. Removing them lets the strict schemas apply their own defaults and
+ * optionality instead of rejecting the file. Arrays keep their length except for blank items.
+ */
+export function pruneEmpty(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(pruneEmpty).filter((item) => !isBlank(item));
+  if (!isPlainObject(value)) return value;
+  const entries = Object.entries(value)
+    .map(([key, item]) => [key, pruneEmpty(item)] as const)
+    .filter(([, item]) => !isBlank(item));
+  return Object.fromEntries(entries);
+}
+
 export interface ListOptions {
   /**
    * Add `position` (0-based index in the file) to every entry. Astro returns collection entries
@@ -23,7 +47,7 @@ export interface ListOptions {
  * Throws with the expected key when the file does not have the documented shape.
  */
 export function parseYamlList(text: string, key: string, { withPosition = false }: ListOptions = {}): Entry[] {
-  const data: unknown = load(text);
+  const data = pruneEmpty(load(text));
   const list = isRecord(data) ? data[key] : undefined;
   if (!Array.isArray(list) || !list.every(isRecord)) {
     throw new Error(`Expected a top-level "${key}:" list of objects`);
@@ -36,7 +60,7 @@ export function parseYamlList(text: string, key: string, { withPosition = false 
  * The keyed-object form keeps `id` out of the entry data, so the schema stays strict.
  */
 export function parseYamlSingleton(text: string, id: string): Record<string, Entry> {
-  const data: unknown = load(text);
+  const data = pruneEmpty(load(text));
   if (!isRecord(data)) {
     throw new Error('Expected a YAML object at the top level');
   }

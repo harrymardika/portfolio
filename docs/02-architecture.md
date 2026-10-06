@@ -132,6 +132,7 @@ Aturan:
 │   ├── unit/                    # cermin struktur src/lib
 │   └── e2e/                     # Playwright: smoke, i18n, download, a11y
 ├── docker/                      # Dockerfile, Caddyfile, compose.yml, compose.dev.yml, deploy/ (timer, update, backup)
+├── .pages.yml                   # editor browser Pages CMS untuk content/ (ADR 0011)
 └── .github/workflows/           # ci.yml, deploy.yml
 ```
 

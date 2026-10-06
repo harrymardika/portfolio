@@ -38,7 +38,7 @@ Perintah lengkap ada di [docs/06-development-workflow.md](docs/06-development-wo
 
 ## Mengubah isi website
 
-Lihat [docs/04-content-guide.md](docs/04-content-guide.md). Singkatnya: edit file di `content/`, commit, push. Deploy berjalan otomatis.
+Lihat [docs/04-content-guide.md](docs/04-content-guide.md). Dari browser (juga HP): [Pages CMS](https://app.pagescms.org), setiap simpan menjadi commit (ADR 0011). Dari laptop: edit file di `content/`, commit, push. Deploy berjalan otomatis setelah data lolos pemeriksaan.
 
 ## Untuk AI agent dan kontributor
 

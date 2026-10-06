@@ -3,15 +3,36 @@
 groups:
   - id: ml-cv
     name: { en: Machine learning & computer vision, id: Machine learning & computer vision }
-    items: [PyTorch, TensorFlow / Keras, YOLO, Computer Vision, NLP, RAG, Deep Learning, Multimodal AI]
+    items:
+      - { en: "PyTorch" }
+      - { en: "TensorFlow / Keras" }
+      - { en: "YOLO" }
+      - { en: "Computer Vision" }
+      - { en: "NLP" }
+      - { en: "RAG" }
+      - { en: "Deep Learning" }
+      - { en: "Multimodal AI" }
 
   - id: deploy-infra
     name: { en: Deployment & infrastructure, id: Deployment & infrastruktur }
-    items: [Docker, MLOps, TFX, FastAPI, Edge AI (Hailo-8L), Qdrant / FAISS, Microsoft Azure, Alibaba Cloud]
+    items:
+      - { en: "Docker" }
+      - { en: "MLOps" }
+      - { en: "TFX" }
+      - { en: "FastAPI" }
+      - { en: "Edge AI (Hailo-8L)" }
+      - { en: "Qdrant / FAISS" }
+      - { en: "Microsoft Azure" }
+      - { en: "Alibaba Cloud" }
 
   - id: product-web
     name: { en: Product & web, id: Produk & web }
-    items: [Next.js, Go, PostgreSQL, React.js, Supabase]
+    items:
+      - { en: "Next.js" }
+      - { en: "Go" }
+      - { en: "PostgreSQL" }
+      - { en: "React.js" }
+      - { en: "Supabase" }
 
   - id: leadership
     name: { en: Leadership & communication, id: Kepemimpinan & komunikasi }
