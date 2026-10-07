@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** `T8.2` (draf studi kasus oleh AI). Situs **online** di https://harry.mardika.my.id sejak 2026-10-06
+**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
 
 ## Ringkasan
 
@@ -17,9 +17,9 @@
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
-| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | 🔄 T8.1, T8.3 selesai; T8.2 kode selesai, menunggu secrets + run nyata |
+| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 
-Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 dan isian konten pemilik — ≈97%**
+Progres keseluruhan: **semua fase (0–8) selesai; situs online sejak 2026-10-06. Selanjutnya: perawatan dan konten**
 
 ---
 
@@ -107,7 +107,7 @@ Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 
 ## Fase 8: Otomasi lanjutan
 
 - [x] **T8.1** CMS berbasis Git untuk mengedit `content/` dari browser: **Pages CMS** (ADR 0011), `.pages.yml`, penjaga drift `tests/unit/cms-config.test.ts`. *Pemilik: pasang GitHub App sekali (docs/04 §1).*
-- [~] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge). Kode + tes selesai (Gemini, cadangan Groq; ADR 0013). *Menunggu pemilik: secrets `GEMINI_API_KEY`/`GROQ_API_KEY`, izin Actions membuat PR, lalu satu run nyata.*
+- [x] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge): Gemini, cadangan Groq (ADR 0013). Run nyata pertama 2026-10-07: Gemini 503 → Groq → [PR #1](https://github.com/harrymardika/portfolio/pull/1) untuk `camera-genai`
 - [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
 
 ---
@@ -136,6 +136,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · T8.2 run nyata
+- Pemilik memasang `GEMINI_API_KEY`, `GROQ_API_KEY` (GitHub Secrets) dan izin Actions membuat PR, lalu memberi topic `portfolio` ke `camera-genai`. Run pertama hijau tanpa PR dan tanpa penjelasan (kegagalan hanya di log yang butuh login) → kegagalan kini jadi anotasi `::warning::`. Run kedua: Gemini HTTP 503 → Groq `openai/gpt-oss-120b` → PR #1, draf sesuai README, `metrics: []`, `draft: true`.
+- Perbaikan dari run itu: Gemini yang sibuk (429/5xx) dicoba sekali lagi setelah 5 detik sebelum pindah ke Groq; tanda hubung tipografis (U+2010/2011) dan spasi tak-terputus dari model dijadikan karakter biasa. 18 unit test.
+- Key AI juga sempat ditaruh di `/opt/portfolio/.env` server; tidak dibutuhkan di sana (disarankan dihapus).
 
 ### 2026-10-07 · Claude Code (Opus) · T8.2 (kode)
 - **Provider (keputusan pemilik):** Gemini `gemini-3.5-flash` (tier gratis), cadangan Groq `openai/gpt-oss-120b`. Dicek dari dokumentasi resmi: GitHub Models dihentikan 30 Juli 2026; `generateContent` masih didukung; Groq mendukung `json_schema` strict.

@@ -14,6 +14,9 @@ export interface Provider {
 
 export interface ProviderOptions {
   readonly fetch?: typeof fetch;
+  readonly sleep?: (ms: number) => Promise<void>;
+  /** Wait before the one retry of a busy or rate-limited answer (429, 5xx). */
+  readonly retryDelayMs?: number;
   readonly timeoutMs?: number;
   readonly model?: string;
 }
@@ -22,32 +25,45 @@ export const GEMINI_MODEL = 'gemini-3.5-flash';
 export const GROQ_MODEL = 'openai/gpt-oss-120b';
 const TIMEOUT_MS = 60_000;
 
+const RETRY_DELAY_MS = 5_000;
+const busy = (status: number): boolean => status === 429 || status >= 500;
+
+/** POST JSON; a busy or rate-limited answer (429, 5xx) is retried once after a short wait. */
 async function post(
-  fetchImpl: typeof fetch,
+  options: ProviderOptions,
   url: string,
   headers: Record<string, string>,
   body: unknown,
-  timeoutMs: number,
   name: string,
 ): Promise<unknown> {
-  const response = await fetchImpl(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...headers },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(timeoutMs),
-  });
-  if (!response.ok) throw new Error(`${name} responded with HTTP ${response.status}`);
-  return response.json();
+  const {
+    fetch: fetchImpl = fetch,
+    timeoutMs = TIMEOUT_MS,
+    sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+    retryDelayMs = RETRY_DELAY_MS,
+  } = options;
+  for (let attempt = 1; ; attempt++) {
+    const response = await fetchImpl(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (response.ok) return response.json();
+    if (attempt >= 2 || !busy(response.status))
+      throw new Error(`${name} responded with HTTP ${response.status}`);
+    await sleep(retryDelayMs);
+  }
 }
 
 export function gemini(apiKey: string, options: ProviderOptions = {}): Provider {
-  const { fetch: fetchImpl = fetch, timeoutMs = TIMEOUT_MS, model = GEMINI_MODEL } = options;
+  const { model = GEMINI_MODEL } = options;
   return {
     name: 'Gemini',
     model,
     async complete(prompt) {
       const data = (await post(
-        fetchImpl,
+        options,
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
         { 'x-goog-api-key': apiKey },
         {
@@ -56,7 +72,6 @@ export function gemini(apiKey: string, options: ProviderOptions = {}): Provider 
           // Gemini 3 models are tuned for the default temperature (1.0); lower values can make them loop.
           generationConfig: { responseMimeType: 'application/json' },
         },
-        timeoutMs,
         'Gemini',
       )) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
       const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('');
@@ -67,13 +82,13 @@ export function gemini(apiKey: string, options: ProviderOptions = {}): Provider 
 }
 
 export function groq(apiKey: string, options: ProviderOptions = {}): Provider {
-  const { fetch: fetchImpl = fetch, timeoutMs = TIMEOUT_MS, model = GROQ_MODEL } = options;
+  const { model = GROQ_MODEL } = options;
   return {
     name: 'Groq',
     model,
     async complete(prompt) {
       const data = (await post(
-        fetchImpl,
+        options,
         'https://api.groq.com/openai/v1/chat/completions',
         { Authorization: `Bearer ${apiKey}` },
         {
@@ -88,7 +103,6 @@ export function groq(apiKey: string, options: ProviderOptions = {}): Provider {
             json_schema: { name: 'case_study_draft', strict: true, schema: DRAFT_JSON_SCHEMA },
           },
         },
-        timeoutMs,
         'Groq',
       )) as { choices?: { message?: { content?: string } }[] };
       const text = data.choices?.[0]?.message?.content;

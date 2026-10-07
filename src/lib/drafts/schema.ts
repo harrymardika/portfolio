@@ -123,9 +123,18 @@ export function groundMetrics(draft: Draft, readme: string): Draft {
  * discard a good draft) and turn line breaks into spaces so text cannot add headings, rules, or
  * break the bullet list; leading Markdown block markers are dropped.
  */
+/** Typographic hyphens (U+2010, U+2011) and no-break spaces some models emit, as plain characters. */
+function plainCharacters(value: unknown): unknown {
+  if (typeof value === 'string') return value.replace(/[\u2010\u2011]/g, '-').replace(/[\u00a0\u202f]/g, ' ');
+  if (Array.isArray(value)) return value.map(plainCharacters);
+  if (value && typeof value === 'object')
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, plainCharacters(item)]));
+  return value;
+}
+
 export function normalizeAnswer(value: unknown): unknown {
   if (!value || typeof value !== 'object') return value;
-  const answer = { ...(value as Record<string, unknown>) };
+  const answer = { ...(plainCharacters(value) as Record<string, unknown>) };
   const flat = (text: unknown): unknown =>
     typeof text === 'string'
       ? text

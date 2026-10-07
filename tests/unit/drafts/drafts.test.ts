@@ -124,6 +124,14 @@ describe('safety checks on model answers', () => {
     expect(grounded.metrics.map((m) => m.value)).toEqual(['94.2%', '1600 images']);
   });
 
+  it('turns typographic hyphens and no-break spaces into plain characters', () => {
+    const answer = normalizeAnswer({
+      ...draft,
+      summary: { en: 'real\u2011time\u00a0system', id: 'real\u2010time' },
+    }) as Draft;
+    expect(answer.summary).toEqual({ en: 'real-time system', id: 'real-time' });
+  });
+
   it('normalizes answers: lists trimmed, line breaks and block markers removed', () => {
     const answer = normalizeAnswer({
       ...draft,
@@ -191,26 +199,40 @@ describe('providers', () => {
   });
 
   it('falls back to Groq on an HTTP error, bad JSON, or a wrong shape, and never logs keys', async () => {
+    // A busy or rate-limited Gemini is retried once before falling back, so it answers twice here.
     for (const geminiFailure of [
-      json({ error: 'quota' }, 429),
-      geminiAnswer('not json'),
-      geminiAnswer('{"title":"x"}'),
+      [json({ error: 'quota' }, 429), json({ error: 'quota' }, 429)],
+      [geminiAnswer('not json')],
+      [geminiAnswer('{"title":"x"}')],
     ]) {
       const { impl, calls } = fakeFetch([
-        geminiFailure,
+        ...geminiFailure,
         groqAnswer('```json\n' + JSON.stringify(draft) + '\n```'),
       ]);
       const result = await generateDraft(
-        [gemini('g-key', { fetch: impl }), groq('q-key', { fetch: impl })],
+        [gemini('g-key', { fetch: impl, retryDelayMs: 0 }), groq('q-key', { fetch: impl })],
         buildPrompt(repo('x'), README),
       );
       expect(result.ok && result.provider).toBe('Groq');
-      expect(calls[1]?.headers['Authorization']).toBe('Bearer q-key');
-      expect((calls[1]?.body as { response_format: { type: string } }).response_format.type).toBe(
+      const groqCall = calls.at(-1);
+      expect(groqCall?.headers['Authorization']).toBe('Bearer q-key');
+      expect((groqCall?.body as { response_format: { type: string } }).response_format.type).toBe(
         'json_schema',
       );
       expect(JSON.stringify(result.failures)).not.toMatch(/g-key|q-key/);
     }
+  });
+
+  it('retries a busy Gemini once and keeps it as the first choice', async () => {
+    const { impl, calls } = fakeFetch([json({ error: 'busy' }, 503), geminiAnswer(JSON.stringify(draft))]);
+    const waits: number[] = [];
+    const result = await generateDraft(
+      [gemini('g', { fetch: impl, sleep: async (ms) => void waits.push(ms) }), groq('q', { fetch: impl })],
+      buildPrompt(repo('x'), README),
+    );
+    expect(result.ok && result.provider).toBe('Gemini');
+    expect(calls).toHaveLength(2);
+    expect(waits).toEqual([5000]);
   });
 
   it('rejects an unsafe answer and reports when every provider fails', async () => {
