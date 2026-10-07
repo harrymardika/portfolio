@@ -17,6 +17,8 @@ export interface RunIO {
   readonly draftBranches: () => Promise<string[]>;
   readonly publish: (draft: PublishedDraft) => Promise<void>;
   readonly log: (message: string) => void;
+  /** Problems the owner should see (CI: workflow annotations, readable without signing in). */
+  readonly warn: (message: string) => void;
   readonly today: () => string;
 }
 
@@ -61,7 +63,7 @@ export async function runDrafts(
       summary.skipped.push({ repo: repo.name, reason: (error as Error).message });
     }
   }
-  for (const { repo, reason } of summary.skipped) io.log(`drafts: skipped ${repo}: ${reason}`);
+  for (const { repo, reason } of summary.skipped) io.warn(`drafts: skipped ${repo}: ${reason}`);
   return summary;
 }
 
@@ -71,7 +73,7 @@ async function draftOne(repo: ApiRepo, providers: readonly Provider[], io: RunIO
   if (!readme || readme.trim().length < 200) return 'README missing or too short to describe the project';
   const prompt = buildPrompt(repo, readme);
   const result = await generateDraft(providers, prompt);
-  for (const failure of result.failures) io.log(`drafts: ${repo.name}: ${failure}`);
+  for (const failure of result.failures) io.warn(`drafts: ${repo.name}: ${failure}`);
   if (!result.ok) return 'every provider failed';
   // Ground numbers in the part of the README the model actually read.
   const draft = groundMetrics(result.draft, readme.slice(0, README_LIMIT));

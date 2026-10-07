@@ -248,6 +248,7 @@ describe('runDrafts', () => {
       draftBranches: async () => [],
       publish: async (d) => void published.push(d),
       log: (m) => logs.push(m),
+      warn: (m) => logs.push(m),
       today: () => '2026-10-07',
     });
     expect(summary.drafted).toEqual(['plant-doctor']);
@@ -269,6 +270,7 @@ describe('runDrafts', () => {
         if (d.slug === 'first') throw new Error('push rejected');
       },
       log: () => {},
+      warn: () => {},
       today: () => '2026-10-07',
     });
     expect(summary.drafted).toEqual(['second']);
@@ -286,6 +288,7 @@ describe('runDrafts', () => {
       draftBranches: async () => [],
       publish: async () => {},
       log: () => {},
+      warn: () => {},
       today: () => '2026-10-07',
     });
     expect(summary.drafted).toEqual(['fine']);
@@ -301,6 +304,7 @@ describe('runDrafts', () => {
       draftBranches: async () => [],
       publish: async () => {},
       log: (m: string) => logs.push(m),
+      warn: (m: string) => logs.push(m),
       today: () => '',
     };
     expect((await runDrafts(config, [], io)).drafted).toEqual([]);

@@ -167,6 +167,7 @@ const summary = await runDrafts(config, providers, {
   },
   publish,
   log: (message) => console.log(message),
+  warn: (message) => console.log(`::warning::${message}`),
   today: () => new Date().toISOString().slice(0, 10),
 });
 if (providers.length === 0) {
