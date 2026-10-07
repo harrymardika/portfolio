@@ -137,6 +137,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-07 · Claude Code (Opus) · Google Search Console + tunnel
+- **Search Console:** pemilik memverifikasi properti Domain `harry.mardika.my.id` (token TXT `google-site-verification` di root `mardika.my.id` lewat Domain Connect Cloudflare; **jangan dihapus**). Sitemap `https://harry.mardika.my.id/sitemap.xml` dikirim (status awal "tidak dapat mengambil", umum untuk properti baru; sitemap terverifikasi sehat: 200, `text/xml`, XML valid, 26 URL). Uji URL langsung beranda: "URL tersedia untuk Google", pengindeksan diminta. Cek ulang status sitemap 1–2 hari kemudian.
+- **Keamanan:** atas saran saya, pemilik menghapus rute tunnel untuk Cockpit, Portainer, code-server, Adminer, PostgreSQL, MongoDB, dan gunadarma-ai; ingress aktif (dibaca dari `127.0.0.1:20241/config` di server) kini hanya `harry` dan `cloud` (Nextcloud mengirim `x-robots-tag: noindex, nofollow`). Layanan admin hanya lewat Tailscale.
+
 ### 2026-10-07 · Claude Code (Opus) · Cek kesehatan server
 - **Baterai** (BAT1, L14M2P22): kesehatan 83% (24,9 dari 30 Wh), 16 siklus, penuh, charger tersambung. Bukan penyebab mati mendadak 2026-10-06 kecuali charger sempat lepas; penyebab pastinya tetap tidak terlihat di log.
 - **Backup statistik:** cron `30 3 * * * /opt/portfolio/backup-stats.sh` aktif; backup pertama `backups/stats-2026-10-06.sqlite` (nama memakai tanggal UTC) dibuat 03:30 WIB, `integrity_check: ok`, 47 event. Disimpan di SSD yang sama: tidak melindungi dari SSD rusak; salin berkala ke disk lain jika data statistik dianggap penting.
