@@ -91,6 +91,7 @@ Aturan:
 │   ├── certifications.yaml
 │   ├── skills.yaml
 │   ├── journey.yaml
+│   ├── messages.yaml            # kesan & pesan dari orang lain (T9.4), kosong = tidak tampil
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
 │   ├── projects/*.md            # studi kasus; projects/id/*.md = body bahasa Indonesia (T9.3)
 │   └── media/                   # foto & gambar yang dipakai konten

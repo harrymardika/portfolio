@@ -108,6 +108,16 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 `milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.
 
+### `messages.yaml` (Kesan & pesan, T9.4)
+Pesan yang ditinggalkan orang lain untuk Anda (atasan, rekan, peserta bootcamp, teman). Tampil di beranda dengan judul **"Kind words" / "Kesan & pesan"**, dalam urutan file; **bagian ini tersembunyi selama daftarnya kosong**. Di CMS: menu **Kesan & pesan**.
+
+`items[]`: `{ id, name, role?: LocalizedText, relationship: LocalizedText, message: LocalizedText, link?, approved }`.
+- **Hanya dengan izin penulisnya (D15).** `approved` (wajib, `YYYY-MM`) = bulan orang itu mengizinkan pesannya ditampilkan. Simpan bukti izinnya (chat/email) di luar repo.
+- Tulis pesan apa adanya; memendekkan dengan "…" hanya dengan persetujuan penulis. `message.id` boleh menyusul (tampil bahasa Inggris dengan `lang="en"`).
+- `role` opsional (teman atau peserta tidak perlu jabatan); jika diisi, `en` wajib. `link` hanya profil publik dengan `https://` (mis. LinkedIn); email, nomor HP, dan WhatsApp ditolak skema.
+- Selama daftar kosong, build menulis peringatan `No items found in content/messages.yaml`. Itu normal, bukan error.
+- Sumber yang cocok: rekomendasi LinkedIn, pesan dari peserta/mentor. Formulir untuk pengunjung menyusul di T12.1 dan tetap melewati persetujuan Anda.
+
 ### `projects/<slug>.md`
 Frontmatter:
 

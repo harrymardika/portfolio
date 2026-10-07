@@ -27,8 +27,10 @@ export default defineConfig({
           // --ignore-lock keeps preview in the foreground even when Astro detects an AI agent.
           // E2E is isolated from real data and output: GITHUB_FIXTURE avoids the network and live GitHub data,
           // GITHUB_CACHE and BUILD_OUT_DIR keep the fixture build out of the cache and dist/ used by dev and production.
+          // MESSAGES_FILE: fictional messages, since the real list may be empty (the section is then hidden).
           command:
             `GITHUB_FIXTURE=tests/fixtures/github.json GITHUB_CACHE=src/data/generated/github.e2e.json ` +
+            `MESSAGES_FILE=tests/fixtures/messages.yaml ` +
             `BUILD_OUT_DIR=dist-e2e PUBLIC_STATS_ENABLED=true bun run build && BUILD_OUT_DIR=dist-e2e bun run preview --port ${PORT} --ignore-lock`,
           url: `http://localhost:${PORT}/`,
           // Always build and serve fresh: reusing a server left running would test a stale dist/.

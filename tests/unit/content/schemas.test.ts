@@ -7,6 +7,7 @@ import {
   isValidRange,
   localizedText,
   slug,
+  messageSchema,
   yearMonth,
   yearOrYearMonth,
 } from '@/lib/content/schemas';
@@ -101,5 +102,29 @@ describe('certificationSchema', () => {
     const result = certificationSchema.safeParse({ ...valid, expires: '2024-01' });
     expect(result.success).toBe(false);
     expect(result.error?.issues[0]?.path).toEqual(['expires']);
+  });
+});
+
+describe('messageSchema', () => {
+  const base = {
+    id: 'jane-doe',
+    position: 0,
+    name: 'Jane Doe',
+    relationship: { en: 'Manager' },
+    message: { en: 'Great to work with.' },
+    approved: '2026-10',
+  };
+
+  it('accepts a message with permission, without a role, and with an optional profile link', () => {
+    expect(messageSchema.safeParse(base).success).toBe(true);
+    expect(messageSchema.safeParse({ ...base, link: 'https://www.linkedin.com/in/jane' }).success).toBe(true);
+  });
+
+  it('requires the month of permission and a real link', () => {
+    const { approved: _approved, ...withoutApproval } = base;
+    expect(messageSchema.safeParse(withoutApproval).success).toBe(false);
+    expect(messageSchema.safeParse({ ...base, link: 'linkedin.com/in/jane' }).success).toBe(false);
+    for (const link of ['tel:+10000000000', 'mailto:jane@example.com', 'javascript:alert(1)', 'http://example.com'])
+      expect(messageSchema.safeParse({ ...base, link }).success, link).toBe(false);
   });
 });

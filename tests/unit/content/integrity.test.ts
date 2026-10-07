@@ -19,6 +19,7 @@ import {
   projectSchema,
   skillGroupSchema,
   trainingSchema,
+  messageSchema,
 } from '@/lib/content/schemas';
 import { hasStrayStrongMarker } from '@/lib/content/emphasis';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
@@ -47,6 +48,15 @@ const LIST_FILES = [
   { file: 'certifications.yaml', key: 'items', schema: certificationSchema },
   { file: 'skills.yaml', key: 'groups', schema: skillGroupSchema, withPosition: true },
   { file: 'journey.yaml', key: 'milestones', schema: milestoneSchema, withPosition: true },
+  { file: 'messages.yaml', key: 'items', schema: messageSchema, withPosition: true, mayBeEmpty: true },
+  // The e2e fixture (MESSAGES_FILE) must stay valid too, or the e2e build fails.
+  {
+    file: '../tests/fixtures/messages.yaml',
+    key: 'items',
+    schema: messageSchema,
+    withPosition: true,
+    mayBeEmpty: true,
+  },
 ] as const;
 
 function readFrontmatter(path: string): unknown {
@@ -65,7 +75,10 @@ describe('content files', () => {
   for (const entry of LIST_FILES) {
     const { file, key, schema } = entry;
     it(`${file} matches the schema and has unique ids`, () => {
-      const items = parseYamlList(read(file), key, { withPosition: 'withPosition' in entry });
+      const items = parseYamlList(read(file), key, {
+        withPosition: 'withPosition' in entry,
+        mayBeEmpty: 'mayBeEmpty' in entry,
+      });
       items.forEach((item, index) => expectValid(schema, item, `${file}[${index}]`));
 
       const ids = items.map((item) => item['id']);

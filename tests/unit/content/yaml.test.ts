@@ -52,6 +52,17 @@ describe('parseYamlSingleton', () => {
   });
 });
 
+describe('parseYamlList mayBeEmpty', () => {
+  it('reads an empty, cleared, or blank file as an empty list', () => {
+    for (const text of ['items: []\n', 'items:\n', '', '# nothing yet\n'])
+      expect(parseYamlList(text, 'items', { mayBeEmpty: true }), JSON.stringify(text)).toEqual([]);
+  });
+
+  it('still rejects a malformed list', () => {
+    expect(() => parseYamlList('items: oops\n', 'items', { mayBeEmpty: true })).toThrow('list of objects');
+  });
+});
+
 describe('parseYamlList withPosition', () => {
   it('records each entry position in file order', () => {
     expect(parseYamlList('items:\n  - id: b\n  - id: a\n', 'items', { withPosition: true })).toEqual([

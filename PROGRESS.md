@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau terjemahan T9.3; lalu T9.4 testimoni; menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau terjemahan T9.3 dan mengisi kesan & pesan (T9.4); menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -18,10 +18,10 @@
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
-| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, testimoni (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
+| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
 | 10 | CV per posisi (§B) | ⏳ Setelah Fase 9 |
 | 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
-| 12 | Formulir testimoni bermoderasi (§F) | ⏳ Setelah T9.4 |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
 
 Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 9–12: `docs/11-roadmap.md`**
 
@@ -123,8 +123,8 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [~] **T9.3** Studi kasus bahasa Indonesia (D12) · *Claude Code: 11 terjemahan tayang sebagai draf, menunggu tinjauan pemilik*
   - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
   - Kriteria: body `content/projects/id/<slug>.md` untuk semua studi kasus, fallback ke Inggris (+ catatan) bila belum ada; menu CMS; Portfolio PDF ID memakai terjemahan; tes kesamaan struktur EN/ID (judul bagian, gambar); terjemahan ditinjau pemilik; draf AI baru (T8.2) ikut menulis versi ID.
-- [ ] **T9.4** Tampilan testimoni (D15; formulirnya T12.1)
-  - Kriteria: `content/testimonials.yaml` (nama, peran, hubungan, kutipan EN/ID, tautan opsional, tanggal persetujuan) + skema + CMS; tampil di beranda/About (dan opsional Portfolio PDF); tidak tampil jika kosong; hanya dengan izin orang yang dikutip.
+- [x] **T9.4** Tampilan kesan & pesan (dulu "testimoni"; D15; formulirnya T12.1)
+  - Kriteria: `content/messages.yaml` (nama, peran opsional, hubungan, pesan EN/ID, tautan opsional, bulan izin) + skema + CMS; tampil di beranda ("Kind words" / "Kesan & pesan"); tidak tampil jika kosong; hanya dengan izin penulisnya. Portfolio PDF: belum (opsional, setelah ada isinya).
 
 - [x] **T9.5** Format angka konsisten di semua bahasa (D16)
   - Aturan: **ikuti aturan baku tiap bahasa**. EN: titik desimal, koma ribuan (`92.5%`, `12,000`). ID (PUEBI): koma desimal, titik ribuan (`92,5%`, `12.000`). Berlaku di web, CV, Portfolio PDF, statistik, studi kasus terjemahan (T9.3), draf AI.
@@ -152,10 +152,10 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T11.5** Deploy dan pemantauan
   - Kriteria: dokumen operasional (docs/07, docs/10: key, kuota, mematikan fitur); jumlah pertanyaan tampil di statistik privat.
 
-## Fase 12: Formulir testimoni bermoderasi (`docs/11-roadmap.md` §F, D15)
+## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
 
 - [ ] **T12.1** Formulir + antrean moderasi (D15)
-  - Kriteria: `POST /api/testimonials` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/testimonials.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
+  - Kriteria: `POST /api/messages` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/messages.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
 
 ---
 
@@ -176,7 +176,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering**: suara produk lebih dulu (masalah pengguna, peluncuran, metrik), kemampuan AI sebagai pembeda; jalur lain lewat varian CV (2026-10-07) |
 | D10 | Varian CV | **5 varian** (AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee); **publik hanya CV umum**, varian lain untuk dikirim saat melamar. **CV per perusahaan tidak dibuat** (2026-10-07) |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
-| D15 | Testimoni | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
+| D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
 **Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
@@ -197,6 +197,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · T9.4 kesan & pesan
+- Pemilik: ini pesan yang ditinggalkan orang lain, tidak harus bernama "testimoni". Nama bagian menjadi **"Kind words" / "Kesan & pesan"**; file `content/messages.yaml`, menu CMS "Kesan & pesan", `role` opsional.
+- Dikerjakan: skema `messageSchema` (wajib `approved` = bulan izin), loader yang menerima daftar kosong, bagian di beranda (antara Projects dan Contact, `figure`/`blockquote`, fallback `lang="en"`), fixture e2e fiktif lewat `MESSAGES_FILE`, tes unit/e2e/axe. File awal kosong, jadi **belum ada yang tampil di situs**; tidak ada pesan yang dikarang.
+- Langkah berikutnya: pemilik menambahkan pesan (dengan izin) lewat CMS; T12.1 nanti mengisi file yang sama lewat formulir.
 
 ### 2026-10-08 · Claude Code (Opus) · T9.3 studi kasus bahasa Indonesia
 - Dikerjakan: body Indonesia di `content/projects/id/<slug>.md` (koleksi `projectTranslations`, helper `getCaseStudyBody`), dipakai halaman studi kasus dan Portfolio PDF ID; catatan "ditulis dalam bahasa Inggris" + `lang="en"` hanya bila terjemahan belum ada. Menu CMS "Studi kasus (Indonesia)"; menu "Studi kasus" tidak lagi menampilkan subfolder. Tes kesamaan struktur (judul bagian, gambar, judul) dan format angka ID. Draf AI (T8.2) kini menulis Problem/Approach/Result dalam EN + ID dan membuka PR berisi dua file.

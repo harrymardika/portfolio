@@ -20,6 +20,7 @@ import type {
   Milestone,
   Profile,
   SkillGroup,
+  Message,
   Training,
 } from './schemas';
 import type { GithubRepo } from '@/lib/github/schemas';
@@ -84,6 +85,11 @@ type ProjectEntry = Awaited<ReturnType<typeof getProjects>>[number];
 export async function getCaseStudyBody(project: ProjectEntry, locale: Locale) {
   const translation = locale === 'en' ? undefined : await getEntry('projectTranslations', project.id);
   return pickCaseStudyBody<ProjectEntry | NonNullable<typeof translation>>(project, translation, locale);
+}
+
+/** Messages people left for the owner, in file order (T9.4); empty until someone has agreed to it. */
+export async function getMessages(): Promise<Message[]> {
+  return sortedBy(await dataOf(getCollection('messages')), byPosition);
 }
 
 /** Milestones with the item each one summarizes, for the Journey section and its detail popovers. */

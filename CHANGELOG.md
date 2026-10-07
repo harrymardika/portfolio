@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- "Kind words" / "Kesan & pesan" on the home page: messages people left for Harry, from `content/messages.yaml` (editable in the CMS), shown only with the writer's permission and hidden while the list is empty (T9.4, D15).
 - Indonesian case studies: all 11 case study bodies are translated (`content/projects/id/`), shown on `/id/` pages and in the Indonesian Portfolio PDF, editable in the CMS, with tests that keep sections and images in step with the English version; AI drafts now include the Indonesian body (T9.3, D12).
 - Search and field filters on the Projects page (Computer Vision, NLP & Generative AI, and more, set in profile.yaml), with result counts and shareable links such as `/projects/?filter=computer-vision`.
 - A case study about this site itself (Projects → Self-hosted portfolio platform).

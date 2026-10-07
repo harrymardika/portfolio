@@ -172,6 +172,22 @@ export const projectSchema = z.strictObject({
  */
 export const projectTranslationSchema = z.strictObject({ title: z.string().trim().min(1) });
 
+/**
+ * A message someone left for the owner ("Kind words" / "Kesan & pesan", T9.4, D15). Shown only with the
+ * writer's permission: `approved` is the month they agreed to it. Order on the site = order in the file.
+ */
+export const messageSchema = z.strictObject({
+  id: slug,
+  position,
+  name: z.string().trim().min(1),
+  role: localizedText.optional(),
+  relationship: localizedText,
+  message: localizedText,
+  /** A public profile only (https); never e-mail, phone, or chat links. */
+  link: z.url({ protocol: /^https$/ }).optional(),
+  approved: yearMonth,
+});
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Education = z.infer<typeof educationSchema>;
@@ -181,5 +197,6 @@ export type Certification = z.infer<typeof certificationSchema>;
 export type SkillGroup = z.infer<typeof skillGroupSchema>;
 export type Milestone = z.infer<typeof milestoneSchema>;
 export type Project = z.infer<typeof projectSchema>;
+export type Message = z.infer<typeof messageSchema>;
 export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 export type ExperienceCategory = (typeof EXPERIENCE_CATEGORIES)[number];

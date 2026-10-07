@@ -1,0 +1,16 @@
+# Kind words / Kesan & pesan (T9.4, decision D15): messages people left for Harry. Shown on the home
+# page in this order; the section is hidden while the list is empty. Add a message ONLY with the
+# writer's permission, and record the month they agreed in `approved`. Never add contact details
+# beyond an optional public profile link. See docs/04-content-guide.md.
+#
+#   - id: first-last                        # lowercase-with-dashes, unique
+#     name: First Last
+#     role: { en: "Head of Data, Company", id: "Head of Data, Company" }   # optional
+#     relationship: { en: My manager at Company, id: Atasan saya di Company }
+#     message:
+#       en: What they wrote, word for word (shorten with "…" only with their consent).
+#       id: Terjemahannya.
+#     link: https://www.linkedin.com/in/...    # optional
+#     approved: 2026-10                         # month they allowed the message to be published
+
+items: []

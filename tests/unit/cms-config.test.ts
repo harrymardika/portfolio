@@ -18,6 +18,7 @@ import {
   projectSchema,
   projectTranslationSchema,
   skillGroupSchema,
+  messageSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
 import { SLUG, YEAR_MONTH } from '@/lib/content/schemas/primitives';
@@ -81,15 +82,23 @@ function isUnion(schema: ZodLike): boolean {
 const patternOf = (field: Field): RegExp | null =>
   field.pattern ? new RegExp(typeof field.pattern === 'string' ? field.pattern : field.pattern.regex) : null;
 
+/**
+ * How strictly `required` is compared. `union`: inside a union of object variants (github include) each
+ * variant requires different keys; Zod checks those. `optionalParent`: inside an optional object
+ * (messages role) the editor may leave a key the schema requires blank, because a blank object is
+ * pruned (pruneEmpty) and simply absent; the editor must still not require what the schema allows out.
+ */
+type RequiredMode = 'strict' | 'union' | 'optionalParent';
+
 /** Field-level rules that have to agree with the schema, beyond the field name. */
-function checkField(path: string, field: Field, schema: ZodLike, variant: boolean): string[] {
+function checkField(path: string, field: Field, schema: ZodLike, mode: RequiredMode): string[] {
   const problems: string[] = [];
   const at = `${path}.${field.name}`;
   const listMin = typeof field.list === 'object' ? (field.list.min ?? 0) : 0;
   const editorRequired = field.required === true || listMin > 0;
   const schemaRequired = !schema.safeParse(undefined).success;
-  // Inside a union of object variants (github include) each variant requires different keys; Zod checks those.
-  if (!variant && editorRequired !== schemaRequired) {
+  const allowed = mode === 'union' || (mode === 'optionalParent' && !editorRequired && schemaRequired);
+  if (!allowed && editorRequired !== schemaRequired) {
     problems.push(
       `${at}: editor ${editorRequired ? 'requires' : 'allows leaving out'} a value the schema ${schemaRequired ? 'requires' : 'treats as optional'}`,
     );
@@ -154,7 +163,7 @@ function compare(
   fields: Field[],
   shape: Record<string, ZodLike>,
   omit: string[] = [],
-  variant = false,
+  mode: RequiredMode = 'strict',
 ): string[] {
   const problems: string[] = [];
   const names = fields.map((field) => field.name);
@@ -170,11 +179,18 @@ function compare(
         problems.push(`${path}: editor field "${field.name}" is not in the schema`);
       continue;
     }
-    problems.push(...checkField(path, field, schema, variant));
+    problems.push(...checkField(path, field, schema, mode));
     const nested = objectShape(schema);
     if (field.type === 'object' && field.fields) {
       if (!nested) problems.push(`${path}.${field.name}: editor has an object, schema has a scalar`);
-      else problems.push(...compare(`${path}.${field.name}`, field.fields, nested, [], isUnion(schema)));
+      else {
+        const nestedMode: RequiredMode = isUnion(schema)
+          ? 'union'
+          : schema.safeParse(undefined).success
+            ? 'optionalParent'
+            : 'strict';
+        problems.push(...compare(`${path}.${field.name}`, field.fields, nested, [], nestedMode));
+      }
     } else if (nested && field.type !== 'object') {
       problems.push(`${path}.${field.name}: schema has an object, editor has "${field.type}"`);
     }
@@ -221,6 +237,7 @@ describe('.pages.yml', () => {
       // `position` is added by the YAML parser from the file order, never edited.
       ...compare('skills', listFields('skills', 'groups'), shapeOf(skillGroupSchema), ['position']),
       ...compare('journey', listFields('journey', 'milestones'), shapeOf(milestoneSchema), ['position']),
+      ...compare('messages', listFields('messages', 'items'), shapeOf(messageSchema), ['position']),
     ];
     expect(problems).toEqual([]);
   });

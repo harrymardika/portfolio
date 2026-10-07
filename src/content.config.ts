@@ -20,6 +20,7 @@ import {
   projectSchema,
   projectTranslationSchema,
   skillGroupSchema,
+  messageSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
 import { parseYamlList, parseYamlSingleton, pruneEmpty, type ListOptions } from '@/lib/content/yaml';
@@ -58,6 +59,13 @@ export const collections = {
   skills: defineCollection({
     loader: listFile('skills', 'groups', { withPosition: true }),
     schema: skillGroupSchema,
+  }),
+  // MESSAGES_FILE points e2e builds at fixtures, like GITHUB_FIXTURE: the real file may be empty.
+  messages: defineCollection({
+    loader: file(process.env['MESSAGES_FILE'] ?? `${CONTENT_DIR}/messages.yaml`, {
+      parser: (text) => parseYamlList(text, 'items', { withPosition: true, mayBeEmpty: true }),
+    }),
+    schema: messageSchema,
   }),
   journey: defineCollection({
     loader: listFile('journey', 'milestones', { withPosition: true }),

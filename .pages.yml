@@ -319,6 +319,41 @@ content:
             description: id pengalaman atau slug proyek yang diceritakan milestone ini (opsional).
             component: optionalSlug
 
+  - name: messages
+    label: Kesan & pesan
+    description: 'Pesan dari orang lain untuk Anda. Tampil di beranda dengan urutan ini; bagiannya tersembunyi jika kosong. Hanya dengan izin penulisnya (docs/04).'
+    type: file
+    path: content/messages.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Pesan
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{name}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: name, label: Nama, type: string, required: true }
+          - name: role
+            label: Peran / jabatan (opsional)
+            description: Jika diisi, English wajib diisi; Indonesia boleh kosong.
+            type: object
+            fields:
+              - { name: en, label: English, type: string }
+              - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: string }
+          - { name: relationship, label: Hubungan dengan Anda, component: localized, required: true }
+          - { name: message, label: Pesan, component: localizedLong, required: true }
+          - name: link
+            label: Tautan profil publik (opsional)
+            description: Hanya profil publik dengan https://, mis. LinkedIn. Jangan email, nomor HP, atau WhatsApp.
+            type: string
+            pattern:
+              regex: '^(https://\S+)?$'
+              message: Gunakan tautan https://, atau kosongkan.
+          - name: approved
+            label: Bulan izin diberikan
+            description: Bulan penulis mengizinkan pesannya ditampilkan (wajib), format YYYY-MM.
+            component: yearMonth
+
   - name: github
     label: Proyek dari GitHub
     description: Repo yang tampil di halaman Projects (docs/04 §4). Isi repo saja, atau judul + beberapa repo untuk satu proyek.

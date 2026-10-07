@@ -6,9 +6,10 @@ import Contact from '@/components/contact/Contact.astro';
 import Hero from '@/components/hero/Hero.astro';
 import Journey from '@/components/journey/Journey.astro';
 import SelectedProjects from '@/components/projects/SelectedProjects.astro';
+import Messages from '@/components/messages/Messages.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
-import { getJourney, getProfile, getProjectItems } from '@/lib/content/queries';
+import { getJourney, getProfile, getProjectItems, getMessages } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale } from '@/lib/i18n';
 import { websiteJsonLd } from '@/lib/seo';
 import { getPersonJsonLd, requireSite } from '@/lib/seo/person';
@@ -20,7 +21,12 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const [profile, journey, items] = await Promise.all([getProfile(), getJourney(), getProjectItems()]);
+const [profile, journey, items, messages] = await Promise.all([
+  getProfile(),
+  getJourney(),
+  getProjectItems(),
+  getMessages(),
+]);
 // Home shows featured case studies only; GitHub-only repos appear on the Projects page.
 const featured = items.filter((item) => item.kind === 'local' && item.project.featured).slice(0, 3);
 const site = requireSite(Astro.site);
@@ -40,5 +46,6 @@ const jsonLd = [
   <Hero locale={locale} profile={profile} />
   <Journey locale={locale} copy={profile.journey} entries={journey} />
   <SelectedProjects locale={locale} copy={profile.projects} items={featured} />
+  <Messages locale={locale} items={messages} />
   <Contact locale={locale} profile={profile} />
 </PageLayout>

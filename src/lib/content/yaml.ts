@@ -40,15 +40,25 @@ export interface ListOptions {
    * sorted by id, so collections whose order is meaningful (journey, skills) need it to restore file order.
    */
   readonly withPosition?: boolean;
+  /**
+   * The list may be empty or missing (`items:` with nothing under it, as an editor saves a cleared list),
+   * for files that start empty, such as messages.yaml.
+   */
+  readonly mayBeEmpty?: boolean;
 }
 
 /**
  * Parse a list file such as `experience.yaml` (`items:`) or `journey.yaml` (`milestones:`).
  * Throws with the expected key when the file does not have the documented shape.
  */
-export function parseYamlList(text: string, key: string, { withPosition = false }: ListOptions = {}): Entry[] {
+export function parseYamlList(
+  text: string,
+  key: string,
+  { withPosition = false, mayBeEmpty = false }: ListOptions = {},
+): Entry[] {
   const data = pruneEmpty(load(text));
-  const list = isRecord(data) ? data[key] : undefined;
+  const found = isRecord(data) ? data[key] : undefined;
+  const list = found === undefined && mayBeEmpty ? [] : found;
   if (!Array.isArray(list) || !list.every(isRecord)) {
     throw new Error(`Expected a top-level "${key}:" list of objects`);
   }

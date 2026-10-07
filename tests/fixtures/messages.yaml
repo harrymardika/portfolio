@@ -1,0 +1,17 @@
+# E2E fixture (MESSAGES_FILE): fictional people, never shown on the real site.
+items:
+  - id: test-manager
+    name: Test Manager
+    role: { en: 'Head of Testing, Example Corp', id: 'Kepala Pengujian, Example Corp' }
+    relationship: { en: Manager at Example Corp, id: Atasan di Example Corp }
+    message:
+      en: Fixture message in English about shipping a product in 3 months.
+      id: Pesan contoh dalam bahasa Indonesia tentang peluncuran produk dalam 3 bulan.
+    link: https://example.com/test-manager
+    approved: 2026-10
+  - id: test-learner
+    name: Test Learner
+    relationship: { en: Bootcamp participant, id: Peserta bootcamp }
+    message:
+      en: Fixture message that has no Indonesian version yet.
+    approved: 2026-09
