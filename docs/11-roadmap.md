@@ -1,6 +1,6 @@
 # 11 · Rencana lanjutan (Fase 9–12)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 5 varian, publik hanya CV umum, **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 

@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** Fase 9 (menunggu keputusan D8–D15, `docs/11-roadmap.md`) · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
+**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.1 baris peran AI Product Manager + ringkasan suara produk; menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -18,10 +18,10 @@
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
-| 9 | Personal branding & konten: positioning, skill, testimoni (`docs/11-roadmap.md` §A, C, D, F) | ⏳ Menunggu keputusan |
+| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, testimoni (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
 | 10 | CV per posisi (§B) | ⏳ Setelah Fase 9 |
 | 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
-| 12 | Formulir testimoni bermoderasi (§F, opsional) | ⏳ Opsional |
+| 12 | Formulir testimoni bermoderasi (§F) | ⏳ Setelah T9.4 |
 
 Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 9–12: `docs/11-roadmap.md`**
 
@@ -117,12 +117,13 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 ## Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F)
 
 - [ ] **T9.1** Positioning dan baris peran (D8, D9)
-  - Kriteria: `profile.role` diganti sesuai D8 (EN + ID), ringkasan ditinjau agar menyebut kekuatan produk/data tanpa mengaburkan identitas AI Engineer; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD. Tes e2e/PDF tidak bergantung pada teks lama.
+  - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
 - [ ] **T9.2** Skill lebih lengkap (D11)
   - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
 - [ ] **T9.3** Studi kasus bahasa Indonesia (D12)
-  - Kriteria (a): teks catatan diganti. Kriteria (b/c): body `content/projects/id/<slug>.md` dengan fallback, menu CMS, Portfolio PDF ID, tes kesamaan struktur EN/ID.
-- [ ] **T9.4** Testimoni statis (D15)
+  - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
+  - Kriteria: body `content/projects/id/<slug>.md` untuk semua studi kasus, fallback ke Inggris (+ catatan) bila belum ada; menu CMS; Portfolio PDF ID memakai terjemahan; tes kesamaan struktur EN/ID (judul bagian, gambar); terjemahan ditinjau pemilik; draf AI baru (T8.2) ikut menulis versi ID.
+- [ ] **T9.4** Tampilan testimoni (D15; formulirnya T12.1)
   - Kriteria: `content/testimonials.yaml` (nama, peran, hubungan, kutipan EN/ID, tautan opsional, tanggal persetujuan) + skema + CMS; tampil di beranda/About (dan opsional Portfolio PDF); tidak tampil jika kosong; hanya dengan izin orang yang dikutip.
 
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
@@ -131,9 +132,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
 - [ ] **T10.2** Pembuat PDF per varian
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
-- [ ] **T10.3** CV per perusahaan (privat)
-  - Kriteria: `bun run cv --variant <id> --company "<nama>" [--summary-file …]` membuat PDF di folder lokal yang di-gitignore; tidak pernah masuk build/deploy; dokumentasi cara memadukan dengan link `?ref=`.
-- [ ] **T10.4** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee
+- [ ] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee
   - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
 
 ## Fase 11: Asisten AI "Tanya tentang Harry" (`docs/11-roadmap.md` §E)
@@ -149,7 +148,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T11.5** Deploy dan pemantauan
   - Kriteria: dokumen operasional (docs/07, docs/10: key, kuota, mematikan fitur); jumlah pertanyaan tampil di statistik privat.
 
-## Fase 12: Formulir testimoni bermoderasi (opsional, `docs/11-roadmap.md` §F)
+## Fase 12: Formulir testimoni bermoderasi (`docs/11-roadmap.md` §F, D15)
 
 - [ ] **T12.1** Formulir + antrean moderasi (D15)
   - Kriteria: `POST /api/testimonials` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/testimonials.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
@@ -170,18 +169,19 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
 | D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (header `docs/07-deployment.md`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
 
+| D8 | Baris peran | **AI Product Manager** di website, CV umum, Portfolio PDF, dan JSON-LD (2026-10-07). Jabatan di Pengalaman tetap faktual (Founder & CEO, AI Engineer) |
+| D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering**: suara produk lebih dulu (masalah pengguna, peluncuran, metrik), kemampuan AI sebagai pembeda; jalur lain lewat varian CV (2026-10-07) |
+| D10 | Varian CV | **5 varian** (AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee); **publik hanya CV umum**, varian lain untuk dikirim saat melamar. **CV per perusahaan tidak dibuat** (2026-10-07) |
+| D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
+| D15 | Testimoni | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
+
 **Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
 
 | No | Pertanyaan | Rekomendasi |
 |---|---|---|
-| D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | "AI Engineer" atau "AI Engineer · AI products, end to end" |
-| D9 | Positioning | AI Engineer sebagai identitas utama; produk & data sebagai kekuatan pendukung; penargetan lewat CV |
-| D10 | Varian CV dan tempatnya | 5 varian; publik hanya CV umum |
 | D11 | Skill tambahan | Pemilik mencentang daftar kandidat |
-| D12 | Studi kasus bahasa Indonesia | Ganti kalimat catatan |
 | D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
 | D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
-| D15 | Testimoni | Statis dulu; formulir nanti |
 
 ## Catatan data
 
