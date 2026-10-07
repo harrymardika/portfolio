@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** semua selesai (perawatan) · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
+**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** Fase 9 (menunggu keputusan D8–D15, `docs/11-roadmap.md`) · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
 
 ## Ringkasan
 
@@ -18,8 +18,12 @@
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
+| 9 | Personal branding & konten: positioning, skill, testimoni (`docs/11-roadmap.md` §A, C, D, F) | ⏳ Menunggu keputusan |
+| 10 | CV per posisi (§B) | ⏳ Setelah Fase 9 |
+| 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
+| 12 | Formulir testimoni bermoderasi (§F, opsional) | ⏳ Opsional |
 
-Progres keseluruhan: **semua fase (0–8) selesai; situs online sejak 2026-10-06. Selanjutnya: perawatan dan konten**
+Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 9–12: `docs/11-roadmap.md`**
 
 ---
 
@@ -110,6 +114,46 @@ Progres keseluruhan: **semua fase (0–8) selesai; situs online sejak 2026-10-06
 - [x] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge): Gemini, cadangan Groq (ADR 0013). Run nyata pertama 2026-10-07: Gemini 503 → Groq → [PR #1](https://github.com/harrymardika/portfolio/pull/1) untuk `camera-genai`
 - [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
 
+## Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F)
+
+- [ ] **T9.1** Positioning dan baris peran (D8, D9)
+  - Kriteria: `profile.role` diganti sesuai D8 (EN + ID), ringkasan ditinjau agar menyebut kekuatan produk/data tanpa mengaburkan identitas AI Engineer; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD. Tes e2e/PDF tidak bergantung pada teks lama.
+- [ ] **T9.2** Skill lebih lengkap (D11)
+  - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
+- [ ] **T9.3** Studi kasus bahasa Indonesia (D12)
+  - Kriteria (a): teks catatan diganti. Kriteria (b/c): body `content/projects/id/<slug>.md` dengan fallback, menu CMS, Portfolio PDF ID, tes kesamaan struktur EN/ID.
+- [ ] **T9.4** Testimoni statis (D15)
+  - Kriteria: `content/testimonials.yaml` (nama, peran, hubungan, kutipan EN/ID, tautan opsional, tanggal persetujuan) + skema + CMS; tampil di beranda/About (dan opsional Portfolio PDF); tidak tampil jika kosong; hanya dengan izin orang yang dikutip.
+
+## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
+
+- [ ] **T10.1** Model data varian (D10)
+  - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
+- [ ] **T10.2** Pembuat PDF per varian
+  - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
+- [ ] **T10.3** CV per perusahaan (privat)
+  - Kriteria: `bun run cv --variant <id> --company "<nama>" [--summary-file …]` membuat PDF di folder lokal yang di-gitignore; tidak pernah masuk build/deploy; dokumentasi cara memadukan dengan link `?ref=`.
+- [ ] **T10.4** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee
+  - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
+
+## Fase 11: Asisten AI "Tanya tentang Harry" (`docs/11-roadmap.md` §E)
+
+- [ ] **T11.1** ADR + pengetahuan dari konten (D13, D14)
+  - Kriteria: ADR baru (penyedia, privasi, batas, kenapa tanpa vector DB); `knowledge.json` dibuat saat build dari `content/` publik saja (tes: tanpa nomor HP, tanpa draf, ukuran < batas token).
+- [ ] **T11.2** Layanan `services/assistant` + `/api/ask`
+  - Kriteria: Bun, image sendiri, batas memori; prompt sistem dengan pengaman; batas per pengunjung dan harian; jawaban teks biasa; cadangan penyedia kedua; key hanya di `.env` server; Caddy + CSP + compose diperbarui; health check.
+- [ ] **T11.3** UI tanya-jawab
+  - Kriteria: bagian "Tanya tentang saya" + contoh pertanyaan; EN/ID; keyboard & pembaca layar; tanpa JS/saat server mati diganti tautan CV dan email; pemberitahuan privasi; Lighthouse tetap ≥ 90/95.
+- [ ] **T11.4** Uji keamanan dan kualitas
+  - Kriteria: set uji ±25 pertanyaan (fakta, di luar topik, data pribadi, *prompt injection*) dengan hasil yang dicatat; e2e dengan API tiruan; `/security-review`.
+- [ ] **T11.5** Deploy dan pemantauan
+  - Kriteria: dokumen operasional (docs/07, docs/10: key, kuota, mematikan fitur); jumlah pertanyaan tampil di statistik privat.
+
+## Fase 12: Formulir testimoni bermoderasi (opsional, `docs/11-roadmap.md` §F)
+
+- [ ] **T12.1** Formulir + antrean moderasi (D15)
+  - Kriteria: `POST /api/testimonials` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/testimonials.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
+
 ---
 
 ## Keputusan pemilik
@@ -126,6 +170,19 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
 | D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (header `docs/07-deployment.md`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
 
+**Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
+
+| No | Pertanyaan | Rekomendasi |
+|---|---|---|
+| D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | "AI Engineer" atau "AI Engineer · AI products, end to end" |
+| D9 | Positioning | AI Engineer sebagai identitas utama; produk & data sebagai kekuatan pendukung; penargetan lewat CV |
+| D10 | Varian CV dan tempatnya | 5 varian; publik hanya CV umum |
+| D11 | Skill tambahan | Pemilik mencentang daftar kandidat |
+| D12 | Studi kasus bahasa Indonesia | Ganti kalimat catatan |
+| D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
+| D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
+| D15 | Testimoni | Statis dulu; formulir nanti |
+
 ## Catatan data
 
 - Alibaba Cloud Certified Associate **kedaluwarsa Nov 2026**. Setelah lewat tanggalnya, sertifikat otomatis hilang dari web dan CV (`expires` di `content/certifications.yaml`).
@@ -136,6 +193,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · Rencana Fase 9–12
+- Permintaan pemilik: rencana lanjutan yang terarah untuk personal branding (AI Engineer vs Product/Project vs Data), baris "AI Engineer · Founder, Decklify", CV per posisi/perusahaan, skill lebih lengkap (GCP, LangChain, …), asisten AI tentang pemilik, komentar dari orang lain, dan terjemahan studi kasus.
+- Dibuat `docs/11-roadmap.md` (analisis, rekomendasi, rancangan asisten AI) dan Fase 9–12 di atas dengan kriteria penerimaan. **Belum ada kode.** Langkah berikutnya: pemilik memutuskan D8–D15, lalu T9.1.
 
 ### 2026-10-07 · Claude Code (Opus) · Projects: pencarian + filter per bidang
 - Filter tag otomatis (Jupyter Notebook, RTSP, …) diganti **6 bidang** yang diatur pemilik di `profile.yaml` → `projects.categories` (Computer Vision 9, NLP & Generative AI 9, Edge & real-time 4, MLOps & deployment 3, Web & product 4, Data & forecasting 2 dari 20 proyek), plus **kotak pencarian** dan status "Menampilkan n dari 20 proyek". Pilihan disimpan di URL (`?filter=…&q=…`), jadi link terfilter bisa dikirim ke recruiter.

@@ -20,6 +20,7 @@ Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan
 | Analytics | `docs/08-analytics.md` |
 | PDF CV / Portfolio | `docs/09-pdf-generation.md` |
 | Operasional server, akun & secret, insiden, pemulihan | `docs/10-operations.md` |
+| Fase 9–12 (branding, CV per posisi, asisten AI, testimoni) | `docs/11-roadmap.md` |
 
 ## 2. Alur kerja satu tugas
 

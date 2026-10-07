@@ -14,6 +14,7 @@
 | 08 | [Statistik](08-analytics.md) | Statistik bawaan di situs, event, privasi, link pelacak lamaran |
 | 09 | [PDF generation](09-pdf-generation.md) | CV & Portfolio otomatis |
 | 10 | [Operasional](10-operations.md) | Untuk pemilik: akun & secret, pekerjaan rutin, perawatan, mengatasi masalah, pemulihan |
+| 11 | [Rencana lanjutan](11-roadmap.md) | Fase 9–12: personal branding, CV per posisi, asisten AI, testimoni; keputusan D8–D15 |
 | — | [ADR](adr/) | Catatan keputusan arsitektur |
 | — | [Prototipe tema](design/theme-prototypes.html) | Buka di browser. Tema terpilih: bagian **F + E**, warna **Hijau** |
 
