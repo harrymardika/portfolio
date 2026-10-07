@@ -5,25 +5,26 @@
 ```mermaid
 flowchart LR
   subgraph Sumber
+    CMS[Pages CMS<br/>.pages.yml] -->|commit ke main| C
     C[content/*.yaml, *.md]
     G[GitHub API<br/>topic: portfolio]
+    DR[case-study-drafts.yml<br/>Gemini / Groq] -->|PR ai-draft, merge| C
+    G -.->|README| DR
   end
-  subgraph Build["Build (GitHub Actions, Docker)"]
+  subgraph Build["Build (GitHub Actions deploy.yml, Docker)"]
     F[scripts/fetch-github.ts] --> J[src/data/generated/github.json]
     C --> V[Zod schema<br/>src/content.config.ts]
     J --> V
     V --> A[Astro SSG<br/>halaman EN + ID]
-    A --> P[scripts/generate-pdf.ts<br/>Playwright]
-    P --> D[dist/downloads/*.pdf]
-    A --> CSP[scripts/generate-csp.ts<br/>build-meta/csp.caddy]
+    A --> P[generate-pdf · generate-og<br/>Playwright]
+    A --> SM[generate-sitemap · generate-csp]
   end
   G --> F
-  A --> I[(Image Docker<br/>Caddy + file statis)]
-  D --> I
-  CSP --> I
+  A & P & SM --> I[(Image Docker<br/>Caddy + file statis)]
   I -->|push| R[GHCR]
-  R -->|pull, systemd timer| S[Home server]
-  S -->|Cloudflare Tunnel| CF[Cloudflare CDN] --> U((Pengunjung))
+  R -->|pull, timer 10 menit<br/>update.sh| S[Home server]
+  S -.->|purge cache saat image web berubah| CF
+  S -->|Cloudflare Tunnel| CF[Cloudflare<br/>cache HTML 7 hari] --> U((Pengunjung))
   U -.->|beacon /api/stats| ST[stats<br/>Bun + SQLite]
 ```
 
@@ -77,7 +78,7 @@ Aturan:
 - **Astro mengembalikan entri collection terurut berdasarkan `id`, bukan urutan file.** Collection yang urutannya bermakna (journey, skills) memakai `parseYamlList(..., { withPosition: true })` lalu diurutkan dengan `position` di `queries.ts`.
 - Fungsi yang bergantung pada waktu (mis. sertifikat kedaluwarsa) menerima `now: Date` sebagai parameter agar hasil build dan tes dapat direproduksi.
 
-## 4. Struktur folder (target)
+## 4. Struktur folder
 
 ```
 .
@@ -90,6 +91,8 @@ Aturan:
 │   ├── certifications.yaml
 │   ├── skills.yaml
 │   ├── journey.yaml
+│   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
+│   ├── homelab.yaml             # isi halaman /homelab (server, stack)
 │   ├── projects/*.md
 │   └── media/                   # foto & gambar yang dipakai konten
 ├── src/
@@ -102,7 +105,8 @@ Aturan:
 │   │   ├── github/              # schemas, select (murni), client (REST, retry), sync (I/O diinjeksi)
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
-│   │   └── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld (murni); person.ts (khusus Astro)
+│   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld (murni); person.ts (khusus Astro)
+│   │   └── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
 │   ├── components/
 │   │   ├── layout/              # BaseLayout, Header, Footer, LangSwitch, ThemeToggle, SkipLink
 │   │   ├── ui/                  # Button, Badge, Stat, Icon, Card, Dialog (generik, tanpa domain)
@@ -127,13 +131,14 @@ Aturan:
 │   └── data/generated/          # output script build (di-gitignore)
 ├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
 ├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-csp, precompress,
-│                                #   stats-report, check-tokens; lib/static-server.ts (server build untuk Chromium)
+│                                #   serve-build, lighthouse-summary, draft-case-studies, stats-report, check-tokens;
+│                                #   lib/static-server.ts (server build untuk Chromium), lib/compression.ts
 ├── tests/
 │   ├── unit/                    # cermin struktur src/lib
-│   └── e2e/                     # Playwright: smoke, i18n, download, a11y
+│   └── e2e/                     # Playwright: halaman, i18n, 3D, unduhan, a11y (axe), SEO, deployment
 ├── docker/                      # Dockerfile, Caddyfile, compose.yml, compose.dev.yml, deploy/ (timer, update, backup)
 ├── .pages.yml                   # editor browser Pages CMS untuk content/ (ADR 0011)
-└── .github/workflows/           # ci.yml, deploy.yml
+└── .github/workflows/           # ci.yml, deploy.yml, case-study-drafts.yml (§5)
 ```
 
 ## 5. Alur build
@@ -153,6 +158,16 @@ bun run build
   Hanya di Docker: scripts/precompress.ts → salinan .br/.gz di samping file teks (docs/07 §4)
   BUILD_OUT_DIR mengganti folder output (Astro dan skrip PDF membaca variabel yang sama)
 ```
+
+**Workflow GitHub Actions** (detail: [07 Deployment](07-deployment.md), [10 Operasional](10-operations.md)):
+
+| Workflow | Pemicu | Isi |
+|---|---|---|
+| `ci.yml` (*CI*) | Pull request; dipanggil `deploy.yml` | `bun run verify` (check → unit → e2e), Lighthouse CI + ringkasan anotasi |
+| `deploy.yml` (*Deploy*) | Push ke `main`, jadwal `17 */6 * * *` (UTC), manual | `ci.yml` → build image `web` + `stats` → push ke GHCR (`latest`, `sha-<commit>`) |
+| `case-study-drafts.yml` (*Case study drafts*) | Jadwal `41 2 * * *` (UTC), manual | `bun run drafts`: draf studi kasus AI → satu PR per repo (ADR 0013) |
+
+**Sesudah image tayang di GHCR** (server, `docker/deploy/`): `portfolio-update.timer` (2 menit setelah boot, lalu tiap 10 menit) → `update.sh`: `docker compose pull` → `up -d --wait` → jika image `web` berubah, hapus cache Cloudflare untuk hostname situs (ADR 0010, 0012). Dari commit sampai tayang ±20 menit.
 
 ## 6. Kontrak modul 3D
 

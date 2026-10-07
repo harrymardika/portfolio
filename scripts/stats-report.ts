@@ -9,7 +9,7 @@
 import { formatRefReport, privateReportSchema } from '../src/lib/stats/summary';
 
 const token = process.env['STATS_ADMIN_TOKEN'];
-const base = process.env['STATS_URL'] ?? 'https://harry.mardika.my.id';
+const base = process.env['STATS_URL'] || 'https://harry.mardika.my.id';
 
 if (!token) {
   console.error('Set STATS_ADMIN_TOKEN in .env (the same value the stats service uses).');

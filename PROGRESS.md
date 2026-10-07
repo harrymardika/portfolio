@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-06 · **Fase aktif:** Fase 7 · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
+**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** semua selesai (perawatan) · **Tugas berikutnya:** tidak ada di rencana; perawatan rutin (dependency, konten) dan review PR draf AI berlabel `ai-draft`
 
 ## Ringkasan
 
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · Dokumentasi proyek
+- `README.md` ditulis ulang sebagai halaman depan (fitur, alur, 3 cara mengubah isi, quick start, struktur repo terkini). Versi lama masih menulis "belum online" dan "rencana".
+- **Baru: `docs/10-operations.md`** untuk pemilik: peta sistem, inventaris akun & secret (tanpa nilai), pekerjaan rutin, perawatan bulanan/kuartalan, mengatasi masalah (deploy merah, 1033, perubahan tidak muncul, CMS, draf AI, sitemap), pemulihan (rollback, restore statistik, pasang ulang server, key bocor). Langkah restore statistik diuji reviewer dengan image asli di stack terpisah; belum pernah dijalankan di server.
+- `docs/02`: diagram besar memuat Pages CMS, workflow draf AI, timer dan purge Cloudflare; tabel workflow; struktur folder terkini. Koreksi kecil di docs/04 (catatan internal bukan komentar HTML), docs/07 (GHCR sudah publik), docs/08 (RAM stats terukur). Indeks `docs/README.md` dan tabel di `AGENTS.md` memuat docs/10. Semua tautan relatif dicek.
+- Dari review: skrip `docker/deploy/*.sh` kini executable di git; `stats:report` tidak lagi error jika `STATS_URL=` kosong (seperti di `.env.example`); komentar `case-study-drafts.yml` disesuaikan dengan merge = tayang.
 
 ### 2026-10-07 · Claude Code (Opus) · T8.2: merge = tayang
 - Pemilik merge PR #1, lalu menerbitkan `camera-genai` lewat Pages CMS (simpanan pertama dari editor browser: valid, hanya perubahan format + `draft: false`). Langkah terbit terpisah dinilai merepotkan → **draf AI kini ditulis `draft: false`; merge PR = tayang** (ADR 0013, docs/04, isi PR diperbarui). Tanda hubung tipografis lama di `camera-genai.md` dirapikan.

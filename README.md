@@ -1,65 +1,83 @@
 # harry.mardika.my.id
 
-Website portfolio pribadi **Harry Mardika** (AI Engineer · Founder, Decklify), di-host sendiri di home server.
+Website portfolio pribadi **Harry Mardika** (AI Engineer · Founder, Decklify), dwibahasa, dengan CV dan Portfolio PDF yang dibuat otomatis, di-host sendiri di server rumah.
 
-- **Live:** https://harry.mardika.my.id *(belum online)*
-- **Status pengembangan:** lihat [`PROGRESS.md`](PROGRESS.md)
-- **Dokumentasi lengkap:** lihat [`docs/`](docs/README.md)
+- **Live:** https://harry.mardika.my.id (Indonesia: https://harry.mardika.my.id/id/)
+- **Status:** semua fase (0–8) selesai, online sejak 2026-10-06. Detail di [`PROGRESS.md`](PROGRESS.md).
+- **Dokumentasi:** [`docs/`](docs/README.md). Untuk pemilik, mulai dari **[panduan operasional](docs/10-operations.md)**.
 
-## Fitur utama
+## Fitur
 
 | Fitur | Ringkasan |
 |---|---|
-| Dwibahasa | English (default, `/`) dan Bahasa Indonesia (`/id/`) |
-| Satu sumber data | Semua isi (profil, pengalaman, proyek, dll.) ada di folder [`content/`](content/). Cukup edit YAML/Markdown, lalu web, CV, dan Portfolio PDF ikut ter-update. |
-| Download CV & Portfolio | PDF dibuat otomatis saat build. CV ramah ATS dan tanpa nomor HP. |
-| 3D interaktif | Kartu foto 3D di hero dan jalur perjalanan karier 3D, dengan fallback statis untuk HP lemah dan `prefers-reduced-motion` |
-| Sinkronisasi GitHub | Repo `harrymardika` dengan topic `portfolio` otomatis tampil sebagai proyek |
-| Statistik | Ditampilkan langsung di situs: pengunjung, unduhan CV/Portfolio, sumber trafik. Tautan pelacak lamaran hanya untuk pemilik. Tanpa cookie. |
-| Self-hosted | Docker + Cloudflare Tunnel di home server; image di-build oleh GitHub Actions |
+| Dwibahasa | English di `/`, Bahasa Indonesia di `/id/`, dengan `hreflang` dan tombol ganti bahasa |
+| Satu sumber data | Semua isi (profil, pengalaman, proyek, dll.) ada di [`content/`](content/). Website, CV, dan Portfolio PDF membaca data yang sama. |
+| CV & Portfolio PDF | Dibuat otomatis setiap build (EN dan ID). CV ramah ATS, maks. 2 halaman, tanpa nomor HP. |
+| 3D | Kartu foto 3D di hero dan jalur karier 3D (Three.js). Kartu statis untuk perangkat tanpa GPU, hemat data, atau *reduced motion*. |
+| Edit dari browser | [Pages CMS](https://app.pagescms.org): setiap simpan menjadi commit dan tayang otomatis ([ADR 0011](docs/adr/0011-pages-cms.md)) |
+| Proyek dari GitHub | Repo yang dipilih di `content/github.yaml` atau ber-topic `portfolio` tampil otomatis, diperbarui tiap 6 jam |
+| Draf studi kasus oleh AI | Repo ber-topic `portfolio` tanpa studi kasus → Gemini (cadangan Groq) menulis draf dari README → Pull Request; **merge = tayang** ([ADR 0013](docs/adr/0013-ai-case-study-drafts.md)) |
+| Statistik bawaan | Pengunjung, unduhan CV/Portfolio, sumber trafik, ditampilkan di `/homelab`; tanpa cookie, tanpa layanan pihak ketiga ([ADR 0009](docs/adr/0009-built-in-stats.md)) |
+| Tetap tersaji saat server mati | Cloudflare menyimpan halaman 7 hari; cache dihapus otomatis setiap deploy ([ADR 0012](docs/adr/0012-edge-cache-purge-on-deploy.md)) |
+| Kualitas | Lighthouse ≥ 90 (performa) dan ≥ 95 (a11y, best practices, SEO) dijaga CI; header keamanan **A+** (Mozilla Observatory); SEO: sitemap, gambar pratinjau, JSON-LD |
 
-## Tech stack (rencana, lihat [ADR](docs/adr/))
+## Cara kerja singkat
 
-Astro (SSG) · TypeScript strict · Bun · Tailwind CSS · Three.js (vanilla) · Zod (content schema) · Playwright (PDF & e2e) · Docker + Caddy · SQLite (statistik) · GitHub Actions
+```mermaid
+flowchart LR
+  CMS[Pages CMS] -->|commit| R[(Repo GitHub<br/>content/)]
+  L[Laptop] -->|git push| R
+  AI[Workflow draf AI] -->|Pull Request → merge| R
+  R --> CI[GitHub Actions<br/>verify → build → image]
+  CI --> G[(GHCR)]
+  G -->|tarik tiap 10 menit| S[Server rumah<br/>Caddy + stats]
+  S --> CF[Cloudflare<br/>Tunnel + cache] --> V((Pengunjung))
+```
 
-## Quick start
+Setiap perubahan di `main` diperiksa (skema data, tes, Lighthouse), lalu dibangun menjadi image Docker. Server rumah menariknya sendiri, dan cache Cloudflare dihapus otomatis. Dari simpan sampai tayang ±20 menit. Detail: [docs/02-architecture.md](docs/02-architecture.md).
+
+## Mengubah isi
+
+| Cara | Kapan dipakai | Panduan |
+|---|---|---|
+| **Pages CMS** (browser, juga HP) | Mengubah teks, pengalaman, proyek, terjemahan | [docs/04 §1](docs/04-content-guide.md) |
+| **Topic `portfolio` di repo GitHub** | Menambah proyek baru; draf studi kasus datang sebagai PR | [docs/04 §4](docs/04-content-guide.md) |
+| **Laptop** (edit `content/`, commit, push) | Perubahan besar atau banyak file sekaligus | [docs/04](docs/04-content-guide.md), [docs/06](docs/06-development-workflow.md) |
+
+Data yang tidak valid ditolak oleh CI dan situs lama tetap tayang; pesan error menyebut file, item, dan field-nya.
+
+## Untuk pengembang
 
 ```bash
 bun install
-bun run dev          # http://localhost:4321
+bun run dev                 # http://localhost:4321
+bun run verify              # wajib sebelum commit: check → unit → e2e
 
-# Atau dengan Docker (tanpa memasang Bun/Node di laptop)
-docker compose -f docker/compose.dev.yml up   # http://localhost:4321
+# Atau dengan Docker, tanpa memasang Bun/Node di laptop
+docker compose -f docker/compose.dev.yml up
 ```
 
-Syarat tanpa Docker: Bun 1.3+ dan Node.js 22.12+. Sebelum commit: `bun run verify`.
+Syarat: Bun 1.3+ dan Node.js 22.12+. Semua perintah: [docs/06-development-workflow.md](docs/06-development-workflow.md).
 
-Perintah lengkap ada di [docs/06-development-workflow.md](docs/06-development-workflow.md).
+**AI agent dan kontributor:** baca **[`AGENTS.md`](AGENTS.md)** terlebih dahulu (urutan membaca dokumen, cara mengambil tugas, standar kode, Definition of Done), lalu [`PROGRESS.md`](PROGRESS.md).
 
-## Mengubah isi website
-
-Lihat [docs/04-content-guide.md](docs/04-content-guide.md). Dari browser (juga HP): [Pages CMS](https://app.pagescms.org), setiap simpan menjadi commit (ADR 0011). Dari laptop: edit file di `content/`, commit, push. Deploy berjalan otomatis setelah data lolos pemeriksaan.
-
-## Untuk AI agent dan kontributor
-
-Baca **[`AGENTS.md`](AGENTS.md)** terlebih dahulu. Isinya urutan membaca dokumen, cara mengambil tugas dari `PROGRESS.md`, standar kode, dan Definition of Done.
+**Tech stack** ([ADR](docs/adr/)): Astro 7 (SSG) · TypeScript strict · Bun · Tailwind CSS 4 · Three.js · Zod · Playwright (e2e, PDF, gambar pratinjau) · Caddy · Bun + SQLite (statistik) · Docker · GitHub Actions · Cloudflare Tunnel · Pages CMS · Gemini / Groq.
 
 ## Struktur repo
 
 ```
 .
-├── AGENTS.md            # Aturan kerja untuk AI agent & developer (wajib dibaca)
-├── CLAUDE.md            # Tambahan khusus Claude Code (mengimpor AGENTS.md)
-├── PROGRESS.md          # Status, daftar tugas, dan log sesi
-├── CHANGELOG.md         # Riwayat perubahan
-├── content/             # SUMBER DATA: profil, pengalaman, proyek, dll.
-├── docs/                # Dokumentasi: SRS, arsitektur, desain, standar, ADR
-│   └── design/theme-prototypes.html   # Prototipe tema (buka di browser)
-├── src/                 # Kode aplikasi Astro (lib, components, scenes, pages)
-├── scripts/             # (Fase 3–4) Script build: GitHub sync, PDF
-├── tests/               # unit (bun test) & e2e (Playwright + axe)
-├── docker/              # Dockerfile.dev + compose.dev.yml (Fase 1); produksi di Fase 6
-└── .github/workflows/   # (Fase 6) CI/CD
+├── AGENTS.md · CLAUDE.md      # Aturan kerja untuk AI agent & developer (wajib dibaca)
+├── PROGRESS.md · CHANGELOG.md # Status, log sesi, dan riwayat perubahan
+├── .pages.yml                 # Konfigurasi editor browser Pages CMS
+├── content/                   # SUMBER DATA: profil, pengalaman, proyek, media
+├── src/                       # Astro: lib (logika murni), components, scenes (3D), pages, layouts
+├── services/stats/            # Service statistik (Bun + SQLite)
+├── scripts/                   # Build & alat: GitHub sync, PDF, gambar pratinjau, sitemap, CSP, draf AI
+├── tests/                     # unit (bun test) & e2e (Playwright + axe)
+├── docker/                    # Dockerfile, Caddyfile, compose produksi & dev, deploy/ (server)
+├── .github/workflows/         # ci, deploy (+ jadwal 6 jam), case-study-drafts (harian)
+└── docs/                      # Dokumentasi, ADR, prototipe tema
 ```
 
 ## Lisensi

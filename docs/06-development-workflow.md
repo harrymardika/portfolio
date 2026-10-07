@@ -82,7 +82,7 @@ Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run 
 
 | Masalah | Solusi |
 |---|---|
-| Build gagal: "Invalid content in content/…" | Baca pesan Zod; perbaiki field yang disebut (sering: format tanggal atau `en` yang hilang) |
+| Build/check gagal: "… data does not match collection schema" atau tes `content files` gagal | Baca pesan Zod; perbaiki field yang disebut (sering: format tanggal atau `en` yang hilang) |
 | 3D tidak muncul | Cek console. Pastikan WebGL aktif (hardware acceleration). Fallback HTML harus tetap tampil. |
 | GitHub sync gagal | Pesan `GitHub: warning: …` tidak menghentikan build: cache terakhir dipakai (atau daftar kosong). Penyebab umum: offline, rate limit (isi `GITHUB_TOKEN`), atau salah ketik nama di `include` (ada peringatannya). |
 | `bun run dev` langsung kembali ke prompt / port 4321 terpakai | Jika mendeteksi AI agent (mis. Claude Code), Astro 7 otomatis menjalankan dev/preview server di background. Cek `bunx astro dev status`, log `bunx astro dev logs`, hentikan `bunx astro dev stop`. Tambahkan `--ignore-lock` untuk memaksa foreground (dipakai `playwright.config.ts`). Saat dijalankan manusia atau Docker, server berjalan normal di foreground. |

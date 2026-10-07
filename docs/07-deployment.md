@@ -1,6 +1,6 @@
 # 07 · Deployment
 
-> Pengaturan Cloudflare (DNS, Tunnel, aturan cache) **diurus langsung oleh pemilik** di servernya. Dokumen ini menjelaskan bagian yang disediakan repo dan titik integrasinya.
+> Pengaturan Cloudflare (DNS, Tunnel, aturan cache) **diurus langsung oleh pemilik** di servernya. Dokumen ini menjelaskan bagian yang disediakan repo dan titik integrasinya. Perawatan harian, mengatasi masalah, dan pemulihan: [10 Operasional](10-operations.md).
 >
 > **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Debian 13 (trixie), Docker 29 + Compose 5 (lihat `content/homelab.yaml`). Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
 
@@ -30,11 +30,11 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 | `.github/workflows/ci.yml` | Pull request (dan sebelum setiap deploy): `bun run verify`, lalu Lighthouse CI (`lighthouserc.cjs`); laporan sebagai artifact `lighthouse-reports` |
 | `.github/workflows/case-study-drafts.yml` | Harian + manual: draf studi kasus AI untuk repo ber-topic `portfolio` → Pull Request (ADR 0013) |
 | `.github/workflows/deploy.yml` | `main` + tiap 6 jam + manual: verify → build & push image |
-| `docker/Dockerfile.dev`, `docker/compose.dev.yml` | Development (Fase 1) |
+| `docker/Dockerfile.dev`, `docker/compose.dev.yml` | Development lokal tanpa memasang Bun/Node (docs/06) |
 
 ## 3. Pemasangan pertama di server (sekali saja)
 
-> **Sebelum langkah 3, sekali saja di GitHub:** setelah workflow Deploy pertama selesai, buka github.com/harrymardika → *Packages* → `portfolio-web` dan `portfolio-stats` → *Package settings* → *Change visibility* → **Public**. Package GHCR baru biasanya privat; tanpa ini server perlu `docker login ghcr.io`.
+> **Package GHCR harus publik** (sudah diatur 2026-10-06 untuk `portfolio-web` dan `portfolio-stats`). Package GHCR baru biasanya privat; jika suatu saat dibuat ulang: github.com/harrymardika → *Packages* → package → *Package settings* → *Change visibility* → **Public**. Tanpa ini server perlu `docker login ghcr.io`.
 
 Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, Debian 13 (trixie), Docker 29 + Compose 5 (terpasang 2026-10-06). Pasang Docker dari repo resmi Docker untuk Debian, bukan paket `docker.io`. Karena RAM kecil: **jangan pernah build di server**; batas memori container sudah diset.
 
@@ -44,6 +44,7 @@ sudo mkdir -p /opt/portfolio && sudo chown "$USER" /opt/portfolio
 cd /opt/portfolio
 # Salin dari repo: docker/compose.yml dan semua isi docker/deploy/
 #   (mis. git clone https://github.com/harrymardika/portfolio /tmp/p && cp /tmp/p/docker/compose.yml /tmp/p/docker/deploy/* .)
+chmod +x update.sh backup-stats.sh
 
 # 2. Rahasia
 cat > .env <<'ENV'

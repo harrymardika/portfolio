@@ -11,7 +11,7 @@ Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──
 ```
 
 - Kode: `services/stats/` (`server.ts`, `handler.ts`, `store.ts`) + aturan bersama di `src/lib/stats/` (`events.ts`, `privacy.ts`). Lokal: `bun run stats:dev` (port 8787, data di `.data/`).
-- `stats` berjalan di `docker/compose.yml` di samping `web`, dengan data SQLite di volume `stats-data`. RAM ±80 MB (runtime Bun + Zod), batas container 128 MB.
+- `stats` berjalan di `docker/compose.yml` di samping `web`, dengan data SQLite di volume `stats-data`. RAM terukur ±17 MiB (2026-10-05, server di-bundle menjadi satu file), batas container 128 MB.
 - Caddy meneruskan `/api/stats/*` ke `stats`; semua path lain adalah file statis.
 - Jika `stats` tidak tersedia, situs tetap normal dan angka statistik tampil sebagai "—".
 

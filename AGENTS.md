@@ -19,6 +19,7 @@ Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan
 | Docker, CI/CD, server | `docs/07-deployment.md` |
 | Analytics | `docs/08-analytics.md` |
 | PDF CV / Portfolio | `docs/09-pdf-generation.md` |
+| Operasional server, akun & secret, insiden, pemulihan | `docs/10-operations.md` |
 
 ## 2. Alur kerja satu tugas
 

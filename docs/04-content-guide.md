@@ -139,7 +139,7 @@ draft: false                 # true = tidak tampil di mana pun
 Isi (body) dalam Markdown, versi English. Di halaman `/id/` body ini tetap tampil (diberi `lang="en"`) dengan catatan bahwa studi kasus ditulis dalam bahasa Inggris; `summary`, `role`, dan label metrik sudah dwibahasa lewat frontmatter. *(Terjemahan body `projects/<slug>.id.md` belum didukung; tambahkan sebagai tugas baru bila dibutuhkan.)*
 
 Catatan tampilan:
-- Jangan menulis judul bagian (`## ...`) yang isinya kosong; tulis TODO di dalam komentar `<!-- -->`.
+- Jangan menulis judul bagian (`## ...`) yang isinya kosong. Catatan internal (TODO, bahan yang belum ada) ditulis di `PROGRESS.md` atau deskripsi PR, **bukan** sebagai komentar `<!-- -->`: komentar HTML ikut terkirim di halaman publik dan bisa hilang saat file disimpan lewat Pages CMS.
 - Filter tag di halaman Projects hanya muncul jika minimal dua tag masing-masing dipakai oleh dua proyek atau lebih.
 Struktur body yang disarankan: **Problem → Approach → Result → What I learned**.
 
