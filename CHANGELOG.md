@@ -53,6 +53,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- Indonesian translations reviewed by the owner; the undergraduate thesis now appears under its official title.
 - Devices that render WebGL on the CPU (no GPU) keep the static photo card instead of a 3D scene that blocked the page for seconds; Lighthouse now holds every page to performance ≥ 90.
 - The Homelab page lists the server's new operating system, Debian 13.
 - The journey 3D scene starts only when scrolled near, and shaders compile ahead of the first frame, cutting main-thread blocking on the home page by about three quarters.

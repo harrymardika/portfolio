@@ -108,7 +108,7 @@ Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 
 
 - [x] **T8.1** CMS berbasis Git untuk mengedit `content/` dari browser: **Pages CMS** (ADR 0011), `.pages.yml`, penjaga drift `tests/unit/cms-config.test.ts`. *Pemilik: pasang GitHub App sekali (docs/04 §1).*
 - [ ] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge)
-- [x] **T8.3** *(draf, 2026-10-05; **menunggu review pemilik**)* Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia (bisa dibantu AI, wajib direview pemilik)
+- [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
 
 ---
 
@@ -129,14 +129,16 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Catatan data
 
 - Alibaba Cloud Certified Associate **kedaluwarsa Nov 2026**. Setelah lewat tanggalnya, sertifikat otomatis hilang dari web dan CV (`expires` di `content/certifications.yaml`).
-- **Perlu review pemilik:** 55 terjemahan `highlights` (EN → ID) di `experience.yaml`, `education.yaml`, `trainings.yaml` dibuat oleh AI pada 2026-10-05. Periksa terutama istilah dan angka.
-- Isian pemilik (7 `TODO(owner)`) **selesai 2026-10-07**; lihat log sesi. Tersisa: review 55 terjemahan ID (di atas).
+- Isian pemilik (7 `TODO(owner)`) dan review 55 terjemahan ID **selesai 2026-10-07**; lihat log sesi. Terjemahan baru tetap perlu dibaca pemilik sebelum dianggap final.
 
 ---
 
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · Review terjemahan
+- Pemilik mereview 55 kalimat lewat halaman perbandingan EN↔ID (artifact privat): 54 OK; no. 43 diganti judul resmi skripsi, "Klasifikasi Aksara Jawa Berbasis YOLO26 dengan Visualisasi dan Interpretasi Filter Konvolusi" (EN: "Javanese Script (Aksara Jawa) Classification Based on YOLO26 with Visualization and Interpretation of Convolution Filters"), juga dicantumkan di studi kasus Aksara Jawa. CV tetap 2 halaman.
 
 ### 2026-10-07 · Claude Code (Opus) · T3.3 + isian konten pemilik
 - **T3.3 selesai:** run terjadwal 2026-10-06 13:19 & 22:39 UTC sukses; server memasang image 22:50 UTC; purge Cloudflare otomatis sukses (tanpa `.purge-pending`, hasil unit `success`).

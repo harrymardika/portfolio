@@ -24,5 +24,5 @@ Fine-tuned the YOLO26 nano classification model in PyTorch on the 20 basic chara
 ## Result
 - 96% accuracy and 0.97 macro F1 on a held-out test set of 25 images across the 20 characters, with 99.6% peak validation accuracy. The test set is small, so a single sample can move a per-class score noticeably.
 - Visual tools that make the network's learning process inspectable, epoch by epoch.
-- Successfully defended as my undergraduate thesis at Universitas Gunadarma.
+- Successfully defended as my undergraduate thesis at Universitas Gunadarma: “Klasifikasi Aksara Jawa Berbasis YOLO26 dengan Visualisasi dan Interpretasi Filter Konvolusi” (Javanese Script Classification Based on YOLO26 with Visualization and Interpretation of Convolution Filters).
 
