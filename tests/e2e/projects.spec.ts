@@ -16,7 +16,8 @@ test('the header links to Projects and marks the current page', async ({ page, i
   );
 });
 
-test('the list shows case studies first (drafts hidden), then GitHub repos @fixture', async ({ page }) => {
+// Drafts are hidden by isPublished (tests/unit/content/helpers.test.ts); no case study is a draft right now.
+test('the list shows case studies first, then GitHub repos @fixture', async ({ page }) => {
   await page.goto('/projects/');
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
   const titles = await page.locator('[data-project] h2').allTextContents();
@@ -25,7 +26,9 @@ test('the list shows case studies first (drafts hidden), then GitHub repos @fixt
     'Decklify',
     'Real-time crowd violence detection',
     'Multimodal crisis-detection model',
+    'Reclaimyt waste-sorting conveyor',
     'Javanese script (Aksara Jawa) classification',
+    'Dompet Juara',
     'BCA stock price prediction',
     'Cross-site scripting (XSS) detection',
     'Indonesian fake news detection',
@@ -33,7 +36,6 @@ test('the list shows case studies first (drafts hidden), then GitHub repos @fixt
     'fixture-vision-toolkit',
     'Fixture grouped project',
   ]);
-  await expect(page.getByText('Reclaimyt')).toHaveCount(0); // draft
 });
 
 test('a GitHub repo card links to GitHub and shows its language, stars, and topics @fixture', async ({

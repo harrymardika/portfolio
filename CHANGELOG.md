@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Two more case studies: Reclaimyt (with design sketches and prototype photos) and Dompet Juara (with its dashboard); Decklify gains a "What I learned" section and Aksara Jawa its test accuracy.
 - The site stays available from Cloudflare's cache when the home server is down; each deploy purges that cache so updates still show at once (ADR 0012).
 - The site is live at https://harry.mardika.my.id on the home server (Debian 13), with an A+ security header grade on Mozilla HTTP Observatory (T7.3).
 - Edit the site's content from the browser with Pages CMS: every save is a commit that is validated before it goes live (T8.1, ADR 0011).

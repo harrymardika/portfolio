@@ -25,7 +25,7 @@ items:
     institution: TBI Bandung
     program: { en: English for Business Communication, id: English for Business Communication }
     location: Bandung, Indonesia
-    start: 2025-01   # TODO(owner): confirm month (CV only says 2025)
+    start: 2025-01
     end: 2025-01
     highlights:
       - en: "Completed at B2 level with a score of 94%."

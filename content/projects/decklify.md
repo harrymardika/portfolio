@@ -28,4 +28,7 @@ Built an AI-powered SaaS platform that generates complete decks from plain text,
 - +45 NPS and 8.39/10 satisfaction score; 100+ decks generated for 50+ users in the first 2 weeks.
 - Business model with an 83.68% contribution margin and break-even at 11 transactions per month.
 
-<!-- TODO(owner): add a "## What I learned" section with one or two honest lessons from building and launching Decklify. -->
+## What I learned
+- **Product:** turning an idea into something people actually use and pay for, from deciding what to build first to letting user feedback shape the next release.
+- **Team management, leadership, and teamwork:** leading a five-person team, dividing the work clearly, and keeping everyone moving toward the same goal.
+- **Running a business:** business administration, obtaining business licenses and permits, and preparing project development documents.

@@ -13,12 +13,12 @@ items:
   - id: nvidia-cv-industrial-inspection
     name: Computer Vision for Industrial Inspection
     issuer: NVIDIA
-    issued: 2025-01   # TODO(owner): confirm the month
+    issued: 2025-01
 
   - id: digitalent-cloud-networking
     name: Cloud Computing & Networking
     issuer: Digital Talent Scholarship
-    issued: 2024-01   # TODO(owner): confirm the month
+    issued: 2024-01
 
   # Expired July 2026 and not being renewed (decision D6): hidden automatically. Kept for history.
   - id: azure-ai-engineer

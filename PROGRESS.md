@@ -12,14 +12,14 @@
 | 0 | Fondasi: dokumentasi, keputusan, data konten | ✅ Selesai |
 | 1 | Scaffold aplikasi, tooling, skema konten, i18n, layout dasar | ✅ Selesai |
 | 2 | Halaman & UI (hero kartu 3D, journey 3D, proyek, about, kontak) | ✅ Selesai |
-| 3 | Sinkronisasi proyek dari GitHub | 🔄 T3.3: jadwal sudah ada, GitHub belum pernah menjalankannya (cek berikutnya) |
+| 3 | Sinkronisasi proyek dari GitHub | ✅ Selesai (run terjadwal tiap 6 jam berjalan sejak 2026-10-06) |
 | 4 | Generate PDF CV & Portfolio | ✅ Selesai |
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | 🔄 T8.1 (Pages CMS) dan T8.3 selesai; T8.2 menunggu keputusan pemilik (API key AI) |
 
-Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T3.3 (run terjadwal pertama) dan T8.2 — ≈95%**
+Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 dan isian konten pemilik — ≈97%**
 
 ---
 
@@ -69,7 +69,7 @@ Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T3.3 
 - [x] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (REST, token opsional), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
   - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
 - [x] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
-- [~] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam): jadwal `17 */6 * * *` di `deploy.yml` membangun ulang image (GitHub + PDF). *Selesai setelah run terjadwal pertama berhasil.*
+- [x] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam): jadwal `17 */6 * * *` di `deploy.yml`. Run terjadwal pertama 2026-10-06 13:19 dan 22:39 UTC sukses (GitHub menjalankannya terlambat ±1–20 menit, normal); server memasang image 22:50 UTC dan cache Cloudflare terhapus otomatis
 
 ## Fase 4: PDF CV & Portfolio ✅
 
@@ -130,21 +130,18 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 - Alibaba Cloud Certified Associate **kedaluwarsa Nov 2026**. Setelah lewat tanggalnya, sertifikat otomatis hilang dari web dan CV (`expires` di `content/certifications.yaml`).
 - **Perlu review pemilik:** 55 terjemahan `highlights` (EN → ID) di `experience.yaml`, `education.yaml`, `trainings.yaml` dibuat oleh AI pada 2026-10-05. Periksa terutama istilah dan angka.
-- Proyek dengan `draft: true` di `content/projects/` butuh detail/tautan dari pemilik sebelum ditampilkan.
-- **Isian yang ditunggu dari pemilik** (dulu komentar `TODO(owner)` di `content/`; dipindah ke sini karena editor browser menghapus komentar YAML):
-  - `certifications.yaml`: bulan terbit dua sertifikat (`2025-01`, `2024-01`) belum pasti.
-  - `education.yaml`: bulan mulai/selesai SMA Negeri 2 Mandau.
-  - `trainings.yaml`: bulan mulai pelatihan yang di CV hanya tertulis 2025.
-  - `projects/decklify.md`: bagian "What I learned" (1–2 pelajaran jujur).
-  - `projects/aksara-jawa-yolo.md`: akurasi uji akhir dan contoh visualisasi.
-  - `projects/reclaimyt.md` (draf): detail peran, tim, dan foto perangkat.
-  - `projects/dompet-juara.md` (draf): tautan repo/demo dan screenshot.
+- Isian pemilik (7 `TODO(owner)`) **selesai 2026-10-07**; lihat log sesi. Tersisa: review 55 terjemahan ID (di atas).
 
 ---
 
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · T3.3 + isian konten pemilik
+- **T3.3 selesai:** run terjadwal 2026-10-06 13:19 & 22:39 UTC sukses; server memasang image 22:50 UTC; purge Cloudflare otomatis sukses (tanpa `.purge-pending`, hasil unit `success`).
+- **Konten (jawaban pemilik):** Decklify "What I learned" (produk; manajemen tim, kepemimpinan, kerja sama; administrasi bisnis, perizinan, dokumen pengembangan proyek); Aksara Jawa: akurasi uji 96% dan macro F1 0,97 pada 25 citra uji + validasi puncak 99,58% (dari README repo, dikonfirmasi pemilik, ukuran set uji disebut jujur); bulan sertifikat/SMA/TBI dikonfirmasi apa adanya; **ReclaimYT tayang** (peran ML engineer, tim 4 orang, sketsa desain + foto prototipe dari pemilik); **Dompet Juara tayang** (org GitHub `dompet-juara`, screenshot dashboard dari repo `uiux`, akun demo). Gambar dikonversi ke WebP (≤ 1600 px, 40–105 KB) di `content/media/projects/`.
+- **Catatan:** field `cover` di skema proyek tidak dipakai halaman mana pun; gambar dimasukkan ke isi Markdown (dioptimasi astro:assets). Tes e2e daftar proyek dan grid portfolio diperbarui (tidak ada lagi draf; aturan draf tetap diuji di unit `isPublished`).
 
 ### 2026-10-06 · Claude Code (Opus) · T7.5 (pilihan C)
 - **Pemicu:** server mati ±15 menit (log berhenti mendadak 15:26:43, tanpa shutdown/suspend → daya terputus atau hang), situs ikut mati (1033): HTML `DYNAMIC`, Always Online belum punya salinan Wayback.

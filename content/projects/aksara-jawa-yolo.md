@@ -6,7 +6,9 @@ summary:
 role: { en: Researcher (thesis), id: Peneliti (skripsi) }
 year: 2026
 tags: [YOLO26, PyTorch, Computer Vision, Interpretability]
-metrics: []
+metrics:
+  - { value: "96%", label: { en: test accuracy (25 images), id: akurasi uji (25 citra) } }
+  - { value: "99.6%", label: { en: peak validation accuracy, id: akurasi validasi puncak } }
 links:
   repo: https://github.com/harrymardika/aksara-jawa
 featured: false
@@ -20,8 +22,7 @@ Many Javanese characters share nearly identical strokes, so a classifier can be 
 Fine-tuned the YOLO26 nano classification model in PyTorch on the 20 basic characters, with automatic dataset preprocessing, mixed precision, and class weighting for imbalanced data. During training, the weights of every convolution layer were recorded each epoch to trace how the kernels evolve, how each block transforms the input, and how softmax confidence shifts between look-alike characters.
 
 ## Result
-- A working classifier evaluated with per-class precision, recall, and F1.
+- 96% accuracy and 0.97 macro F1 on a held-out test set of 25 images across the 20 characters, with 99.6% peak validation accuracy. The test set is small, so a single sample can move a per-class score noticeably.
 - Visual tools that make the network's learning process inspectable, epoch by epoch.
 - Successfully defended as my undergraduate thesis at Universitas Gunadarma.
 
-<!-- TODO(owner): add the final test accuracy and a sample visualization. -->

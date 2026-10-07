@@ -74,6 +74,6 @@ test('the portfolio lists every non-featured project on the "more projects" page
   page,
 }) => {
   await page.goto('/print/portfolio/');
-  // e2e fixture: 4 non-featured case studies + 2 GitHub entries.
-  await expect(page.locator('.pf-grid li')).toHaveCount(6);
+  // e2e fixture: the case studies beyond the three featured pages (6) + 2 GitHub entries.
+  await expect(page.locator('.pf-grid li')).toHaveCount(8);
 });
