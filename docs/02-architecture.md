@@ -92,7 +92,7 @@ Aturan:
 │   ├── skills.yaml
 │   ├── journey.yaml
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
-│   ├── projects/*.md
+│   ├── projects/*.md            # studi kasus; projects/id/*.md = body bahasa Indonesia (T9.3)
 │   └── media/                   # foto & gambar yang dipakai konten
 ├── src/
 │   ├── content.config.ts        # mendaftarkan collection + loader (skema diimpor dari lib/content/schemas)

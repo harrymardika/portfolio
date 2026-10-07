@@ -2,7 +2,7 @@
  * Shared e2e settings. Headless Chromium renders WebGL on the CPU (SwiftShader), so 3D scenes can
  * take a while to become ready when the whole suite runs in parallel; real visitors use a GPU.
  */
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import type { Page } from '@playwright/test';
@@ -39,14 +39,23 @@ export async function assumeGpu(page: Page): Promise<void> {
 /**
  * The published case studies in the order the site shows them, read from content/projects/ with the
  * site's own rules. Tests derive expectations from this, so publishing a new case study (for example
- * by merging an AI draft, ADR 0013) never breaks the deploy.
+ * by merging an AI draft, ADR 0013) never breaks the deploy. `translated`: has an Indonesian body (T9.3).
  */
-export function publishedCaseStudies(): { title: string; featured: boolean }[] {
+export function publishedCaseStudies(): {
+  slug: string;
+  title: string;
+  featured: boolean;
+  translated: boolean;
+}[] {
   const dir = join(import.meta.dirname, '..', '..', 'content', 'projects');
   return readdirSync(dir)
-    .filter((name) => name.endsWith('.md') && !name.endsWith('.id.md'))
-    .map((name) => projectSchema.parse(parseFrontmatter(readFileSync(join(dir, name), 'utf8')).data))
-    .filter(isPublished)
-    .sort(compareProjects)
-    .map(({ title, featured }) => ({ title, featured }));
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => ({
+      slug: name.replace(/\.md$/, ''),
+      data: projectSchema.parse(parseFrontmatter(readFileSync(join(dir, name), 'utf8')).data),
+      translated: existsSync(join(dir, 'id', name)),
+    }))
+    .filter(({ data }) => isPublished(data))
+    .sort((a, b) => compareProjects(a.data, b.data))
+    .map(({ slug, data: { title, featured }, translated }) => ({ slug, title, featured, translated }));
 }

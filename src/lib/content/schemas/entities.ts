@@ -166,6 +166,12 @@ export const projectSchema = z.strictObject({
   draft: z.boolean().default(false),
 });
 
+/**
+ * Frontmatter of an Indonesian case study body, content/projects/id/<slug>.md (T9.3). The file name
+ * matches the English case study; the title only labels the file in the CMS.
+ */
+export const projectTranslationSchema = z.strictObject({ title: z.string().trim().min(1) });
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Education = z.infer<typeof educationSchema>;

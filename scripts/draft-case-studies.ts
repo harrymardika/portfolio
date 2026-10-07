@@ -56,12 +56,12 @@ function prBody(draft: PublishedDraft): string {
   const dropped = draft.droppedMetrics
     ? `\n> ${draft.droppedMetrics} angka dari jawaban AI dibuang karena tidak tertulis di README.\n`
     : '';
-  return `Draf studi kasus otomatis untuk **[${draft.repo.name}](${draft.repo.html_url})**, ditulis oleh ${draft.provider} (\`${draft.model}\`) pada ${draft.date} dari README repo. File: \`content/projects/${draft.slug}.md\`.
+  return `Draf studi kasus otomatis untuk **[${draft.repo.name}](${draft.repo.html_url})**, ditulis oleh ${draft.provider} (\`${draft.model}\`) pada ${draft.date} dari README repo. File: \`content/projects/${draft.slug}.md\` dan terjemahannya \`content/projects/id/${draft.slug}.md\`.
 ${dropped}
 **Merge PR ini = studi kasus langsung tayang** di situs (±20 menit setelah merge). Sebelum merge:
 
 - [ ] Fakta, angka, dan peran sesuai kenyataan (AI hanya membaca README).
-- [ ] Ringkasan Indonesia terdengar wajar.
+- [ ] Ringkasan dan isi bahasa Indonesia terdengar wajar.
 - [ ] Tambahkan metrik, gambar, atau tautan demo jika ada (✏️ Edit file di tab *Files changed*).
 
 Belum siap tayang? Biarkan PR ini terbuka dulu. Tutup PR ini tanpa merge jika repo tidak perlu studi kasus; jalankan workflow lagi untuk membuat draf baru setelah branch-nya dihapus. Lihat ADR 0013.`;
@@ -69,17 +69,20 @@ Belum siap tayang? Biarkan PR ini terbuka dulu. Tutup PR ini tanpa merge jika re
 
 async function publish(draft: PublishedDraft): Promise<void> {
   const file = join(PROJECTS, `${draft.slug}.md`);
+  const fileId = join(PROJECTS, 'id', `${draft.slug}.md`);
   if (DRY_RUN) {
     console.log(`\n===== ${draft.slug}.md (${draft.provider}) =====\n${draft.markdown}`);
+    console.log(`\n===== id/${draft.slug}.md =====\n${draft.markdownId}`);
     return;
   }
   const branch = draftBranch(draft.slug);
   sh(['git', 'switch', '--quiet', '-c', branch, 'origin/main']);
   try {
     await writeFile(file, draft.markdown);
+    await writeFile(fileId, draft.markdownId);
     // The content checks the build runs: schema, unique ids, no phone numbers.
     sh(['bun', 'test', 'tests/unit/content']);
-    sh(['git', 'add', file]);
+    sh(['git', 'add', file, fileId]);
     sh([
       'git',
       '-c',
@@ -121,6 +124,7 @@ async function publish(draft: PublishedDraft): Promise<void> {
   } finally {
     // A committed draft lives on its branch; an unfinished one must not linger in main's working tree.
     await rm(file, { force: true });
+    await rm(fileId, { force: true });
     sh(['git', 'checkout', '--quiet', '--force', 'main']);
   }
 }

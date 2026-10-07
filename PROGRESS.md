@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.3 terjemahan studi kasus (T9.4 bisa paralel); menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau terjemahan T9.3; lalu T9.4 testimoni; menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -120,7 +120,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
 - [ ] **T9.2** Skill lebih lengkap (D11)
   - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
-- [ ] **T9.3** Studi kasus bahasa Indonesia (D12)
+- [~] **T9.3** Studi kasus bahasa Indonesia (D12) · *Claude Code: 11 terjemahan tayang sebagai draf, menunggu tinjauan pemilik*
   - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
   - Kriteria: body `content/projects/id/<slug>.md` untuk semua studi kasus, fallback ke Inggris (+ catatan) bila belum ada; menu CMS; Portfolio PDF ID memakai terjemahan; tes kesamaan struktur EN/ID (judul bagian, gambar); terjemahan ditinjau pemilik; draf AI baru (T8.2) ikut menulis versi ID.
 - [ ] **T9.4** Tampilan testimoni (D15; formulirnya T12.1)
@@ -197,6 +197,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · T9.3 studi kasus bahasa Indonesia
+- Dikerjakan: body Indonesia di `content/projects/id/<slug>.md` (koleksi `projectTranslations`, helper `getCaseStudyBody`), dipakai halaman studi kasus dan Portfolio PDF ID; catatan "ditulis dalam bahasa Inggris" + `lang="en"` hanya bila terjemahan belum ada. Menu CMS "Studi kasus (Indonesia)"; menu "Studi kasus" tidak lagi menampilkan subfolder. Tes kesamaan struktur (judul bagian, gambar, judul) dan format angka ID. Draf AI (T8.2) kini menulis Problem/Approach/Result dalam EN + ID dan membuka PR berisi dua file.
+- 11 studi kasus diterjemahkan oleh Claude (istilah teknis tetap Inggris, D12; angka gaya ID, D16). Judul proyek tetap satu bahasa seperti sebelumnya.
+- Belum: **pemilik meninjau** 11 terjemahan di `/id/projects/<slug>/` (atau file di `content/projects/id/`). Setelah itu tandai `[x]`.
 
 ### 2026-10-08 · Claude Code (Opus) · T9.5 format angka
 - Keputusan D16 diganti: ikuti aturan baku tiap bahasa (pemilik menanyakan aturan EN/ID; usulan "titik untuk semua" ditarik).

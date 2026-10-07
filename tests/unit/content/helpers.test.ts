@@ -4,6 +4,7 @@ import {
   hasStrayStrongMarker,
   compareDatesDesc,
   compareProjects,
+  pickCaseStudyBody,
   compareRangesDesc,
   formatDateRange,
   formatYearMonth,
@@ -180,6 +181,12 @@ describe('strong', () => {
 });
 
 describe('projects', () => {
+  it('picks the Indonesian body when it exists and falls back to English otherwise', () => {
+    expect(pickCaseStudyBody('en-body', 'id-body', 'en')).toEqual({ entry: 'en-body', isFallback: false });
+    expect(pickCaseStudyBody('en-body', 'id-body', 'id')).toEqual({ entry: 'id-body', isFallback: false });
+    expect(pickCaseStudyBody('en-body', undefined, 'id')).toEqual({ entry: 'en-body', isFallback: true });
+  });
+
   const base = { draft: false, featured: false, order: undefined, year: 2024, title: 'B' };
 
   it('hides drafts', () => {

@@ -52,6 +52,10 @@ function contentFindings(): Finding[] {
     const body = source.split(/^---$/m).slice(2).join('---');
     if (hasForeignDecimal(body, 'en')) out.push({ where: `${file} (body)`, text: 'English case study' });
   }
+  for (const file of readdirSync('content/projects/id').filter((name) => name.endsWith('.md'))) {
+    const body = readFileSync(`content/projects/id/${file}`, 'utf8').split(/^---$/m).slice(2).join('---');
+    if (hasForeignDecimal(body, 'id')) out.push({ where: `id/${file} (body)`, text: 'Indonesian case study' });
+  }
   return out;
 }
 
@@ -60,6 +64,13 @@ describe('number format per language (D16)', () => {
     expect(hasForeignDecimal('92,5%', 'en')).toBe(true);
     expect(hasForeignDecimal('AUC 0.96', 'id')).toBe(true);
     expect(hasForeignDecimal('3.99/4.00', 'id')).toBe(true);
+  });
+
+  it('allows version numbers in Indonesian text', () => {
+    expect(hasForeignDecimal('dengan `Python 3.10` dan `TensorFlow 2.15`', 'id')).toBe(false);
+    expect(hasForeignDecimal('YOLOv8.1 dan v2.3', 'id')).toBe(false);
+    expect(hasForeignDecimal('rilis 3.10.1', 'id')).toBe(false);
+    expect(hasForeignDecimal('Python 3.10', 'id')).toBe(true); // outside a code span it reads as a decimal
   });
 
   it('allows thousands separators and lists', () => {

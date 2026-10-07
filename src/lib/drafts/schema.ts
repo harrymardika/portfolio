@@ -14,9 +14,10 @@ export const draftSchema = z.strictObject({
   role: bilingual(60),
   tags: z.array(text(30)).max(6),
   metrics: z.array(z.strictObject({ value: text(20), label: bilingual(60) })).max(3),
-  problem: text(900),
-  approach: text(1500),
-  result: z.array(text(300)).min(1).max(5),
+  // Both languages (T9.3): the English file and its Indonesian body in projects/id/.
+  problem: bilingual(900),
+  approach: bilingual(1500),
+  result: z.array(bilingual(300)).min(1).max(5),
 });
 
 export type Draft = z.infer<typeof draftSchema>;
@@ -53,9 +54,13 @@ export const DRAFT_JSON_SCHEMA = {
         additionalProperties: false,
       },
     },
-    problem: { type: 'string', description: 'English paragraph' },
-    approach: { type: 'string', description: 'English paragraph' },
-    result: { type: 'array', items: { type: 'string' }, description: '1 to 5 English bullet points' },
+    problem: { ...bilingualJson, description: 'One paragraph in English and in Indonesian' },
+    approach: { ...bilingualJson, description: 'One paragraph in English and in Indonesian' },
+    result: {
+      type: 'array',
+      items: bilingualJson,
+      description: '1 to 5 bullet points, each in English and in Indonesian',
+    },
   },
   required: ['title', 'summary', 'role', 'tags', 'metrics', 'problem', 'approach', 'result'],
   additionalProperties: false,
@@ -135,13 +140,17 @@ function plainCharacters(value: unknown): unknown {
 export function normalizeAnswer(value: unknown): unknown {
   if (!value || typeof value !== 'object') return value;
   const answer = { ...(plainCharacters(value) as Record<string, unknown>) };
-  const flat = (text: unknown): unknown =>
-    typeof text === 'string'
-      ? text
-          .replace(/\s+/g, ' ')
-          .trim()
-          .replace(/^[#>*+\-=\s]+/, '')
-      : text;
+  const flat = (text: unknown): unknown => {
+    if (typeof text === 'string')
+      return text
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/^[#>*+\-=\s]+/, '');
+    // Bilingual text ({ en, id }): flatten each language.
+    if (text && typeof text === 'object' && !Array.isArray(text))
+      return Object.fromEntries(Object.entries(text).map(([key, item]) => [key, flat(item)]));
+    return text;
+  };
   for (const key of ['problem', 'approach']) answer[key] = flat(answer[key]);
   if (Array.isArray(answer['result'])) answer['result'] = answer['result'].slice(0, 5).map(flat);
   if (Array.isArray(answer['tags'])) answer['tags'] = answer['tags'].slice(0, 6);

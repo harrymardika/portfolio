@@ -95,10 +95,25 @@ test('a card opens its case study, which links back to the list', async ({ page 
   await expect(page).toHaveURL(/\/projects\/$/);
 });
 
-test('Indonesian case studies say the body is in English and mark it lang="en"', async ({ page }) => {
-  await page.goto('/id/projects/decklify/');
+test('Indonesian case studies show the Indonesian body when it exists', async ({ page }) => {
+  const translated = publishedCaseStudies().find((project) => project.translated);
+  test.skip(!translated, 'no case study has an Indonesian body');
+  await page.goto(`/id/projects/${translated?.slug ?? ''}/`);
+  await expect(page.getByText('Studi kasus ini ditulis dalam bahasa Inggris.')).toHaveCount(0);
+  await expect(page.locator('.prose')).not.toHaveAttribute('lang', 'en');
+});
+
+test('Indonesian case studies without a translation say the body is in English', async ({ page }) => {
+  const untranslated = publishedCaseStudies().find((project) => !project.translated);
+  test.skip(!untranslated, 'every case study has an Indonesian body');
+  await page.goto(`/id/projects/${untranslated?.slug ?? ''}/`);
   await expect(page.getByText('Studi kasus ini ditulis dalam bahasa Inggris.')).toBeVisible();
   await expect(page.locator('.prose')).toHaveAttribute('lang', 'en');
+});
+
+test('the Indonesian Decklify case study is translated, with its header and links', async ({ page }) => {
+  await page.goto('/id/projects/decklify/');
+  await expect(page.getByRole('heading', { level: 2, name: 'Masalah' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Kunjungi situs/ })).toBeVisible();
 });
 

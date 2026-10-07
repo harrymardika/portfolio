@@ -38,20 +38,34 @@ export function frontmatter(draft: Draft, repo: ApiRepo): Record<string, unknown
  */
 export function renderCaseStudy(draft: Draft, repo: ApiRepo): string {
   const yaml = dump(frontmatter(draft, repo), { lineWidth: -1, noRefs: true });
-  const result = draft.result.map((line) => `- ${line}`).join('\n');
+  return withSections(yaml, draft, 'en', ['Problem', 'Approach', 'Result']);
+}
+
+/** The Indonesian body, content/projects/id/<slug>.md (T9.3): same sections as the English file. */
+export function renderCaseStudyId(draft: Draft): string {
+  const yaml = dump({ title: draft.title }, { lineWidth: -1 });
+  return withSections(yaml, draft, 'id', ['Masalah', 'Pendekatan', 'Hasil']);
+}
+
+function withSections(
+  yaml: string,
+  draft: Draft,
+  language: 'en' | 'id',
+  [problem, approach, result]: readonly [string, string, string],
+): string {
   return [
     '---',
     yaml.trimEnd(),
     '---',
     '',
-    '## Problem',
-    draft.problem,
+    `## ${problem}`,
+    draft.problem[language],
     '',
-    '## Approach',
-    draft.approach,
+    `## ${approach}`,
+    draft.approach[language],
     '',
-    '## Result',
-    result,
+    `## ${result}`,
+    draft.result.map((line) => `- ${line[language]}`).join('\n'),
     '',
   ].join('\n');
 }

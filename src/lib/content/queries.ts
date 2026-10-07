@@ -9,7 +9,7 @@ import { isActiveCertification } from './certifications';
 import { resolveMilestoneSource, type MilestoneSource } from './journey';
 import { compareDatesDesc, compareRangesDesc, sortedBy } from './ordering';
 import { mergeProjects, type ProjectItem } from './project-items';
-import { compareProjects, isPublished } from './projects';
+import { compareProjects, isPublished, pickCaseStudyBody } from './projects';
 import { visibleOn, type Surface } from './visibility';
 
 import type {
@@ -23,6 +23,7 @@ import type {
   Training,
 } from './schemas';
 import type { GithubRepo } from '@/lib/github/schemas';
+import type { Locale } from '@/lib/i18n/locales';
 
 const dataOf = async <T>(entries: Promise<{ data: T }[]>): Promise<T[]> => (await entries).map((e) => e.data);
 
@@ -72,6 +73,17 @@ export async function getMilestones(): Promise<Milestone[]> {
 export async function getProjects() {
   const entries = (await getCollection('projects')).filter((entry) => isPublished(entry.data));
   return sortedBy(entries, (a, b) => compareProjects(a.data, b.data));
+}
+
+type ProjectEntry = Awaited<ReturnType<typeof getProjects>>[number];
+
+/**
+ * The entry whose Markdown body a page renders: the Indonesian translation in projects/id/ when the
+ * page is Indonesian and one exists, otherwise the English case study (`isFallback` on /id/ pages).
+ */
+export async function getCaseStudyBody(project: ProjectEntry, locale: Locale) {
+  const translation = locale === 'en' ? undefined : await getEntry('projectTranslations', project.id);
+  return pickCaseStudyBody<ProjectEntry | NonNullable<typeof translation>>(project, translation, locale);
 }
 
 /** Milestones with the item each one summarizes, for the Journey section and its detail popovers. */

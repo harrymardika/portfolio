@@ -132,7 +132,23 @@ draft: false                 # true = tidak tampil di mana pun
 ---
 ```
 
-Isi (body) dalam Markdown, versi English. Di halaman `/id/` body ini tetap tampil (diberi `lang="en"`) dengan catatan bahwa studi kasus ditulis dalam bahasa Inggris; `summary`, `role`, dan label metrik sudah dwibahasa lewat frontmatter. *(Terjemahan body `projects/<slug>.id.md` belum didukung; tambahkan sebagai tugas baru bila dibutuhkan.)*
+Isi (body) dalam Markdown, versi English. `summary`, `role`, dan label metrik sudah dwibahasa lewat frontmatter.
+
+**Versi Indonesia (T9.3, D12):** `content/projects/id/<slug>.md` dengan **nama file yang sama** dengan file Inggris. Isinya hanya body Indonesia plus `title` di frontmatter, **sama persis dengan judul file Inggris** (hanya label di daftar CMS, tidak tampil di halaman; dicek tes); ringkasan, peran, angka, dan tautan tetap diambil dari file Inggris. Di CMS: menu **Studi kasus (Indonesia)**. Saat membuat file baru, **ganti nama file** menjadi nama file Inggrisnya (mis. `aksara-jawa-yolo.md`); nama bawaan CMS dibuat dari judul dan biasanya berbeda.
+
+```markdown
+---
+title: Decklify
+---
+
+## Masalah
+...
+```
+
+- Judul bagian diterjemahkan (Problem → Masalah, Approach → Pendekatan, Result → Hasil, What I learned → Yang saya pelajari), tetapi **jumlah, level, dan urutannya harus sama** dengan versi Inggris, begitu juga gambarnya (jalur `../../media/projects/...`). Tes `tests/unit/content/translations.test.ts` memeriksanya.
+- Istilah teknis/asing tidak diterjemahkan (*pipeline*, *fine-tuning*, *false negative*, *deployment*). Angka gaya Indonesia (`92,5%`, `12.000`, `11 ribu+`).
+- Jika file Indonesia belum ada, halaman `/id/` dan Portfolio PDF Indonesia menampilkan body Inggris (diberi `lang="en"`) dengan catatan bahwa studi kasus ditulis dalam bahasa Inggris.
+- Mengubah isi versi Inggris? Ubah juga versi Indonesianya di commit yang sama. Mengganti nama atau menghapus file Inggris? Lakukan hal yang sama pada file di `id/`, karena tes menolak terjemahan tanpa pasangan.
 
 Catatan tampilan:
 - Jangan menulis judul bagian (`## ...`) yang isinya kosong. Catatan internal (TODO, bahan yang belum ada) ditulis di `PROGRESS.md` atau deskripsi PR, **bukan** sebagai komentar `<!-- -->`: komentar HTML ikut terkirim di halaman publik dan bisa hilang saat file disimpan lewat Pages CMS.
@@ -186,7 +202,7 @@ categories:
 
 Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Setiap hari (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
 
-1. Buka PR-nya → tab **Files changed**, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result). AI hanya membaca README: cek peran Anda, angka, dan hasil.
+1. Buka PR-nya → tab **Files changed**, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result) dan terjemahannya `content/projects/id/<slug>.md`. AI hanya membaca README: cek peran Anda, angka, dan hasil.
 2. Perbaiki yang kurang tepat langsung di PR (⋯ → **Edit file**).
 3. **Merge = tayang**: ±20 menit kemudian studi kasus muncul di situs, menggantikan kartu GitHub repo itu. Belum siap? Biarkan PR terbuka. Tidak perlu? **Tutup** PR-nya.
 
@@ -213,7 +229,7 @@ Tips: `summary` proyek idealnya 1–2 kalimat (± 160 karakter); di gambar prati
 
 - **Tidak ada nomor HP** di file mana pun.
 - Gunakan angka nyata dan bisa dipertanggungjawabkan; jangan dibulatkan ke atas.
-- **Format angka mengikuti bahasanya (D16):** teks `en` memakai titik desimal dan koma ribuan (`92.5%`, `3.99/4.00`, `12,000+`); teks `id` memakai koma desimal dan titik ribuan sesuai PUEBI (`92,5%`, `3,99/4,00`, `12.000+`, `Rp5,85 juta`). Nilai yang ditulis sekali untuk kedua bahasa (`value` di `stats`/`metrics`, `gpa`) **ditulis gaya Inggris**; halaman dan PDF Indonesia mengubahnya otomatis (`92.5%` → `92,5%`). Satuan dan kata masuk ke `label`, bukan `value` (`value: "3"`, label `months …`/`bulan …`), karena `value` tidak diterjemahkan. Tes `tests/unit/content/number-format.test.ts` menolak desimal yang tertukar.
+- **Format angka mengikuti bahasanya (D16):** teks `en` memakai titik desimal dan koma ribuan (`92.5%`, `3.99/4.00`, `12,000+`); teks `id` memakai koma desimal dan titik ribuan sesuai PUEBI (`92,5%`, `3,99/4,00`, `12.000+`, `Rp5,85 juta`). Nilai yang ditulis sekali untuk kedua bahasa (`value` di `stats`/`metrics`, `gpa`) **ditulis gaya Inggris**; halaman dan PDF Indonesia mengubahnya otomatis (`92.5%` → `92,5%`). Satuan dan kata masuk ke `label`, bukan `value` (`value: "3"`, label `months …`/`bulan …`), karena `value` tidak diterjemahkan. Nomor versi bukan desimal: tulis di dalam backtick (`` `Python 3.10` ``) atau menempel pada huruf (`YOLOv8.1`), sama di kedua bahasa. Tes `tests/unit/content/number-format.test.ts` menolak desimal yang tertukar.
 - Satu `highlight` = satu kalimat, diawali kata kerja aktif ("Built", "Led", "Reduced").
 - **Menebalkan frasa penting:** tulis `**frasa**` di `summary` (profile) dan `highlights` (experience, education, trainings), mis. `reducing overhead by **45%**`. Tampil tebal di CV, Portfolio PDF, halaman About, dan dialog Journey di beranda. Di field lain (tagline, judul, dll.) tanda ini ditolak tes karena akan tampil sebagai bintang. Cukup 1–2 frasa per poin (angka hasil, prestasi); kalau semua tebal, tidak ada yang menonjol. Tanda yang tidak berpasangan menggagalkan tes. Jika teks **diawali** `**`, beri tanda kutip: `en: "**Graduated with Distinction** (94.5/100)."`. Ini berbeda dengan `*bintang tunggal*` di `headline`/judul bagian, yang memberi warna aksen.
 - Sumber kebenaran data CV: `CV/CV_Harry Mardika.pdf` (lokal, di-gitignore) dengan koreksi yang tercatat di `PROGRESS.md` (log 2026-10-05).

@@ -6,6 +6,7 @@ import PortfolioDocument from '@/components/print/PortfolioDocument.astro';
 import PrintLayout from '@/layouts/PrintLayout.astro';
 import {
   getAwards,
+  getCaseStudyBody,
   getMilestones,
   getProfile,
   getProjectItems,
@@ -38,7 +39,8 @@ const featured = await Promise.all(
   featuredItems.map(async (item) => {
     const entry = entries.find((candidate) => candidate.id === item.slug);
     if (!entry) throw new Error(`Project entry ${item.slug} not found`);
-    return { item, Content: (await render(entry)).Content };
+    const body = await getCaseStudyBody(entry, locale);
+    return { item, Content: (await render(body.entry)).Content, isFallback: body.isFallback };
   }),
 );
 const more = items.filter((item) => !featuredItems.includes(item as (typeof featuredItems)[number]));

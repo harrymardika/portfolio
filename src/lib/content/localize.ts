@@ -29,14 +29,16 @@ export function localizeNumber(value: string, locale: Locale): string {
 
 const FOREIGN_DECIMAL: Record<Locale, RegExp> = {
   en: /\d,(?!\d{3}(?!\d))\d/,
-  id: /\d\.(?!\d{3}(?!\d))\d/,
+  // Not a version: no letter right before ("v8.1", "YOLOv8.1") and no second ".digit" ("3.10.1").
+  id: /(?<![\p{L}\d.])\d+\.(?!\d{3}(?!\d))\d+(?![.\d])/u,
 };
 
 /**
  * True when a text uses the other language's decimal separator: a comma decimal in English
  * ("92,5") or a point decimal in Indonesian ("92.5"). A separator followed by exactly three
- * digits is a thousands separator and is allowed in both ("12,000", "12.000").
+ * digits is a thousands separator and is allowed in both ("12,000", "12.000"). Version numbers
+ * keep their points in every language: inside a code span (`Python 3.10`) or glued to a letter (v8.1).
  */
 export function hasForeignDecimal(text: string, locale: Locale): boolean {
-  return FOREIGN_DECIMAL[locale].test(text);
+  return FOREIGN_DECIMAL[locale].test(text.replace(/`[^`]*`/g, ''));
 }

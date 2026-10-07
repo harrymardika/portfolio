@@ -9,7 +9,7 @@ tags: [Next.js, Go, PostgreSQL, Generative AI, SaaS]
 metrics:
   - { value: "3", label: { en: months from idea to commercial launch, id: bulan dari ide ke peluncuran komersial } }
   - { value: "+45", label: { en: NPS, id: NPS } }
-  - { value: "100+", label: { en: decks in the first 2 weeks, id: slide di 2 minggu pertama } }
+  - { value: "100+", label: { en: decks in the first 2 weeks, id: presentasi di 2 minggu pertama } }
 links:
   live: https://decklify.id
 featured: true

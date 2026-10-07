@@ -10,6 +10,7 @@ import {
   normalizeAnswer,
   README_LIMIT,
   renderCaseStudy,
+  renderCaseStudyId,
   repoSlug,
   runDrafts,
   selectCandidates,
@@ -19,7 +20,7 @@ import {
   type PublishedDraft,
 } from '@/lib/drafts';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
-import { projectSchema } from '@/lib/content/schemas/entities';
+import { projectSchema, projectTranslationSchema } from '@/lib/content/schemas/entities';
 import { fetchReadme, githubConfigSchema, type ApiRepo } from '@/lib/github';
 
 const config = githubConfigSchema.parse({
@@ -53,9 +54,14 @@ const draft: Draft = {
     { value: '94.2%', label: { en: 'test accuracy', id: 'akurasi uji' } },
     { value: '12 ms', label: { en: 'latency', id: 'latensi' } },
   ],
-  problem: 'Farmers spot diseases too late.',
-  approach: 'I fine-tuned a CNN on 8,000 labeled leaf images and served it with FastAPI.',
-  result: ['A web demo that classifies 12 diseases.'],
+  problem: { en: 'Farmers spot diseases too late.', id: 'Petani terlambat mengenali penyakit.' },
+  approach: {
+    en: 'I fine-tuned a CNN on 8,000 labeled leaf images and served it with FastAPI.',
+    id: 'Saya melakukan fine-tuning CNN pada 8.000 citra daun berlabel dan menyajikannya dengan FastAPI.',
+  },
+  result: [
+    { en: 'A web demo that classifies 12 diseases.', id: 'Demo web yang mengklasifikasikan 12 penyakit.' },
+  ],
 };
 
 const README = `# Plant Disease Detector\n${'Detailed description of the model and dataset. '.repeat(10)}\nTest accuracy: 94.2% on 1,600 images.`;
@@ -90,7 +96,15 @@ describe('selectCandidates', () => {
 
 describe('safety checks on model answers', () => {
   it('accepts plain text and bare GitHub links', () => {
-    expect(unsafeContent({ ...draft, approach: 'Code at https://github.com/harrymardika/x.' })).toEqual([]);
+    expect(
+      unsafeContent({
+        ...draft,
+        approach: {
+          en: 'Code at https://github.com/harrymardika/x.',
+          id: 'Kode di https://github.com/harrymardika/x.',
+        },
+      }),
+    ).toEqual([]);
   });
 
   it('rejects every way Markdown or HTML could turn text into markup or a link', () => {
@@ -108,7 +122,8 @@ describe('safety checks on model answers', () => {
       'javascript:alert(1)',
       '<https://evil.example>',
     ];
-    for (const text of attempts) expect(unsafeContent({ ...draft, problem: text }), text).not.toEqual([]);
+    for (const text of attempts)
+      expect(unsafeContent({ ...draft, problem: { en: 'ok', id: text } }), text).not.toEqual([]);
   });
 
   it('keeps only metrics whose whole number is in the README', () => {
@@ -136,12 +151,18 @@ describe('safety checks on model answers', () => {
     const answer = normalizeAnswer({
       ...draft,
       tags: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-      problem: '## Approach\n---\ninjected: true',
-      result: ['- one\n- two', 'ok'],
+      problem: { en: '## Approach\n---\ninjected: true', id: '# Pendekatan' },
+      result: [
+        { en: '- one\n- two', id: '* satu' },
+        { en: 'ok', id: 'oke' },
+      ],
     }) as Draft;
     expect(answer.tags).toHaveLength(6);
-    expect(answer.problem).toBe('Approach --- injected: true');
-    expect(answer.result).toEqual(['one - two', 'ok']);
+    expect(answer.problem).toEqual({ en: 'Approach --- injected: true', id: 'Pendekatan' });
+    expect(answer.result).toEqual([
+      { en: 'one - two', id: 'satu' },
+      { en: 'ok', id: 'oke' },
+    ]);
   });
 });
 
@@ -166,6 +187,15 @@ describe('case study file', () => {
     expect(body).not.toContain('<!--'); // provenance stays in the PR, never on the public page
     expect(body).toContain('## Problem');
     expect(body).toContain('## Result\n- A web demo');
+  });
+
+  it('writes the Indonesian body with the same sections and only a title in the frontmatter', () => {
+    const { data, body } = parseFrontmatter(renderCaseStudyId(draft));
+    expect(projectTranslationSchema.parse(data)).toEqual({ title: 'Plant Disease Detector' });
+    expect(body).toContain('## Masalah\nPetani terlambat');
+    expect(body).toContain('## Hasil\n- Demo web');
+    const levels = (markdown: string) => markdown.match(/^#+ /gm);
+    expect(levels(body)).toEqual(levels(parseFrontmatter(renderCaseStudy(draft, repo('x'))).body));
   });
 });
 
@@ -236,7 +266,7 @@ describe('providers', () => {
   });
 
   it('rejects an unsafe answer and reports when every provider fails', async () => {
-    const unsafe = JSON.stringify({ ...draft, problem: '<img src=x onerror=alert(1)>' });
+    const unsafe = JSON.stringify({ ...draft, problem: { en: '<img src=x onerror=alert(1)>', id: 'ok' } });
     const { impl } = fakeFetch([geminiAnswer(unsafe), new Error('network down')]);
     const result = await generateDraft(
       [gemini('g', { fetch: impl }), groq('q', { fetch: impl })],
@@ -280,6 +310,7 @@ describe('runDrafts', () => {
     expect(published[0]?.droppedMetrics).toBe(1);
     expect(published[0]?.markdown).toContain('94.2%');
     expect(published[0]?.markdown).not.toContain('12 ms');
+    expect(published[0]?.markdownId).toContain('## Masalah');
   });
 
   it('keeps going when one draft cannot be published', async () => {

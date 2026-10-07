@@ -18,6 +18,7 @@ import {
   milestoneSchema,
   profileSchema,
   projectSchema,
+  projectTranslationSchema,
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
@@ -67,9 +68,15 @@ export const collections = {
     schema: githubRepoSchema.extend({ id: githubRepoSchema.shape.name }),
   }),
   projects: defineCollection({
-    // `<slug>.id.md` translation files are handled separately (T2.4).
-    loader: glob({ pattern: ['*.md', '!*.id.md'], base: `./${CONTENT_DIR}/projects` }),
+    // Not recursive: Indonesian bodies in projects/id/ are the collection below.
+    loader: glob({ pattern: '*.md', base: `./${CONTENT_DIR}/projects` }),
     // Frontmatter skips the YAML parsers above, so blank values from the browser editor are removed here.
     schema: z.preprocess(pruneEmpty, projectSchema),
+  }),
+  // Indonesian case study bodies, matched to projects by file name (T9.3). Everything else stays in
+  // the English file; the title only labels the file in the CMS.
+  projectTranslations: defineCollection({
+    loader: glob({ pattern: '*.md', base: `./${CONTENT_DIR}/projects/id` }),
+    schema: projectTranslationSchema,
   }),
 };

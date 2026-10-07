@@ -1,13 +1,13 @@
 ---
 /**
- * Project case study. The Markdown body is English for now; Indonesian pages say so and mark the
- * body with lang="en" so screen readers pronounce it correctly.
+ * Project case study. Indonesian pages render the translation in content/projects/id/ (T9.3); until a
+ * case study has one, they show the English body with a note and lang="en" for screen readers.
  */
 import { render } from 'astro:content';
 
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize, localizeNumber } from '@/lib/content';
-import { getProfile, getProjects } from '@/lib/content/queries';
+import { getCaseStudyBody, getProfile, getProjects } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
 import { ogImagePath, projectJsonLd } from '@/lib/seo';
 import { requireSite } from '@/lib/seo/person';
@@ -30,7 +30,8 @@ const { locale, entry } = Astro.props;
 const t = UI[locale];
 const project = entry.data;
 const profile = await getProfile();
-const { Content } = await render(entry);
+const body = await getCaseStudyBody(entry, locale);
+const { Content } = await render(body.entry);
 const summary = localize(project.summary, locale);
 const links = (
   [
@@ -106,12 +107,12 @@ const jsonLd = [
         </p>
       )}
     </header>
-    {locale !== 'en' && (
+    {body.isFallback && (
       <p class="rounded-lg border border-line px-4 py-3 text-sm text-ink-muted">
         {t['projects.englishOnly']}
       </p>
     )}
-    <div class="prose" lang={locale !== 'en' ? 'en' : undefined}>
+    <div class="prose" lang={body.isFallback ? 'en' : undefined}>
       <Content />
     </div>
   </article>

@@ -26,3 +26,4 @@ Repo GitHub dengan topic `portfolio` otomatis tampil sebagai kartu di halaman Pr
 - Pemilik perlu sekali mengaktifkan *Allow GitHub Actions to create and approve pull requests*.
 - Model dan ID-nya bisa berubah; ganti konstanta `GEMINI_MODEL` / `GROQ_MODEL` di `src/lib/drafts/providers.ts`.
 - Menutup PR tanpa merge tidak menghapus branch-nya, sehingga repo itu tidak dibuatkan draf lagi sampai branch dihapus.
+- Sejak T9.3 (2026-10-08) PR yang sama juga berisi body bahasa Indonesia `content/projects/id/<slug>.md`. Keputusan di atas tidak berubah.

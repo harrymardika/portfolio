@@ -16,6 +16,7 @@ import {
   milestoneSchema,
   profileSchema,
   projectSchema,
+  projectTranslationSchema,
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
@@ -165,7 +166,7 @@ function compare(
     const field = resolve(raw);
     const schema = shape[field.name];
     if (!schema) {
-      if (!(path === 'projects' && field.name === 'body'))
+      if (!(['projects', 'projectTranslations'].includes(path) && field.name === 'body'))
         problems.push(`${path}: editor field "${field.name}" is not in the schema`);
       continue;
     }
@@ -198,6 +199,7 @@ describe('.pages.yml', () => {
       expect(paths).toContain(`content/${file}`);
     }
     expect(paths).toContain('content/projects');
+    expect(paths).toContain('content/projects/id');
     for (const path of paths) expect(existsSync(join(ROOT, path)), path).toBe(true);
   });
 
@@ -206,6 +208,11 @@ describe('.pages.yml', () => {
       ...compare('profile', entry('profile').fields, shapeOf(profileSchema)),
       ...compare('github', entry('github').fields, shapeOf(githubConfigSchema)),
       ...compare('projects', entry('projects').fields, shapeOf(projectSchema)),
+      ...compare(
+        'projectTranslations',
+        entry('projectTranslations').fields,
+        shapeOf(projectTranslationSchema),
+      ),
       ...compare('experience', listFields('experience', 'items'), shapeOf(experienceSchema)),
       ...compare('education', listFields('education', 'items'), shapeOf(educationSchema)),
       ...compare('trainings', listFields('trainings', 'items'), shapeOf(trainingSchema)),

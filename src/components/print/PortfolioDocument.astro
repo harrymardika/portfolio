@@ -28,6 +28,8 @@ import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 interface FeaturedProject {
   item: Extract<ProjectItem, { kind: 'local' }>;
   Content: AstroComponentFactory;
+  /** True when an Indonesian page shows the English body (no translation yet). */
+  isFallback: boolean;
 }
 
 interface Props {
@@ -143,7 +145,7 @@ const moreSummary = (item: ProjectItem): string =>
   </section>
 
   <!-- 4. One page per featured project -->
-  {featured.map(({ item, Content }, index) => (
+  {featured.map(({ item, Content, isFallback }, index) => (
     <section class="pf-page pf-project">
       <p class="pf-eyebrow">
         {String(index + 3).padStart(2, '0')} · {t['portfolio.selected']}
@@ -174,7 +176,12 @@ const moreSummary = (item: ProjectItem): string =>
             <p class="pf-link">{item.project.links.live ?? item.project.links.repo}</p>
           )}
         </div>
-        <div class="pf-body" lang={locale === 'en' ? undefined : 'en'}>
+        <div class="pf-body" lang={isFallback ? 'en' : undefined}>
+          {isFallback && (
+            <p class="pf-muted-ink" lang={locale}>
+              {t['projects.englishOnly']}
+            </p>
+          )}
           <Content />
         </div>
       </div>

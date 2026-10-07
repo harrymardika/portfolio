@@ -74,7 +74,7 @@ describe('content files', () => {
   }
 
   const projectFiles = readdirSync(join(CONTENT_DIR, 'projects')).filter(
-    (name) => name.endsWith('.md') && !name.endsWith('.id.md'),
+    (name) => name.endsWith('.md'),
   );
 
   it('has at least one project', () => {

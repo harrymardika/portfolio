@@ -350,6 +350,8 @@ content:
     label: Studi kasus
     type: collection
     path: content/projects
+    # Indonesian bodies in content/projects/id/ have their own entry below.
+    subfolders: false
     format: yaml-frontmatter
     filename: { template: '{primary}.md', field: create }
     view:
@@ -383,5 +385,28 @@ content:
       - { name: draft, label: Draf (belum tampil), type: boolean, default: false }
       - name: body
         label: Isi (bahasa Inggris)
+        type: rich-text
+        options: { format: markdown, media: false }
+
+  - name: projectTranslations
+    label: Studi kasus (Indonesia)
+    type: collection
+    path: content/projects/id
+    format: yaml-frontmatter
+    # The file name must equal the English case study's file name, e.g. decklify.md.
+    filename: { template: '{primary}.md', field: create }
+    view:
+      primary: title
+      fields: [title]
+      sort: [title]
+    fields:
+      - name: title
+        label: Judul (sama dengan judul bahasa Inggris)
+        description: 'Nama file harus sama dengan studi kasus bahasa Inggris (mis. decklify.md). Ringkasan, peran, dan angka diisi di "Studi kasus".'
+        type: string
+        required: true
+      - name: body
+        label: Isi (bahasa Indonesia)
+        description: Judul bagian dan gambar harus sama urutannya dengan versi Inggris (dicek tes). Istilah teknis tetap bahasa Inggris; angka memakai koma desimal (92,5%).
         type: rich-text
         options: { format: markdown, media: false }

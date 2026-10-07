@@ -5,7 +5,7 @@
 import type { ApiRepo, GithubConfig } from '@/lib/github/schemas';
 
 import { repoSlug, selectCandidates, type ExistingProject } from './candidates';
-import { renderCaseStudy } from './markdown';
+import { renderCaseStudy, renderCaseStudyId } from './markdown';
 import { buildPrompt, README_LIMIT } from './prompt';
 import { generateDraft, type Provider } from './providers';
 import { groundMetrics } from './schema';
@@ -26,6 +26,8 @@ export interface PublishedDraft {
   readonly slug: string;
   readonly repo: ApiRepo;
   readonly markdown: string;
+  /** The Indonesian body for content/projects/id/<slug>.md. */
+  readonly markdownId: string;
   readonly provider: string;
   readonly model: string;
   readonly date: string;
@@ -82,6 +84,7 @@ async function draftOne(repo: ApiRepo, providers: readonly Provider[], io: RunIO
     slug: repoSlug(repo.name),
     repo,
     markdown,
+    markdownId: renderCaseStudyId(draft),
     provider: result.provider,
     model: result.model,
     date: io.today(),
