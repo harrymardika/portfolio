@@ -172,9 +172,9 @@ Cara tampilnya:
 
 Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Setiap hari (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
 
-1. Buka PR-nya, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result).
-2. Perbaiki yang kurang tepat langsung di PR (✏️) atau setelah merge lewat Pages CMS. AI hanya membaca README: cek peran Anda, angka, dan hasil.
-3. **Merge** untuk menyimpan draf (masih `draft: true`, belum tayang), lalu ubah **Draf** menjadi mati di Pages CMS saat siap tampil. Atau **tutup** PR jika tidak perlu.
+1. Buka PR-nya → tab **Files changed**, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result). AI hanya membaca README: cek peran Anda, angka, dan hasil.
+2. Perbaiki yang kurang tepat langsung di PR (⋯ → **Edit file**).
+3. **Merge = tayang**: ±20 menit kemudian studi kasus muncul di situs, menggantikan kartu GitHub repo itu. Belum siap? Biarkan PR terbuka. Tidak perlu? **Tutup** PR-nya.
 
 README yang lebih lengkap menghasilkan draf yang lebih baik. Repo tanpa README (atau README sangat pendek) dilewati. Angka di bagian *Angka utama* hanya dipertahankan jika tertulis persis di README; angka di kalimat tetap perlu Anda cek.
 

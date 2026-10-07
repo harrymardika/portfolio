@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { publishedCaseStudies } from './helpers';
+
 test('the header links to Projects and marks the current page', async ({ page, isMobile }) => {
   // On phones the primary links live in the menu popover (T2.8).
   const mainNav = async () => {
@@ -22,16 +24,9 @@ test('the list shows case studies first, then GitHub repos @fixture', async ({ p
   await expect(page.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
   const titles = await page.locator('[data-project] h2').allTextContents();
   expect(titles.map((t) => t.trim())).toEqual([
-    // Featured case studies by `order`, then the rest by year (newest) and title.
-    'Decklify',
-    'Real-time crowd violence detection',
-    'Multimodal crisis-detection model',
-    'Reclaimyt waste-sorting conveyor',
-    'Javanese script (Aksara Jawa) classification',
-    'Dompet Juara',
-    'BCA stock price prediction',
-    'Cross-site scripting (XSS) detection',
-    'Indonesian fake news detection',
+    // Published case studies in the site's order (featured by `order`, then newest year, then title),
+    // derived from content/projects/ so publishing a new one never breaks this test.
+    ...publishedCaseStudies().map((project) => project.title),
     // From tests/fixtures/github.json (e2e builds never call the GitHub API), newest push first.
     'fixture-vision-toolkit',
     'Fixture grouped project',

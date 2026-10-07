@@ -155,11 +155,11 @@ describe('prompt', () => {
 });
 
 describe('case study file', () => {
-  it('is a draft with valid frontmatter, the repo link, and the usual sections', () => {
+  it('has valid frontmatter, is published on merge, links the repo, and has the usual sections', () => {
     const md = renderCaseStudy(draft, repo('new-one'));
     const { data, body } = parseFrontmatter(md);
     const project = projectSchema.parse(data);
-    expect(project.draft).toBe(true);
+    expect(project.draft).toBe(false); // merging the PR publishes it
     expect(project.featured).toBe(false);
     expect(project.year).toBe(2026);
     expect(project.links.repo).toBe('https://github.com/harrymardika/new-one');

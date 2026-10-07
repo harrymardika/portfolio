@@ -1,7 +1,7 @@
 /**
  * Turn a checked draft into content/projects/<slug>.md (T8.2). The frontmatter goes through the real
- * project schema, so a file that would break the build is never produced. Always `draft: true`:
- * nothing appears on the site until the owner reviews it and flips the flag.
+ * project schema, so a file that would break the build is never produced. Published as soon as it is
+ * merged (`draft: false`): the pull request is the review step, so an unmerged PR is the draft.
  */
 import { dump } from 'js-yaml';
 
@@ -25,7 +25,8 @@ export function frontmatter(draft: Draft, repo: ApiRepo): Record<string, unknown
     metrics: draft.metrics,
     links: { repo: repo.html_url },
     featured: false,
-    draft: true,
+    // Owner decision (ADR 0013): merging the pull request publishes the case study.
+    draft: false,
   };
   projectSchema.parse(data); // throws with the exact field if anything is off
   return data;

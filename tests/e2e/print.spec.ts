@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { publishedCaseStudies } from './helpers';
+
 for (const [path, headings] of [
   [
     '/print/cv/',
@@ -74,6 +76,9 @@ test('the portfolio lists every non-featured project on the "more projects" page
   page,
 }) => {
   await page.goto('/print/portfolio/');
-  // e2e fixture: the case studies beyond the three featured pages (6) + 2 GitHub entries.
-  await expect(page.locator('.pf-grid li')).toHaveCount(8);
+  // Every published case study beyond the (up to) three featured pages, plus the 2 GitHub fixture
+  // entries; the grid holds at most 16 (PortfolioDocument MORE_LIMIT).
+  const projects = publishedCaseStudies();
+  const featuredPages = Math.min(3, projects.filter((project) => project.featured).length);
+  await expect(page.locator('.pf-grid li')).toHaveCount(Math.min(16, projects.length + 2 - featuredPages));
 });

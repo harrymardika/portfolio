@@ -137,6 +137,9 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-07 · Claude Code (Opus) · T8.2: merge = tayang
+- Pemilik merge PR #1, lalu menerbitkan `camera-genai` lewat Pages CMS (simpanan pertama dari editor browser: valid, hanya perubahan format + `draft: false`). Langkah terbit terpisah dinilai merepotkan → **draf AI kini ditulis `draft: false`; merge PR = tayang** (ADR 0013, docs/04, isi PR diperbarui). Tanda hubung tipografis lama di `camera-genai.md` dirapikan.
+
 ### 2026-10-07 · Claude Code (Opus) · T8.2 run nyata
 - Pemilik memasang `GEMINI_API_KEY`, `GROQ_API_KEY` (GitHub Secrets) dan izin Actions membuat PR, lalu memberi topic `portfolio` ke `camera-genai`. Run pertama hijau tanpa PR dan tanpa penjelasan (kegagalan hanya di log yang butuh login) → kegagalan kini jadi anotasi `::warning::`. Run kedua: Gemini HTTP 503 → Groq `openai/gpt-oss-120b` → PR #1, draf sesuai README, `metrics: []`, `draft: true`.
 - Perbaikan dari run itu: Gemini yang sibuk (429/5xx) dicoba sekali lagi setelah 5 detik sebelum pindah ke Groq; tanda hubung tipografis (U+2010/2011) dan spasi tak-terputus dari model dijadikan karakter biasa. 18 unit test.
