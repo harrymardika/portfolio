@@ -159,8 +159,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
     <ul class="cv-list">
       {awards.map((award) => (
         <li>
-          <strong>{localize(award.title, locale)}</strong> · {localize(award.issuer, locale)} ·{' '}
-          {awardDate(award.date)}
+          {localize(award.title, locale)} · {localize(award.issuer, locale)} · {awardDate(award.date)}
         </li>
       ))}
     </ul>
@@ -172,7 +171,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
       <ul class="cv-list">
         {certifications.map((cert) => (
           <li>
-            <strong>{cert.name}</strong> · {cert.issuer} · {formatYearMonth(cert.issued, locale)}
+            {cert.name} · {cert.issuer} · {formatYearMonth(cert.issued, locale)}
             {cert.expires && `–${formatYearMonth(cert.expires, locale)}`}
             {cert.credential_id && ` · ${t['about.credential']}: ${cert.credential_id}`}
           </li>

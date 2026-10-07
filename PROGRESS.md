@@ -139,7 +139,7 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 
 ### 2026-10-07 · Claude Code (Opus) · CV: teks hitam, urutan baru, frasa tebal
 - Permintaan pemilik: CV berwarna hitam; Pendidikan di bawah Ringkasan, lalu Keahlian; bagian penting boleh tebal. Pemilik memilih cara tanda `**…**` di konten (bisa diubah lewat Pages CMS).
-- `splitStrong`/`stripStrong`/`hasStrayStrongMarker` (`src/lib/content/emphasis.ts`) + `RichText.astro`; dipakai untuk `summary` dan `highlights` di CV, Portfolio PDF, About, dan dialog Journey. Token `--print-ink: #000000`. Judul penghargaan dan nama sertifikat tebal di CV.
+- `splitStrong`/`stripStrong`/`hasStrayStrongMarker` (`src/lib/content/emphasis.ts`) + `RichText.astro`; dipakai untuk `summary` dan `highlights` di CV, Portfolio PDF, About, dan dialog Journey. Token `--print-ink: #000000`. Daftar Awards dan Certifications di CV dibiarkan polos (pemilik: jika semua tebal, tidak ada yang menonjol).
 - Frasa ditandai di `profile.yaml`, `experience.yaml`, `education.yaml`, `trainings.yaml` (EN + ID, angka hasil dan prestasi; ±1–2 per poin). Tes: tanda tak berpasangan gagal di unit test; CV hitam, urutan judul, `<strong>` tanpa sisa `**` di CV dan About. CV tetap 2 halaman.
 - IPK kini memakai pemisah desimal bahasa (`formatGpa`): `IPK 3,99/4,00` di CV, About, dan dialog Journey versi ID, sama dengan ringkasan.
 - Dari review: tanda `**` hanya boleh di `summary` dan `highlights` (tes menolak di field lain, juga `***`); petunjuk di Pages CMS; token `--print-ink` di docs/03 + tes kontras (tema terang); tes PDF dan Journey tanpa `**`. Tebal pada "1st place" (Gemini Arena) dilepas karena itu juara universitas, bukan pribadi.

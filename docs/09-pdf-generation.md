@@ -24,7 +24,7 @@ Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `d
 - A4, margin 12–15 mm, **satu kolom**, maksimal 2 halaman.
 - Teks asli yang bisa dipilih (bukan gambar). Tanpa tabel tata letak, ikon sebagai pengganti teks, grafik skill bar, atau foto.
 - Judul bagian standar, dengan urutan (keputusan pemilik 2026-10-07): Summary, Education, Skills, Experience, Leadership & teaching, Training, Awards, Certifications.
-- Teks **hitam** (`--print-ink`) di atas putih, tidak memakai warna tema. Yang tebal: nama, judul entri, nama grup skill, judul penghargaan, nama sertifikat, dan frasa yang ditandai `**…**` di konten (docs/04 §6).
+- Teks **hitam** (`--print-ink`) di atas putih, tidak memakai warna tema. Yang tebal: nama, judul entri, nama grup skill, dan frasa yang ditandai `**…**` di konten (docs/04 §6). Daftar Awards dan Certifications sengaja polos (keputusan pemilik 2026-10-07): jika semua baris tebal, tidak ada yang menonjol.
 - Header: nama, kota, email, LinkedIn, GitHub, URL website. **Tanpa nomor HP.**
 - Isi: item dengan `show_on_cv: true`, sertifikat yang masih berlaku, urutan terbaru dulu.
 - Font: Plus Jakarta Sans (body) dan Young Serif (nama saja), keduanya di-embed. Ukuran 8,6 pt agar muat 2 halaman seperti CV asli.

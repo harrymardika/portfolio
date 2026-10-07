@@ -101,3 +101,12 @@ test('the GPA uses the decimal separator of the language', async ({ page }) => {
   await expect(page.locator('.cv')).toContainText('IPK 3,99/4,00');
   await expect(page.locator('.cv')).not.toContainText('3.99');
 });
+
+test('awards and certifications are plain one-line lists, so bold stays meaningful', async ({ page }) => {
+  await page.goto('/print/cv/');
+  for (const heading of ['Awards', 'Certifications']) {
+    const section = page.locator('.cv section').filter({ has: page.getByRole('heading', { name: heading }) });
+    await expect(section.locator('li').first()).toBeVisible();
+    await expect(section.locator('strong')).toHaveCount(0);
+  }
+});
