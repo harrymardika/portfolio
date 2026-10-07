@@ -5,11 +5,13 @@
  */
 import {
   formatDateRange,
+  formatGpa,
   formatYearMonth,
   localize,
   type Milestone,
   type MilestoneSource,
 } from '@/lib/content';
+import RichText from '@/components/ui/RichText.astro';
 import { type Locale, UI } from '@/lib/i18n';
 
 interface Props {
@@ -38,7 +40,7 @@ function describe(): { meta: string[]; highlights: string[] } {
         meta: [
           `${localize(source.item.degree, locale)} · ${source.item.institution}`,
           formatDateRange(source.item, locale, present),
-          ...(source.item.gpa ? [`${t['common.gpa']} ${source.item.gpa}`] : []),
+          ...(source.item.gpa ? [`${t['common.gpa']} ${formatGpa(source.item.gpa, locale)}`] : []),
         ],
         highlights: source.item.highlights.map((h) => localize(h, locale)),
       };
@@ -107,7 +109,9 @@ const titleId = `${id}-title`;
   {highlights.length > 0 && (
     <ul class="mt-4 grid list-disc gap-2 pl-5 text-sm">
       {highlights.map((text) => (
-        <li>{text}</li>
+        <li>
+          <RichText text={text} />
+        </li>
       ))}
     </ul>
   )}

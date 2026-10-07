@@ -11,6 +11,7 @@ import {
   type LocalizedText,
   type YearMonth,
 } from '@/lib/content';
+import RichText from '@/components/ui/RichText.astro';
 import { type Locale, UI } from '@/lib/i18n';
 
 interface Props {
@@ -45,7 +46,9 @@ const dates = formatDateRange({ start, end }, locale, UI[locale]['date.present']
   {highlights.length > 0 && (
     <ul class="grid list-disc gap-1.5 pl-5 text-sm">
       {highlights.map((highlight) => (
-        <li lang={isFallback(highlight, locale) ? 'en' : undefined}>{localize(highlight, locale)}</li>
+        <li lang={isFallback(highlight, locale) ? 'en' : undefined}>
+          <RichText text={localize(highlight, locale)} />
+        </li>
       ))}
     </ul>
   )}

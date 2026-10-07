@@ -23,6 +23,15 @@ test('experience is newest first and ongoing roles say Present', async ({ page }
   await expect(first).toContainText('Present');
 });
 
+test('phrases marked **bold** in content render as bold text, without asterisks', async ({ page }) => {
+  for (const path of ['/about/', '/id/about/']) {
+    await page.goto(path);
+    expect(await page.locator('main li strong').count()).toBeGreaterThan(5);
+    await expect(page.locator('main header p strong').first()).toBeVisible();
+    expect(await page.locator('main').innerText()).not.toContain('**');
+  }
+});
+
 test('expired certifications are hidden and active ones shown', async ({ page }) => {
   await page.goto('/about/');
   const certs = page.locator('#certifications');

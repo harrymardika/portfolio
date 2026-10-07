@@ -88,7 +88,11 @@ content:
         component: localized
         required: true
       - { name: tagline, label: Tagline, component: localizedLong, required: true }
-      - { name: summary, label: Ringkasan (About dan CV), component: localizedLong, required: true }
+      - name: summary
+        label: Ringkasan (About dan CV)
+        description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
+        component: localizedLong
+        required: true
       - { name: location, label: Lokasi, type: string, required: true }
       - { name: email, label: Email, type: string, required: true }
       - { name: photo, label: Foto, type: image, required: true }
@@ -160,6 +164,7 @@ content:
           - { name: end, label: Selesai, component: endDate }
           - name: highlights
             label: Pencapaian (satu kalimat, diawali kata kerja)
+            description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
             component: localizedLong
             list: { min: 1, collapsible: false }
           - { name: tags, label: Tag, type: string, list: true }
@@ -184,7 +189,11 @@ content:
           - { name: start, label: Mulai, component: yearMonth }
           - { name: end, label: Selesai, component: endDate }
           - { name: gpa, label: IPK, type: string }
-          - { name: highlights, label: Pencapaian, component: localizedLong, list: true }
+          - name: highlights
+            label: Pencapaian
+            description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
+            component: localizedLong
+            list: true
           - { name: show_on_web, component: showOnWeb }
           - { name: show_on_cv, component: showOnCv }
 
@@ -206,7 +215,11 @@ content:
           - { name: start, label: Mulai, component: yearMonth }
           - { name: end, label: Selesai, component: endDate }
           - { name: tags, label: Tag, type: string, list: true }
-          - { name: highlights, label: Pencapaian, component: localizedLong, list: true }
+          - name: highlights
+            label: Pencapaian
+            description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
+            component: localizedLong
+            list: true
           - { name: show_on_web, component: showOnWeb }
           - { name: show_on_cv, component: showOnCv }
 

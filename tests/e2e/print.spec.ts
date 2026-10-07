@@ -7,26 +7,26 @@ for (const [path, headings] of [
     '/print/cv/',
     [
       'Summary',
+      'Education',
+      'Skills',
       'Experience',
       'Leadership & teaching',
-      'Education',
       'Training',
       'Awards',
       'Certifications',
-      'Skills',
     ],
   ],
   [
     '/id/print/cv/',
     [
       'Ringkasan',
+      'Pendidikan',
+      'Keahlian',
       'Pengalaman',
       'Kepemimpinan & mengajar',
-      'Pendidikan',
       'Pelatihan',
       'Penghargaan',
       'Sertifikasi',
-      'Keahlian',
     ],
   ],
 ] as const) {
@@ -39,8 +39,19 @@ for (const [path, headings] of [
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+    // Key results marked **like this** in content/ are bold, and no marker is left as text.
+    expect(await page.locator('.cv .cv-entry li strong').count()).toBeGreaterThan(5);
+    await expect(page.locator('.cv section').first().locator('p strong').first()).toBeVisible();
+    expect(await page.locator('.cv').innerText()).not.toContain('**');
   });
 }
+
+test('the CV text is black, not the theme green', async ({ page }) => {
+  await page.goto('/print/cv/');
+  for (const selector of ['.cv', '.cv h1', '.cv h2', '.cv li']) {
+    await expect(page.locator(selector).first()).toHaveCSS('color', 'rgb(0, 0, 0)');
+  }
+});
 
 test('the CV always prints in the light theme', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -81,4 +92,12 @@ test('the portfolio lists every non-featured project on the "more projects" page
   const projects = publishedCaseStudies();
   const featuredPages = Math.min(3, projects.filter((project) => project.featured).length);
   await expect(page.locator('.pf-grid li')).toHaveCount(Math.min(16, projects.length + 2 - featuredPages));
+});
+
+test('the GPA uses the decimal separator of the language', async ({ page }) => {
+  await page.goto('/print/cv/');
+  await expect(page.locator('.cv')).toContainText('GPA 3.99/4.00');
+  await page.goto('/id/print/cv/');
+  await expect(page.locator('.cv')).toContainText('IPK 3,99/4,00');
+  await expect(page.locator('.cv')).not.toContainText('3.99');
 });

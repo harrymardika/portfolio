@@ -1,0 +1,15 @@
+---
+/**
+ * Body text from content/ with `**bold**` phrases rendered as <strong> (splitStrong). Everything else
+ * stays plain text, so content can never inject markup.
+ */
+import { splitStrong } from '@/lib/content';
+
+interface Props {
+  text: string;
+}
+
+const segments = splitStrong(Astro.props.text);
+---
+
+{segments.map((segment) => (segment.strong ? <strong>{segment.text}</strong> : segment.text))}

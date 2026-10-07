@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 
 import {
+  formatGpa,
+  hasStrayStrongMarker,
   compareDatesDesc,
   collectTags,
   compareProjects,
@@ -15,7 +17,9 @@ import {
   sortedBy,
   splitExperience,
   splitEmphasis,
+  splitStrong,
   stripEmphasis,
+  stripStrong,
   tagKey,
   toYearMonth,
   visibleOn,
@@ -36,6 +40,12 @@ describe('localize', () => {
 
   it('returns plain strings unchanged', () => {
     expect(localize('Decklify', 'id')).toBe('Decklify');
+  });
+
+  it('writes a GPA with the decimal separator of the locale', () => {
+    expect(formatGpa('3.99/4.00', 'en')).toBe('3.99/4.00');
+    expect(formatGpa('3.99/4.00', 'id')).toBe('3,99/4,00');
+    expect(formatGpa('88.5', 'id')).toBe('88,5');
   });
 });
 
@@ -136,6 +146,33 @@ describe('emphasis', () => {
 
   it('strips markers for plain-text contexts', () => {
     expect(stripEmphasis("Let's build something *useful.*")).toBe("Let's build something useful.");
+  });
+});
+
+describe('strong', () => {
+  it('splits **bold** phrases out of body text', () => {
+    expect(splitStrong('Cut overhead by **45%** with **ByteTrack**.')).toEqual([
+      { text: 'Cut overhead by ', strong: false },
+      { text: '45%', strong: true },
+      { text: ' with ', strong: false },
+      { text: 'ByteTrack', strong: true },
+      { text: '.', strong: false },
+    ]);
+    expect(splitStrong('plain')).toEqual([{ text: 'plain', strong: false }]);
+  });
+
+  it('keeps unmatched markers and single asterisks as text', () => {
+    expect(stripStrong('**open ended')).toBe('**open ended');
+    expect(stripStrong('5* rating, **top 10**')).toBe('5* rating, top 10');
+  });
+
+  it('flags a marker left without its pair', () => {
+    expect(hasStrayStrongMarker('**45%** faster')).toBe(false);
+    expect(hasStrayStrongMarker('**45% faster')).toBe(true);
+    expect(hasStrayStrongMarker('**a** and **b')).toBe(true);
+    expect(hasStrayStrongMarker('no markers *here*')).toBe(false);
+    expect(hasStrayStrongMarker('***a***')).toBe(true);
+    expect(stripStrong('** a **')).toBe('** a **');
   });
 });
 

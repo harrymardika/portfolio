@@ -67,4 +67,8 @@ describe('token contrast (WCAG AA)', () => {
       });
     }
   }
+  // The CV prints in the light theme only (print pages force data-theme="light").
+  it('light: print-ink on surface ≥ 4.5:1', () => {
+    expect(contrast(light['print-ink'] ?? '', light['surface'] ?? '')).toBeGreaterThanOrEqual(4.5);
+  });
 });

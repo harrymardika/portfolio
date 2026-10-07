@@ -21,6 +21,8 @@
   --success: #7ee2a8;
   /* Decorative only (3D spheres); never used for text. */
   --mint: #8fc2a8;
+  /* Text of the ATS CV: plain black on white, the same in every theme (print pages are always light). */
+  --print-ink: #000000;
   color-scheme: light;
 }
 

@@ -20,6 +20,7 @@ import {
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
+import { hasStrayStrongMarker } from '@/lib/content/emphasis';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
 import { parseYamlList, parseYamlSingleton, pruneEmpty } from '@/lib/content/yaml';
 import { githubConfigSchema } from '@/lib/github';
@@ -97,6 +98,23 @@ describe('content files', () => {
       .filter((ref) => ref !== undefined && !knownIds.has(ref));
 
     expect(dangling).toEqual([]);
+  });
+
+  it('pairs every **bold** marker, so no stray asterisks reach the site or the CV', () => {
+    const strings = (value: unknown, path: string): [string, string][] =>
+      typeof value === 'string'
+        ? [[path, value]]
+        : Array.isArray(value)
+          ? value.flatMap((item, index) => strings(item, `${path}[${index}]`))
+          : value && typeof value === 'object'
+            ? Object.entries(value).flatMap(([key, item]) => strings(item, `${path}.${key}`))
+            : [];
+    const files = ['profile.yaml', ...LIST_FILES.map(({ file }) => file)];
+    const all = files.flatMap((file) => strings(load(read(file)), file));
+    expect(all.filter(([, text]) => hasStrayStrongMarker(text)).map(([path]) => path)).toEqual([]);
+    // Only these fields render bold; anywhere else (tagline, titles, journey copy) asterisks would show.
+    const renderedBold = /^profile\.yaml\.summary\.(en|id)$|\.highlights\[\d+\]\.(en|id)$/;
+    expect(all.filter(([path, text]) => text.includes('**') && !renderedBold.test(path)).map(([path]) => path)).toEqual([]);
   });
 
   it('contains no phone numbers', () => {

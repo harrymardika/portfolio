@@ -137,6 +137,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-07 · Claude Code (Opus) · CV: teks hitam, urutan baru, frasa tebal
+- Permintaan pemilik: CV berwarna hitam; Pendidikan di bawah Ringkasan, lalu Keahlian; bagian penting boleh tebal. Pemilik memilih cara tanda `**…**` di konten (bisa diubah lewat Pages CMS).
+- `splitStrong`/`stripStrong`/`hasStrayStrongMarker` (`src/lib/content/emphasis.ts`) + `RichText.astro`; dipakai untuk `summary` dan `highlights` di CV, Portfolio PDF, About, dan dialog Journey. Token `--print-ink: #000000`. Judul penghargaan dan nama sertifikat tebal di CV.
+- Frasa ditandai di `profile.yaml`, `experience.yaml`, `education.yaml`, `trainings.yaml` (EN + ID, angka hasil dan prestasi; ±1–2 per poin). Tes: tanda tak berpasangan gagal di unit test; CV hitam, urutan judul, `<strong>` tanpa sisa `**` di CV dan About. CV tetap 2 halaman.
+- IPK kini memakai pemisah desimal bahasa (`formatGpa`): `IPK 3,99/4,00` di CV, About, dan dialog Journey versi ID, sama dengan ringkasan.
+- Dari review: tanda `**` hanya boleh di `summary` dan `highlights` (tes menolak di field lain, juga `***`); petunjuk di Pages CMS; token `--print-ink` di docs/03 + tes kontras (tema terang); tes PDF dan Journey tanpa `**`. Tebal pada "1st place" (Gemini Arena) dilepas karena itu juara universitas, bukan pribadi.
+
 ### 2026-10-07 · Claude Code (Opus) · Homelab → statistik situs + studi kasus portfolio
 - Permintaan pemilik: teks footer "Built with Astro…" dan halaman Homelab tidak penting bagi pengunjung; statistik tetap ada. Statistik sengaja **tidak** dipindah ke beranda (kesan pertama, angka kecil, beranda tidak boleh bergantung pada server rumah).
 - Homelab keluar dari menu; diganti **`/stats/`** (status server + statistik), ditautkan dari footer menggantikan teks "Built with…". `content/homelab.yaml`, collection, skema, query, dan blok Pages CMS-nya dihapus (isinya juga usang: masih menyebut Watchtower). `/homelab/` kini 404 (tanpa redirect, baru diindeks 1 hari). SRS FR-14 diperbarui.

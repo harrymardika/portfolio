@@ -196,4 +196,5 @@ Tips: `summary` proyek idealnya 1–2 kalimat (± 160 karakter); di gambar prati
 - **Tidak ada nomor HP** di file mana pun.
 - Gunakan angka nyata dan bisa dipertanggungjawabkan; jangan dibulatkan ke atas.
 - Satu `highlight` = satu kalimat, diawali kata kerja aktif ("Built", "Led", "Reduced").
+- **Menebalkan frasa penting:** tulis `**frasa**` di `summary` (profile) dan `highlights` (experience, education, trainings), mis. `reducing overhead by **45%**`. Tampil tebal di CV, Portfolio PDF, halaman About, dan dialog Journey di beranda. Di field lain (tagline, judul, dll.) tanda ini ditolak tes karena akan tampil sebagai bintang. Cukup 1–2 frasa per poin (angka hasil, prestasi); kalau semua tebal, tidak ada yang menonjol. Tanda yang tidak berpasangan menggagalkan tes. Jika teks **diawali** `**`, beri tanda kutip: `en: "**Graduated with Distinction** (94.5/100)."`. Ini berbeda dengan `*bintang tunggal*` di `headline`/judul bagian, yang memberi warna aksen.
 - Sumber kebenaran data CV: `CV/CV_Harry Mardika.pdf` (lokal, di-gitignore) dengan koreksi yang tercatat di `PROGRESS.md` (log 2026-10-05).

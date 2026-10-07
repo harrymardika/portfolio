@@ -27,6 +27,7 @@ Semua warna di komponen **wajib** memakai token ini. Nilainya ada di `src/styles
 | `--color-on-forest` | `#ffffff` | `#ffffff` | Teks di atas `forest` |
 | `--color-on-forest-muted` | `#d3e2d9` | `#d3e2d9` | Teks sekunder di atas `forest` |
 | `--color-success` | `#7ee2a8` | `#7ee2a8` | Indikator status |
+| `--print-ink` | `#000000` | `#000000` | Teks CV PDF saja (halaman cetak selalu tema terang) |
 
 Kontras minimal: teks normal 4.5:1, teks besar 3:1. `amber` di atas `sage` **tidak** lolos untuk teks kecil; gunakan `amber-deep`.
 Semua pasangan teks/latar di atas dicek otomatis untuk kedua tema oleh `tests/unit/tokens-contrast.test.ts`. Jika menambah pasangan baru, tambahkan juga ke tes itu.

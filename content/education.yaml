@@ -9,8 +9,8 @@ items:
     end: 2026-08
     gpa: "3.99/4.00"
     highlights:
-      - en: Four-time Most Outstanding Student (MAPRES), 4th to 7th semester.
-        id: "Empat kali Mahasiswa Berprestasi (MAPRES), semester 4 hingga 7."
+      - en: "**Four-time Most Outstanding Student (MAPRES)**, 4th to 7th semester."
+        id: "**Empat kali Mahasiswa Berprestasi (MAPRES)**, semester 4 hingga 7."
       - en: "Undergraduate thesis: “Javanese Script (Aksara Jawa) Classification Based on YOLO26 with Visualization and Interpretation of Convolution Filters.”"
         id: "Skripsi: “Klasifikasi Aksara Jawa Berbasis YOLO26 dengan Visualisasi dan Interpretasi Filter Konvolusi.”"
 

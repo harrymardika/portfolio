@@ -56,6 +56,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- The CV is printed in black, lists Education and Skills right after the Summary, and shows key results in bold; mark a phrase `**like this**` in content/ to make it bold on the CV, the portfolio PDF, and the About page.
 - The Homelab page is replaced by a site statistics page at `/stats/`, linked from the footer instead of the main menu; the footer no longer says how the site is built.
 - Merging an AI draft pull request now publishes the case study directly; no separate publish step.
 - AI drafts retry a busy Gemini once before falling back to Groq, and use plain hyphens and spaces.

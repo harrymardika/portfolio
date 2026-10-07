@@ -14,3 +14,8 @@ export function localize(text: LocalizedText | string, locale: Locale): string {
 export function isFallback(text: LocalizedText, locale: Locale): boolean {
   return locale === 'id' && text.id === undefined;
 }
+
+/** A grade such as "3.99/4.00" with the locale's decimal separator ("3,99/4,00" in Indonesian). */
+export function formatGpa(gpa: string, locale: Locale): string {
+  return locale === 'id' ? gpa.replace(/(\d)\.(\d)/g, '$1,$2') : gpa;
+}

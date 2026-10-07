@@ -5,6 +5,7 @@
  */
 import { Image } from 'astro:assets';
 
+import RichText from '@/components/ui/RichText.astro';
 import {
   formatYearMonth,
   itemTags,
@@ -92,7 +93,9 @@ const moreSummary = (item: ProjectItem): string =>
     <div class="pf-two">
       <div>
         <h2>{localize(profile.role, locale)}</h2>
-        <p class="pf-lead">{localize(profile.summary, locale)}</p>
+        <p class="pf-lead">
+          <RichText text={localize(profile.summary, locale)} />
+        </p>
       </div>
       <div class="pf-stack">
         <ul class="pf-stats">

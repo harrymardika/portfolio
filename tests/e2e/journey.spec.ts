@@ -39,6 +39,8 @@ test.describe('without JavaScript', () => {
     const dialog = page.getByRole('dialog', { name: 'Founder' });
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText('Decklify');
+    await expect(dialog.locator('strong').first()).toBeVisible();
+    await expect(dialog).not.toContainText('**');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });

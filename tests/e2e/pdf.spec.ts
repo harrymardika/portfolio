@@ -64,5 +64,6 @@ for (const { file, maxPages, maxBytes, mustContain } of CASES) {
     // Case-insensitive: CSS text-transform turns some headings into capitals in the PDF text.
     for (const phrase of mustContain) expect(pdf.text.toLowerCase()).toContain(phrase.toLowerCase());
     expect(pdf.text).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+    expect(pdf.text).not.toContain('**');
   });
 }

@@ -2,8 +2,9 @@
 import AboutSection from '@/components/about/AboutSection.astro';
 import TimelineItem from '@/components/about/TimelineItem.astro';
 import DownloadIcon from '@/components/ui/DownloadIcon.astro';
+import RichText from '@/components/ui/RichText.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { formatYearMonth, localize, splitExperience } from '@/lib/content';
+import { formatGpa, formatYearMonth, localize, splitExperience } from '@/lib/content';
 import {
   getAwards,
   getCertifications,
@@ -50,7 +51,9 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
     <header class="grid gap-4">
       <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
       <h1 class="text-h2">{t['about.title']}</h1>
-      <p class="text-lg text-ink-muted">{localize(profile.summary, locale)}</p>
+      <p class="text-lg text-ink-muted">
+        <RichText text={localize(profile.summary, locale)} />
+      </p>
       <p class="flex flex-wrap gap-3">
         <a
           href={downloadPath(profile.name, 'cv', locale)}
@@ -108,7 +111,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
             location={item.location}
             start={item.start}
             end={item.end}
-            {...(item.gpa ? { detail: `${t['common.gpa']} ${item.gpa}` } : {})}
+            {...(item.gpa ? { detail: `${t['common.gpa']} ${formatGpa(item.gpa, locale)}` } : {})}
             highlights={item.highlights}
           />
         ))}
