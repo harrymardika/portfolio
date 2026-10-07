@@ -137,6 +137,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
 
+### 2026-10-07 · Claude Code (Opus) · Projects: pencarian + filter per bidang
+- Filter tag otomatis (Jupyter Notebook, RTSP, …) diganti **6 bidang** yang diatur pemilik di `profile.yaml` → `projects.categories` (Computer Vision 9, NLP & Generative AI 9, Edge & real-time 4, MLOps & deployment 3, Web & product 4, Data & forecasting 2 dari 20 proyek), plus **kotak pencarian** dan status "Menampilkan n dari 20 proyek". Pilihan disimpan di URL (`?filter=…&q=…`), jadi link terfilter bisa dikirim ke recruiter.
+- Repo GitHub belum punya topics: field baru `tags` di `content/github.yaml` (sudah diisi untuk 9 repo; digabung ke topics tanpa duplikat). Pemilik boleh memindahkannya ke topics GitHub kapan saja.
+- `src/lib/content/categories.ts` (kategori, pencarian tanpa beda huruf/aksen), `src/lib/i18n/format.ts` (`fill`), `ProjectFilter.astro` menggantikan `TagFilter.astro`; `collectTags`/`filterByTag` dihapus. Tanpa JS semua proyek tetap tampil.
+- Dari review: tes e2e filter kini membaca bidang, jumlah, dan kata pencarian dari halaman (bukan isi konten), jadi mengganti nama bidang di CMS tidak memblokir deploy; id bidang wajib unik; tombol 44 px; status awal dirender server (tidak diumumkan saat halaman dibuka), pengetikan ditunda 200 ms; `?filter=` tak dikenal dihapus dari URL; tag pemilik tampil sebelum topics; tag yang sama dengan bahasa tidak diulang.
+
 ### 2026-10-07 · Claude Code (Opus) · CV: teks hitam, urutan baru, frasa tebal
 - Permintaan pemilik: CV berwarna hitam; Pendidikan di bawah Ringkasan, lalu Keahlian; bagian penting boleh tebal. Pemilik memilih cara tanda `**…**` di konten (bisa diubah lewat Pages CMS).
 - `splitStrong`/`stripStrong`/`hasStrayStrongMarker` (`src/lib/content/emphasis.ts`) + `RichText.astro`; dipakai untuk `summary` dan `highlights` di CV, Portfolio PDF, About, dan dialog Journey. Token `--print-ink: #000000`. Daftar Awards dan Certifications di CV dibiarkan polos (pemilik: jika semua tebal, tidak ada yang menonjol).

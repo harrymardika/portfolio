@@ -44,7 +44,14 @@ export const profileSchema = z.strictObject({
     .array(z.strictObject({ value: z.string().trim().min(1), label: localizedText }))
     .length(3, 'The hero shows exactly 3 stats'),
   journey: z.strictObject({ title: localizedText, intro: localizedText }),
-  projects: z.strictObject({ intro: localizedText }),
+  projects: z.strictObject({
+    intro: localizedText,
+    /** Filters on /projects/: a project belongs to a category when one of its tags is listed. */
+    categories: z
+      .array(z.strictObject({ id: slug, label: localizedText, tags: z.array(z.string().trim().min(1)).min(1) }))
+      .refine((list) => new Set(list.map((c) => c.id)).size === list.length, 'Category ids must be unique')
+      .default([]),
+  }),
   contact: z.strictObject({ title: localizedText, intro: localizedText }),
 });
 

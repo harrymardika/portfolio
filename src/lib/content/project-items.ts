@@ -54,8 +54,13 @@ export function mergeProjects(
 /** Tags for filtering and display. GitHub repos use their language plus topics, without duplicates. */
 export function itemTags(item: ProjectItem): string[] {
   if (item.kind === 'local') return [...item.project.tags];
-  const tags = [item.repo.language, ...item.repo.topics];
-  return [...new Set(tags.filter((tag): tag is string => Boolean(tag)))];
+  // A tag repeating the language in another letter case ("python" on a Python repo) is dropped.
+  const seen = new Set<string>();
+  return [item.repo.language, ...item.repo.topics].filter((tag): tag is string => {
+    if (!tag || seen.has(tag.toLowerCase())) return false;
+    seen.add(tag.toLowerCase());
+    return true;
+  });
 }
 
 /** Year shown on the card: the case study's year, or the repo's last push (creation if never pushed). */

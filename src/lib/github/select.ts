@@ -56,6 +56,20 @@ export function groupRepos(title: string, repos: readonly ApiRepo[]): GithubRepo
   };
 }
 
+/**
+ * The owner's tags first (cards show only the first few), then GitHub topics; a tag already present in
+ * another letter case is skipped.
+ */
+function mergeTags(topics: readonly string[], tags: readonly string[]): string[] {
+  const seen = new Set<string>();
+  return [...tags, ...topics].filter((tag) => {
+    const key = tag.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 const itemRepos = (item: IncludeItem): string[] =>
   typeof item === 'string' ? [item] : 'repo' in item ? [item.repo] : item.repos;
 
@@ -83,11 +97,12 @@ export function selectRepos(all: readonly ApiRepo[], config: GithubConfig): Sele
     if (repos.length === 0) continue;
     repos.forEach((repo) => used.add(repo.name));
     const description = typeof item === 'string' ? undefined : item.description;
+    const tags = typeof item === 'string' ? [] : (item.tags ?? []);
     const entry =
       typeof item === 'object' && 'title' in item
         ? groupRepos(item.title, repos)
         : toGithubRepo(repos[0] as ApiRepo);
-    entries.push({ ...entry, summary: description ?? null });
+    entries.push({ ...entry, summary: description ?? null, topics: mergeTags(entry.topics, tags) });
   }
 
   for (const repo of all) {

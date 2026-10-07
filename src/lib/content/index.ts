@@ -2,6 +2,7 @@
  * Public entry point for pure content helpers (safe to import in unit tests).
  * Astro-dependent data access lives in `./queries` and must be imported from there directly.
  */
+export * from './categories';
 export * from './certifications';
 export * from './dates';
 export * from './emphasis';

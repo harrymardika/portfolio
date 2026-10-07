@@ -91,6 +91,11 @@ describe('itemTags and itemYear', () => {
     expect(itemTags(item)).toEqual(['Go', 'cli']);
   });
 
+  it('drops a topic that repeats the language in another letter case', () => {
+    const item = { kind: 'github' as const, repo: repo('r', { language: 'Python', topics: ['python', 'NLP'] }) };
+    expect(itemTags(item)).toEqual(['Python', 'NLP']);
+  });
+
   it('skips a missing language', () => {
     expect(itemTags({ kind: 'github', repo: repo('r', { language: null }) })).toEqual([]);
   });

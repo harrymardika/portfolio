@@ -80,7 +80,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | Path (EN) | Path (ID) | Isi |
 |---|---|---|
 | `/` | `/id/` | Hero (kartu foto 3D), Journey 3D, proyek unggulan, CTA download, kontak |
-| `/projects/` | `/id/projects/` | Semua proyek + filter tag |
+| `/projects/` | `/id/projects/` | Semua proyek + pencarian + filter per bidang (link `?filter=…&q=…`) |
 | `/projects/<slug>/` | `/id/projects/<slug>/` | Case study |
 | `/about/` | `/id/about/` | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skills |
 | `/stats/` | `/id/stats/` | Statistik situs dan status server live (tautan di footer) |

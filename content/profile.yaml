@@ -66,6 +66,27 @@ projects:
   intro:
     en: Selected work across computer vision, language, and AI products, from research prototypes to launched software.
     id: Karya pilihan di bidang computer vision, bahasa, dan produk AI, dari prototipe riset hingga perangkat lunak yang sudah diluncurkan.
+  # Filters on /projects/. A project belongs to a category when one of its tags is listed (any letter case).
+  # Categories with fewer than 2 projects are hidden. Link to one: /projects/?filter=<id>
+  categories:
+    - id: computer-vision
+      label: { en: Computer Vision, id: Computer Vision }
+      tags: [Computer Vision, YOLO, YOLO26, OpenCV, MobileNetV3, Image Processing]
+    - id: nlp-genai
+      label: { en: NLP & Generative AI, id: NLP & Generative AI }
+      tags: [NLP, LLM, RAG, BERT, Generative AI, Gemini, Gemini API]
+    - id: edge-realtime
+      label: { en: Edge & real-time, id: Edge & real-time }
+      tags: [Edge AI, Hailo-8L, Quantization, RTSP, IoT, ESP32]
+    - id: mlops
+      label: { en: MLOps & deployment, id: MLOps & deployment }
+      tags: [TFX, TensorFlow Serving, Prometheus, Grafana, Docker, GitHub Actions, GPU]
+    - id: web-product
+      label: { en: Web & product, id: Web & produk }
+      tags: [Next.js, React.js, FastAPI, PWA, SaaS, Astro, Go]
+    - id: data
+      label: { en: Data & forecasting, id: Data & prediksi }
+      tags: [Time Series, LSTM, Data Engineering, Recommender Systems]
 
 # Contact section at the bottom of the home page. No phone number, by design.
 contact:

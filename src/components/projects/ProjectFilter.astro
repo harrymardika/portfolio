@@ -1,0 +1,175 @@
+---
+/**
+ * Search box and field filters for the project grid (categories from profile.yaml). The choice is kept
+ * in the URL (?filter=<id>&q=<text>), so a filtered list can be shared. Rendered only for JS users
+ * (hidden until the script runs), so visitors without JS simply see every project.
+ */
+import { localize, type ProjectCategory } from '@/lib/content';
+import { fill, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  categories: { category: ProjectCategory; count: number }[];
+  total: number;
+}
+
+const { locale, categories, total } = Astro.props;
+const t = UI[locale];
+---
+
+<div
+  role="search"
+  class="hidden gap-4 [.js_&]:grid"
+  data-project-filter
+  data-label-results={t['projects.results']}
+  data-label-empty={t['projects.noResults']}
+>
+  <label class="grid max-w-md gap-1.5">
+    <span class="text-sm font-semibold text-ink">{t['projects.search']}</span>
+    <input
+      type="search"
+      name="q"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder={t['projects.searchPlaceholder']}
+      class="min-h-11 rounded-full border border-ink-muted bg-surface px-4 text-ink placeholder:text-ink-muted"
+      data-filter-search
+    />
+  </label>
+  {categories.length > 0 && (
+    <div role="group" aria-label={t['projects.filterLabel']} class="flex flex-wrap gap-2">
+      <button type="button" data-category="" aria-pressed="true" class="chip">
+        {t['projects.all']} <span class="count">{total}</span>
+        <span class="sr-only">{t['projects.countLabel']}</span>
+      </button>
+      {categories.map(({ category, count }) => (
+        <button type="button" data-category={category.id} aria-pressed="false" class="chip">
+          {localize(category.label, locale)} <span class="count">{count}</span>
+          <span class="sr-only">{t['projects.countLabel']}</span>
+        </button>
+      ))}
+    </div>
+  )}
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <!-- Starts with the unfiltered count, so a plain page load announces nothing. -->
+    <p class="text-sm text-ink-muted" role="status" data-filter-status>
+      {fill(t['projects.results'], { shown: total, total })}
+    </p>
+    <button type="button" hidden class="clear" data-filter-clear>
+      {t['projects.clear']}
+    </button>
+  </div>
+</div>
+
+<style>
+  .chip {
+    min-height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 0.9rem;
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed='true'] {
+    border-color: var(--forest);
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+
+  .count {
+    margin-left: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  .clear {
+    min-height: 2.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  import { matchesSearch } from '@/lib/content/categories';
+  import { fill } from '@/lib/i18n/format';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-project-filter]')) {
+    const grid = root.parentElement?.querySelector('[data-project-grid]');
+    const input = root.querySelector<HTMLInputElement>('[data-filter-search]');
+    const status = root.querySelector<HTMLElement>('[data-filter-status]');
+    const clear = root.querySelector<HTMLButtonElement>('[data-filter-clear]');
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-category]')];
+    const cards = [...(grid?.querySelectorAll<HTMLElement>('[data-project]') ?? [])];
+    if (!input || !status || !clear) continue;
+    const known = new Set(buttons.map((button) => button.dataset['category'] ?? ''));
+    let category = '';
+
+    const apply = (updateUrl: boolean): void => {
+      const query = input.value.trim();
+      let shown = 0;
+      for (const card of cards) {
+        const visible =
+          (category === '' || (card.dataset['categories'] ?? '').split(' ').includes(category)) &&
+          matchesSearch(card.dataset['search'] ?? '', query);
+        const item = card.closest('li');
+        if (item) item.hidden = !visible;
+        if (visible) shown += 1;
+      }
+      buttons.forEach((button) =>
+        button.setAttribute('aria-pressed', String((button.dataset['category'] ?? '') === category)),
+      );
+      const message =
+        shown === 0
+          ? (root.dataset['labelEmpty'] ?? '')
+          : fill(root.dataset['labelResults'] ?? '', { shown, total: cards.length });
+      // Unchanged text is not re-announced by screen readers.
+      if (status.textContent?.trim() !== message) status.textContent = message;
+      clear.hidden = category === '' && query === '';
+      if (!updateUrl) return;
+      const url = new URL(window.location.href);
+      if (category) url.searchParams.set('filter', category);
+      else url.searchParams.delete('filter');
+      if (query) url.searchParams.set('q', query);
+      else url.searchParams.delete('q');
+      history.replaceState(history.state, '', url);
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.get('filter') ?? '';
+    category = known.has(requested) ? requested : '';
+    input.value = params.get('q') ?? '';
+    // An unknown ?filter= (renamed field, old link) falls back to All and is dropped from the URL.
+    apply(category !== requested);
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button[data-category]');
+      if (!button) return;
+      category = button.dataset['category'] ?? '';
+      apply(true);
+    });
+    // Typing settles before the list and the announcement change, not on every key.
+    let typing: ReturnType<typeof setTimeout> | undefined;
+    input.addEventListener('input', () => {
+      clearTimeout(typing);
+      typing = setTimeout(() => apply(true), 200);
+    });
+    clear.addEventListener('click', () => {
+      category = '';
+      input.value = '';
+      apply(true);
+      input.focus();
+    });
+  }
+</script>

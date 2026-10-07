@@ -14,6 +14,8 @@ topic: portfolio
 #     repos: [main-repo, other-repo]             linked to the first repo)
 #     description: { en: ..., id: ... }
 # Descriptions were written from each repo's README on 2026-10-05.
+# Optional `tags: [...]` on a repo or group are added to its GitHub topics (cards, search, the
+# categories in profile.yaml). Prefer GitHub topics when you can; tags here are for repos without them.
 include:
   # Repos that already have a case study in content/projects (linked via links.repo, so no duplicate card).
   - repo: tsm-grid-camera
@@ -26,16 +28,19 @@ include:
   # Projects split across several repos.
   - title: Chatbot RAG Universitas Gunadarma
     repos: [gunadarma-ai, chatbot-rag-gunadarma-backend, chatbot-rag-gunadarma-frontend, client-gunadarma-ai]
+    tags: [RAG, LLM, NLP]
     description:
       en: A retrieval-augmented chatbot that answers academic questions from verified Universitas Gunadarma sources, with hybrid search, semantic caching, and Chainlit and React interfaces.
       id: Chatbot berbasis RAG yang menjawab pertanyaan akademik dari sumber resmi Universitas Gunadarma, dengan hybrid search, semantic caching, serta antarmuka Chainlit dan React.
   - title: Netflix Prize data warehouse & recommender
     repos: [netflix-big-data-analytics, netflix-data-ingestion, netflix-modelling]
+    tags: [Data Engineering, Recommender Systems]
     description:
       en: End-to-end data engineering and machine learning on the Netflix Prize data, from a resumable ETL pipeline into a data warehouse to collaborative-filtering recommendation models.
       id: Rekayasa data dan machine learning end-to-end pada data Netflix Prize, dari pipeline ETL yang bisa dilanjutkan ke data warehouse hingga model rekomendasi collaborative filtering.
   - title: Acute lymphoblastic leukemia detection
     repos: [leukimia-detection, dashboard-blood-cell-all]
+    tags: [Computer Vision, Medical Imaging]
     description:
       en: Compares three deep learning models for detecting acute lymphoblastic leukemia in blood cell images (best 98.6% test accuracy), with a Streamlit app built on MobileNetV2 + CBAM.
       id: Membandingkan tiga model deep learning untuk mendeteksi leukemia limfoblastik akut dari citra sel darah (akurasi uji terbaik 98,6%), dilengkapi aplikasi Streamlit berbasis MobileNetV2 + CBAM.
@@ -46,26 +51,32 @@ include:
       en: Real-time detection of unusual behavior and security anomalies from camera feeds using Gemini vision and 2D spatial understanding.
       id: Deteksi real-time perilaku tidak wajar dan anomali keamanan dari kamera menggunakan Gemini vision dan pemahaman spasial 2D.
   - repo: text-summarization-indobert
+    tags: [NLP, BERT]
     description:
       en: BERT-based extractive summarization for assessing academic proposals, combining feature-based methods with cosine similarity and latent semantic analysis.
       id: Peringkasan ekstraktif berbasis BERT untuk menilai proposal akademik, menggabungkan metode berbasis fitur dengan cosine similarity dan latent semantic analysis.
   - repo: video-emotion-cls
+    tags: [Computer Vision, Video]
     description:
       en: Classifies human emotions in video into eight categories, built for the Satria Data 2025 Big Data Challenge.
       id: Mengklasifikasikan emosi manusia dalam video ke delapan kategori, dibuat untuk Satria Data 2025 Big Data Challenge.
   - repo: facial-expression-recognition
+    tags: [Computer Vision, Transfer Learning]
     description:
       en: Compares a convolutional network trained from scratch with transfer learning for facial expression recognition on the FER dataset.
       id: Membandingkan CNN yang dilatih dari awal dengan transfer learning untuk pengenalan ekspresi wajah pada dataset FER.
   - repo: sentiment-analysis-hatred-speech
+    tags: [NLP, BERT]
     description:
       en: Compares four deep learning architectures, including BERT and RNN, for hate-speech and sentiment classification on Twitter data.
       id: Membandingkan empat arsitektur deep learning, termasuk BERT dan RNN, untuk klasifikasi ujaran kebencian dan sentimen pada data Twitter.
   - repo: rocm-test
+    tags: [GPU, Benchmarking]
     description:
       en: Benchmarks PyTorch, TensorFlow, and JAX on an AMD GPU with ROCm, from low-level compute kernels to full model workloads.
       id: Benchmark PyTorch, TensorFlow, dan JAX di GPU AMD dengan ROCm, dari kernel komputasi tingkat rendah hingga beban model lengkap.
   - repo: pengolahan-citra
+    tags: [Image Processing]
     description:
       en: A web-based image processing learning tool written in Go with clean architecture.
       id: Aplikasi web untuk belajar pengolahan citra digital, ditulis dengan Go dan clean architecture.

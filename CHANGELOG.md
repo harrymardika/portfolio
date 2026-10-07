@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Search and field filters on the Projects page (Computer Vision, NLP & Generative AI, and more, set in profile.yaml), with result counts and shareable links such as `/projects/?filter=computer-vision`.
 - A case study about this site itself (Projects → Self-hosted portfolio platform).
 - Owner operations guide (`docs/10-operations.md`): accounts and secrets, routine tasks, maintenance checklists, troubleshooting, and recovery; the README now describes the live site.
 - AI case study drafts: tag a repository `portfolio` and a daily workflow drafts its case study (English and Indonesian) from the README with Gemini, or Groq as a fallback, as a pull request for review (T8.2, ADR 0013).

@@ -56,6 +56,23 @@ describe('selectRepos', () => {
     expect(entry?.description).toBe('a description');
   });
 
+  it('puts the owner tags before the GitHub topics, skipping repeats in any letter case', () => {
+    const all = [repo('a', { topics: ['nlp'] }), repo('b'), repo('c', { topics: ['rag'] })];
+    const { entries } = selectRepos(
+      all,
+      config({
+        include: [
+          { repo: 'a', tags: ['NLP', 'nlp', 'BERT'] },
+          { title: 'G', repos: ['b', 'c'], tags: ['LLM'] },
+        ],
+      }),
+    );
+    expect(entries.map((e) => e.topics)).toEqual([
+      ['NLP', 'BERT'],
+      ['LLM', 'rag'],
+    ]);
+  });
+
   it('combines a group into one entry linked to its first repo', () => {
     const all = [
       repo('api', { language: 'Python', stargazers_count: 2, pushed_at: '2025-03-01T00:00:00Z' }),

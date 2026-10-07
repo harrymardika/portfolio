@@ -1,22 +1,23 @@
 ---
 import ProjectCard from './ProjectCard.astro';
 
-import type { ProjectItem } from '@/lib/content';
+import type { ProjectCategory, ProjectItem } from '@/lib/content';
 import type { Locale } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
   items: ProjectItem[];
   headingLevel?: 2 | 3;
+  categories?: ProjectCategory[];
 }
 
-const { locale, items, headingLevel = 3 } = Astro.props;
+const { locale, items, headingLevel = 3, categories = [] } = Astro.props;
 ---
 
 <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
   {items.map((item) => (
     <li class="grid">
-      <ProjectCard locale={locale} item={item} headingLevel={headingLevel} />
+      <ProjectCard locale={locale} item={item} headingLevel={headingLevel} categories={categories} />
     </li>
   ))}
 </ul>

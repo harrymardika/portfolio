@@ -152,6 +152,7 @@ Anda yang memilih repo mana yang tampil, dengan salah satu atau kedua cara:
      - title: Chatbot RAG Gunadarma       # satu proyek yang dipecah ke beberapa repo:
        repos: [gunadarma-ai, chatbot-rag-gunadarma-backend]   # tampil sebagai SATU kartu,
        description: { en: ..., id: ... }  # tertaut ke repo pertama
+       tags: [RAG, LLM]                   # opsional: tag tambahan (repo maupun grup)
    exclude: [old-experiment]              # repo ini tidak pernah tampil
    ```
 2. **Topic `portfolio` di GitHub**: buka repo → ⚙️ di bagian *About* → tambahkan topic `portfolio`.
@@ -163,6 +164,23 @@ Cara tampilnya:
 - Repo **tanpa** case study tampil sebagai kartu bertanda "GitHub ↗" di halaman Projects (setelah semua case study), tertaut langsung ke GitHub: nama repo sebagai judul, deskripsi repo sebagai ringkasan, bahasa + topics sebagai tag (topic `portfolio` disembunyikan), tahun dari push terakhir, dan jumlah bintang jika ada.
 - Repo **dengan** case study: tulis `links.repo` di `content/projects/<slug>.md` dengan URL repo. Case study tetap yang tampil (tanpa duplikat), dan jumlah bintang dari GitHub ikut ditampilkan.
 - Beranda hanya menampilkan case study `featured`, bukan repo GitHub.
+- `tags` di `include` ditambahkan ke topics GitHub repo itu (huruf besar/kecil tidak dibedakan, tanpa duplikat). Gunakan untuk repo yang belum punya topics, agar repo itu masuk kategori filter di bawah. Lebih baik lagi: isi topics langsung di GitHub (About → ⚙️ → Topics).
+
+### Pencarian dan filter per bidang di halaman Projects
+
+Halaman `/projects/` punya kotak **pencarian** (judul, ringkasan, tag, dan nama bidang) dan tombol **bidang** dengan jumlah proyeknya. Bidang diatur di `content/profile.yaml` → `projects.categories` (Pages CMS: *Profil → Bagian Projects → Kategori filter*):
+
+```yaml
+categories:
+  - id: computer-vision                  # dipakai di link: /projects/?filter=computer-vision
+    label: { en: Computer Vision, id: Computer Vision }
+    tags: [Computer Vision, YOLO, OpenCV] # proyek masuk bidang ini jika punya salah satu tag ini
+```
+
+- Cocok tanpa membedakan huruf besar/kecil dan tanda baca (`Next.js` = `next-js`). Satu proyek boleh masuk beberapa bidang.
+- Bidang dengan kurang dari 2 proyek tidak ditampilkan; urutan tombol = urutan di file.
+- **Link yang sudah terfilter** bisa dikirim ke recruiter, mis. `https://harry.mardika.my.id/projects/?filter=computer-vision` atau dengan pencarian `?filter=nlp-genai&q=bert`. Versi Indonesia: `/id/projects/?filter=…`.
+- Tanpa JavaScript, semua proyek tetap tampil.
 
 ### Draf studi kasus otomatis oleh AI (T8.2, ADR 0013)
 

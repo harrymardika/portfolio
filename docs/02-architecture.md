@@ -100,7 +100,7 @@ Aturan:
 │   │   ├── content/             # schemas/ (Zod, murni), yaml.ts (parser), helper murni, queries (astro:content)
 │   │   ├── navigation.ts        # NAV_ITEMS (menu utama) dan label platform sosial
 │   │   ├── theme.ts             # logika tema terang/gelap
-│   │   ├── i18n/                # locales.ts, ui.ts (kamus), t(), path helpers
+│   │   ├── i18n/                # locales.ts, ui.ts (kamus), format.ts (fill), path helpers
 │   │   ├── github/              # schemas, select (murni), client (REST, retry), sync (I/O diinjeksi)
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
@@ -111,7 +111,7 @@ Aturan:
 │   │   ├── ui/                  # Button, Badge, Stat, Icon, Card, Dialog (generik, tanpa domain)
 │   │   ├── hero/                # Hero.astro (+ island kartu 3D)
 │   │   ├── journey/             # Journey.astro, JourneyTimeline.astro (fallback)
-│   │   ├── projects/            # ProjectCard, ProjectGrid, TagFilter
+│   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang)
 │   │   ├── about/               # AboutSection, TimelineItem
 │   │   ├── contact/             # Contact (bagian kontak beranda)
 │   │   └── print/               # CvDocument, PortfolioDocument

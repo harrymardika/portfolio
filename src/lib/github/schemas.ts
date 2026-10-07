@@ -8,17 +8,21 @@ import { localizedText } from '@/lib/content/schemas/primitives';
 
 const repoName = z.string().trim().min(1);
 
+/** Extra technology tags for a repo, added to its GitHub topics (cards, search, project categories). */
+const extraTags = z.array(z.string().trim().min(1)).optional();
+
 /**
- * One entry in `include`: a repo name, a repo with a bilingual description,
+ * One entry in `include`: a repo name, a repo with a bilingual description and tags,
  * or a group of repos that form one project (shown as a single card; the first repo is the link).
  */
 export const includeItemSchema = z.union([
   repoName,
-  z.strictObject({ repo: repoName, description: localizedText.optional() }),
+  z.strictObject({ repo: repoName, description: localizedText.optional(), tags: extraTags }),
   z.strictObject({
     title: z.string().trim().min(1),
     repos: z.array(repoName).min(2, 'A group needs at least two repos; use a single entry otherwise'),
     description: localizedText.optional(),
+    tags: extraTags,
   }),
 ]);
 

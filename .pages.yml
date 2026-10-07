@@ -131,6 +131,15 @@ content:
         required: true
         fields:
           - { name: intro, label: Pengantar, component: localizedLong, required: true }
+          - name: categories
+            label: Kategori filter
+            description: 'Tombol filter di halaman Projects. Proyek masuk kategori jika salah satu tag-nya ada di daftar ini. Kategori dengan kurang dari 2 proyek disembunyikan. Link langsung: /projects/?filter=<id>'
+            type: object
+            list: { collapsible: { collapsed: true, summary: '{id}' } }
+            fields:
+              - { name: id, component: slug }
+              - { name: label, label: Nama tombol, component: localized, required: true }
+              - { name: tags, label: Tag yang cocok, type: string, list: { min: 1 } }
       - name: contact
         label: Bagian Kontak
         type: object
@@ -328,6 +337,11 @@ content:
           - { name: title, label: Judul proyek (beberapa repo), type: string }
           - { name: repos, label: Repo-repo proyek ini (minimal 2), type: string, list: true }
           - { name: description, label: Deskripsi sendiri, component: localizedLong }
+          - name: tags
+            label: Tag tambahan
+            description: Ditambahkan ke topics GitHub repo ini (kartu, pencarian, kategori filter).
+            type: string
+            list: true
       - { name: exclude, label: Repo yang tidak pernah ditampilkan, type: string, list: true }
       - { name: include_forks, label: Tampilkan fork, type: boolean, default: false }
       - { name: include_archived, label: Tampilkan repo yang diarsipkan, type: boolean, default: false }

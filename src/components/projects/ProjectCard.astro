@@ -3,7 +3,14 @@
  * Card for a project item: a local case study (links to its page) or a GitHub repository
  * without a case study (links straight to GitHub). The whole card is clickable via the title link.
  */
-import { itemTags, itemYear, localize, tagKey, type ProjectItem } from '@/lib/content';
+import {
+  itemCategoryIds,
+  itemTags,
+  itemYear,
+  localize,
+  type ProjectCategory,
+  type ProjectItem,
+} from '@/lib/content';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
 
 interface Props {
@@ -11,9 +18,11 @@ interface Props {
   item: ProjectItem;
   /** Heading level inside the page outline. */
   headingLevel?: 2 | 3;
+  /** Filter categories (Projects page only); the card records which ones it belongs to. */
+  categories?: ProjectCategory[];
 }
 
-const { locale, item, headingLevel = 3 } = Astro.props;
+const { locale, item, headingLevel = 3, categories = [] } = Astro.props;
 const t = UI[locale];
 const Heading = `h${headingLevel}` as const;
 const tags = itemTags(item);
@@ -37,13 +46,22 @@ const meta = [
   stars > 0 ? `★ ${stars}` : null,
   repoCount > 1 ? `${repoCount} ${t['projects.repositories']}` : null,
 ].filter(Boolean);
+const categoryIds = itemCategoryIds(tags, categories);
+// What the search box looks through, in the page's language.
+const searchText = [
+  title,
+  summary,
+  ...tags,
+  ...categories.filter((c) => categoryIds.includes(c.id)).map((c) => localize(c.label, locale)),
+].join(' ');
 ---
 
 <article
   class="group relative flex flex-col gap-4 rounded-xl border border-line bg-surface p-6 transition-shadow hover:shadow-lg"
   data-project
   data-project-kind={item.kind}
-  data-tags={tags.map(tagKey).join(' ')}
+  data-categories={categories.length > 0 ? categoryIds.join(' ') : undefined}
+  data-search={categories.length > 0 ? searchText : undefined}
 >
   {metric && (
     <p class="grid">
