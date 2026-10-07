@@ -2,7 +2,7 @@
 title: Reclaimyt waste-sorting conveyor
 summary:
   en: A CNN waste classifier paired with an ESP32-driven sorting conveyor that separates waste automatically; a top-10 finalist project at Samsung Innovation Campus.
-  id: Klasifikasi sampah berbasis CNN yang terhubung ke conveyor pemilah berbasis ESP32 untuk memilah sampah secara otomatis; proyek 10 besar Samsung Innovation Campus.
+  id: Klasifikasi sampah berbasis CNN yang terhubung ke conveyor pemilah berbasis ESP32 untuk memilah sampah secara otomatis; proyek finalis (10 besar) Samsung Innovation Campus.
 role: { en: ML Engineer, id: ML Engineer }
 year: 2024
 tags: [CNN, Computer Vision, IoT, ESP32]
