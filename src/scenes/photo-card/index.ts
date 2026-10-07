@@ -32,7 +32,7 @@ export interface PhotoCardContent {
   readonly name: string;
   readonly role: string;
   readonly location: string;
-  /** Label above the detection frame, e.g. "person · AI engineer 0.99". */
+  /** Label above the detection frame, e.g. "person · AI PM 0.99". */
   readonly detectionLabel: string;
 }
 

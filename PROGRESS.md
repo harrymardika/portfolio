@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-07 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.1 baris peran AI Product Manager + ringkasan suara produk; menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.5 format angka; menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -116,7 +116,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 
 ## Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F)
 
-- [ ] **T9.1** Positioning dan baris peran (D8, D9)
+- [x] **T9.1** Positioning dan baris peran (D8, D9) · disetujui pemilik 2026-10-07. *Sisa untuk pemilik: samakan headline LinkedIn menjadi "AI Product Manager".*
   - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
 - [ ] **T9.2** Skill lebih lengkap (D11)
   - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
@@ -198,6 +198,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · T9.1 positioning
+- Dikerjakan: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka hero ditulis ulang dengan suara produk (3 bulan ke peluncuran, NPS +45, akurasi 92,5%); label kotak deteksi "person · AI PM 0.99"; prompt draf AI (T8.2) dan README menyesuaikan. Semua angka berasal dari pengalaman yang sudah tercatat. MAPRES keluar dari ringkasan (tetap tebal di Pendidikan) agar CV EN dan ID tetap 2 halaman. Tampilan hero dicek di desktop dan HP.
+- Belum: pemilik menyamakan headline LinkedIn.
+- Langkah berikutnya: T9.5 (format angka, D16).
 
 ### 2026-10-07 · Claude Code (Opus) · Rencana Fase 9–12
 - Permintaan pemilik: rencana lanjutan yang terarah untuk personal branding (AI Engineer vs Product/Project vs Data), baris "AI Engineer · Founder, Decklify", CV per posisi/perusahaan, skill lebih lengkap (GCP, LangChain, …), asisten AI tentang pemilik, komentar dari orang lain, dan terjemahan studi kasus.

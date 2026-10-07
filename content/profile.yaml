@@ -3,9 +3,10 @@
 
 name: Harry Mardika
 
+# Decision D8 (PROGRESS.md): the headline role, not a past job title (those stay factual in experience.yaml).
 role:
-  en: AI Engineer · Founder, Decklify
-  id: AI Engineer · Pendiri Decklify
+  en: AI Product Manager
+  id: AI Product Manager
 
 # Words wrapped in *asterisks* get the accent color.
 headline:
@@ -13,23 +14,26 @@ headline:
   id: Mari membangun sesuatu yang *bermanfaat.*
 
 tagline:
-  en: I turn video, speech, and text into AI products people can actually use, and I love teaching others to do the same.
-  id: Saya mengubah video, suara, dan teks menjadi produk AI yang benar-benar dipakai orang, dan saya senang mengajarkannya kepada orang lain.
+  en: I turn real user problems into AI products people actually use, and because I build the models myself, I know what the technology can deliver.
+  id: Saya mengubah masalah nyata pengguna menjadi produk AI yang benar-benar dipakai, dan karena saya membangun modelnya sendiri, saya tahu apa yang bisa diwujudkan teknologinya.
 
 summary:
   en: >-
-    Informatics graduate (**GPA 3.99/4.00**) who turns ideas into launched products. Experienced across
-    research, product development, and applied AI, including real-time video analytics, language
-    processing, and edge deployment. Led a team to launch a **commercial product in 3 months** and mentored
-    **75+ learners** through bootcamps and community programs. Recognized through national grant funding,
-    competition placements including **Data Mining finalist at GEMASTIK XVIII**, four-time Most Outstanding
-    Student (MAPRES), and selection as a Google Student Ambassador.
+    Product-minded AI builder who takes ideas from user problem to launched product. As founder of
+    Decklify, led a 5-person team to a **commercial launch in 3 months**, validated product-market fit
+    (**+45 NPS** in the first 2 weeks), and designed a business model with an 83.68% contribution margin.
+    Hands-on AI engineering (computer vision, language, edge deployment; **92.5% accuracy** in grant-funded
+    research) keeps product decisions grounded in what the technology can deliver. Informatics graduate
+    (**GPA 3.99/4.00**), mentor to **75+ learners**, GEMASTIK XVIII Data Mining finalist, and Google
+    Student Ambassador.
   id: >-
-    Lulusan Informatika (**IPK 3,99/4,00**) yang mengubah ide menjadi produk nyata. Berpengalaman di riset,
-    pengembangan produk, dan penerapan AI, termasuk analitik video real-time, pemrosesan bahasa, dan
-    deployment di perangkat edge. Memimpin tim meluncurkan **produk komersial dalam 3 bulan** dan membimbing
-    **75+ peserta** lewat bootcamp dan program komunitas. Meraih pendanaan hibah nasional, **finalis Data Mining
-    GEMASTIK XVIII**, empat kali Mahasiswa Berprestasi (MAPRES), dan terpilih sebagai Google Student Ambassador.
+    Pembangun produk AI yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai pendiri
+    Decklify, memimpin tim 5 orang hingga **peluncuran komersial dalam 3 bulan**, memvalidasi
+    product-market fit (**NPS +45** di 2 minggu pertama), dan merancang model bisnis dengan contribution
+    margin 83,68%. Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di edge;
+    **akurasi 92,5%** pada riset hibah) membuat keputusan produk berpijak pada kemampuan nyata teknologi.
+    Lulusan Informatika (**IPK 3,99/4,00**), membimbing **75+ peserta**, finalis Data Mining GEMASTIK
+    XVIII, dan Google Student Ambassador.
 
 location: Jakarta, Indonesia
 email: harrymardika48@gmail.com
@@ -99,9 +103,9 @@ contact:
 
 # Exactly three, shown under the hero buttons.
 stats:
+  - value: "3"
+    label: { en: months from idea to launch, id: bulan dari ide ke peluncuran }
+  - value: "+45"
+    label: { en: NPS in the first 2 weeks, id: NPS di 2 minggu pertama }
   - value: "92.5%"
-    label: { en: detection accuracy, id: akurasi deteksi }
-  - value: "5–8 ms"
-    label: { en: edge latency, id: latensi di edge }
-  - value: "75+"
-    label: { en: learners mentored, id: peserta dibimbing }
+    label: { en: AI model accuracy, id: akurasi model AI }
