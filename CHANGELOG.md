@@ -68,6 +68,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - The journey 3D scene starts only when scrolled near, and shaders compile ahead of the first frame, cutting main-thread blocking on the home page by about three quarters.
 
 ### Fixed
+- Numbers follow each language's rules everywhere: Indonesian pages and PDFs now show headline numbers as `92,5%` instead of `92.5%`, and a test rejects mixed decimal separators in content and UI text (T9.5, D16).
 - The server status badge no longer makes the statistics page scroll sideways on phones.
 - Hoax and BCA case study metrics now say they are training values and show the validation values from the repos.
 - E2E builds use a separate GitHub cache and output directory, so test fixtures never appear in dev or production (T3.2).

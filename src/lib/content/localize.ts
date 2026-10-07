@@ -15,7 +15,28 @@ export function isFallback(text: LocalizedText, locale: Locale): boolean {
   return locale === 'id' && text.id === undefined;
 }
 
-/** A grade such as "3.99/4.00" with the locale's decimal separator ("3,99/4,00" in Indonesian). */
-export function formatGpa(gpa: string, locale: Locale): string {
-  return locale === 'id' ? gpa.replace(/(\d)\.(\d)/g, '$1,$2') : gpa;
+/**
+ * Write the numbers in a language-neutral value (a GPA, a metric) with the locale's separators.
+ * Values are written in English style ("92.5%", "12,000", "3.99/4.00"); Indonesian swaps the
+ * decimal point and the thousands comma ("92,5%", "12.000", "3,99/4,00"), as PUEBI prescribes.
+ */
+export function localizeNumber(value: string, locale: Locale): string {
+  if (locale === 'en') return value;
+  return value.replace(/\d[\d.,]*\d/g, (number) =>
+    number.replace(/[.,]/g, (separator) => (separator === '.' ? ',' : '.')),
+  );
+}
+
+const FOREIGN_DECIMAL: Record<Locale, RegExp> = {
+  en: /\d,(?!\d{3}(?!\d))\d/,
+  id: /\d\.(?!\d{3}(?!\d))\d/,
+};
+
+/**
+ * True when a text uses the other language's decimal separator: a comma decimal in English
+ * ("92,5") or a point decimal in Indonesian ("92.5"). A separator followed by exactly three
+ * digits is a thousands separator and is allowed in both ("12,000", "12.000").
+ */
+export function hasForeignDecimal(text: string, locale: Locale): boolean {
+  return FOREIGN_DECIMAL[locale].test(text);
 }

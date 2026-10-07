@@ -118,7 +118,7 @@ const id: Record<UiKey, string> = {
   'nav.menu': 'Menu',
   'footer.socials': 'Temukan saya di',
   'hero.photoAlt': 'Foto',
-  'hero.detectionLabel': 'person · AI PM 0.99',
+  'hero.detectionLabel': 'person · AI PM 0,99',
   'download.cv': 'Unduh CV',
   'download.portfolio': 'PDF Portofolio',
   'hero.statsLabel': 'Sorotan',

@@ -5,7 +5,7 @@
  */
 import PhotoCard from './PhotoCard.astro';
 import DownloadIcon from '@/components/ui/DownloadIcon.astro';
-import { localize, splitEmphasis, type Profile } from '@/lib/content';
+import { localize, localizeNumber, splitEmphasis, type Profile } from '@/lib/content';
 import { contentImage } from '@/lib/content/media';
 import { downloadPath } from '@/lib/downloads';
 import { type Locale, UI } from '@/lib/i18n';
@@ -60,7 +60,9 @@ const headline = splitEmphasis(localize(profile.headline, locale));
       <dl class="flex flex-wrap gap-x-8 gap-y-4" aria-label={t['hero.statsLabel']}>
         {profile.stats.map((stat) => (
           <div class="grid">
-            <dd class="order-1 font-mono text-xl font-medium text-amber">{stat.value}</dd>
+            <dd class="order-1 font-mono text-xl font-medium text-amber">
+              {localizeNumber(stat.value, locale)}
+            </dd>
             <dt class="order-2 text-xs text-on-forest-muted">{localize(stat.label, locale)}</dt>
           </div>
         ))}

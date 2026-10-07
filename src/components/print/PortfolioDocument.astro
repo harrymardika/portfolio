@@ -11,6 +11,7 @@ import {
   itemTags,
   itemYear,
   localize,
+  localizeNumber,
   splitEmphasis,
   type Award,
   type Milestone,
@@ -101,7 +102,7 @@ const moreSummary = (item: ProjectItem): string =>
         <ul class="pf-stats">
           {profile.stats.map((stat) => (
             <li>
-              <span class="pf-stat-value">{stat.value}</span>
+              <span class="pf-stat-value">{localizeNumber(stat.value, locale)}</span>
               <span class="pf-muted-ink">{localize(stat.label, locale)}</span>
             </li>
           ))}
@@ -158,7 +159,7 @@ const moreSummary = (item: ProjectItem): string =>
             <ul class="pf-stats">
               {item.project.metrics.map((metric) => (
                 <li>
-                  <span class="pf-stat-value">{metric.value}</span>
+                  <span class="pf-stat-value">{localizeNumber(metric.value, locale)}</span>
                   <span class="pf-muted-ink">{localize(metric.label, locale)}</span>
                 </li>
               ))}

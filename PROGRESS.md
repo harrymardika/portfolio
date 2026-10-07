@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.5 format angka; menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.3 terjemahan studi kasus (T9.4 bisa paralel); menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -126,9 +126,9 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T9.4** Tampilan testimoni (D15; formulirnya T12.1)
   - Kriteria: `content/testimonials.yaml` (nama, peran, hubungan, kutipan EN/ID, tautan opsional, tanggal persetujuan) + skema + CMS; tampil di beranda/About (dan opsional Portfolio PDF); tidak tampil jika kosong; hanya dengan izin orang yang dikutip.
 
-- [ ] **T9.5** Format angka konsisten di semua bahasa (D16)
-  - Aturan (rekomendasi, menunggu D16): **titik untuk desimal di EN dan ID** (IPK 3.99/4.00, akurasi 92.5%, AUC 0.96, Rp5.85 juta); karena itu **titik tidak dipakai untuk ribuan**: EN "12,000+", ID "12 ribu+". Sama untuk semua tempat: web, CV, Portfolio PDF, statistik `/stats/`, studi kasus terjemahan (T9.3), draf AI.
-  - Kriteria: angka desimal di teks ID `content/` (±11 tempat, mis. `92,5%`, `0,96`, `8,39/10`, `83,68%`, `94,5/100`) dan ribuan bertitik (±5 tempat, mis. `12.000+`, `63.000`) diubah; `formatGpa` tidak lagi mengganti titik; angka statistik versi ID mengikuti aturan yang sama; tes unit menolak `\d,\d` (desimal koma) dan `\d.\d{3}` (ribuan bertitik) di teks ID; aturan ditulis di docs/04 §6 dan prompt draf AI.
+- [x] **T9.5** Format angka konsisten di semua bahasa (D16)
+  - Aturan: **ikuti aturan baku tiap bahasa**. EN: titik desimal, koma ribuan (`92.5%`, `12,000`). ID (PUEBI): koma desimal, titik ribuan (`92,5%`, `12.000`). Berlaku di web, CV, Portfolio PDF, statistik, studi kasus terjemahan (T9.3), draf AI.
+  - Kriteria: nilai yang ditulis sekali untuk dua bahasa (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman/PDF ID (`localizeNumber`); tes unit menolak desimal yang tertukar di `content/` dan kamus UI; aturan ditulis di docs/04 §6 dan prompt draf AI.
 
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
 
@@ -172,18 +172,17 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D5 | Memilih repo GitHub | **Bisa:** `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` (T3.1) |
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
 | D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (header `docs/07-deployment.md`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
-
 | D8 | Baris peran | **AI Product Manager** di website, CV umum, Portfolio PDF, dan JSON-LD (2026-10-07). Jabatan di Pengalaman tetap faktual (Founder & CEO, AI Engineer) |
 | D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering**: suara produk lebih dulu (masalah pengguna, peluncuran, metrik), kemampuan AI sebagai pembeda; jalur lain lewat varian CV (2026-10-07) |
 | D10 | Varian CV | **5 varian** (AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee); **publik hanya CV umum**, varian lain untuk dikirim saat melamar. **CV per perusahaan tidak dibuat** (2026-10-07) |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Testimoni | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
+| D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
 **Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
 
 | No | Pertanyaan | Rekomendasi |
 |---|---|---|
-| D16 | Format angka desimal (pemilik: harus konsisten) | **Titik** untuk desimal di EN dan ID; ribuan tanpa titik (EN `12,000`, ID `12 ribu`) |
 | D11 | Skill tambahan | Pemilik mencentang daftar kandidat |
 | D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
 | D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
@@ -198,6 +197,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · T9.5 format angka
+- Keputusan D16 diganti: ikuti aturan baku tiap bahasa (pemilik menanyakan aturan EN/ID; usulan "titik untuk semua" ditarik).
+- Teks `content/` ternyata sudah benar per bahasa. Yang salah hanya nilai satu-bahasa: angka hero dan angka utama proyek tampil `92.5%` di halaman ID. Dibuat `localizeNumber` (menggantikan `formatGpa`) yang dipakai hero, kartu proyek, halaman studi kasus, Portfolio PDF, CV, About, Journey. Label kotak deteksi ID menjadi `0,99`. Angka Decklify `3 months` (tampil Inggris di halaman ID) dipecah menjadi `3` + label.
+- Penjaga: `tests/unit/content/number-format.test.ts` (content + kamus UI). Aturan di docs/04 §6 dan prompt draf AI.
 
 ### 2026-10-08 · Claude Code (Opus) · T9.1 positioning
 - Dikerjakan: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka hero ditulis ulang dengan suara produk (3 bulan ke peluncuran, NPS +45, akurasi 92,5%); label kotak deteksi "person · AI PM 0.99"; prompt draf AI (T8.2) dan README menyesuaikan. Semua angka berasal dari pengalaman yang sudah tercatat. MAPRES keluar dari ringkasan (tetap tebal di Pendidikan) agar CV EN dan ID tetap 2 halaman. Tampilan hero dicek di desktop dan HP.

@@ -5,7 +5,7 @@
  */
 import {
   formatDateRange,
-  formatGpa,
+  localizeNumber,
   formatYearMonth,
   localize,
   type Milestone,
@@ -40,7 +40,7 @@ function describe(): { meta: string[]; highlights: string[] } {
         meta: [
           `${localize(source.item.degree, locale)} · ${source.item.institution}`,
           formatDateRange(source.item, locale, present),
-          ...(source.item.gpa ? [`${t['common.gpa']} ${formatGpa(source.item.gpa, locale)}`] : []),
+          ...(source.item.gpa ? [`${t['common.gpa']} ${localizeNumber(source.item.gpa, locale)}`] : []),
         ],
         highlights: source.item.highlights.map((h) => localize(h, locale)),
       };

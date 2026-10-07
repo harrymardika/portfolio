@@ -7,7 +7,7 @@ import CvEntry from './CvEntry.astro';
 import RichText from '@/components/ui/RichText.astro';
 import {
   formatDateRange,
-  formatGpa,
+  localizeNumber,
   formatYearMonth,
   localize,
   splitExperience,
@@ -87,7 +87,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
     {education.map((item) => (
       <CvEntry
         locale={locale}
-        title={`${localize(item.degree, locale)}${item.gpa ? ` · ${t['common.gpa']} ${formatGpa(item.gpa, locale)}` : ''}`}
+        title={`${localize(item.degree, locale)}${item.gpa ? ` · ${t['common.gpa']} ${localizeNumber(item.gpa, locale)}` : ''}`}
         subtitle={item.institution}
         location={item.location}
         dates={range(item)}

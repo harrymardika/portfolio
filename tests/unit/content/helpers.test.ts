@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
 import {
-  formatGpa,
   hasStrayStrongMarker,
   compareDatesDesc,
   compareProjects,
@@ -12,6 +11,7 @@ import {
   isFallback,
   isPublished,
   localize,
+  localizeNumber,
   sortedBy,
   splitExperience,
   splitEmphasis,
@@ -40,10 +40,15 @@ describe('localize', () => {
     expect(localize('Decklify', 'id')).toBe('Decklify');
   });
 
-  it('writes a GPA with the decimal separator of the locale', () => {
-    expect(formatGpa('3.99/4.00', 'en')).toBe('3.99/4.00');
-    expect(formatGpa('3.99/4.00', 'id')).toBe('3,99/4,00');
-    expect(formatGpa('88.5', 'id')).toBe('88,5');
+  it('writes language-neutral numbers with the separators of the locale', () => {
+    expect(localizeNumber('3.99/4.00', 'en')).toBe('3.99/4.00');
+    expect(localizeNumber('3.99/4.00', 'id')).toBe('3,99/4,00');
+    expect(localizeNumber('92.5%', 'id')).toBe('92,5%');
+    expect(localizeNumber('12,000+', 'id')).toBe('12.000+');
+    expect(localizeNumber('1,234.5 ms', 'id')).toBe('1.234,5 ms');
+    expect(localizeNumber('−35%', 'id')).toBe('−35%');
+    expect(localizeNumber('5–8 ms', 'id')).toBe('5–8 ms');
+    expect(localizeNumber('A+', 'id')).toBe('A+');
   });
 });
 

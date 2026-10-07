@@ -112,7 +112,7 @@ flowchart LR
 
 Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi, persentase). Saat ini halaman Indonesia mengikuti aturan baku PUEBI (koma desimal: `3,99`, `92,5%`; titik ribuan: `12.000`), sedangkan halaman Inggris memakai titik desimal.
 
-**Rekomendasi (D16): titik untuk desimal di kedua bahasa**, seperti lazimnya CV dan dokumen teknis profesional di Indonesia ("IPK 3.99", "akurasi 92.5%"). Angka jadi identik di EN dan ID. Konsekuensinya, titik tidak boleh dipakai untuk ribuan agar tidak terbaca sebagai desimal: versi Inggris `12,000+`, versi Indonesia memakai kata `12 ribu+`. Dijaga dengan tes agar tidak kembali tercampur (T9.5).
+**Keputusan (D16, 2026-10-08): ikuti aturan baku tiap bahasa.** Usulan awal "titik untuk semua" ditarik karena menyimpang dari PUEBI. Teks ditulis per bahasa; nilai yang ditulis sekali (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman Indonesia. Dijaga tes (T9.5).
 
 ## Keputusan yang dibutuhkan
 
@@ -125,5 +125,5 @@ Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi,
 | D12 | Studi kasus bahasa Indonesia | (a) ganti kalimat catatan | T9.3 |
 | D13 | Asisten AI: lanjut? di beranda, About, atau tombol mengambang? | Lanjut; bagian di About + tautan dari beranda | Fase 11 |
 | D14 | Asisten AI: penyedia dan penyimpanan pertanyaan | Penyedia yang tidak memakai data untuk pelatihan (kebijakannya dicek saat T11.1), atau Gemini gratis dengan pemberitahuan; pertanyaan tidak disimpan | T11.x |
-| D16 | Format angka desimal | Titik di EN dan ID; ribuan tanpa titik (EN `12,000`, ID `12 ribu`) | T9.5 |
+| D16 | Format angka | **Diputuskan:** aturan baku tiap bahasa (EN `92.5%`, ID `92,5%`) | T9.5 |
 | D15 | Testimoni: statis saja, atau juga formulir bermoderasi | Statis dulu (Fase 9); formulir nanti jika ada permintaan | T9.4, Fase 12 |

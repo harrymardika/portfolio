@@ -4,7 +4,7 @@ import TimelineItem from '@/components/about/TimelineItem.astro';
 import DownloadIcon from '@/components/ui/DownloadIcon.astro';
 import RichText from '@/components/ui/RichText.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { formatGpa, formatYearMonth, localize, splitExperience } from '@/lib/content';
+import { formatYearMonth, localize, localizeNumber, splitExperience } from '@/lib/content';
 import {
   getAwards,
   getCertifications,
@@ -111,7 +111,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
             location={item.location}
             start={item.start}
             end={item.end}
-            {...(item.gpa ? { detail: `${t['common.gpa']} ${formatGpa(item.gpa, locale)}` } : {})}
+            {...(item.gpa ? { detail: `${t['common.gpa']} ${localizeNumber(item.gpa, locale)}` } : {})}
             highlights={item.highlights}
           />
         ))}

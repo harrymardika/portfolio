@@ -8,6 +8,7 @@ import {
   itemTags,
   itemYear,
   localize,
+  localizeNumber,
   type ProjectCategory,
   type ProjectItem,
 } from '@/lib/content';
@@ -65,7 +66,9 @@ const searchText = [
 >
   {metric && (
     <p class="grid">
-      <span class="font-mono text-2xl font-medium text-forest-ink">{metric.value}</span>
+      <span class="font-mono text-2xl font-medium text-forest-ink">
+        {localizeNumber(metric.value, locale)}
+      </span>
       <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>
     </p>
   )}

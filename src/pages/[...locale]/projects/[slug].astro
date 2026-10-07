@@ -6,7 +6,7 @@
 import { render } from 'astro:content';
 
 import PageLayout from '@/layouts/PageLayout.astro';
-import { localize } from '@/lib/content';
+import { localize, localizeNumber } from '@/lib/content';
 import { getProfile, getProjects } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
 import { ogImagePath, projectJsonLd } from '@/lib/seo';
@@ -79,7 +79,9 @@ const jsonLd = [
         <ul class="grid gap-4 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
           {project.metrics.map((metric) => (
             <li class="grid">
-              <span class="font-mono text-2xl font-medium text-forest-ink">{metric.value}</span>
+              <span class="font-mono text-2xl font-medium text-forest-ink">
+                {localizeNumber(metric.value, locale)}
+              </span>
               <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>
             </li>
           ))}
