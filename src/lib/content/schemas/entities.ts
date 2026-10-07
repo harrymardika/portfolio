@@ -159,13 +159,6 @@ export const projectSchema = z.strictObject({
   draft: z.boolean().default(false),
 });
 
-export const homelabSchema = z.strictObject({
-  intro: localizedText,
-  pipeline: z.array(z.strictObject({ title: localizedText, body: localizedText })).min(1),
-  stack: z.array(z.string().trim().min(1)).min(1),
-  hardware: z.array(z.strictObject({ label: localizedText, value: z.string().trim().min(1) })).default([]),
-});
-
 export type Profile = z.infer<typeof profileSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Education = z.infer<typeof educationSchema>;
@@ -175,6 +168,5 @@ export type Certification = z.infer<typeof certificationSchema>;
 export type SkillGroup = z.infer<typeof skillGroupSchema>;
 export type Milestone = z.infer<typeof milestoneSchema>;
 export type Project = z.infer<typeof projectSchema>;
-export type Homelab = z.infer<typeof homelabSchema>;
 export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 export type ExperienceCategory = (typeof EXPERIENCE_CATEGORIES)[number];

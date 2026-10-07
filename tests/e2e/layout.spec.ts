@@ -56,3 +56,14 @@ test('no page shows a phone number', async ({ page }) => {
     expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
   }
 });
+
+test('no page scrolls sideways on a small phone', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  for (const path of ['/', '/id/', '/about/', '/projects/', '/projects/decklify/', '/stats/', '/id/stats/']) {
+    await page.goto(path);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, path).toBeLessThanOrEqual(0);
+  }
+});

@@ -1,6 +1,7 @@
 /**
- * Primary navigation. Add an item when its page exists (T2.4 projects, T2.5 about, T2.7 homelab),
- * so the site never links to a 404. Paths are locale-neutral; render them with `localizePath`.
+ * Primary navigation. Add an item when its page exists (T2.4 projects, T2.5 about), so the site never
+ * links to a 404; site statistics are linked from the footer instead. Paths are locale-neutral; render
+ * them with `localizePath`.
  */
 import type { UiKey } from '@/lib/i18n';
 
@@ -12,7 +13,6 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { labelKey: 'nav.projects', path: '/projects/' },
   { labelKey: 'nav.about', path: '/about/' },
-  { labelKey: 'nav.homelab', path: '/homelab/' },
 ];
 
 /** Display names for social platforms (proper nouns, identical in every locale). */

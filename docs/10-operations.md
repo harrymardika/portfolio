@@ -63,7 +63,7 @@ Catatan:
 | Menolak draf AI | Tolak permanen: *Close* saja, **branch dibiarkan** (repo itu tidak dibuatkan draf lagi). Ingin draf baru: *Close* lalu *Delete branch* | – |
 | Membuat draf sekarang, tanpa menunggu jadwal | *Actions → Case study drafts → Run workflow* | – |
 | Memperbarui situs sekarang | *Actions → Deploy → Run workflow* (mis. setelah mengubah deskripsi atau topic repo di GitHub) | ±20 menit |
-| Melihat statistik | `/homelab` ([docs/08](08-analytics.md)) | – |
+| Melihat statistik | `/stats/` atau tautan *Site statistics* di footer ([docs/08](08-analytics.md)) | – |
 | Link pelacak lamaran kerja | Buat link `?ref=…`; hasilnya lewat `bun run stats:report` di laptop ([docs/08 §4](08-analytics.md)) | – |
 
 Jadwal otomatis (UTC; WIB = UTC+7):
@@ -75,7 +75,7 @@ Jadwal otomatis (UTC; WIB = UTC+7):
 
 **Bulanan (±15 menit)**
 - [ ] GitHub → tab *Actions*: tidak ada run merah yang dibiarkan (§5.1).
-- [ ] Buka situs dan `/homelab`: status online, angka statistik bergerak.
+- [ ] Buka situs dan `/stats/`: status online, angka statistik bergerak.
 - [ ] Search Console: *Pages* (halaman terindeks) dan *Sitemaps* (status *Success*).
 - [ ] Server lewat SSH (Tailscale):
   ```bash
@@ -148,8 +148,8 @@ Buka run *Case study drafts* terakhir; repo yang gagal dibuatkan draf (README te
 ### 5.6 Search Console: sitemap "Couldn't fetch"
 Sering muncul sesaat setelah didaftarkan. Cek `curl -sI https://harry.mardika.my.id/sitemap.xml` (harus `200` dan `text/xml`), lalu *URL Inspection → Test live URL* untuk sitemap itu. Jika live test berhasil, tunggu beberapa hari; Google mengambil ulang sendiri.
 
-### 5.7 Statistik kosong atau `/homelab` menulis "offline"
-`/homelab` menulis "offline" jika `/api/health` gagal: server mati (§5.2) dan pengunjung melihat salinan Cloudflare. Jika situs hidup tetapi angka tidak bertambah: `cd /opt/portfolio && docker compose logs --tail 50 stats` di server.
+### 5.7 Statistik kosong atau `/stats/` menulis "offline"
+`/stats/` menulis "offline" jika `/api/health` gagal: server mati (§5.2) dan pengunjung melihat salinan Cloudflare. Jika situs hidup tetapi angka tidak bertambah: `cd /opt/portfolio && docker compose logs --tail 50 stats` di server.
 
 ## 6. Pemulihan
 

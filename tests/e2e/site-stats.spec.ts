@@ -22,7 +22,7 @@ const stats = '[data-site-stats]';
 
 test('shows live numbers formatted for the language', async ({ page }) => {
   await page.route('**/api/stats/summary', (route) => route.fulfill({ json: SUMMARY }));
-  await page.goto('/homelab/');
+  await page.goto('/stats/');
   await expect(page.locator(`${stats} [data-stat="visitors"]`)).toHaveText('1,234');
   await expect(page.locator(`${stats} [data-stat-detail="visitors"]`)).toHaveText('456 · last 30 days');
   await expect(page.locator(`${stats} [data-stat="cv"]`)).toHaveText('42');
@@ -33,7 +33,7 @@ test('shows live numbers formatted for the language', async ({ page }) => {
   await expect(page.locator(`${stats} [data-stat-status]`)).toHaveText('Counting since Oct 2026');
   await expect(page.locator(stats)).toHaveAttribute('aria-busy', 'false');
 
-  await page.goto('/id/homelab/');
+  await page.goto('/id/stats/');
   await expect(page.locator(`${stats} [data-stat="visitors"]`)).toHaveText('1.234');
   await expect(page.locator(`${stats} [data-stat-list="topCountries"]`)).toContainText('Amerika Serikat');
 });
@@ -42,19 +42,19 @@ test('says the numbers are unavailable when the service is down, and the page st
   page,
 }) => {
   await page.route('**/api/stats/summary', (route) => route.fulfill({ status: 502, body: 'Bad gateway' }));
-  await page.goto('/homelab/');
+  await page.goto('/stats/');
   await expect(page.locator(`${stats} [data-stat-status]`)).toHaveText(
     'Statistics are temporarily unavailable.',
   );
   await expect(page.locator(`${stats} [data-stat="visitors"]`)).toHaveText('—');
-  await expect(page.getByRole('heading', { level: 1, name: 'Homelab' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Site statistics' })).toBeVisible();
 });
 
 test('rejects a malformed response instead of showing garbage', async ({ page }) => {
   await page.route('**/api/stats/summary', (route) =>
     route.fulfill({ json: { visitors: '<img src=x onerror=alert(1)>' } }),
   );
-  await page.goto('/homelab/');
+  await page.goto('/stats/');
   await expect(page.locator(`${stats} [data-stat-status]`)).toHaveText(
     'Statistics are temporarily unavailable.',
   );
@@ -65,13 +65,13 @@ test('shows an empty state for lists without data', async ({ page }) => {
   await page.route('**/api/stats/summary', (route) =>
     route.fulfill({ json: { ...SUMMARY, topReferrers: [], since: null } }),
   );
-  await page.goto('/homelab/');
+  await page.goto('/stats/');
   await expect(page.locator(`${stats} [data-stat-list="topReferrers"]`)).toHaveText('No data yet.');
 });
 
 test('the statistics section has no serious accessibility violations', async ({ page }) => {
   await page.route('**/api/stats/summary', (route) => route.fulfill({ json: SUMMARY }));
-  await page.goto('/homelab/');
+  await page.goto('/stats/');
   await expect(page.locator(stats)).toHaveAttribute('aria-busy', 'false');
   const results = await new AxeBuilder({ page })
     .include(stats)

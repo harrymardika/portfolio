@@ -92,7 +92,6 @@ Aturan:
 │   ├── skills.yaml
 │   ├── journey.yaml
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
-│   ├── homelab.yaml             # isi halaman /homelab (server, stack)
 │   ├── projects/*.md
 │   └── media/                   # foto & gambar yang dipakai konten
 ├── src/
@@ -123,7 +122,7 @@ Aturan:
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   ├── pages/
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
-│   │   │   ├── index.astro, about.astro, homelab.astro
+│   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
 │   │   │   └── print/cv.astro, print/portfolio.astro
 │   │   └── 404.astro

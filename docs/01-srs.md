@@ -57,7 +57,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | FR-11 | 🆕 Ganti bahasa EN ↔ ID di setiap halaman | Wajib |
 | FR-12 | 🆕 Mencatat dan **menampilkan di situs** pengunjung, tampilan halaman, unduhan CV/Portfolio, sumber trafik, dan negara (tanpa layanan analytics terpisah) | Wajib |
 | FR-13 | 🆕 Link pelacak per lamaran (`?ref=<nama>`), **hanya terlihat oleh pemilik** | Sebaiknya |
-| FR-14 | Halaman `/homelab`: spesifikasi server dan status uptime live | Sebaiknya |
+| FR-14 | Halaman `/stats/` (ditautkan dari footer, bukan menu utama): status server live dan statistik situs. Menggantikan `/homelab` (2026-10-07): spesifikasi server dan alur deploy tidak penting bagi pengunjung; ceritanya kini studi kasus `portfolio-site` di Projects | Sebaiknya |
 | FR-15 | 🆕 Mode gelap/terang | Sebaiknya |
 | FR-16 | 🆕 Mengedit konten lewat CMS berbasis Git | Nanti |
 | FR-17 | 🆕 Draf case study dan terjemahan oleh AI sebagai Pull Request | Nanti |
@@ -83,7 +83,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | `/projects/` | `/id/projects/` | Semua proyek + filter tag |
 | `/projects/<slug>/` | `/id/projects/<slug>/` | Case study |
 | `/about/` | `/id/about/` | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skills |
-| `/homelab/` | `/id/homelab/` | Spesifikasi server, arsitektur, status live |
+| `/stats/` | `/id/stats/` | Statistik situs dan status server live (tautan di footer) |
 | `/print/cv/`, `/print/portfolio/` | `/id/print/...` | Sumber PDF (tidak ditautkan di navigasi, `noindex`) |
 
 ## 6. Infrastruktur

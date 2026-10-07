@@ -1,5 +1,5 @@
 /**
- * Public statistics summary: the shape served by GET /api/stats/summary and shown on /homelab.
+ * Public statistics summary: the shape served by GET /api/stats/summary and shown on /stats/.
  * One schema for the service (types) and the page (validating what it receives).
  */
 import { z } from 'astro/zod';

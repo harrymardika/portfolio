@@ -21,7 +21,7 @@ test('switching language keeps the visitor on the same page', async ({ page }) =
   for (const [from, to] of [
     ['/about/', '/id/about/'],
     ['/projects/decklify/', '/id/projects/decklify/'],
-    ['/id/homelab/', '/homelab/'],
+    ['/id/stats/', '/stats/'],
   ] as const) {
     await page.goto(from);
     const target = to.startsWith('/id/') ? 'id' : 'en';

@@ -1,6 +1,6 @@
 ---
 import Icon from '@/components/ui/Icon.astro';
-import { type Locale, UI } from '@/lib/i18n';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
 import { SOCIAL_LABELS } from '@/lib/navigation';
 
 import type { Profile } from '@/lib/content';
@@ -21,7 +21,14 @@ const year = new Date().getUTCFullYear();
       <p>
         © {year} {profile.name}
       </p>
-      <p>{t['footer.builtWith']}</p>
+      <p>
+        <a
+          href={localizePath('/stats/', locale)}
+          class="underline decoration-line underline-offset-4 hover:text-ink hover:decoration-current"
+        >
+          {t['stats.title']}
+        </a>
+      </p>
     </div>
     <nav aria-label={t['footer.socials']}>
       <ul class="flex gap-2">

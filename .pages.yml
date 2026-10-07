@@ -297,29 +297,6 @@ content:
             description: id pengalaman atau slug proyek yang diceritakan milestone ini (opsional).
             component: optionalSlug
 
-  - name: homelab
-    label: Homelab
-    type: file
-    path: content/homelab.yaml
-    format: yaml
-    fields:
-      - { name: intro, label: Pengantar, component: localizedLong, required: true }
-      - name: pipeline
-        label: Alur deploy
-        type: object
-        list: { min: 1, collapsible: false }
-        fields:
-          - { name: title, label: Judul, component: localized, required: true }
-          - { name: body, label: Isi, component: localizedLong, required: true }
-      - { name: stack, label: Teknologi, type: string, list: { min: 1, collapsible: false } }
-      - name: hardware
-        label: Spesifikasi server
-        type: object
-        list: { collapsible: false }
-        fields:
-          - { name: label, label: Nama, component: localized, required: true }
-          - { name: value, label: Nilai, type: string, required: true }
-
   - name: github
     label: Proyek dari GitHub
     description: Repo yang tampil di halaman Projects (docs/04 §4). Isi repo saja, atau judul + beberapa repo untuk satu proyek.

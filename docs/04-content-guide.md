@@ -34,7 +34,6 @@ Bisa juga langsung lewat web GitHub (tombol ✏️ di file), bahkan dari HP.
 | Sertifikat | `content/certifications.yaml` |
 | Skills | `content/skills.yaml` |
 | Titik-titik di jalur Journey 3D | `content/journey.yaml` |
-| Halaman Homelab (alur deploy, stack, spesifikasi server) | `content/homelab.yaml` |
 | Proyek / case study | `content/projects/<slug>.md` |
 | Foto | `content/media/` |
 
@@ -108,9 +107,6 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 ### `journey.yaml`
 `milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.
-
-### `homelab.yaml`
-`intro` (LocalizedText), `pipeline[]` (`{ title, body }`, LocalizedText), `stack[]` (string), `hardware[]` (`{ label: LocalizedText, value }`; bagian spesifikasi disembunyikan selama daftar ini kosong).
 
 ### `projects/<slug>.md`
 Frontmatter:

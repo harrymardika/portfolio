@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- A case study about this site itself (Projects → Self-hosted portfolio platform).
 - Owner operations guide (`docs/10-operations.md`): accounts and secrets, routine tasks, maintenance checklists, troubleshooting, and recovery; the README now describes the live site.
 - AI case study drafts: tag a repository `portfolio` and a daily workflow drafts its case study (English and Indonesian) from the README with Gemini, or Groq as a fallback, as a pull request for review (T8.2, ADR 0013).
 - Two more case studies: Reclaimyt (with design sketches and prototype photos) and Dompet Juara (with its dashboard); Decklify gains a "What I learned" section and Aksara Jawa its test accuracy.
@@ -55,6 +56,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- The Homelab page is replaced by a site statistics page at `/stats/`, linked from the footer instead of the main menu; the footer no longer says how the site is built.
 - Merging an AI draft pull request now publishes the case study directly; no separate publish step.
 - AI drafts retry a busy Gemini once before falling back to Groq, and use plain hyphens and spaces.
 - Indonesian translations reviewed by the owner; the undergraduate thesis now appears under its official title.
@@ -63,6 +65,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - The journey 3D scene starts only when scrolled near, and shaders compile ahead of the first frame, cutting main-thread blocking on the home page by about three quarters.
 
 ### Fixed
+- The server status badge no longer makes the statistics page scroll sideways on phones.
 - Hoax and BCA case study metrics now say they are training values and show the validation values from the repos.
 - E2E builds use a separate GitHub cache and output directory, so test fixtures never appear in dev or production (T3.2).
 - E2E tests always build and start a fresh server instead of reusing a possibly stale one (T2.8).
@@ -72,4 +75,5 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - YAML label in the multimodal crisis-detection project split by an unquoted comma (T1.3).
 
 ### Removed
+- The Homelab page (`/homelab/` now returns 404) with `content/homelab.yaml` and its Pages CMS editor; its deploy story lives on as the new case study.
 - Previous "Temporal Portal" React/Vite codebase (fresh start).

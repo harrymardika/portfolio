@@ -2,7 +2,7 @@
 
 > Pengaturan Cloudflare (DNS, Tunnel, aturan cache) **diurus langsung oleh pemilik** di servernya. Dokumen ini menjelaskan bagian yang disediakan repo dan titik integrasinya. Perawatan harian, mengatasi masalah, dan pemulihan: [10 Operasional](10-operations.md).
 >
-> **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Debian 13 (trixie), Docker 29 + Compose 5 (lihat `content/homelab.yaml`). Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
+> **Server:** Lenovo IdeaPad 300S-11IBR, Celeron N3050 (2 core), RAM 1,8 GB, SSD 500 GB, Debian 13 (trixie), Docker 29 + Compose 5. Karena RAM kecil: jangan pernah build di server, batasi memori tiap container, dan hindari database berat.
 
 ## 1. Alur
 
@@ -77,7 +77,7 @@ systemctl list-timers portfolio-update.timer
 
 ## 4. Cache & ketersediaan
 
-- HTML: Caddy mengirim `Cache-Control: public, max-age=0, must-revalidate` (browser selalu memvalidasi ulang). **Cloudflare menyimpannya 7 hari dan cache dihapus otomatis setiap deploy** (ADR 0012), jadi situs tetap tersaji saat server mati dan update tetap langsung terlihat. Badge di `/homelab` menulis "Sedang offline… salinan Cloudflare" saat `/api/health` gagal.
+- HTML: Caddy mengirim `Cache-Control: public, max-age=0, must-revalidate` (browser selalu memvalidasi ulang). **Cloudflare menyimpannya 7 hari dan cache dihapus otomatis setiap deploy** (ADR 0012), jadi situs tetap tersaji saat server mati dan update tetap langsung terlihat. Badge di `/stats/` menulis "Sedang offline… salinan Cloudflare" saat `/api/health` gagal.
 
   **Pengaturan Cloudflare (sekali, oleh pemilik):**
   1. *Caching → Cache Rules → Create rule.* Kondisi (*Edit expression*): `(http.host eq "harry.mardika.my.id" and not starts_with(http.request.uri.path, "/api/"))`. Aksi: *Eligible for cache*; *Edge TTL* → *Ignore cache-control header and use this TTL* → 7 hari; *Browser TTL* → *Respect origin TTL*.

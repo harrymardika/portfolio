@@ -13,7 +13,6 @@ import {
   certificationSchema,
   educationSchema,
   experienceSchema,
-  homelabSchema,
   milestoneSchema,
   profileSchema,
   projectSchema,
@@ -205,7 +204,6 @@ describe('.pages.yml', () => {
   it('matches the content schemas field by field', () => {
     const problems = [
       ...compare('profile', entry('profile').fields, shapeOf(profileSchema)),
-      ...compare('homelab', entry('homelab').fields, shapeOf(homelabSchema)),
       ...compare('github', entry('github').fields, shapeOf(githubConfigSchema)),
       ...compare('projects', entry('projects').fields, shapeOf(projectSchema)),
       ...compare('experience', listFields('experience', 'items'), shapeOf(experienceSchema)),

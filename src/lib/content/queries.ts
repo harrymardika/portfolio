@@ -17,7 +17,6 @@ import type {
   Certification,
   Education,
   Experience,
-  Homelab,
   Milestone,
   Profile,
   SkillGroup,
@@ -30,12 +29,6 @@ const dataOf = async <T>(entries: Promise<{ data: T }[]>): Promise<T[]> => (awai
 export async function getProfile(): Promise<Profile> {
   const entry = await getEntry('profile', 'profile');
   if (!entry) throw new Error('content/profile.yaml is missing');
-  return entry.data;
-}
-
-export async function getHomelab(): Promise<Homelab> {
-  const entry = await getEntry('homelab', 'homelab');
-  if (!entry) throw new Error('content/homelab.yaml is missing');
   return entry.data;
 }
 

@@ -23,7 +23,7 @@
 	}
 
 	# Liveness of the home server itself. Never cached, so a failure means the origin is down and
-	# Cloudflare is serving a cached copy of the page (shown on /homelab).
+	# Cloudflare is serving a cached copy of the page (shown on /stats/).
 	handle /api/health {
 		header Cache-Control "no-store"
 		respond `{"ok":true}` 200

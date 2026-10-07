@@ -14,14 +14,14 @@ const t = UI[locale];
 ---
 
 <p
-  class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm"
+  class="inline-flex max-w-full items-center gap-2 justify-self-start rounded-full border border-line bg-surface px-3 py-1.5 text-sm"
   data-server-status="checking"
   data-label-online={t['status.online']}
   data-label-offline={t['status.offline']}
   role="status"
 >
   <span class="dot size-2 shrink-0 rounded-full bg-line" aria-hidden="true"></span>
-  <span class="font-semibold">{t['status.label']}:</span>
+  <span class="font-semibold whitespace-nowrap">{t['status.label']}:</span>
   <span data-status-text>{t['status.checking']}</span>
 </p>
 

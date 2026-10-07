@@ -124,7 +124,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D4 | Analytics | **Tanpa layanan analytics terpisah.** Statistik tampil langsung di situs (ADR 0009 menggantikan 0004; Fase 5 ditulis ulang) |
 | D5 | Memilih repo GitHub | **Bisa:** `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` (T3.1) |
 | D6 | Sertifikat Azure | **Tidak diperpanjang**, tetap tersembunyi otomatis |
-| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (`content/homelab.yaml`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
+| D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (header `docs/07-deployment.md`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
 
 ## Catatan data
 
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · Homelab → statistik situs + studi kasus portfolio
+- Permintaan pemilik: teks footer "Built with Astro…" dan halaman Homelab tidak penting bagi pengunjung; statistik tetap ada. Statistik sengaja **tidak** dipindah ke beranda (kesan pertama, angka kecil, beranda tidak boleh bergantung pada server rumah).
+- Homelab keluar dari menu; diganti **`/stats/`** (status server + statistik), ditautkan dari footer menggantikan teks "Built with…". `content/homelab.yaml`, collection, skema, query, dan blok Pages CMS-nya dihapus (isinya juga usang: masih menyebut Watchtower). `/homelab/` kini 404 (tanpa redirect, baru diindeks 1 hari). SRS FR-14 diperbarui.
+- Cerita infrastruktur menjadi studi kasus **`content/projects/portfolio-site.md`** (tidak featured) dengan metrik terukur: Lighthouse ≥ 90, Observatory A+, RAM 39 MiB. Perlu ditinjau pemilik.
+- Ditemukan dan diperbaiki: badge status server membuat halaman meluber 8–24 px ke samping di HP (sudah ada sejak Homelab). Tes baru: tidak ada halaman utama yang bisa digeser ke samping di lebar 360 px.
 
 ### 2026-10-07 · Claude Code (Opus) · Dokumentasi proyek
 - `README.md` ditulis ulang sebagai halaman depan (fitur, alur, 3 cara mengubah isi, quick start, struktur repo terkini). Versi lama masih menulis "belum online" dan "rencana".

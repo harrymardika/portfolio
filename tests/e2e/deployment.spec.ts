@@ -35,7 +35,7 @@ test('no page triggers a Content Security Policy violation, including the 3D sce
     if (/Content Security Policy|Refused to/i.test(message.text())) violations.push(message.text());
   });
   await assumeGpu(page); // load the 3D scenes, as a visitor with a GPU would
-  for (const path of ['/', '/id/', '/projects/', '/about/', '/homelab/', '/print/cv/', '/print/portfolio/']) {
+  for (const path of ['/', '/id/', '/projects/', '/about/', '/stats/', '/print/cv/', '/print/portfolio/']) {
     await page.goto(path, { waitUntil: 'networkidle' });
   }
   await page.goto('/');

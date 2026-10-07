@@ -41,7 +41,7 @@ test('the sitemap lists every public page in both languages and no utility pages
     '/id/',
     '/about/',
     '/id/projects/',
-    '/homelab/',
+    '/stats/',
     '/projects/decklify/',
     '/id/projects/decklify/',
   ])

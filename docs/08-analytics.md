@@ -45,7 +45,7 @@ Di browser (DevTools → Console): `localStorage.setItem('stats:debug', '1')`, l
 
 ## 3. Yang ditampilkan publik
 
-Tampil di halaman **/homelab** (`src/components/stats/SiteStats.astro`), hanya pada build dengan `PUBLIC_STATS_ENABLED=true`. Bentuk respons divalidasi dengan skema bersama `src/lib/stats/summary.ts`; jika layanan gagal atau responsnya tidak sesuai, bagian ini menampilkan "Statistik sementara tidak tersedia" dan halaman tetap normal.
+Tampil di halaman **/stats/** (tautan "Statistik situs" di footer, bukan menu utama) (`src/components/stats/SiteStats.astro`), hanya pada build dengan `PUBLIC_STATS_ENABLED=true`. Bentuk respons divalidasi dengan skema bersama `src/lib/stats/summary.ts`; jika layanan gagal atau responsnya tidak sesuai, bagian ini menampilkan "Statistik sementara tidak tersedia" dan halaman tetap normal.
 
 Bagian statistik (EN/ID): total pengunjung unik dan tampilan halaman (semua waktu dan 30 hari), unduhan CV dan Portfolio, 5 halaman terpopuler, 5 sumber trafik (hanya nama domain), dan negara teratas. **Tidak** menampilkan nilai `?ref=`, path dengan query, atau data per orang.
 

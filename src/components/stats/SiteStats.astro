@@ -2,7 +2,8 @@
 /**
  * Public site statistics (ADR 0009, FR-12). Static HTML shows "—"; the script fills in numbers from
  * GET /api/stats/summary. If the service is unreachable the section says so and the page is unaffected.
- * Rendered only in builds with PUBLIC_STATS_ENABLED=true.
+ * Rendered only in builds with PUBLIC_STATS_ENABLED=true. The page supplies the title and intro; its
+ * heading carries id="stats-title".
  */
 import { type Locale, UI } from '@/lib/i18n';
 
@@ -38,12 +39,6 @@ const lists = [
     data-label-since={t['stats.since']}
     aria-busy="true"
   >
-    <div class="grid gap-2">
-      <h2 id="stats-title" class="text-h3">
-        {t['stats.title']}
-      </h2>
-      <p class="text-sm text-ink-muted">{t['stats.intro']}</p>
-    </div>
     <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
       {tiles.map((tile) => (
         <div class="grid gap-1 rounded-xl border border-line bg-surface p-4">
@@ -58,7 +53,7 @@ const lists = [
     <div class="grid gap-4 md:grid-cols-3">
       {lists.map((list) => (
         <div class="grid content-start gap-2">
-          <h3 class="font-sans text-sm font-semibold text-ink-muted">{list.label}</h3>
+          <h2 class="font-sans text-sm font-semibold text-ink-muted">{list.label}</h2>
           <ol class="grid gap-1 text-sm" data-stat-list={list.key}>
             <li class="text-ink-muted">—</li>
           </ol>
