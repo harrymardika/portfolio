@@ -126,6 +126,10 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T9.4** Tampilan testimoni (D15; formulirnya T12.1)
   - Kriteria: `content/testimonials.yaml` (nama, peran, hubungan, kutipan EN/ID, tautan opsional, tanggal persetujuan) + skema + CMS; tampil di beranda/About (dan opsional Portfolio PDF); tidak tampil jika kosong; hanya dengan izin orang yang dikutip.
 
+- [ ] **T9.5** Format angka konsisten di semua bahasa (D16)
+  - Aturan (rekomendasi, menunggu D16): **titik untuk desimal di EN dan ID** (IPK 3.99/4.00, akurasi 92.5%, AUC 0.96, Rp5.85 juta); karena itu **titik tidak dipakai untuk ribuan**: EN "12,000+", ID "12 ribu+". Sama untuk semua tempat: web, CV, Portfolio PDF, statistik `/stats/`, studi kasus terjemahan (T9.3), draf AI.
+  - Kriteria: angka desimal di teks ID `content/` (±11 tempat, mis. `92,5%`, `0,96`, `8,39/10`, `83,68%`, `94,5/100`) dan ribuan bertitik (±5 tempat, mis. `12.000+`, `63.000`) diubah; `formatGpa` tidak lagi mengganti titik; angka statistik versi ID mengikuti aturan yang sama; tes unit menolak `\d,\d` (desimal koma) dan `\d.\d{3}` (ribuan bertitik) di teks ID; aturan ditulis di docs/04 §6 dan prompt draf AI.
+
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
 
 - [ ] **T10.1** Model data varian (D10)
@@ -179,6 +183,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 | No | Pertanyaan | Rekomendasi |
 |---|---|---|
+| D16 | Format angka desimal (pemilik: harus konsisten) | **Titik** untuk desimal di EN dan ID; ribuan tanpa titik (EN `12,000`, ID `12 ribu`) |
 | D11 | Skill tambahan | Pemilik mencentang daftar kandidat |
 | D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
 | D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
