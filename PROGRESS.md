@@ -17,7 +17,7 @@
 | 5 | Statistik bawaan di situs & link pelacak (ADR 0009) | ✅ Selesai |
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
-| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | 🔄 T8.1 (Pages CMS) dan T8.3 selesai; T8.2 menunggu keputusan pemilik (API key AI) |
+| 8 | Otomasi lanjutan: CMS, draf konten oleh AI | 🔄 T8.1, T8.3 selesai; T8.2 kode selesai, menunggu secrets + run nyata |
 
 Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 dan isian konten pemilik — ≈97%**
 
@@ -107,7 +107,7 @@ Progres keseluruhan: **Fase 0–2 dan 4–7 selesai; situs online. Tersisa T8.2 
 ## Fase 8: Otomasi lanjutan
 
 - [x] **T8.1** CMS berbasis Git untuk mengedit `content/` dari browser: **Pages CMS** (ADR 0011), `.pages.yml`, penjaga drift `tests/unit/cms-config.test.ts`. *Pemilik: pasang GitHub App sekali (docs/04 §1).*
-- [ ] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge)
+- [~] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge). Kode + tes selesai (Gemini, cadangan Groq; ADR 0013). *Menunggu pemilik: secrets `GEMINI_API_KEY`/`GROQ_API_KEY`, izin Actions membuat PR, lalu satu run nyata.*
 - [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
 
 ---
@@ -136,6 +136,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-07 · Claude Code (Opus) · T8.2 (kode)
+- **Provider (keputusan pemilik):** Gemini `gemini-3.5-flash` (tier gratis), cadangan Groq `openai/gpt-oss-120b`. Dicek dari dokumentasi resmi: GitHub Models dihentikan 30 Juli 2026; `generateContent` masih didukung; Groq mendukung `json_schema` strict.
+- **Dikerjakan:** `src/lib/drafts/` (kandidat, prompt, skema + sanitasi + pembuangan angka yang tidak ada di README, render Markdown lewat `projectSchema`, provider dengan fallback, `runDrafts` dengan I/O diinjeksi), `fetchReadme` di klien GitHub, `parseFrontmatter` bersama, `scripts/draft-case-studies.ts` (`bun run drafts`, `--dry-run`), workflow `case-study-drafts.yml`, ADR 0013, docs/04.
+- **Review keamanan (reviewer):** tanpa blocker; 7 should-fix diperbaiki: filter tautan bisa diakali (`javascript:`, `//`, `www.`, entitas, e-mail, tautan referensi) → kini menolak semua sintaks markup/tautan kecuali tautan polos GitHub; pencocokan angka salah-positif (`1` di `v1.99`) → batas angka utuh, angka satu digit dibuang, koma ribuan/desimal; PR gagal memblokir repo → branch dihapus lagi; satu error menghentikan run → per-repo `try/catch`; komentar asal-usul akan tampil di HTML publik → dipindah ke PR; teks model bisa menambah heading → normalisasi; key diteruskan ke subproses → env minimal. Juga: action di-pin ke commit, `permissions` di level job, checkout selalu `main`, peringatan jika key belum dipasang.
+- **Verifikasi:** 16 unit test (termasuk setiap cara bypass yang ditemukan reviewer, angka salah-positif, normalisasi, README gagal diambil, `fetchReadme` 404). Saat ini belum ada repo ber-topic `portfolio`, jadi run nyata menunggu pemilik memberi topic pada satu repo.
 
 ### 2026-10-07 · Claude Code (Opus) · Google Search Console + tunnel
 - **Search Console:** pemilik memverifikasi properti Domain `harry.mardika.my.id` (token TXT `google-site-verification` di root `mardika.my.id` lewat Domain Connect Cloudflare; **jangan dihapus**). Sitemap `https://harry.mardika.my.id/sitemap.xml` dikirim (status awal "tidak dapat mengambil", umum untuk properti baru; sitemap terverifikasi sehat: 200, `text/xml`, XML valid, 26 URL). Uji URL langsung beranda: "URL tersedia untuk Google", pengindeksan diminta. Cek ulang status sitemap 1–2 hari kemudian.

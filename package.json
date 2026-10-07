@@ -33,6 +33,7 @@
     "test:e2e": "playwright test",
     "lighthouse": "bunx @lhci/cli@0.15.1 autorun",
     "lighthouse:summary": "bun scripts/lighthouse-summary.ts",
+    "drafts": "bun scripts/draft-case-studies.ts",
     "test:e2e:docker": "E2E_BASE_URL=http://localhost:${WEB_PORT:-8080} playwright test --project=desktop --grep-invert @fixture",
     "verify": "bun run check && bun test && bun run test:e2e"
   },

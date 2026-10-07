@@ -21,6 +21,7 @@ import {
   skillGroupSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
+import { parseFrontmatter } from '@/lib/content/frontmatter';
 import { parseYamlList, parseYamlSingleton, pruneEmpty } from '@/lib/content/yaml';
 import { githubConfigSchema } from '@/lib/github';
 
@@ -49,10 +50,7 @@ const LIST_FILES = [
 ] as const;
 
 function readFrontmatter(path: string): unknown {
-  const match = /^---\n([\s\S]*?)\n---/.exec(read(path));
-  if (!match?.[1]) throw new Error(`${path} has no frontmatter`);
-  // Same rule as src/content.config.ts: blank values from the browser editor count as not set.
-  return pruneEmpty(load(match[1]));
+  return parseFrontmatter(read(path)).data;
 }
 
 describe('content files', () => {

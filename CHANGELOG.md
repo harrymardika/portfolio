@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- AI case study drafts: tag a repository `portfolio` and a daily workflow drafts its case study (English and Indonesian) from the README with Gemini, or Groq as a fallback, as a pull request for review (T8.2, ADR 0013).
 - Two more case studies: Reclaimyt (with design sketches and prototype photos) and Dompet Juara (with its dashboard); Decklify gains a "What I learned" section and Aksara Jawa its test accuracy.
 - The site stays available from Cloudflare's cache when the home server is down; each deploy purges that cache so updates still show at once (ADR 0012).
 - The site is live at https://harry.mardika.my.id on the home server (Debian 13), with an A+ security header grade on Mozilla HTTP Observatory (T7.3).

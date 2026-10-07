@@ -14,5 +14,6 @@
 | 0010 | [systemd timer, bukan Watchtower, untuk menarik image baru](0010-update-timer-instead-of-watchtower.md) | Accepted |
 | 0011 | [Pages CMS untuk mengedit `content/` dari browser](0011-pages-cms.md) | Accepted |
 | 0012 | [HTML di-cache Cloudflare, dihapus otomatis saat deploy](0012-edge-cache-purge-on-deploy.md) | Accepted |
+| 0013 | [Draf studi kasus oleh AI sebagai Pull Request](0013-ai-case-study-drafts.md) | Accepted |
 
 Template: [0000-template.md](0000-template.md)

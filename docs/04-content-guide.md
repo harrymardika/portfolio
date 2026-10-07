@@ -168,6 +168,16 @@ Cara tampilnya:
 - Repo **dengan** case study: tulis `links.repo` di `content/projects/<slug>.md` dengan URL repo. Case study tetap yang tampil (tanpa duplikat), dan jumlah bintang dari GitHub ikut ditampilkan.
 - Beranda hanya menampilkan case study `featured`, bukan repo GitHub.
 
+### Draf studi kasus otomatis oleh AI (T8.2, ADR 0013)
+
+Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Setiap hari (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
+
+1. Buka PR-nya, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result).
+2. Perbaiki yang kurang tepat langsung di PR (✏️) atau setelah merge lewat Pages CMS. AI hanya membaca README: cek peran Anda, angka, dan hasil.
+3. **Merge** untuk menyimpan draf (masih `draft: true`, belum tayang), lalu ubah **Draf** menjadi mati di Pages CMS saat siap tampil. Atau **tutup** PR jika tidak perlu.
+
+README yang lebih lengkap menghasilkan draf yang lebih baik. Repo tanpa README (atau README sangat pendek) dilewati. Angka di bagian *Angka utama* hanya dipertahankan jika tertulis persis di README; angka di kalimat tetap perlu Anda cek.
+
 ## 5. Mesin pencari dan pratinjau tautan (T7.1)
 
 Tidak ada file SEO terpisah yang perlu diisi; semuanya diturunkan dari konten:

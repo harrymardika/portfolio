@@ -31,7 +31,7 @@ const PER_PAGE = 100;
 /** Safety stop: 10 pages = 1000 repositories. */
 const MAX_PAGES = 10;
 
-async function getJson(url: string, options: ClientOptions): Promise<unknown> {
+async function request(url: string, options: ClientOptions, accept: string): Promise<Response> {
   const {
     token,
     fetch: fetchImpl = fetch,
@@ -40,7 +40,7 @@ async function getJson(url: string, options: ClientOptions): Promise<unknown> {
     timeoutMs = 10_000,
   } = options;
   const headers: Record<string, string> = {
-    Accept: 'application/vnd.github+json',
+    Accept: accept,
     'X-GitHub-Api-Version': '2022-11-28',
     'User-Agent': 'harry-mardika-portfolio',
   };
@@ -50,7 +50,7 @@ async function getJson(url: string, options: ClientOptions): Promise<unknown> {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const response = await fetchImpl(url, { headers, signal: AbortSignal.timeout(timeoutMs) });
-      if (response.ok) return await response.json();
+      if (response.ok) return response;
       const rateLimited = response.status === 429 || response.headers.get('x-ratelimit-remaining') === '0';
       if (rateLimited) {
         // Retrying cannot help before the reset time; fail fast and let the caller use its cache.
@@ -73,6 +73,10 @@ async function getJson(url: string, options: ClientOptions): Promise<unknown> {
   throw lastError;
 }
 
+async function getJson(url: string, options: ClientOptions): Promise<unknown> {
+  return (await request(url, options, 'application/vnd.github+json')).json();
+}
+
 /** All public repositories of `username`, most recently pushed first. */
 export async function fetchPublicRepos(username: string, options: ClientOptions = {}): Promise<ApiRepo[]> {
   const repos: ApiRepo[] = [];
@@ -83,4 +87,19 @@ export async function fetchPublicRepos(username: string, options: ClientOptions 
     if (batch.length < PER_PAGE) break;
   }
   return repos;
+}
+
+/** The README of `owner/repo` as raw Markdown, or null when the repository has none. */
+export async function fetchReadme(
+  owner: string,
+  repo: string,
+  options: ClientOptions = {},
+): Promise<string | null> {
+  const url = `${API}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`;
+  try {
+    return await (await request(url, options, 'application/vnd.github.raw+json')).text();
+  } catch (error) {
+    if (error instanceof GithubError && error.status === 404) return null;
+    throw error;
+  }
 }

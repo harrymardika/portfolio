@@ -28,6 +28,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 | `docker/deploy/portfolio-update.{service,timer}` | systemd: jalankan `update.sh` tiap 10 menit |
 | `docker/deploy/backup-stats.sh` | Backup SQLite konsisten (`VACUUM INTO`), simpan 14 terakhir |
 | `.github/workflows/ci.yml` | Pull request (dan sebelum setiap deploy): `bun run verify`, lalu Lighthouse CI (`lighthouserc.cjs`); laporan sebagai artifact `lighthouse-reports` |
+| `.github/workflows/case-study-drafts.yml` | Harian + manual: draf studi kasus AI untuk repo ber-topic `portfolio` → Pull Request (ADR 0013) |
 | `.github/workflows/deploy.yml` | `main` + tiap 6 jam + manual: verify → build & push image |
 | `docker/Dockerfile.dev`, `docker/compose.dev.yml` | Development (Fase 1) |
 
