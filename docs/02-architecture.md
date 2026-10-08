@@ -113,7 +113,8 @@ Aturan:
 │   │   ├── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
 │   │   └── assistant/           # chatbot (ADR 0014): knowledge (skema), sections + project-sections + text (konten → teks),
 │   │                            #   budget (token, versi ringkas, cek path, PHONE_PATTERN), ask (permintaan, prompt,
-│   │                            #   pemeriksa jawaban), limits (batas pemakaian); tanpa API Node, aman untuk browser
+│   │                            #   pemeriksa jawaban), limits (batas pemakaian), chat (sisi browser: obrolan per tab,
+│   │                            #   body permintaan, membaca jawaban); tanpa API Node, aman untuk browser
 │   ├── components/
 │   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
@@ -122,6 +123,7 @@ Aturan:
 │   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang), SelectedProjects
 │   │   ├── about/               # AboutSection, TimelineItem
 │   │   ├── messages/            # Messages (kesan & pesan di beranda, T9.4)
+│   │   ├── assistant/           # AskWidget (chatbot di sudut, T11.4) + ask-panel.ts (dimuat saat diklik)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
 │   │   └── print/               # CvDocument, CvEntry, PortfolioDocument

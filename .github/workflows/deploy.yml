@@ -59,6 +59,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # The corner chat is built in once the owner sets the repository variable PUBLIC_ASSISTANT_ENABLED
+          # to true (Settings → Secrets and variables → Actions → Variables), after installing the service (T11.6).
+          build-args: |
+            PUBLIC_ASSISTANT_ENABLED=${{ vars.PUBLIC_ASSISTANT_ENABLED == 'true' }}
           # Raises the GitHub API limit for the project sync; mounted as a build secret, never in a layer.
           secrets: |
             github_token=${{ secrets.GITHUB_TOKEN }}

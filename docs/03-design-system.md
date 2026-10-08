@@ -76,6 +76,7 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 | **Fallback Journey** | `<ol>` yang sama ditampilkan sebagai timeline vertikal (garis + titik) tanpa JS/WebGL atau saat 3D `off`. Popover detail tetap berfungsi. |
 | **Button** | Varian `primary` (amber di forest / forest di terang), `outline`. Tinggi min 44px. Fokus: outline 2px `currentColor`, offset 2px. |
 | **Stat** | Angka mono 500 + label kecil. |
+| **Chatbot "Tanya Harry"** (`src/components/assistant/`) | Tombol pil `forest` di kanan bawah (cincin `surface` agar terlihat di atas hero), di HP hanya ikon (label tetap untuk pembaca layar). Muncul hanya jika JS aktif dan `/api/ask/health` menyatakan fitur menyala. Panel: dialog non-modal (`surface`, radius 12px), di HP menjadi lembar bawah selebar layar. Gelembung pengunjung `forest`/`on-forest`, jawaban `sage`/`ink`. `body` diberi ruang bawah 4,5rem saat tombol tampil agar tidak menutupi akhir halaman. |
 
 ## 6. Aturan 3D
 

@@ -25,7 +25,9 @@ RUN bun x playwright install --with-deps --only-shell chromium
 COPY . .
 ARG SITE_URL=https://harry.mardika.my.id
 ARG PUBLIC_STATS_ENABLED=true
-ENV SITE_URL=${SITE_URL} PUBLIC_STATS_ENABLED=${PUBLIC_STATS_ENABLED}
+# The corner chat (T11.4); deploy.yml sets it from the repository variable PUBLIC_ASSISTANT_ENABLED (T11.6).
+ARG PUBLIC_ASSISTANT_ENABLED=false
+ENV SITE_URL=${SITE_URL} PUBLIC_STATS_ENABLED=${PUBLIC_STATS_ENABLED} PUBLIC_ASSISTANT_ENABLED=${PUBLIC_ASSISTANT_ENABLED}
 # GITHUB_TOKEN is optional (raises the API rate limit) and never stored in an image layer.
 RUN --mount=type=secret,id=github_token,required=false \
     GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" bun run build

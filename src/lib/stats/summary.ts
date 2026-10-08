@@ -57,12 +57,31 @@ export const refReportSchema = z.strictObject({
   downloadedPortfolio: z.boolean(),
 });
 
+const askOutcomes = z.strictObject({
+  answered: z.number().int().min(0),
+  unavailable: z.number().int().min(0),
+  limit: z.number().int().min(0),
+});
+
+/** Chatbot questions by outcome (T11.4): counts only, never text. */
+export const askReportSchema = z.strictObject({ total: askOutcomes, last30Days: askOutcomes });
+
 export const privateReportSchema = z.strictObject({
   generatedAt: z.string(),
   refs: z.array(refReportSchema),
+  /** Optional so the report script still reads a stats service from before T11.4. */
+  asks: askReportSchema.optional(),
 });
 
 export type RefReport = z.infer<typeof refReportSchema>;
+export type AskReport = z.infer<typeof askReportSchema>;
+
+/** One line per period: answered, unavailable (fallback shown), and stopped by the usage limits. */
+export function formatAskReport(asks: AskReport): string {
+  const line = (label: string, o: AskReport['total']): string =>
+    `${label}: ${o.answered + o.unavailable + o.limit} questions (${o.answered} answered, ${o.unavailable} unavailable, ${o.limit} over the limit)`;
+  return [line('Last 30 days', asks.last30Days), line('All time', asks.total)].join('\n');
+}
 
 /** Plain-text table for the terminal, newest first. Times in UTC, minute precision. */
 export function formatRefReport(refs: readonly RefReport[]): string {

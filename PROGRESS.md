@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.4 (widget chat di sudut)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.5 (uji ±30 pertanyaan lewat workflow manual)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.3 selesai; berikutnya T11.4 (widget di sudut) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.4 selesai; berikutnya T11.5 (uji kualitas dan keamanan) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -154,7 +154,7 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
   - Kriteria: penyedia Gemini/Groq direfaktor ke `src/lib/ai/` (dipakai juga draf T8.2); validasi masuk (Origin, ukuran, 1–500 karakter, riwayat ≤ 6 pesan, bot); batas per pengunjung 10/jam dan 30/hari (hash harian, tanpa IP), total 300/hari, ≤ 3 permintaan bersamaan, timeout 20 s; jawaban JSON tervalidasi (teks biasa, tautan hanya path situs, pola nomor HP ditolak), Gemini → Groq → pesan cadangan; kill switch `ASSISTANT_ENABLED`; log tanpa teks pertanyaan; tes unit dengan penyedia tiruan.
 - [x] **T11.3** Infrastruktur: Docker, deploy, Caddy (+ `/security-review`)
   - Kriteria: target `assistant` di Dockerfile + matrix deploy; service `assistant` di compose (hardening, 128 MB, tanpa volume); Caddy `/api/ask*` (no-store); CSP tetap; `.env.example`, docs/07 dan docs/10 (key terpisah, mematikan fitur, kuota); `test:e2e:docker` mencakup health.
-- [ ] **T11.4** Widget chat di sudut
+- [x] **T11.4** Widget chat di sudut
   - Kriteria: tombol kecil di semua halaman `PageLayout` (bukan halaman cetak), tersembunyi tanpa JS; panel dimuat saat diklik; dialog non-modal yang ramah keyboard dan pembaca layar; contoh pertanyaan, hapus percakapan, pemberitahuan privasi; percakapan bertahan antar-halaman dalam satu tab (`sessionStorage`); fallback CV + email saat server mati/batas habis; lembar bawah di HP tanpa menutupi footer; EN/ID; event statistik `ask` tanpa teks; e2e dengan API tiruan + axe; Lighthouse tetap ≥ 90/95.
 - [ ] **T11.5** Uji kualitas dan keamanan
   - Kriteria: ±30 pertanyaan uji (fakta EN/ID, di luar topik, data pribadi, prompt injection, tautan luar/HTML) dijalankan lewat workflow manual `assistant-eval.yml` (secret repo, tanpa laptop); hasil di `docs/assistant-eval.md`; prompt diperbaiki sampai lulus; `/security-review` seluruh fase.
@@ -223,6 +223,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · T11.4 widget chat di sudut
+- **Dikerjakan:** `src/components/assistant/AskWidget.astro` di setiap `PageLayout` (bukan halaman cetak): tombol pil di kanan bawah (di HP bulat berisi ikon), tersembunyi tanpa JS dan **hanya muncul jika `/api/ask/health` menyatakan fitur menyala** (dicek sekali per tab setelah halaman dimuat), sehingga kill switch juga menyembunyikan tombolnya dan pengunjung tidak melihat fitur sebelum diluncurkan. Panel (`ask-panel.ts`) dimuat saat tombol diklik: dialog non-modal (Esc/tutup mengembalikan fokus), contoh pertanyaan, hapus obrolan, pemberitahuan privasi, obrolan bertahan antar-halaman lewat `sessionStorage`, jawaban dimasukkan sebagai teks dengan tautan hanya ke path situs, fallback CV + email saat layanan mati/gagal dan pesan khusus saat batas habis, lembar bawah di HP, `body` diberi ruang bawah agar tombol tidak menutupi footer. Semua teks dari kamus UI (EN/ID). Logika murni di `src/lib/assistant/chat.ts`.
+- **Flag build `PUBLIC_ASSISTANT_ENABLED`** (bawaan mati; di produksi dari variabel repo GitHub, docs/10 §3.1 langkah 6): sebelum layanan terpasang, pengecekan health akan 404/502 dan memunculkan error konsol di setiap halaman (juga menurunkan Lighthouse *Best Practices*), jadi widget baru ikut di-build setelah peluncuran. Build e2e menyalakannya dengan API tiruan; server Lighthouse (`scripts/serve-build.ts`) menjawab `/api/ask*` dengan handler sungguhan tanpa penyedia, sehingga Lighthouse mengukur halaman dengan tombol chatbot.
+- **Dari review (tanpa temuan keamanan DOM):** ring fokus keyboard kini `forest-ink` (dulu putih di atas putih pada tema terang, WCAG 2.4.7); tombol hapus obrolan ≥ 44px; di HP fokus awal ke log agar keyboard tidak menutupi lembar bawah (`dvh`); health check yang gagal tidak di-cache; batas di sisi browser dikunci sama dengan layanan lewat tes; docs/07 §6 (build Docker lokal dengan widget) dan catatan implementasi di ADR 0014 (kill switch menyembunyikan tombol). Catatan terpisah: tombol hijau di 404, About, dan studi kasus memakai ring `currentColor` yang sama; layak diperiksa di penutupan fase.
+- **Statistik:** event `ask` (`answered`/`unavailable`/`limit`, tanpa teks) lewat beacon yang sudah ada (menghormati DNT/GPC); jumlahnya tampil di laporan privat `bun run stats:report` (memenuhi bagian statistik T11.6).
+- **Tes:** 23 e2e widget (API tiruan, axe terang/gelap, HP, cetak), unit `chat.ts` dan laporan `ask`. Dicek visual desktop 1280 dan HP (Pixel 7), terang dan gelap; tombol diberi cincin `surface` agar terlihat di atas hero hijau.
+- **Langkah berikutnya:** T11.5 (uji ±30 pertanyaan lewat workflow manual).
 
 ### 2026-10-08 · Claude Code (Opus) · T11.3 infrastruktur chatbot
 - **Dikerjakan:** target `assistant` di `docker/Dockerfile` (Bun + `server.js` + pengetahuan build itu, healthcheck), matrix deploy `[web, stats, assistant]`, service `assistant` di `docker/compose.yml` (hardening yang sama, 128 MB, tanpa volume, `ASSISTANT_ENABLED` bawaan `false`, key `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` terpisah dari draf AI), Caddy `/api/ask*` (`no-store`, body maks. 8 KB, alamat pengunjung diteruskan), handler kini menolak situs lain/bot (403) sebelum kill switch. `.env.example`, docs/07, docs/10 §2, §3.1 (urutan pemasangan, kill switch, kuota, log), §6.4.

@@ -24,6 +24,7 @@ Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──
 | `download-portfolio` | `{ lang }` | Tombol Portfolio PDF (T4.4) |
 | `outbound` | `{ platform: linkedin \| instagram \| github \| medium \| email }` | Klik tautan sosial |
 | `ref` *(privat)* | nilai `?ref=` | Kunjungan dari tautan lamaran |
+| `ask` *(privat)* | `{ detail: answered \| unavailable \| limit }`, **tanpa teks pertanyaan** | Setiap pertanyaan ke chatbot "Tanya Harry" selesai (T11.4); widget mengirim event DOM `stats:ask`, beacon yang meneruskannya. Jumlahnya hanya tampil di laporan privat (`bun run stats:report`), tidak di `/stats/` |
 
 Nama dan bentuk event didefinisikan di satu tempat, `src/lib/stats/events.ts` (skema Zod yang dipakai beacon dan layanan). Beacon (`src/components/layout/StatsBeacon.astro`, aturan murni di `src/lib/stats/beacon.ts`) mendengarkan klik pada elemen dengan atribut:
 - `data-download="cv|portfolio"` (tombol unduh), dan

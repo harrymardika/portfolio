@@ -6,7 +6,7 @@
  *   STATS_ADMIN_TOKEN  same token as the stats service (required)
  *   STATS_URL          site to query (default https://harry.mardika.my.id; local: http://localhost:8787)
  */
-import { formatRefReport, privateReportSchema } from '../src/lib/stats/summary';
+import { formatAskReport, formatRefReport, privateReportSchema } from '../src/lib/stats/summary';
 
 const token = process.env['STATS_ADMIN_TOKEN'];
 const base = process.env['STATS_URL'] || 'https://harry.mardika.my.id';
@@ -36,3 +36,4 @@ if (!response.ok) {
 const report = privateReportSchema.parse(await response.json());
 console.log(`Tracking links on ${base} (report generated ${report.generatedAt})\n`);
 console.log(formatRefReport(report.refs));
+if (report.asks) console.log(`\n"Ask Harry" chatbot questions\n${formatAskReport(report.asks)}`);

@@ -118,9 +118,13 @@ export function createHandler(options: HandlerOptions): (request: Request) => Pr
     const given = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
     if (!sameToken(given, adminToken))
       return json({ error: 'Unauthorized' }, 401, { 'www-authenticate': 'Bearer' });
-    return json({ generatedAt: now().toISOString(), refs: store.refReport() }, 200, {
-      'cache-control': 'no-store',
-    });
+    return json(
+      { generatedAt: now().toISOString(), refs: store.refReport(), asks: store.askReport(now()) },
+      200,
+      {
+        'cache-control': 'no-store',
+      },
+    );
   }
 
   return async (request) => {

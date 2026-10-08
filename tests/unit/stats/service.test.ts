@@ -68,6 +68,19 @@ describe('StatsStore', () => {
     });
   });
 
+  it('counts chatbot questions by outcome, apart from page views and downloads', () => {
+    store = new StatsStore();
+    const now = new Date('2026-10-08T12:00:00Z');
+    store.record(event({ type: 'ask', detail: 'answered' }), new Date('2026-08-01T10:00:00Z'));
+    store.record(event({ type: 'ask', detail: 'answered' }), now);
+    store.record(event({ type: 'ask', detail: 'limit' }), now);
+    expect(store.askReport(now)).toEqual({
+      total: { answered: 2, unavailable: 0, limit: 1 },
+      last30Days: { answered: 1, unavailable: 0, limit: 1 },
+    });
+    expect(store.summary(now).pageviews.total).toBe(0);
+  });
+
   it('never exposes ref values in the public summary', () => {
     store = new StatsStore();
     store.record(event({ ref: 'secret-company' }), new Date());
@@ -153,6 +166,7 @@ describe('stats HTTP handler', () => {
     const ok = await get('Bearer owner-token');
     expect(ok.status).toBe(200);
     expect(ok.headers.get('cache-control')).toBe('no-store');
+    expect(await ok.json()).toMatchObject({ asks: { total: { answered: 0, unavailable: 0, limit: 0 } } });
   });
 
   it('disables the private report when no token is configured', async () => {

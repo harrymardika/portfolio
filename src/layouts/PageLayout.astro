@@ -1,9 +1,10 @@
 ---
 /**
- * Standard page frame: skip link, header, main landmark, footer.
+ * Standard page frame: skip link, header, main landmark, footer, and the "Ask Harry" chat (T11.4).
  * Pages pass the profile so the layout itself does not fetch data.
  */
 import BaseLayout from './BaseLayout.astro';
+import AskWidget from '@/components/assistant/AskWidget.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Header from '@/components/layout/Header.astro';
 import SkipLink from '@/components/layout/SkipLink.astro';
@@ -22,6 +23,8 @@ interface Props {
 }
 
 const { profile, ...base } = Astro.props;
+// Built in only once the assistant service runs on the server (T11.6); before that its health check would 404.
+const assistant = import.meta.env.PUBLIC_ASSISTANT_ENABLED === 'true';
 ---
 
 <BaseLayout {...base}>
@@ -31,4 +34,5 @@ const { profile, ...base } = Astro.props;
     <slot />
   </main>
   <Footer locale={base.locale} profile={profile} />
+  {assistant && <AskWidget locale={base.locale} profile={profile} />}
 </BaseLayout>

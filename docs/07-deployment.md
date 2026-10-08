@@ -101,7 +101,7 @@ Diatur di `docker/Caddyfile`: `Strict-Transport-Security`, `X-Content-Type-Optio
 ## 6. Menguji stack produksi secara lokal
 
 ```bash
-docker build -f docker/Dockerfile --target web   -t ghcr.io/harrymardika/portfolio-web:local .
+docker build -f docker/Dockerfile --target web   -t ghcr.io/harrymardika/portfolio-web:local --build-arg PUBLIC_ASSISTANT_ENABLED=true .
 docker build -f docker/Dockerfile --target stats -t ghcr.io/harrymardika/portfolio-stats:local .
 docker build -f docker/Dockerfile --target assistant -t ghcr.io/harrymardika/portfolio-assistant:local .
 TAG=local WEB_PORT=8080 docker compose -f docker/compose.yml -p portfolio-local up -d
@@ -109,7 +109,7 @@ bun run test:e2e:docker        # e2e + header + CSP + kompresi terhadap containe
 TAG=local docker compose -f docker/compose.yml -p portfolio-local down -v   # -v: hapus volume uji
 ```
 
-`-p portfolio-local` memisahkan stack uji dari stack lain di laptop. Tes yang bergantung pada fixture GitHub (`@fixture`) dilewati karena image memakai data GitHub asli. CSP hanya diterapkan oleh Caddy, jadi pelanggaran CSP (mis. font yang di-*inline* sebagai `data:`) hanya tertangkap di sini; `scripts/generate-csp.ts` juga menggagalkan build jika ada font `data:`.
+`-p portfolio-local` memisahkan stack uji dari stack lain di laptop. `PUBLIC_ASSISTANT_ENABLED=true` menyertakan widget chatbot agar tes widget juga berjalan terhadap Caddy dan CSP asli (di produksi nilainya dari variabel repo, docs/10 §3.1). Tes yang bergantung pada fixture GitHub (`@fixture`) dilewati karena image memakai data GitHub asli. CSP hanya diterapkan oleh Caddy, jadi pelanggaran CSP (mis. font yang di-*inline* sebagai `data:`) hanya tertangkap di sini; `scripts/generate-csp.ts` juga menggagalkan build jika ada font `data:`.
 
 ## 7. Rollback
 

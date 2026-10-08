@@ -1,3 +1,4 @@
+export * from './chat';
 export * from './ask';
 export * from './budget';
 export * from './knowledge';

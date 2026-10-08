@@ -1,0 +1,368 @@
+---
+/**
+ * "Ask Harry" chat in the bottom-right corner of every page (T11.4, D13, ADR 0014). Hidden without
+ * JavaScript and while the service is off: a small script shows the button only after the page has loaded
+ * and /api/ask/health says the feature is on (checked once per tab), so the kill switch also hides it. The
+ * chat code (ask-panel.ts) loads on the first click. All text comes from the UI dictionary.
+ */
+import { downloadPath } from '@/lib/downloads';
+import { type Locale, UI } from '@/lib/i18n';
+
+import type { Profile } from '@/lib/content';
+
+interface Props {
+  locale: Locale;
+  profile: Pick<Profile, 'name' | 'socials'>;
+}
+
+const { locale, profile } = Astro.props;
+const t = UI[locale];
+const cvHref = downloadPath(profile.name, 'cv', locale);
+const emailHref = profile.socials.find((social) => social.platform === 'email')?.url;
+const examples = [t['ask.example1'], t['ask.example2'], t['ask.example3']];
+---
+
+<div
+  class="ask"
+  data-ask
+  data-lang={locale}
+  data-label-you={t['ask.you']}
+  data-label-assistant={t['ask.assistant']}
+  data-thinking={t['ask.thinking']}
+  hidden
+>
+  <section
+    id="ask-panel"
+    class="ask-panel"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="ask-title"
+    data-ask-panel
+    hidden
+  >
+    <header class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+      <h2 id="ask-title" class="font-display text-h3">
+        {t['ask.title']}
+      </h2>
+      <button type="button" class="ask-icon-button" aria-label={t['ask.close']} data-ask-close>
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </header>
+
+    {/* A scrollable region must be reachable by keyboard (WCAG 2.1.1, axe scrollable-region-focusable). */}
+    {/* eslint-disable-next-line astro/jsx-a11y/no-noninteractive-tabindex */}
+    <div class="ask-log" role="log" aria-live="polite" aria-labelledby="ask-title" tabindex="0" data-ask-log>
+      <p class="text-ink-muted">{t['ask.intro']}</p>
+    </div>
+
+    <div class="px-4 pb-2" data-ask-examples>
+      <p class="text-eyebrow text-amber-deep">{t['ask.examples']}</p>
+      <ul class="mt-2 flex flex-wrap gap-2">
+        {examples.map((example) => (
+          <li>
+            <button type="button" class="ask-chip" data-ask-example>
+              {example}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <form class="flex items-end gap-2 border-t border-line px-4 py-3" data-ask-form>
+      <label for="ask-input" class="sr-only">
+        {t['ask.label']}
+      </label>
+      <textarea
+        id="ask-input"
+        class="ask-input"
+        rows="2"
+        maxlength="500"
+        required
+        placeholder={t['ask.placeholder']}
+        data-ask-input
+      ></textarea>
+      <button type="submit" class="ask-send" data-ask-send>
+        {t['ask.send']}
+      </button>
+    </form>
+
+    <footer class="flex items-start justify-between gap-3 px-4 pb-3 text-sm text-ink-muted">
+      <p>{t['ask.privacy']}</p>
+      <button
+        type="button"
+        class="inline-flex min-h-11 shrink-0 items-center underline underline-offset-4"
+        data-ask-clear
+      >
+        {t['ask.clear']}
+      </button>
+    </footer>
+
+    <template data-ask-note="unavailable">
+      <p>{t['ask.fallback']}</p>
+    </template>
+    <template data-ask-note="limit">
+      <p>{t['ask.limit']}</p>
+    </template>
+    <template data-ask-note-links>
+      <p class="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        <a href={cvHref} download data-download="cv">
+          {t['download.cv']}
+        </a>
+        {emailHref && (
+          <a href={emailHref} data-outbound="email">
+            {t['ask.email']}
+          </a>
+        )}
+      </p>
+    </template>
+  </section>
+
+  <button type="button" class="ask-toggle" aria-expanded="false" aria-controls="ask-panel" data-ask-toggle>
+    <svg
+      class="size-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
+      <path d="M21 12a8 8 0 0 1-11.8 7L4 20l1.1-4.6A8 8 0 1 1 21 12z"></path>
+    </svg>
+    <span>{t['ask.open']}</span>
+  </button>
+</div>
+
+<script>
+  import { ASK_HEALTH_URL, ENABLED_STORAGE_KEY } from '@/lib/assistant/chat';
+
+  const root = document.querySelector<HTMLElement>('[data-ask]');
+
+  function remembered(): string | null {
+    try {
+      return sessionStorage.getItem(ENABLED_STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  async function isEnabled(): Promise<boolean> {
+    const cached = remembered();
+    if (cached !== null) return cached === '1';
+    try {
+      const response = await fetch(ASK_HEALTH_URL, { cache: 'no-store' });
+      // A failed check (e.g. a 502 while the container restarts) is not remembered: the next page asks again.
+      if (!response.ok) return false;
+      const body: unknown = await response.json();
+      const enabled =
+        typeof body === 'object' && body !== null && (body as { enabled?: unknown }).enabled === true;
+      try {
+        sessionStorage.setItem(ENABLED_STORAGE_KEY, enabled ? '1' : '0');
+      } catch {
+        // Private mode: check again on the next page.
+      }
+      return enabled;
+    } catch {
+      return false;
+    }
+  }
+
+  if (root) {
+    const reveal = async (): Promise<void> => {
+      if (!(await isEnabled())) return;
+      root.hidden = false;
+      document.documentElement.dataset['ask'] = 'on';
+    };
+    // After the page and its 3D have loaded, so the check never competes with the first paint.
+    const start = (): void => {
+      if ('requestIdleCallback' in window) requestIdleCallback(() => void reveal(), { timeout: 3_000 });
+      else setTimeout(() => void reveal(), 1_500);
+    };
+    if (document.readyState === 'complete') start();
+    else addEventListener('load', start, { once: true });
+
+    root.querySelector('[data-ask-toggle]')?.addEventListener('click', () => {
+      void import('./ask-panel').then(({ togglePanel }) => togglePanel(root));
+    });
+  }
+</script>
+
+<style>
+  .ask-toggle {
+    position: fixed;
+    right: clamp(16px, 4vw, 40px);
+    bottom: 16px;
+    z-index: 40;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--on-forest);
+    padding: 0 1.1rem;
+    font-weight: 600;
+    /* The surface ring keeps the button distinct over the forest hero too. */
+    box-shadow:
+      0 0 0 2px var(--surface),
+      0 18px 40px -18px color-mix(in srgb, var(--forest) 70%, transparent);
+  }
+
+  /* forest-ink: dark in the light theme and light in the dark one, so the ring shows on every surface here
+     (currentColor would be white on the white panel for the forest buttons). */
+  .ask-toggle:focus-visible,
+  .ask-panel :focus-visible {
+    outline: 2px solid var(--forest-ink);
+    outline-offset: 2px;
+  }
+
+  .ask-panel {
+    position: fixed;
+    right: clamp(16px, 4vw, 40px);
+    bottom: 4.5rem;
+    z-index: 40;
+    display: flex;
+    width: min(24rem, calc(100vw - 32px));
+    max-height: min(36rem, calc(100vh - 6.5rem));
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 24px 60px -24px color-mix(in srgb, var(--forest) 60%, transparent);
+  }
+
+  .ask-panel[hidden] {
+    display: none;
+  }
+
+  /* A bottom sheet on phones; the open button stays reachable below it. */
+  @media (max-width: 639px) {
+    .ask-panel {
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: auto;
+      max-height: 78vh;
+      /* dvh follows the on-screen keyboard where supported. */
+      max-height: 78dvh;
+      border-radius: 14px 14px 0 0;
+      border-bottom: none;
+    }
+
+    .ask-toggle[aria-expanded='true'] {
+      display: none;
+    }
+
+    /* Icon only on phones, so it covers less of the page; the label stays for screen readers. */
+    .ask-toggle {
+      width: 3rem;
+      height: 3rem;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .ask-toggle span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  .ask-log {
+    display: grid;
+    flex: 1;
+    gap: 0.75rem;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
+  .ask-icon-button {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+  }
+
+  .ask-icon-button:hover,
+  .ask-chip:hover {
+    background: var(--sage);
+  }
+
+  .ask-chip {
+    min-height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    text-align: left;
+    font-size: var(--text-sm);
+  }
+
+  .ask-input {
+    min-height: 2.75rem;
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.6rem 0.75rem;
+  }
+
+  .ask-send {
+    min-height: 2.75rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--on-forest);
+    padding: 0 1.1rem;
+    font-weight: 600;
+  }
+
+  .ask-send:disabled {
+    opacity: 0.6;
+  }
+
+  /* Chat bubbles are created by ask-panel.ts, outside Astro's scoped styles. */
+  :global(.ask-msg) {
+    max-width: 90%;
+    border-radius: 12px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  :global(.ask-msg--visitor) {
+    justify-self: end;
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+
+  :global(.ask-msg--assistant) {
+    justify-self: start;
+    background: var(--sage);
+    color: var(--ink);
+  }
+
+  :global(.ask-msg a) {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Keep the last lines of every page clear of the floating button. */
+  :global(html[data-ask='on'] body) {
+    padding-bottom: 4.5rem;
+  }
+</style>

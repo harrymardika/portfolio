@@ -6,11 +6,14 @@ import { z } from 'astro/zod';
 
 import { LOCALES } from '@/lib/i18n/locales';
 
-export const EVENT_TYPES = ['pageview', 'download', 'outbound'] as const;
+export const EVENT_TYPES = ['pageview', 'download', 'outbound', 'ask'] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 
 export const DOWNLOAD_DETAILS = ['cv', 'portfolio'] as const;
 export const OUTBOUND_DETAILS = ['linkedin', 'instagram', 'github', 'medium', 'email'] as const;
+/** How a chatbot question ended (T11.4, ADR 0014). Never the question or answer text. */
+export const ASK_DETAILS = ['answered', 'unavailable', 'limit'] as const;
+export type AskDetail = (typeof ASK_DETAILS)[number];
 
 /** Where the beacon posts; Caddy routes /api/stats/* to the stats service. */
 export const STATS_EVENT_URL = '/api/stats/event';
@@ -47,6 +50,12 @@ export const eventPayloadSchema = z.discriminatedUnion('type', [
     path,
     lang: z.enum(LOCALES),
     detail: z.enum(OUTBOUND_DETAILS),
+  }),
+  z.strictObject({
+    type: z.literal('ask'),
+    path,
+    lang: z.enum(LOCALES),
+    detail: z.enum(ASK_DETAILS),
   }),
 ]);
 

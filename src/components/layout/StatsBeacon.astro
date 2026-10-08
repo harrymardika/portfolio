@@ -57,5 +57,12 @@ const enabled = import.meta.env.PUBLIC_STATS_ENABLED === 'true';
         send({ type: 'outbound', path: location.pathname, lang, detail: outbound });
       }
     });
+    // The chat widget reports how a question ended, never its text (T11.4).
+    document.addEventListener('stats:ask', (event) => {
+      const outcome = (event as CustomEvent<unknown>).detail;
+      if (outcome === 'answered' || outcome === 'unavailable' || outcome === 'limit') {
+        send({ type: 'ask', path: location.pathname, lang, detail: outcome });
+      }
+    });
   }
 </script>}

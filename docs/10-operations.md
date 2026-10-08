@@ -44,6 +44,7 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | `GROQ_API_KEY` | Sama dengan di atas | Draf AI (cadangan) | console.groq.com → *API Keys* → buat baru, hapus yang lama → perbarui secret |
 | `ASSISTANT_GEMINI_API_KEY`, `ASSISTANT_GROQ_API_KEY` | `/opt/portfolio/.env` di server | Chatbot (Gemini utama, Groq cadangan); **berbeda** dari key draf AI | Seperti key draf AI, tetapi di project Google AI Studio dan key Groq tersendiri → perbarui `.env` → `docker compose up -d assistant` |
 | `ASSISTANT_ENABLED` | `/opt/portfolio/.env` di server | Kill switch chatbot (`true`/`false`; kosong = mati) | Ubah nilainya → `docker compose up -d assistant` (tanpa build) |
+| `PUBLIC_ASSISTANT_ENABLED` (variabel, bukan secret) | GitHub → repo → *Settings → Secrets and variables → Actions → Variables* | Ikut-tidaknya widget chatbot di-build (§3.1 langkah 6) | Ubah nilainya → jalankan Deploy |
 | `STATS_ADMIN_TOKEN` | `/opt/portfolio/.env` di server **dan** `.env` di laptop | Membuka laporan link pelacak (`bun run stats:report`) | `openssl rand -hex 32` → tulis di kedua `.env` → di server `docker compose up -d` |
 | `CF_API_TOKEN`, `CF_ZONE_ID` | `/opt/portfolio/.env` di server | Menghapus cache Cloudflare setelah deploy (ADR 0012) | Cloudflare → *My Profile → API Tokens* → token `portfolio-cache-purge` → *Roll* → perbarui `.env` |
 | Token Cloudflare Tunnel | Konfigurasi `cloudflared` di server | Menghubungkan server ke Cloudflare | Cloudflare → *Zero Trust → Networks → Tunnels* |
@@ -90,8 +91,9 @@ Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai
    ```
 4. `cd /opt/portfolio && ./update.sh`, lalu cek `curl -s http://127.0.0.1:8080/api/ask/health` → `{"ok":true,"enabled":false}`.
 5. Setelah uji kualitas (T11.5) lulus: ubah `ASSISTANT_ENABLED=true`, jalankan `cd /opt/portfolio && docker compose up -d assistant`; health menjadi `"enabled":true`.
+6. Tampilkan tombolnya di situs: GitHub → repo → *Settings → Secrets and variables → Actions → Variables* → **New repository variable** `PUBLIC_ASSISTANT_ENABLED` = `true`, lalu *Actions → Deploy → Run workflow*. Sebelum variabel ini ada, widget tidak ikut di-build sama sekali (tanpa layanan, pengecekan health-nya akan memunculkan error di konsol browser). Setelahnya, kill switch di langkah berikut tetap menyembunyikan tombol tanpa build ulang.
 
-**Mematikan cepat (kill switch):** ubah `ASSISTANT_ENABLED=false` di `/opt/portfolio/.env` → `cd /opt/portfolio && docker compose up -d assistant`. Tidak perlu build; widget langsung menampilkan tautan CV dan email.
+**Mematikan cepat (kill switch):** ubah `ASSISTANT_ENABLED=false` di `/opt/portfolio/.env` → `cd /opt/portfolio && docker compose up -d assistant`. Tidak perlu build: tombol chatbot tidak muncul lagi untuk pengunjung baru (yang sudah membuka panel di tab yang sama mendapat tautan CV dan email). Menghapus fitur sepenuhnya dari situs: ubah variabel repo `PUBLIC_ASSISTANT_ENABLED` menjadi `false` dan jalankan Deploy.
 
 **Kuota dan batas:** per pengunjung 10 pertanyaan/jam dan 30/hari, seluruh situs 300/hari, maksimal 3 sekaligus. Hitungannya di memori, jadi **direset tengah malam UTC dan setiap kali container dibuat ulang**: setiap deploy (±4×/hari karena jadwal 6 jam) dan setiap kill switch diubah. Dalam praktik "300/hari" berarti 300 per periode antar-deploy; batas biaya yang sebenarnya adalah kuota gratis project AI Studio tanpa billing (langkah 2). Pemakaian kuota terlihat di AI Studio (*Usage*) dan console.groq.com (*Usage*). Groq hanya cadangan: ±35 jawaban/hari (8 ribu token/menit, 200 ribu/hari).
 

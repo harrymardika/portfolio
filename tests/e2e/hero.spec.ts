@@ -40,6 +40,8 @@ test('the 3D card replaces the static card once ready, without console errors', 
   page.on('pageerror', (error) => errors.push(error.message));
 
   await assumeGpu(page);
+  // `astro preview` has no assistant service; without this its health check logs a 404 (T11.4).
+  await page.route('**/api/ask/health', (route) => route.fulfill({ json: { ok: true, enabled: false } }));
   await page.goto('/');
   await expect(page.locator(stage)).toHaveAttribute('data-scene', 'animated');
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {

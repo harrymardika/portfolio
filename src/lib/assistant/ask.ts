@@ -14,7 +14,7 @@ import type { Prompt } from '@/lib/ai';
 
 export const QUESTION_MAX_CHARS = 500;
 export const HISTORY_MAX_MESSAGES = 6;
-const HISTORY_MAX_CHARS = 1_500;
+export const HISTORY_MAX_CHARS = 1_500;
 const ANSWER_MAX_CHARS = 1_200;
 const MAX_LINKS = 3;
 

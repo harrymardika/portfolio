@@ -9,10 +9,10 @@ import { Database } from 'bun:sqlite';
 
 import { dayKey } from '../../src/lib/stats/privacy';
 
-import type { Ranked, RefReport, Summary } from '../../src/lib/stats/summary';
+import type { AskReport, Ranked, RefReport, Summary } from '../../src/lib/stats/summary';
 
 export interface StoredEvent {
-  readonly type: 'pageview' | 'download' | 'outbound';
+  readonly type: 'pageview' | 'download' | 'outbound' | 'ask';
   readonly path: string;
   readonly lang: string;
   readonly detail: string | null;
@@ -152,6 +152,25 @@ export class StatsStore {
         downloadedCv: row.cv === 1,
         downloadedPortfolio: row.portfolio === 1,
       }));
+  }
+
+  /** Chatbot questions by outcome (T11.4): all time and the last 30 days. Owner-only. */
+  askReport(now: Date = new Date()): AskReport {
+    const since = dayKey(new Date(now.getTime() - 29 * 86_400_000));
+    const rows = this.db
+      .query<{ detail: string; total: number; recent: number }, { since: string }>(
+        `SELECT detail, COUNT(*) AS total, SUM(day >= $since) AS recent
+         FROM events WHERE type = 'ask' GROUP BY detail`,
+      )
+      .all({ since });
+    const count = (detail: string, key: 'total' | 'recent'): number =>
+      rows.find((row) => row.detail === detail)?.[key] ?? 0;
+    const outcome = (key: 'total' | 'recent') => ({
+      answered: count('answered', key),
+      unavailable: count('unavailable', key),
+      limit: count('limit', key),
+    });
+    return { total: outcome('total'), last30Days: outcome('recent') };
   }
 
   close(): void {

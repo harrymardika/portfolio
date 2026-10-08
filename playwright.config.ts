@@ -32,7 +32,7 @@ export default defineConfig({
           command:
             `GITHUB_FIXTURE=tests/fixtures/github.json GITHUB_CACHE=src/data/generated/github.e2e.json ` +
             `MESSAGES_FILE=tests/fixtures/messages.yaml ` +
-            `BUILD_OUT_DIR=dist-e2e BUILD_META_DIR=build-meta-e2e PUBLIC_STATS_ENABLED=true bun run build && ` +
+            `BUILD_OUT_DIR=dist-e2e BUILD_META_DIR=build-meta-e2e PUBLIC_STATS_ENABLED=true PUBLIC_ASSISTANT_ENABLED=true bun run build && ` +
             `BUILD_OUT_DIR=dist-e2e bun run preview --port ${PORT} --ignore-lock`,
           url: `http://localhost:${PORT}/`,
           // Always build and serve fresh: reusing a server left running would test a stale dist/.
