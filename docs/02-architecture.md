@@ -109,9 +109,11 @@ Aturan:
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
 │   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld, html (baca HTML build) (murni); person.ts (khusus Astro)
+│   │   ├── ai/                  # penyedia model bersama (Gemini, Groq): dipakai draf AI dan chatbot (ADR 0013, 0014)
 │   │   ├── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
-│   │   └── assistant/           # pengetahuan chatbot (ADR 0014): knowledge (skema), sections + project-sections + text
-│   │                            #   (konten → teks), budget (token, versi ringkas, cek path, PHONE_PATTERN)
+│   │   └── assistant/           # chatbot (ADR 0014): knowledge (skema), sections + project-sections + text (konten → teks),
+│   │                            #   budget (token, versi ringkas, cek path, PHONE_PATTERN), ask (permintaan, prompt,
+│   │                            #   pemeriksa jawaban), limits (batas pemakaian); tanpa API Node, aman untuk browser
 │   ├── components/
 │   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
@@ -140,6 +142,7 @@ Aturan:
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
 ├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
+├── services/assistant/          # chatbot "Tanya Harry" (Bun, tanpa penyimpanan): handler (POST /api/ask, health), server
 ├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-knowledge, generate-csp, precompress,
 │                                #   serve-build, lighthouse-summary, draft-case-studies, stats-report, check-tokens;
 │                                #   lib/static-server.ts (server build untuk Chromium), lib/compression.ts

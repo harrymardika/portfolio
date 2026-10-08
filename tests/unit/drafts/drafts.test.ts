@@ -246,9 +246,10 @@ describe('providers', () => {
       expect(result.ok && result.provider).toBe('Groq');
       const groqCall = calls.at(-1);
       expect(groqCall?.headers['Authorization']).toBe('Bearer q-key');
-      expect((groqCall?.body as { response_format: { type: string } }).response_format.type).toBe(
-        'json_schema',
-      );
+      expect(groqCall?.body).toMatchObject({
+        temperature: 0.3,
+        response_format: { type: 'json_schema', json_schema: { name: 'case_study_draft', strict: true } },
+      });
       expect(JSON.stringify(result.failures)).not.toMatch(/g-key|q-key/);
     }
   });

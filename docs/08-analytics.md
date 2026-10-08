@@ -78,3 +78,4 @@ tokopedia-ml-engineer  2026-10-05 08:41    2026-10-05 08:41   1       2      yes
 - *Do Not Track* dan *Global Privacy Control* dihormati: beacon tidak dikirim.
 - Bot dan crawler (berdasarkan User-Agent) tidak dihitung. Endpoint dibatasi laju (rate limit) per hash.
 - Halaman `/print/*` dan mode development tidak dicatat.
+- **Chatbot "Tanya Harry"** (layanan terpisah `services/assistant`, ADR 0014) tidak menyimpan apa pun: teks pertanyaan dan jawaban tidak disimpan maupun dicatat di log. Batas pemakaian memakai hash harian yang sama (salt acak di memori, hilang saat ganti hari atau restart). Pertanyaan dikirim ke Gemini (atau Groq sebagai cadangan) untuk dijawab; di tier gratis, Google boleh memakai isinya untuk memperbaiki produk, sehingga widget menampilkan pemberitahuan privasi.

@@ -6,7 +6,11 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ## [Unreleased]
 
 ### Added
+- "Ask Harry" assistant service (`services/assistant`, not deployed yet): answers questions from the site's knowledge with Gemini, or Groq as a fallback; plain-text answers whose links must exist on the site, no phone numbers, per-visitor and daily limits, a kill switch that is off by default, and nothing stored (T11.2, ADR 0014).
 - Knowledge for the "Ask Harry" chatbot, built with every deploy from the public site content only (no drafts, hidden items, or phone numbers): a full English and Indonesian version for Gemini and a compact English one for Groq, with link, phone-number, and size checks that stop the build (T11.1, ADR 0014).
+
+### Changed
+- The Gemini and Groq clients moved to a shared module (`src/lib/ai`) used by the AI case study drafts and the assistant; the drafts behave as before (T11.2).
 
 ## [1.2.0] - 2026-10-08
 

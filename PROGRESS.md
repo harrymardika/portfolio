@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.2 (layanan `services/assistant`: `POST /api/ask`)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.3 (Docker, deploy, Caddy untuk `services/assistant`)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1 selesai; berikutnya T11.2 (layanan `services/assistant`) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.2 selesai; berikutnya T11.3 (Docker, deploy, Caddy) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -150,7 +150,7 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
 
 - [x] **T11.1** ADR 0014 + pengetahuan dari konten
   - Kriteria: ADR 0014 (layanan terpisah, penyedia, privasi tanpa penyimpanan, batas, tanpa vector DB, widget sudut, kill switch); `knowledge.json` (lengkap, untuk Gemini) dan `knowledge-compact.json` (≤ 5 ribu token, untuk Groq) dibuat saat build dari `content/` publik saja, beserta daftar path situs yang boleh ditautkan; tes: tanpa nomor HP, tanpa draf, ukuran di bawah batas, path valid.
-- [ ] **T11.2** Layanan `services/assistant` (`POST /api/ask`, `GET /api/ask/health`)
+- [x] **T11.2** Layanan `services/assistant` (`POST /api/ask`, `GET /api/ask/health`)
   - Kriteria: penyedia Gemini/Groq direfaktor ke `src/lib/ai/` (dipakai juga draf T8.2); validasi masuk (Origin, ukuran, 1–500 karakter, riwayat ≤ 6 pesan, bot); batas per pengunjung 10/jam dan 30/hari (hash harian, tanpa IP), total 300/hari, ≤ 3 permintaan bersamaan, timeout 20 s; jawaban JSON tervalidasi (teks biasa, tautan hanya path situs, pola nomor HP ditolak), Gemini → Groq → pesan cadangan; kill switch `ASSISTANT_ENABLED`; log tanpa teks pertanyaan; tes unit dengan penyedia tiruan.
 - [ ] **T11.3** Infrastruktur: Docker, deploy, Caddy (+ `/security-review`)
   - Kriteria: target `assistant` di Dockerfile + matrix deploy; service `assistant` di compose (hardening, 128 MB, tanpa volume); Caddy `/api/ask*` (no-store); CSP tetap; `.env.example`, docs/07 dan docs/10 (key terpisah, mematikan fitur, kuota); `test:e2e:docker` mencakup health.
@@ -223,6 +223,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · T11.2 layanan `services/assistant`
+- Pemilik meminta Fase 11 dikerjakan sampai akhir fase.
+- **Dikerjakan:** penyedia Gemini/Groq dipindah ke `src/lib/ai/` (skema JSON, retry, timeout jadi opsi; draf AI tetap sama, 19 tesnya lulus tanpa diubah). `src/lib/assistant/ask.ts` (validasi permintaan 1–500 karakter, riwayat ≤ 6; prompt dengan pengetahuan sebagai instruksi dan obrolan sebagai data; pemeriksa jawaban: skema, tanpa HTML/URL/Markdown, tanpa nomor HP, tautan hanya path pengetahuan dan diarahkan ke `/id/` sesuai bahasa halaman) dan `limits.ts` (10/jam, 30/hari per pengunjung, 300/hari total, ≤ 3 bersamaan). `services/assistant/` (`POST /api/ask`, `GET /api/ask/health`): Origin wajib dari situs, bot ditolak, hash harian tanpa IP dengan salt di memori, Gemini (12 s, pengetahuan lengkap) → Groq (8 s, ringkas, JSON schema ketat) → 503 `unavailable`; kill switch `ASSISTANT_ENABLED` (bawaan mati); log tanpa teks. 37 tes baru dengan penyedia tiruan.
+- **Dari review + `/security-review` (tanpa temuan keamanan):** body > 8 KB ditolak sebelum dibaca (`maxRequestBodySize`); Groq hanya menerima 2 pesan terakhir, *reasoning effort* rendah, dan batas 1.024 token jawaban agar muat dalam 8 ribu token/menit; obrolan dikirim sebagai satu nilai JSON sehingga pembatas tidak bisa dipalsukan; pemeriksa teks tidak lagi menolak "< 100 ms" atau "R&D"; kelebihan tautan dipotong; hash pengunjung hanya dari alamat (ganti User-Agent tidak membuka batas baru). Dicatat untuk T11.5: coba skema JSON untuk Gemini bila jawabannya sering salah bentuk.
+- **Dicek lokal:** tanpa key layanan menyatakan dirinya mati (`{"error":"disabled"}`), memori ±85 MB (batas container nanti 128 MB). Belum diuji dengan model sungguhan (T11.5).
+- **Langkah berikutnya:** T11.3 (Dockerfile, compose, Caddy `/api/ask*`, `.env.example`, docs/07 dan docs/10) + `/security-review`.
 
 ### 2026-10-08 · Claude Code (Opus) · T11.1 ADR 0014 + pengetahuan chatbot
 - **Keputusan pemilik:** chatbot boleh mengetahui **semua isi publik web** (termasuk email publik dan kartu repo GitHub; tanpa nomor HP, draf, item tersembunyi).
