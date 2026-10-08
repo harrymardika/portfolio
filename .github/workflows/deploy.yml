@@ -28,8 +28,10 @@ jobs:
       contents: read
       packages: write
     strategy:
+      # One failing image (e.g. the assistant) must not cancel the site's own images.
+      fail-fast: false
       matrix:
-        target: [web, stats]
+        target: [web, stats, assistant]
     steps:
       - uses: actions/checkout@v7
 

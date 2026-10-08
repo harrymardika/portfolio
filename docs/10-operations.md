@@ -26,11 +26,11 @@ flowchart LR
 |---|---|---|
 | **GitHub** (repo `harrymardika/portfolio`, publik) | Sumber kode dan isi; menjalankan semua workflow | Situs tetap tayang versi terakhir; tidak ada update |
 | **GitHub Actions** | `CI` (PR), `Deploy` (push ke `main`, tiap 6 jam, manual), `Case study drafts` (dua kali sehari, manual) | Lihat §5.1 |
-| **GHCR** (`portfolio-web`, `portfolio-stats`, publik) | Menyimpan image; server menariknya tanpa login | Server tetap menjalankan image yang sudah ada |
-| **mardika-server** (laptop Debian 13 di rumah) | Menjalankan Caddy + stats di `/opt/portfolio`; diakses lewat Tailscale | Lihat §5.2; Cloudflare masih menyajikan salinan |
+| **GHCR** (`portfolio-web`, `portfolio-stats`, `portfolio-assistant`, publik) | Menyimpan image; server menariknya tanpa login | Server tetap menjalankan image yang sudah ada |
+| **mardika-server** (laptop Debian 13 di rumah) | Menjalankan Caddy + stats + chatbot di `/opt/portfolio`; diakses lewat Tailscale | Lihat §5.2; Cloudflare masih menyajikan salinan |
 | **Cloudflare** (zona `mardika.my.id`) | DNS, Tunnel, cache HTML 7 hari, HTTPS | Situs tidak bisa dibuka sama sekali |
 | **Pages CMS** (app.pagescms.org) | Editor isi di browser; menyimpan langsung ke `main` | Edit lewat GitHub web atau laptop |
-| **Google AI Studio** (Gemini) dan **Groq** | Menulis draf studi kasus dari README | Draf tidak muncul; situs tidak terpengaruh |
+| **Google AI Studio** (Gemini) dan **Groq** | Menulis draf studi kasus dari README; menjawab chatbot "Tanya Harry" (key terpisah, §3.1) | Draf tidak muncul / chatbot menampilkan tautan CV dan email; situs tidak terpengaruh |
 | **Google Search Console** (properti `harry.mardika.my.id`) | Memantau indeks Google; sitemap terdaftar | Tidak berpengaruh ke situs |
 
 ## 2. Akun dan secret
@@ -42,6 +42,8 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | `GITHUB_TOKEN` | Otomatis di GitHub Actions | Push image ke GHCR, membaca API GitHub, membuat PR draf | Tidak perlu; dibuat ulang tiap run |
 | `GEMINI_API_KEY` | GitHub → repo → *Settings → Secrets and variables → Actions* | Draf AI (pilihan pertama) | aistudio.google.com → *API keys* → buat baru, hapus yang lama → perbarui secret |
 | `GROQ_API_KEY` | Sama dengan di atas | Draf AI (cadangan) | console.groq.com → *API Keys* → buat baru, hapus yang lama → perbarui secret |
+| `ASSISTANT_GEMINI_API_KEY`, `ASSISTANT_GROQ_API_KEY` | `/opt/portfolio/.env` di server | Chatbot (Gemini utama, Groq cadangan); **berbeda** dari key draf AI | Seperti key draf AI, tetapi di project Google AI Studio dan key Groq tersendiri → perbarui `.env` → `docker compose up -d assistant` |
+| `ASSISTANT_ENABLED` | `/opt/portfolio/.env` di server | Kill switch chatbot (`true`/`false`; kosong = mati) | Ubah nilainya → `docker compose up -d assistant` (tanpa build) |
 | `STATS_ADMIN_TOKEN` | `/opt/portfolio/.env` di server **dan** `.env` di laptop | Membuka laporan link pelacak (`bun run stats:report`) | `openssl rand -hex 32` → tulis di kedua `.env` → di server `docker compose up -d` |
 | `CF_API_TOKEN`, `CF_ZONE_ID` | `/opt/portfolio/.env` di server | Menghapus cache Cloudflare setelah deploy (ADR 0012) | Cloudflare → *My Profile → API Tokens* → token `portfolio-cache-purge` → *Roll* → perbarui `.env` |
 | Token Cloudflare Tunnel | Konfigurasi `cloudflared` di server | Menghubungkan server ke Cloudflare | Cloudflare → *Zero Trust → Networks → Tunnels* |
@@ -49,7 +51,7 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | Rekaman TXT verifikasi Google | DNS zona `mardika.my.id` | Bukti kepemilikan untuk Search Console | **Jangan dihapus**; verifikasi akan hilang |
 
 Catatan:
-- `GEMINI_API_KEY`/`GROQ_API_KEY` hanya dibutuhkan di GitHub. Jika juga ada di `/opt/portfolio/.env` server, hapus saja: server tidak memakainya.
+- `GEMINI_API_KEY`/`GROQ_API_KEY` (draf AI) hanya dibutuhkan di GitHub. Jika juga ada di `/opt/portfolio/.env` server, hapus saja: server memakai `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY`. Key dipisah agar kuota dan kebocoran satu fitur tidak mengganggu fitur lain.
 - Pengaturan GitHub yang wajib tetap aktif: *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* (untuk PR draf AI).
 - Halaman Cloudflare yang dipakai: Cache Rule `portfolio-html-cache`, *Browser Cache TTL: Respect Existing Headers*, *Always Online* (docs/07 §4).
 
@@ -72,6 +74,28 @@ Jadwal otomatis (UTC; WIB = UTC+7):
 - Server: `portfolio-update.timer` tiap 10 menit; backup statistik 03:30 (jam server) setiap hari, 14 salinan terakhir di `/opt/portfolio/backups/`.
 
 Jadwal GitHub bersifat *best-effort*: run terjadwal bisa terlambat berjam-jam atau dilewati saat GitHub sibuk (contoh: run draf pertama 2026-10-08 09:41 WIB tidak pernah dibuat, dan beberapa jadwal `Deploy` juga terlewat). Karena itu draf punya dua jadwal per hari. Jika tidak bisa menunggu, jalankan manual (*Run workflow*).
+
+### 3.1 Chatbot "Tanya Harry" (Fase 11, ADR 0014)
+
+Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai Anda menyalakannya** (`ASSISTANT_ENABLED=true`); saat mati atau gagal, widget menampilkan tautan CV dan email.
+
+**Memasang pertama kali (urutan penting):**
+1. Tunggu deploy yang membawa layanan ini selesai, lalu github.com/harrymardika → *Packages* → `portfolio-assistant` → *Package settings* → *Change visibility* → **Public**. Jika langkah ini dilewati, `update.sh` gagal menarik image dan **seluruh update situs berhenti**.
+2. Buat key baru khusus chatbot: project baru di aistudio.google.com (*API keys*) dan key baru di console.groq.com. Jangan memakai key draf AI. **Pastikan project AI Studio itu tanpa billing** (tier gratis): kuota gratis Gemini adalah batas keras biaya, karena batas harian chatbot ikut direset setiap deploy (lihat *Kuota* di bawah).
+3. Di server: salin `docker/compose.yml` dan `docker/deploy/update.sh` terbaru ke `/opt/portfolio/`, lalu tambahkan ke `/opt/portfolio/.env`:
+   ```
+   ASSISTANT_ENABLED=false
+   ASSISTANT_GEMINI_API_KEY=<key Google AI Studio>
+   ASSISTANT_GROQ_API_KEY=<key Groq>
+   ```
+4. `cd /opt/portfolio && ./update.sh`, lalu cek `curl -s http://127.0.0.1:8080/api/ask/health` → `{"ok":true,"enabled":false}`.
+5. Setelah uji kualitas (T11.5) lulus: ubah `ASSISTANT_ENABLED=true`, jalankan `cd /opt/portfolio && docker compose up -d assistant`; health menjadi `"enabled":true`.
+
+**Mematikan cepat (kill switch):** ubah `ASSISTANT_ENABLED=false` di `/opt/portfolio/.env` → `cd /opt/portfolio && docker compose up -d assistant`. Tidak perlu build; widget langsung menampilkan tautan CV dan email.
+
+**Kuota dan batas:** per pengunjung 10 pertanyaan/jam dan 30/hari, seluruh situs 300/hari, maksimal 3 sekaligus. Hitungannya di memori, jadi **direset tengah malam UTC dan setiap kali container dibuat ulang**: setiap deploy (±4×/hari karena jadwal 6 jam) dan setiap kill switch diubah. Dalam praktik "300/hari" berarti 300 per periode antar-deploy; batas biaya yang sebenarnya adalah kuota gratis project AI Studio tanpa billing (langkah 2). Pemakaian kuota terlihat di AI Studio (*Usage*) dan console.groq.com (*Usage*). Groq hanya cadangan: ±35 jawaban/hari (8 ribu token/menit, 200 ribu/hari).
+
+**Log:** `docker compose logs --tail 50 assistant` berisi status, penyedia, dan alasan gagal, **tanpa teks pertanyaan**. Contoh: `"status":503,"failures":["Gemini: Gemini responded with HTTP 429",…]` berarti kuota habis.
 
 ## 4. Perawatan berkala
 
@@ -193,7 +217,7 @@ Selama server mati, Cloudflare tetap menyajikan halaman yang ada di cache hingga
 (Misalnya tertempel di chat, di-commit, atau terlihat di screenshot.)
 1. **Cabut dulu** di layanannya (§2), baru buat yang baru. Menghapus commit tidak cukup: repo ini publik dan riwayatnya mungkin sudah tersalin.
 2. Simpan nilai baru di tempat yang sama (§2) dan di password manager.
-3. Jika yang bocor `CF_API_TOKEN`: dampaknya terbatas pada penghapusan cache (izinnya hanya *Cache Purge*). Jika token Tunnel: buat ulang Tunnel-nya.
+3. Jika yang bocor `CF_API_TOKEN`: dampaknya terbatas pada penghapusan cache (izinnya hanya *Cache Purge*). Jika token Tunnel: buat ulang Tunnel-nya. Jika key chatbot (`ASSISTANT_*`): matikan dulu (`ASSISTANT_ENABLED=false`), cabut dan ganti key-nya, lalu nyalakan lagi; key draf AI tidak terdampak.
 
 ### 6.5 Laptop pengembangan hilang
 Semua kode dan isi ada di GitHub. Yang **tidak** ada di GitHub: `.env` laptop (cukup `STATS_ADMIN_TOKEN`, ada di password manager) dan folder bahan mentah `CV/` (di-gitignore; simpan cadangannya sendiri).

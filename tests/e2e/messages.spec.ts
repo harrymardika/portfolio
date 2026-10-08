@@ -7,7 +7,9 @@ import { expect, test } from '@playwright/test';
 
 import { UI } from '../../src/lib/i18n/ui';
 
-test('the home page shows the messages in file order, with the writer and context', async ({ page }) => {
+test('the home page shows the messages in file order, with the writer and context @fixture', async ({
+  page,
+}) => {
   await page.goto('/');
   const section = page.getByRole('region', { name: UI.en['messages.title'] });
   await expect(section.locator('blockquote')).toHaveCount(2);
@@ -24,7 +26,7 @@ test('the home page shows the messages in file order, with the writer and contex
   );
 });
 
-test('the Indonesian home page translates messages and marks untranslated ones as English', async ({
+test('the Indonesian home page translates messages and marks untranslated ones as English @fixture', async ({
   page,
 }) => {
   await page.goto('/id/');
@@ -35,7 +37,9 @@ test('the Indonesian home page translates messages and marks untranslated ones a
 });
 
 for (const colorScheme of ['light', 'dark'] as const) {
-  test(`the messages section has no serious accessibility violations (${colorScheme})`, async ({ page }) => {
+  test(`the messages section has no serious accessibility violations (${colorScheme}) @fixture`, async ({
+    page,
+  }) => {
     await page.emulateMedia({ colorScheme });
     await page.goto('/');
     const results = await new AxeBuilder({ page })

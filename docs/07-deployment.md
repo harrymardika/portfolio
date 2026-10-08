@@ -9,7 +9,7 @@
 ```
 push ke main  /  jadwal tiap 6 jam (sinkron GitHub + PDF, T3.3)  /  manual (tab Actions)
    → GitHub Actions deploy.yml: job verify (= ci.yml: check, unit, e2e, Lighthouse)
-   → build 2 image (docker/Dockerfile) → ghcr.io/harrymardika/portfolio-web  & portfolio-stats
+   → build 3 image (docker/Dockerfile) → ghcr.io/harrymardika/portfolio-web, portfolio-stats, portfolio-assistant
                                           tag: latest + sha-<commit>
    → server rumah: portfolio-update.timer (tiap 10 menit) → update.sh → docker compose pull && up -d
    → Caddy :8080 (127.0.0.1) ← cloudflared ← Cloudflare CDN ← pengunjung
@@ -21,9 +21,9 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 
 | File | Isi |
 |---|---|
-| `docker/Dockerfile` | Multi-stage: `build` (Node 22 + Bun + Chromium → GitHub sync, Astro, PDF, CSP, kompresi `.br`/`.gz`, bundle stats) → `web` (Caddy + `dist/`) dan `stats` (Bun + 1 file `server.js`) |
-| `docker/Caddyfile` | File statis terkompresi (`precompressed br gzip`), `/api/health`, proxy `/api/stats/*`, header keamanan, CSP hasil build, cache header, halaman 404 |
-| `docker/compose.yml` | Produksi: `web` (port `127.0.0.1:8080`, 96 MB, `GOMEMLIMIT=48MiB`) + `stats` (128 MB, volume `stats-data`); semua *read-only*, tanpa capability, `no-new-privileges` |
+| `docker/Dockerfile` | Multi-stage: `build` (Node 22 + Bun + Chromium → GitHub sync, Astro, PDF, pengetahuan chatbot, CSP, kompresi `.br`/`.gz`, bundle stats dan assistant) → `web` (Caddy + `dist/`), `stats` (Bun + 1 file `server.js`), dan `assistant` (Bun + `server.js` + `knowledge.json`/`knowledge-compact.json` build itu; ADR 0014) |
+| `docker/Caddyfile` | File statis terkompresi (`precompressed br gzip`), `/api/health`, proxy `/api/stats/*` dan `/api/ask*` (chatbot: `no-store`, body maks. 8 KB), header keamanan, CSP hasil build, cache header, halaman 404 |
+| `docker/compose.yml` | Produksi: `web` (port `127.0.0.1:8080`, 96 MB, `GOMEMLIMIT=48MiB`) + `stats` (128 MB, volume `stats-data`) + `assistant` (128 MB, tanpa volume, mati sampai `ASSISTANT_ENABLED=true`, key `ASSISTANT_*` dari `.env`); semua *read-only*, tanpa capability, `no-new-privileges` |
 | `docker/deploy/update.sh` | `pull` → `up -d --wait` → hapus image lama (> 7 hari) → jika image `web` berubah, hapus cache Cloudflare untuk situs ini (ADR 0012; dites di `tests/unit/deploy-update.test.ts`) |
 | `docker/deploy/portfolio-update.{service,timer}` | systemd: jalankan `update.sh` tiap 10 menit |
 | `docker/deploy/backup-stats.sh` | Backup SQLite konsisten (`VACUUM INTO`), simpan 14 terakhir |
@@ -34,7 +34,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 
 ## 3. Pemasangan pertama di server (sekali saja)
 
-> **Package GHCR harus publik** (sudah diatur 2026-10-06 untuk `portfolio-web` dan `portfolio-stats`). Package GHCR baru biasanya privat; jika suatu saat dibuat ulang: github.com/harrymardika → *Packages* → package → *Package settings* → *Change visibility* → **Public**. Tanpa ini server perlu `docker login ghcr.io`.
+> **Package GHCR harus publik** (sudah diatur 2026-10-06 untuk `portfolio-web` dan `portfolio-stats`; `portfolio-assistant` dibuat oleh deploy pertama setelah T11.3 dan **harus dijadikan publik sebelum** `compose.yml` baru disalin ke server, karena `update.sh` berhenti jika satu image gagal ditarik, docs/10 §3.1). Package GHCR baru biasanya privat; jika suatu saat dibuat ulang: github.com/harrymardika → *Packages* → package → *Package settings* → *Change visibility* → **Public**. Tanpa ini server perlu `docker login ghcr.io`.
 
 Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, Debian 13 (trixie), Docker 29 + Compose 5 (terpasang 2026-10-06). Pasang Docker dari repo resmi Docker untuk Debian, bukan paket `docker.io`. Karena RAM kecil: **jangan pernah build di server**; batas memori container sudah diset.
 
@@ -89,7 +89,7 @@ systemctl list-timers portfolio-update.timer
 - Aset ber-hash (`/_astro/*`): `public, max-age=31536000, immutable`.
 - PDF (`/downloads/*`): `public, max-age=3600`.
 - Gambar pratinjau sosial (`/og/*`): `public, max-age=86400`.
-- `/api/health`, `/api/stats/private`: `no-store`. `/api/stats/summary`: 5 menit.
+- `/api/health`, `/api/stats/private`, `/api/ask*`: `no-store`. `/api/stats/summary`: 5 menit. Semua `/api/` dikecualikan dari Cache Rule Cloudflare.
 - **Kompresi saat build, bukan saat request.** `scripts/precompress.ts` menulis salinan `.br` (Brotli 11) dan `.gz` untuk file teks ≥ 1 KB (±1,2 MB → ±0,25 MB). Caddy menyajikannya apa adanya, jadi CPU Celeron tidak mengompresi apa pun. Dulu `encode zstd gzip` membuat Caddy memakai ±74 MB RAM setelah satu putaran e2e; kini ±22 MB.
 
 **Hasil ukur (2026-10-05, setelah seluruh e2e):** web 22 MiB / 96, stats 17 MiB / 128. Image: web ±100 MB, stats ±260 MB (sebagian besar runtime Bun).
@@ -103,6 +103,7 @@ Diatur di `docker/Caddyfile`: `Strict-Transport-Security`, `X-Content-Type-Optio
 ```bash
 docker build -f docker/Dockerfile --target web   -t ghcr.io/harrymardika/portfolio-web:local .
 docker build -f docker/Dockerfile --target stats -t ghcr.io/harrymardika/portfolio-stats:local .
+docker build -f docker/Dockerfile --target assistant -t ghcr.io/harrymardika/portfolio-assistant:local .
 TAG=local WEB_PORT=8080 docker compose -f docker/compose.yml -p portfolio-local up -d
 bun run test:e2e:docker        # e2e + header + CSP + kompresi terhadap container
 TAG=local docker compose -f docker/compose.yml -p portfolio-local down -v   # -v: hapus volume uji

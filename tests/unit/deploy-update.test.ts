@@ -27,6 +27,8 @@ echo "docker $*" >> "${dir}/calls"
 case "$*" in
   "compose images -q web") cat "${dir}/image" ;;
   "compose pull --quiet") [ -f "${dir}/next" ] && cp "${dir}/next" "${dir}/image" || true ;;
+  "compose up "*) [ -f "${dir}/up-fails" ] && exit 1 || true ;;
+  "compose ps --format {{.Health}} web") cat "${dir}/web-health" 2>/dev/null || echo healthy ;;
 esac
 `,
     { mode: 0o755 },
@@ -116,5 +118,30 @@ describe('update.sh', () => {
     expect(code).toBe(0);
     expect(output).toContain('skipping the Cloudflare cache purge');
     expect(purged()).toBe(false);
+  });
+
+  it('still purges a changed web image when another service fails its health check, and reports it', () => {
+    configure();
+    newWebImage();
+    writeFileSync(join(dir, 'up-fails'), '');
+    const { code } = run();
+    expect(code).not.toBe(0);
+    expect(purged()).toBe(true);
+    expect(existsSync(join(dir, '.purge-pending'))).toBe(false);
+  });
+
+  it('keeps the cache when the web container itself is unhealthy, and purges on a later run', () => {
+    configure();
+    newWebImage();
+    writeFileSync(join(dir, 'up-fails'), '');
+    writeFileSync(join(dir, 'web-health'), 'unhealthy\n');
+    expect(run().code).not.toBe(0);
+    expect(purged()).toBe(false);
+    expect(existsSync(join(dir, '.purge-pending'))).toBe(true);
+
+    rmSync(join(dir, 'up-fails'));
+    rmSync(join(dir, 'web-health'));
+    expect(run().code).toBe(0);
+    expect(purged()).toBe(true);
   });
 });

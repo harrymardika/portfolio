@@ -1,5 +1,5 @@
 # Production web server (docs/07-deployment.md). Serves the static build from /srv and forwards
-# /api/stats/* to the stats service. HTTPS is terminated by Cloudflare; Caddy listens on plain :8080.
+# /api/stats/* to the stats service and /api/ask* to the assistant (ADR 0014). HTTPS is terminated by Cloudflare; Caddy listens on plain :8080.
 {
 	admin off
 	auto_https off
@@ -27,6 +27,24 @@
 	handle /api/health {
 		header Cache-Control "no-store"
 		respond `{"ok":true}` 200
+	}
+
+	# The chatbot: answers are per visitor and never cached; bodies over 8 KB are refused at the edge.
+	@ask path /api/ask /api/ask/*
+	handle @ask {
+		# Deferred, so it also covers the proxy's own answers (e.g. 502 while the service restarts). All of
+		# /api/ is excluded from Cloudflare's cache rule anyway (ADR 0012).
+		header {
+			Cache-Control "no-store"
+			defer
+		}
+		request_body {
+			max_size 8KB
+		}
+		reverse_proxy assistant:8788 {
+			# Keep the visitor's address for the daily hash behind the usage limits (never stored).
+			header_up X-Forwarded-For {client_ip}
+		}
 	}
 
 	handle /api/stats/* {

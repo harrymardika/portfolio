@@ -20,11 +20,15 @@ env_value() {
 }
 
 web_image() { docker compose images -q web 2>/dev/null || true; }
+web_healthy() { [ "$(docker compose ps --format '{{.Health}}' web 2>/dev/null || true)" = healthy ]; }
 
 before=$(web_image)
 docker compose pull --quiet
 # --wait: purge only once the new container is healthy, so Cloudflare refetches the new pages.
-docker compose up -d --remove-orphans --wait --wait-timeout 180
+# Another service failing its health check (e.g. the assistant) must not skip the purge of a changed web
+# image; the failure is still reported by the exit status at the end.
+status=0
+docker compose up -d --remove-orphans --wait --wait-timeout 180 || status=$?
 after=$(web_image)
 docker image prune --force --filter "until=168h" >/dev/null
 
@@ -32,7 +36,11 @@ if [ -n "$after" ] && [ "$before" != "$after" ]; then
   echo "update: web image changed"
   touch "$PENDING"
 fi
-[ -f "$PENDING" ] || exit 0
+[ -f "$PENDING" ] || exit "$status"
+if [ "$status" -ne 0 ] && ! web_healthy; then
+  echo "update: web is not healthy; keeping the Cloudflare cache until the next run" >&2
+  exit "$status"
+fi
 
 token=$(env_value CF_API_TOKEN)
 zone=$(env_value CF_ZONE_ID)
@@ -41,7 +49,7 @@ host=${host:-harry.mardika.my.id}
 if [ -z "$token" ] || [ -z "$zone" ]; then
   echo "update: CF_API_TOKEN or CF_ZONE_ID not set in .env; skipping the Cloudflare cache purge"
   rm -f "$PENDING"
-  exit 0
+  exit "$status"
 fi
 
 # The token goes in through a header file on stdin, so it never appears in the process list.
@@ -52,6 +60,7 @@ response=$(printf 'Authorization: Bearer %s\n' "$token" | curl -sS --max-time 30
 if printf '%s' "$response" | grep -q '"success":[[:space:]]*true'; then
   rm -f "$PENDING"
   echo "update: purged Cloudflare cache for $host"
+  exit "$status"
 else
   echo "update: Cloudflare cache purge failed; will retry on the next run" >&2
   exit 1

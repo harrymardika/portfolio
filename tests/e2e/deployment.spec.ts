@@ -102,3 +102,28 @@ test('the home server health check is answered by Caddy and never cached', async
   expect(response.headers()['cache-control']).toBe('no-store');
   expect(await response.json()).toEqual({ ok: true });
 });
+
+test('the assistant answers its health check without caching', async ({ request }) => {
+  const response = await request.get('/api/ask/health');
+  expect(response.status()).toBe(200);
+  expect(response.headers()['cache-control']).toBe('no-store');
+  expect(await response.json()).toMatchObject({ ok: true, enabled: expect.any(Boolean) });
+});
+
+test('the assistant refuses other sites and oversized questions', async ({ baseURL }) => {
+  // Node's fetch, not Playwright's request: Caddy answers 413 and closes the connection before the whole
+  // body is sent, which Playwright reports as an aborted request.
+  const ask = (origin: string, body: string) =>
+    fetch(new URL('/api/ask', baseURL), {
+      method: 'POST',
+      headers: { origin, 'content-type': 'application/json', 'user-agent': 'Mozilla/5.0 Playwright' },
+      body,
+    });
+  expect((await ask('https://evil.example', '{"question":"hi","lang":"en"}')).status).toBe(403);
+  // Caddy refuses bodies over 8 KB before they reach the service.
+  const big = await ask(
+    new URL(baseURL ?? '').origin,
+    JSON.stringify({ question: 'x'.repeat(9_000), lang: 'en' }),
+  );
+  expect(big.status).toBe(413);
+});

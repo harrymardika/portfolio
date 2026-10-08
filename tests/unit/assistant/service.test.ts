@@ -109,6 +109,12 @@ describe('POST /api/ask', () => {
     expect(gemini.prompts).toEqual([]);
   });
 
+  it('refuses another site even while the feature is off', async () => {
+    const { handler } = setup([{ provider: fake('Gemini', []), knowledge }], { enabled: false });
+    const response = await handler(askRequest(question, { origin: 'https://evil.example' }));
+    expect(response.status).toBe(403);
+  });
+
   it('refuses other origins, a missing origin, and bots', async () => {
     const { handler } = setup([{ provider: fake('Gemini', []), knowledge }]);
     for (const headers of [

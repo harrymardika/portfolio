@@ -2,6 +2,7 @@
 # Production images (docs/07-deployment.md), built by GitHub Actions — never on the home server.
 #   docker build -f docker/Dockerfile --target web   -t portfolio-web .
 #   docker build -f docker/Dockerfile --target stats -t portfolio-stats .
+#   docker build -f docker/Dockerfile --target assistant -t portfolio-assistant .
 
 ARG BUN_VERSION=1.3.9
 ARG NODE_VERSION=22
@@ -31,6 +32,7 @@ RUN --mount=type=secret,id=github_token,required=false \
 # Caddy serves these .br/.gz copies as-is, so the home server never compresses on request.
 RUN bun scripts/precompress.ts
 RUN bun build services/stats/server.ts --target=bun --minify --outfile /out/stats/server.js
+RUN bun build services/assistant/server.ts --target=bun --minify --outfile /out/assistant/server.js
 
 # ---- web: Caddy serving the static site ----------------------------------------------------
 FROM caddy:${CADDY_VERSION}-alpine AS web
@@ -51,4 +53,17 @@ VOLUME /data
 EXPOSE 8787
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD bun -e "const r = await fetch('http://127.0.0.1:8787/api/stats/health'); process.exit(r.ok ? 0 : 1)"
+CMD ["bun", "server.js"]
+
+# ---- assistant: the "Ask Harry" chatbot service (ADR 0014), with this build's knowledge ------
+# No volume and nothing stored; the API keys come from the server's .env at runtime, never the image.
+FROM oven/bun:${BUN_VERSION}-slim AS assistant
+WORKDIR /app
+COPY --from=build /out/assistant/server.js ./server.js
+COPY --from=build /app/build-meta/knowledge.json /app/build-meta/knowledge-compact.json ./knowledge/
+ENV ASSISTANT_KNOWLEDGE_DIR=/app/knowledge ASSISTANT_PORT=8788 NODE_ENV=production
+USER bun
+EXPOSE 8788
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD bun -e "const r = await fetch('http://127.0.0.1:8788/api/ask/health'); process.exit(r.ok ? 0 : 1)"
 CMD ["bun", "server.js"]

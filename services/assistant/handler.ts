@@ -82,11 +82,12 @@ export function createHandler(options: AssistantOptions): (request: Request) => 
   };
 
   async function ask(request: Request): Promise<Response> {
-    if (!enabled) return json({ error: 'disabled' }, 503);
     const { headers } = request;
-    const userAgent = headers.get('user-agent');
-    if (!fromSite(headers.get('origin'), siteHost) || isBot(userAgent))
+    // Other sites and bots are refused even while the feature is off.
+    if (!fromSite(headers.get('origin'), siteHost) || isBot(headers.get('user-agent'))) {
       return json({ error: 'forbidden' }, 403);
+    }
+    if (!enabled) return json({ error: 'disabled' }, 503);
     const parsed = askRequestSchema.safeParse(await readJson(request));
     if (!parsed.success) return json({ error: 'invalid' }, 400);
 
