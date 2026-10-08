@@ -2,6 +2,11 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Setup Claude Code dan hemat konteks
+- Pemilik bertanya cara terbaik memakai Claude Code (Graphify, CLAUDE.md, pengaturan, subagent, cara menulis prompt). Saran: Graphify belum perlu untuk repo sekecil ini; pemborosan token terbesar adalah `PROGRESS.md` yang dibaca utuh setiap sesi.
+- Dikerjakan: log sesi lama pindah ke `docs/progress-archive.md` (PROGRESS.md 520 → ±230 baris); urutan baca di `AGENTS.md` §1 hanya mewajibkan bagian status dan log terbaru; `.claude/settings.json` (izin perintah verifikasi dan git yang hanya membaca, larangan membaca `CV/` dan `.env`); `CLAUDE.md` dan template di `docs/06` meminta agent bertanya dulu bila permintaan ambigu.
+- Catatan: larangan baca di `.claude/settings.json` berlaku untuk tool Read/Edit Claude Code, bukan pagar mutlak (perintah shell tetap bisa membaca file). Aturan tertulis di `AGENTS.md` §3 tetap berlaku.
+
 ### 2026-10-08 · Claude Code (Opus) · Medium dan judul "Finalis"
 - Pemilik: tambah Medium; Neurontara Data Clash sebenarnya tim finalis; "Finalis" atau "Tim Finalis"?
 - Dikerjakan: platform sosial `medium` (skema, ikon, label, statistik klik `outbound`, CMS, docs 01/04/08); penghargaan memakai "Finalist"/"Finalis" secara konsisten dengan keterangan tim dalam kurung. Label footer "Resumes"/"Resume" (pilihan pemilik) juga sudah tayang.

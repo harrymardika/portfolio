@@ -72,31 +72,31 @@ Ringkasan, peran, dan angka sudah dwibahasa; isi Problem/Approach/Result hanya b
 - **(b)** Dukungan terjemahan body `content/projects/id/<slug>.md` dengan fallback ke Inggris, lalu terjemahkan hanya Decklify dan Dompet Juara dulu. Termasuk: menu CMS baru, Portfolio PDF ID memakai terjemahan, tes kesamaan struktur (judul bagian dan gambar) agar dua versi tidak melenceng.
 - **(c)** Seperti (b) untuk semua 11 studi kasus (±2.000 kata; draf oleh AI, ditinjau pemilik). Biaya: setiap edit dikerjakan dua kali.
 
-## E. Asisten AI "Tanya tentang Harry"
+## E. Chatbot "Tanya Harry" di sudut (Fase 11, D13, D14)
 
-**Tujuannya.** Pengunjung (terutama recruiter) bertanya dalam bahasa sehari-hari: "Pernah pakai YOLO di produksi?", "Apa peran Harry di Decklify?", "Bisa Data Engineering?". Jawaban singkat, berdasarkan data situs, dengan tautan ke bagian yang relevan.
+**Keputusan (2026-10-08):** chatbot mengambang di sudut kanan bawah setiap halaman (D13); Gemini utama, Groq cadangan, teks pertanyaan tidak disimpan (D14). Pratinjau: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.
 
-**Rancangan yang direkomendasikan** (detail di ADR baru saat T11.1):
+**Tujuannya.** Pengunjung (terutama recruiter) bertanya dalam bahasa sehari-hari: "Pernah pakai YOLO di produksi?", "Apa peran Harry di Decklify?". Jawaban singkat dari isi situs, dengan tautan ke halaman terkait.
 
 ```mermaid
 flowchart LR
-  C[content/] -->|build| K[knowledge.json<br/>data publik saja]
-  V((Pengunjung)) -->|POST /api/ask| A[layanan assistant<br/>Bun, di server rumah]
+  C[content/] -->|build| K[knowledge.json lengkap<br/>knowledge-compact.json ringkas]
+  V((Pengunjung)) -->|klik tombol sudut| W[panel chat<br/>dimuat saat dibuka]
+  W -->|POST /api/ask + ≤6 pesan terakhir| A[services/assistant<br/>Bun, server rumah]
   K --> A
-  A -->|prompt + pertanyaan| G[Gemini Flash<br/>cadangan Groq]
-  G --> A -->|jawaban + tautan| V
+  A -->|lengkap| G[Gemini]
+  A -.->|gagal: ringkas| Q[Groq]
+  A -->|JSON tervalidasi: teks + path situs| W
 ```
 
-- **Pengetahuan = isi situs saja.** Saat build, `content/` (profil, pengalaman, pendidikan, penghargaan, sertifikat, skill, studi kasus) diringkas menjadi `knowledge.json`, ±15–20 ribu token. Muat utuh di konteks model, jadi **tidak perlu vector database atau embedding**. Tidak ada data yang tidak ada di situs; tidak ada nomor HP.
-- **Server:** layanan kecil baru (`services/assistant`, pola sama dengan `stats`, ±30 MB RAM) di belakang Caddy pada `/api/ask`. Key Gemini/Groq di `/opt/portfolio/.env` server (key yang dulu disarankan dihapus justru dipakai di sini; sebaiknya key terpisah dengan kuota sendiri).
-- **Pengaman:**
-  - prompt: hanya menjawab tentang Harry dari pengetahuan itu; jika tidak tahu, bilang tidak tahu dan arahkan ke email; abaikan instruksi di dalam pertanyaan; jawab dalam bahasa penanya;
-  - batas: pertanyaan ≤ 500 karakter, jawaban ≤ ±250 kata, mis. 10 pertanyaan/jam per pengunjung (hash IP, seperti statistik), batas harian total agar kuota gratis tidak habis;
-  - jawaban ditampilkan sebagai teks biasa (tanpa HTML), tautan hanya ke halaman situs sendiri;
-  - set uji ±25 pertanyaan (termasuk upaya *prompt injection*, pertanyaan pribadi seperti gaji/alamat/nomor HP) dijalankan sebelum rilis.
-- **Privasi (D14):** pertanyaan dikirim ke penyedia model. Tier gratis Gemini boleh memakai data untuk melatih model, jadi UI harus memberi tahu, atau pakai Groq/tier berbayar. Pertanyaan disimpan atau tidak: usulan **tidak disimpan**, hanya hitungan jumlah pertanyaan di statistik (opsi: simpan teks pertanyaan tanpa IP 30 hari untuk melihat apa yang ditanyakan recruiter).
-- **UI:** bagian "Tanya tentang saya" di beranda/About dengan contoh pertanyaan siap klik; ramah keyboard dan pembaca layar; tanpa JS atau saat server mati: disembunyikan, diganti tautan CV dan email. Tidak memakai widget pihak ketiga.
-- **Biaya:** gratis dalam kuota tier gratis untuk trafik portfolio pribadi; batas harian mencegah tagihan atau kuota habis.
+- **Layanan terpisah** `services/assistant` (image sendiri, 128 MB, read-only, tanpa volume): key AI hanya ada di sini; gangguan AI tidak memengaruhi statistik.
+- **Pengetahuan = isi situs saja**, dibuat saat build. Dua ukuran: lengkap (±15–20 ribu token, Gemini) dan ringkas (≤ 5 ribu token, Groq; model gpt-oss di Groq dibatasi ±8 ribu token/menit). Tanpa vector DB.
+- **Tanpa penyimpanan:** browser mengirim maksimal 6 pesan terakhir setiap bertanya; percakapan hanya di `sessionStorage` tab itu. Server mencatat jumlah, bukan teks.
+- **Batas:** 1–500 karakter per pertanyaan; 10/jam dan 30/hari per pengunjung (hash harian, tanpa IP); 300/hari total; ≤ 3 permintaan bersamaan; timeout 20 s.
+- **Pengaman jawaban:** prompt membatasi topik dan menolak data pribadi; jawaban JSON divalidasi (teks biasa, tautan hanya path situs yang ada, pola nomor HP ditolak); kill switch `ASSISTANT_ENABLED`.
+- **Widget:** tombol kecil di semua halaman (bukan halaman cetak), tersembunyi tanpa JS; panel dimuat saat diklik sehingga Lighthouse tidak turun; dialog ramah keyboard/pembaca layar; lembar bawah di HP; saat server mati atau batas habis menampilkan tautan CV dan email; pemberitahuan privasi (Gemini tier gratis boleh memakai isi permintaan untuk memperbaiki produknya).
+- **Uji:** ±30 pertanyaan (fakta, di luar topik, data pribadi, prompt injection) lewat workflow manual dengan secret repo; hasil dicatat sebelum fitur dinyalakan.
+- **Biaya:** gratis dalam kuota tier gratis; batas harian mencegah kuota habis.
 
 ## F. Komentar atau testimoni dari orang lain
 

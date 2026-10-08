@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.6 penutupan Fase 9 (semua tugas Fase 9 selesai); pemilik meninjau varian CV (T10.3) di `/cv/` dan contoh letak asisten AI (D13)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.6 penutupan Fase 9; lalu Fase 11 mulai T11.1 (rencana chatbot sudah disetujui); pemilik meninjau varian CV (T10.3)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
 | 10 | CV per posisi (§B) | 🔄 Aktif (dimulai atas izin pemilik sebelum T9.2 selesai) |
-| 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Setelah Fase 9 |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -144,20 +144,24 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
-## Fase 11: Asisten AI "Tanya tentang Harry" (`docs/11-roadmap.md` §E)
+## Fase 11: Chatbot "Tanya Harry" di sudut (`docs/11-roadmap.md` §E, D13, D14)
 
-- [ ] **T11.1** ADR + pengetahuan dari konten (D13, D14)
-  - Kriteria: ADR baru (penyedia, privasi, batas, kenapa tanpa vector DB); `knowledge.json` dibuat saat build dari `content/` publik saja (tes: tanpa nomor HP, tanpa draf, ukuran < batas token).
-- [ ] **T11.2** Layanan `services/assistant` + `/api/ask`
-  - Kriteria: Bun, image sendiri, batas memori; prompt sistem dengan pengaman; batas per pengunjung dan harian; jawaban teks biasa; cadangan penyedia kedua; key hanya di `.env` server; Caddy + CSP + compose diperbarui; health check.
-- [ ] **T11.3** UI tanya-jawab
-  - Kriteria: bagian "Tanya tentang saya" + contoh pertanyaan; EN/ID; keyboard & pembaca layar; tanpa JS/saat server mati diganti tautan CV dan email; pemberitahuan privasi; Lighthouse tetap ≥ 90/95.
-- [ ] **T11.4** Uji keamanan dan kualitas
-  - Kriteria: set uji ±25 pertanyaan (fakta, di luar topik, data pribadi, *prompt injection*) dengan hasil yang dicatat; e2e dengan API tiruan; `/security-review`.
-- [ ] **T11.5** Deploy dan pemantauan
-  - Kriteria: dokumen operasional (docs/07, docs/10: key, kuota, mematikan fitur); jumlah pertanyaan tampil di statistik privat.
-- [ ] **T11.6** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
-  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
+Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinjau yang dipilih pemilik: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a (bagian 3).
+
+- [ ] **T11.1** ADR 0014 + pengetahuan dari konten
+  - Kriteria: ADR 0014 (layanan terpisah, penyedia, privasi tanpa penyimpanan, batas, tanpa vector DB, widget sudut, kill switch); `knowledge.json` (lengkap, untuk Gemini) dan `knowledge-compact.json` (≤ 5 ribu token, untuk Groq) dibuat saat build dari `content/` publik saja, beserta daftar path situs yang boleh ditautkan; tes: tanpa nomor HP, tanpa draf, ukuran di bawah batas, path valid.
+- [ ] **T11.2** Layanan `services/assistant` (`POST /api/ask`, `GET /api/ask/health`)
+  - Kriteria: penyedia Gemini/Groq direfaktor ke `src/lib/ai/` (dipakai juga draf T8.2); validasi masuk (Origin, ukuran, 1–500 karakter, riwayat ≤ 6 pesan, bot); batas per pengunjung 10/jam dan 30/hari (hash harian, tanpa IP), total 300/hari, ≤ 3 permintaan bersamaan, timeout 20 s; jawaban JSON tervalidasi (teks biasa, tautan hanya path situs, pola nomor HP ditolak), Gemini → Groq → pesan cadangan; kill switch `ASSISTANT_ENABLED`; log tanpa teks pertanyaan; tes unit dengan penyedia tiruan.
+- [ ] **T11.3** Infrastruktur: Docker, deploy, Caddy (+ `/security-review`)
+  - Kriteria: target `assistant` di Dockerfile + matrix deploy; service `assistant` di compose (hardening, 128 MB, tanpa volume); Caddy `/api/ask*` (no-store); CSP tetap; `.env.example`, docs/07 dan docs/10 (key terpisah, mematikan fitur, kuota); `test:e2e:docker` mencakup health.
+- [ ] **T11.4** Widget chat di sudut
+  - Kriteria: tombol kecil di semua halaman `PageLayout` (bukan halaman cetak), tersembunyi tanpa JS; panel dimuat saat diklik; dialog non-modal yang ramah keyboard dan pembaca layar; contoh pertanyaan, hapus percakapan, pemberitahuan privasi; percakapan bertahan antar-halaman dalam satu tab (`sessionStorage`); fallback CV + email saat server mati/batas habis; lembar bawah di HP tanpa menutupi footer; EN/ID; event statistik `ask` tanpa teks; e2e dengan API tiruan + axe; Lighthouse tetap ≥ 90/95.
+- [ ] **T11.5** Uji kualitas dan keamanan
+  - Kriteria: ±30 pertanyaan uji (fakta EN/ID, di luar topik, data pribadi, prompt injection, tautan luar/HTML) dijalankan lewat workflow manual `assistant-eval.yml` (secret repo, tanpa laptop); hasil di `docs/assistant-eval.md`; prompt diperbaiki sampai lulus; `/security-review` seluruh fase.
+- [ ] **T11.6** Peluncuran dan pemantauan
+  - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
+- [ ] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: sesuai checklist §2a.
 
 ## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
 
@@ -203,14 +207,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D17 | 3D tambahan | **Keempatnya** (peta proyek, 404, rasi skill, globe pengunjung), di halaman selain beranda, **setelah Fase 11 dan 12**, urutan Proyek → 404 → Skill → Globe (2026-10-08) |
+| D13 | Asisten AI: lanjut dan letaknya | **Lanjut, sebagai chatbot mengambang di sudut kanan bawah setiap halaman** (bukan halaman cetak), dipilih setelah membandingkan pratinjau dengan versi About + tombol hero (2026-10-08) |
 | D14 | Asisten AI: penyedia & penyimpanan | **Gemini utama, Groq cadangan** (batas tier gratis Groq dicek di ADR T11.1), dengan pemberitahuan privasi singkat di bawah kotak tanya; **teks pertanyaan tidak disimpan**, hanya jumlahnya di statistik privat (2026-10-08) |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
-**Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
-
-| No | Pertanyaan | Rekomendasi |
-|---|---|---|
-| D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tombol "Tanya tentang saya" di hero beranda (pratinjau: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a, menunggu pemilik) |
+**Belum diputuskan:** tidak ada (D8–D17 sudah diputuskan pemilik). Keputusan baru ditambahkan di sini dengan rekomendasinya.
 
 ## Catatan data
 
@@ -222,6 +223,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · Rencana Fase 11: chatbot di sudut
+- Pemilik membandingkan pratinjau dan memilih **chatbot di sudut** (D13), lalu meminta rencana yang matang. Rencana disetujui: layanan terpisah `services/assistant`, pengetahuan lengkap (Gemini) + ringkas (Groq, karena batas ±8 ribu token/menit), tanpa penyimpanan percakapan di server, batas per pengunjung dan harian, validasi jawaban, kill switch, widget yang dimuat saat diklik, uji ±30 pertanyaan lewat workflow manual.
+- Dikerjakan: Fase 11 ditulis ulang (T11.1–T11.7), D13 dicatat, `docs/11-roadmap.md` §E diperbarui. Belum ada kode.
+- Langkah berikutnya: T9.6 (penutupan Fase 9), lalu T11.1.
 
 ### 2026-10-08 · Claude Code (Opus) · Penutupan fase dan keputusan asisten AI
 - Pemilik meminta proyek dirapikan dan didokumentasikan di setiap akhir fase. Ditambahkan `AGENTS.md` §2a (checklist penutupan) dan tugas penutup T9.6, T10.4, T11.6, T12.2, T13.5.
@@ -243,8 +249,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 ### 2026-10-08 · Claude Code (Opus) · Template prompt sesi
 - Pemilik minta cara menulis prompt untuk membuka sesi baru dan melanjutkan progres. `docs/06-development-workflow.md` §3 kini berisi siklus satu sesi, 6 template (lanjutkan, tugas tertentu, lanjutkan yang terputus, permintaan baru, tutup sesi, review), cara menulis permintaan sendiri, dan kebiasaan di Claude Code.
 - Belum di-push (atas permintaan pemilik), begitu juga commit setup sebelumnya.
-
-### 2026-10-08 · Claude Code (Opus) · Setup Claude Code dan hemat konteks
-- Pemilik bertanya cara terbaik memakai Claude Code (Graphify, CLAUDE.md, pengaturan, subagent, cara menulis prompt). Saran: Graphify belum perlu untuk repo sekecil ini; pemborosan token terbesar adalah `PROGRESS.md` yang dibaca utuh setiap sesi.
-- Dikerjakan: log sesi lama pindah ke `docs/progress-archive.md` (PROGRESS.md 520 → ±230 baris); urutan baca di `AGENTS.md` §1 hanya mewajibkan bagian status dan log terbaru; `.claude/settings.json` (izin perintah verifikasi dan git yang hanya membaca, larangan membaca `CV/` dan `.env`); `CLAUDE.md` dan template di `docs/06` meminta agent bertanya dulu bila permintaan ambigu.
-- Catatan: larangan baca di `.claude/settings.json` berlaku untuk tool Read/Edit Claude Code, bukan pagar mutlak (perintah shell tetap bisa membaca file). Aturan tertulis di `AGENTS.md` §3 tetap berlaku.
