@@ -229,7 +229,7 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Keputusan pemilik:** D8, D9, D11, D12, D15, D16 (dan rencana D13, D14, D17 untuk Fase 11 dan 13).
 - **Penutupan:** satu kunci teks UI tak terpakai (`portfolio.page`) dan `src/lib/seo/.gitkeep` dihapus; tidak ada dependency, komponen, atau aset yang tak terpakai; tidak ada `TODO`; semua `test.skip` beralasan. README, `docs/02` (struktur folder kini sesuai kode), `docs/11` (Fase 9–13, tabel keputusan D8–D17), `docs/README.md`, dan tabel `AGENTS.md` §1 diperbarui. CHANGELOG punya rilis **1.0.0 (2026-10-07, Fase 0–8)** dan **1.1.0 (2026-10-08, Fase 9)**; `package.json` ikut 1.1.0. Branch lokal `feat/T9.2-skills` dihapus setelah perbaikan `docs/06` di dalamnya (commit `911d2d2`, belum ada di `main`, berbeda dari catatan serah terima) dibawa ke `main`; branch remote `drafts/case-study-camera-genai` dihapus.
 - **Sisa untuk pemilik:** headline LinkedIn "AI Product Manager"; meninjau 12 PDF varian di `/cv/` (T10.3); mengisi `content/messages.yaml` bila sudah ada pesan yang diizinkan; memastikan run draf AI dua bahasa pertama (tab *Actions* → *Case study drafts*).
-- **Cek situs live:** menunggu deploy setelah push (beranda EN/ID, PDF, `/stats/`).
+- **Cek situs live (2026-10-08, build 06:20 UTC, ±17 menit setelah push):** beranda, About, Projects, studi kasus, `/stats/` EN/ID, `/cv/` (12 PDF varian), 4 PDF utama, `/api/health`, dan `/api/stats/summary` menjawab 200; baris peran "AI Product Manager" dan angka gaya Indonesia (`92,5%`) tampil benar.
 - **Fase berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten); T10.4 setelah tinjauan T10.3.
 
 ### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
