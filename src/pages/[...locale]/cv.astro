@@ -8,7 +8,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getCvVariants, getProfile } from '@/lib/content/queries';
 import { downloadPath, DOWNLOADS_DIR, variantDownloads } from '@/lib/downloads';
-import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
+import { fill, localeStaticPaths, type Locale, UI } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
 
@@ -46,7 +46,7 @@ const rows = variants.map((variant) => ({
         data-download="cv"
         class="inline-flex min-h-11 items-center font-semibold text-forest-ink underline underline-offset-4"
       >
-        {t['cvVariants.main']}
+        {fill(t['cvVariants.main'], { role: localize(profile.role, locale) })}
       </a>
     </p>
     {rows.length === 0 ? (

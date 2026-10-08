@@ -2,6 +2,17 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
+- **Sudah (sesi ini):** T9.1 positioning, T9.2 skill (8 grup, CV umum tetap 2 halaman), T9.3 studi kasus ID, T9.4 kesan & pesan, T9.5 format angka; Fase 10 T10.1–T10.2 dan isi T10.3 (6 varian di `/cv/`, tautan footer "Resumes"); Medium dan judul "Finalist"; aturan penutupan fase (`AGENTS.md` §2a); rencana Fase 11 (chatbot di sudut, D13/D14) dan Fase 13 (empat 3D, D17). Semua sudah di-push kecuali commit penutup ini.
+- **Belum:** T9.6 penutupan Fase 9; T10.3 tinjauan pemilik atas 12 PDF varian lalu T10.4; seluruh Fase 11–13. Uji draf AI dua bahasa belum terjadi (run terjadwal 2026-10-08 02:41 UTC belum muncul sampai 05:44 UTC; GitHub bisa menunda atau melewatkan jadwal): cek tab *Actions*, atau jalankan *Case study drafts* manual.
+- **Langkah berikutnya:** (1) T9.6 sesuai `AGENTS.md` §2a, termasuk menghapus branch lokal `feat/T9.2-skills` (tercampur dengan commit sesi lain, isinya sudah di `main`) dan branch remote `drafts/case-study-camera-genai` yang sudah di-merge; (2) T11.1.
+- **Catatan:** jangan jalankan dua sesi yang menulis kode di folder yang sama; sesi lain sempat berpindah branch dan meng-stash di tengah T9.2. Pratinjau pemilik: 3D https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9gfw, chatbot https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a. Commit ini belum di-push (permintaan pemilik).
+
+### 2026-10-08 · Claude Code (Opus) · Rencana Fase 11: chatbot di sudut
+- Pemilik membandingkan pratinjau dan memilih **chatbot di sudut** (D13), lalu meminta rencana yang matang. Rencana disetujui: layanan terpisah `services/assistant`, pengetahuan lengkap (Gemini) + ringkas (Groq, karena batas ±8 ribu token/menit), tanpa penyimpanan percakapan di server, batas per pengunjung dan harian, validasi jawaban, kill switch, widget yang dimuat saat diklik, uji ±30 pertanyaan lewat workflow manual.
+- Dikerjakan: Fase 11 ditulis ulang (T11.1–T11.7), D13 dicatat, `docs/11-roadmap.md` §E diperbarui. Belum ada kode.
+- Langkah berikutnya: T9.6 (penutupan Fase 9), lalu T11.1.
+
 ### 2026-10-08 · Claude Code (Opus) · Penutupan fase dan keputusan asisten AI
 - Pemilik meminta proyek dirapikan dan didokumentasikan di setiap akhir fase. Ditambahkan `AGENTS.md` §2a (checklist penutupan) dan tugas penutup T9.6, T10.4, T11.6, T12.2, T13.5.
 - D14 diputuskan: Gemini utama, Groq cadangan, pertanyaan tidak disimpan. D13: pemilik meminta contoh; pratinjau tombol di hero + bagian "Tanya tentang saya" di About: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.

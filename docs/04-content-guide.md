@@ -34,7 +34,9 @@ Bisa juga langsung lewat web GitHub (tombol ✏️ di file), bahkan dari HP.
 | Sertifikat | `content/certifications.yaml` |
 | Skills | `content/skills.yaml` |
 | Titik-titik di jalur Journey 3D | `content/journey.yaml` |
-| Proyek / case study | `content/projects/<slug>.md` |
+| Proyek / case study | `content/projects/<slug>.md` (terjemahan body: `content/projects/id/<slug>.md`) |
+| CV per posisi (varian) | `content/cv-variants.yaml` |
+| Kesan & pesan | `content/messages.yaml` |
 | Foto | `content/media/` |
 
 ## 2. Tipe data bersama
@@ -111,13 +113,13 @@ Grup saat ini (urutan tampil): `ai-ml`, `llm-genai`, `data`, `cloud-mlops`, `web
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.
 
 ### `cv-variants.yaml` (Varian CV, Fase 10, D10)
-Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sama. Varian **hanya memilih dan mengurutkan**; tidak ada pengalaman yang ditulis ulang. CV umum di website tidak berubah.
+Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sama. Di CMS: menu **Varian CV**. Varian **hanya memilih dan mengurutkan**; tidak ada pengalaman yang ditulis ulang. CV umum di website tidak berubah.
 
 `variants[]`: `{ id, name, role, summary, focus[], sections[], skills? }`
 - `name`: nama varian (dipakai di nama file PDF). `role` dan `summary`: baris peran dan ringkasan khusus varian ini; ringkasan **hanya berisi fakta yang sudah ada** di konten.
 - `focus`: `ai` · `data` · `product` (produk) · `project` (manajemen proyek/delivery) · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
 - `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
-- `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil; kosong = semua grup.
+- `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil. Jika tidak diisi, varian memakai grup yang tampil di CV umum (`show_on_cv` tidak `false`); daftar kosong ditolak.
 
 **Label fokus pada poin pencapaian:** setiap `highlights[]` di experience, education, dan trainings boleh diberi `focus`, mis. `- { en: "...", id: "...", focus: [ai, data] }`. Aturan di varian:
 - pekerjaan (kategori `work`, `founder`, `research`) dan pendidikan **selalu tampil** agar riwayat tidak bolong; jika tidak ada poin yang cocok, tampil poin pertama;

@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 10 (penutupan T10.4) dan Fase 11 · **Tugas berikutnya:** T10.4 penutupan Fase 10 → T11.1 (rencana chatbot sudah disetujui)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten; rencana chatbot sudah disetujui)
 
 ## Ringkasan
 
@@ -19,12 +19,12 @@
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
-| 10 | CV per posisi (§B) | 🔄 T10.1–T10.3 selesai; tinggal penutupan (T10.4) |
+| 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; berikutnya (T11.1) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
-Progres keseluruhan: **Fase 0–9 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 10–13: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–10 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
 
 ---
 
@@ -133,7 +133,7 @@ Progres keseluruhan: **Fase 0–9 selesai; situs online sejak 2026-10-06. Rencan
 - [x] **T9.6** Penutupan Fase 9: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
-## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
+## Fase 10: CV per posisi (`docs/11-roadmap.md` §B) ✅
 
 - [x] **T10.1** Model data varian (D10)
   - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
@@ -141,7 +141,7 @@ Progres keseluruhan: **Fase 0–9 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
 - [x] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee · disetujui pemilik 2026-10-08
   - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
-- [ ] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
+- [x] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 11: Chatbot "Tanya Harry" di sudut (`docs/11-roadmap.md` §E, D13, D14)
@@ -224,6 +224,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-08 · Claude Code (Opus) · T10.4 penutupan Fase 10 (ringkasan fase)
+- **Dibangun di Fase 10:** model varian `content/cv-variants.yaml` dengan label fokus pada `highlights` (T10.1); PDF per varian EN/ID saat deploy di `/downloads/cv/`, masing-masing ≤ 2 halaman, ATS-friendly, tanpa nomor HP, dites per varian (T10.2); 6 varian (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) di halaman `/cv/` (noindex) yang ditautkan di footer "Resumes" (T10.3).
+- **Keputusan pemilik:** D10 (6 varian, Product dan Project dipisah, tanpa CV per perusahaan, tautan footer); 12 PDF varian disetujui 2026-10-08.
+- **Penutupan:** tidak ada kode, kunci teks UI, dependency, aset, atau branch yang tersisa (dicek ulang setelah T9.6); `docs/02` dan `docs/09` sudah memuat varian. Dari review: `docs/04` (tabel file kini memuat `cv-variants.yaml` dan `messages.yaml`, menu CMS *Varian CV*, dan default `skills` varian yang benar: grup CV umum, bukan semua grup), SRS (FR-08a, route cetak varian), dan label "CV utama" di `/cv/` yang kini mengambil baris peran dari `profile.yaml` (sebelumnya tertulis di kamus UI). README dan `docs/11` diperbarui statusnya. CHANGELOG rilis **1.2.0 (2026-10-08)** berisi Fase 10 dan jadwal draf dua kali sehari; `package.json` 1.2.0.
+- **Cek situs live:** menunggu deploy setelah push.
+- **Sisa untuk pemilik:** tidak ada untuk Fase 10. Bila ingin varian baru atau mengubah isi varian: CMS → *Varian CV* (docs/04).
+- **Fase berikutnya:** Fase 11, mulai T11.1 (ADR 0014 + `knowledge.json`).
+
 ### 2026-10-08 · Claude Code (Opus) · Tindak lanjut T9.6: T10.3, tag rilis, jadwal draf AI
 - **T10.3 disetujui pemilik** (12 PDF varian "sudah bagus"); tinggal penutupan Fase 10 (T10.4).
 - Tag git `v1.0.0` (commit `0918c4e`, akhir 2026-10-07) dan `v1.1.0` (`aacf06e`, penutupan Fase 9) di-push atas izin pemilik.
@@ -239,14 +247,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Sisa untuk pemilik:** headline LinkedIn "AI Product Manager"; meninjau 12 PDF varian di `/cv/` (T10.3); mengisi `content/messages.yaml` bila sudah ada pesan yang diizinkan; memastikan run draf AI dua bahasa pertama (tab *Actions* → *Case study drafts*).
 - **Cek situs live (2026-10-08, build 06:20 UTC, ±17 menit setelah push):** beranda, About, Projects, studi kasus, `/stats/` EN/ID, `/cv/` (12 PDF varian), 4 PDF utama, `/api/health`, dan `/api/stats/summary` menjawab 200; baris peran "AI Product Manager" dan angka gaya Indonesia (`92,5%`) tampil benar.
 - **Fase berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten); T10.4 setelah tinjauan T10.3.
-
-### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
-- **Sudah (sesi ini):** T9.1 positioning, T9.2 skill (8 grup, CV umum tetap 2 halaman), T9.3 studi kasus ID, T9.4 kesan & pesan, T9.5 format angka; Fase 10 T10.1–T10.2 dan isi T10.3 (6 varian di `/cv/`, tautan footer "Resumes"); Medium dan judul "Finalist"; aturan penutupan fase (`AGENTS.md` §2a); rencana Fase 11 (chatbot di sudut, D13/D14) dan Fase 13 (empat 3D, D17). Semua sudah di-push kecuali commit penutup ini.
-- **Belum:** T9.6 penutupan Fase 9; T10.3 tinjauan pemilik atas 12 PDF varian lalu T10.4; seluruh Fase 11–13. Uji draf AI dua bahasa belum terjadi (run terjadwal 2026-10-08 02:41 UTC belum muncul sampai 05:44 UTC; GitHub bisa menunda atau melewatkan jadwal): cek tab *Actions*, atau jalankan *Case study drafts* manual.
-- **Langkah berikutnya:** (1) T9.6 sesuai `AGENTS.md` §2a, termasuk menghapus branch lokal `feat/T9.2-skills` (tercampur dengan commit sesi lain, isinya sudah di `main`) dan branch remote `drafts/case-study-camera-genai` yang sudah di-merge; (2) T11.1.
-- **Catatan:** jangan jalankan dua sesi yang menulis kode di folder yang sama; sesi lain sempat berpindah branch dan meng-stash di tengah T9.2. Pratinjau pemilik: 3D https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9gfw, chatbot https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a. Commit ini belum di-push (permintaan pemilik).
-
-### 2026-10-08 · Claude Code (Opus) · Rencana Fase 11: chatbot di sudut
-- Pemilik membandingkan pratinjau dan memilih **chatbot di sudut** (D13), lalu meminta rencana yang matang. Rencana disetujui: layanan terpisah `services/assistant`, pengetahuan lengkap (Gemini) + ringkas (Groq, karena batas ±8 ribu token/menit), tanpa penyimpanan percakapan di server, batas per pengunjung dan harian, validasi jawaban, kill switch, widget yang dimuat saat diklik, uji ±30 pertanyaan lewat workflow manual.
-- Dikerjakan: Fase 11 ditulis ulang (T11.1–T11.7), D13 dicatat, `docs/11-roadmap.md` §E diperbarui. Belum ada kode.
-- Langkah berikutnya: T9.6 (penutupan Fase 9), lalu T11.1.

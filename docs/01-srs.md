@@ -53,6 +53,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | FR-06a | 🆕 Pemilik memilih repo yang tampil: daftar di `content/github.yaml` (`include`/`exclude`) dan/atau topic `portfolio` | Wajib |
 | FR-07 | Memperbarui data secara otomatis: terjadwal (tiap 6 jam) dan setiap push | Wajib |
 | FR-08 | 🆕 Download CV (PDF, ramah ATS) dalam EN dan ID | Wajib |
+| FR-08a | CV per posisi (varian, D10): PDF EN dan ID per varian dari isi yang sama, ≤ 2 halaman, ramah ATS, tanpa nomor HP, didaftar di `/cv/` (noindex, tautan di footer) | Wajib |
 | FR-09 | 🆕 Download Portfolio (PDF visual) dalam EN dan ID | Wajib |
 | FR-10 | 🆕 PDF dibuat otomatis saat build dari data yang sama dengan website | Wajib |
 | FR-11 | 🆕 Ganti bahasa EN ↔ ID di setiap halaman | Wajib |
@@ -86,7 +87,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | `/about/` | `/id/about/` | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skills |
 | `/stats/` | `/id/stats/` | Statistik situs dan status server live (tautan di footer) |
 | `/cv/` | `/id/cv/` | CV per posisi: daftar PDF varian CV (tautan di footer, `noindex`, D10) |
-| `/print/cv/`, `/print/portfolio/` | `/id/print/...` | Sumber PDF (tidak ditautkan di navigasi, `noindex`) |
+| `/print/cv/`, `/print/cv/<varian>/`, `/print/portfolio/` | `/id/print/...` | Sumber PDF (tidak ditautkan di navigasi, `noindex`) |
 
 ## 6. Infrastruktur
 

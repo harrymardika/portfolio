@@ -227,7 +227,7 @@ export const cvVariantSchema = z.strictObject({
     .array(z.enum(CV_SECTIONS))
     .min(1)
     .refine((list) => new Set(list).size === list.length, 'List each section once'),
-  /** Skill group ids in display order; all groups when left out. */
+  /** Skill group ids in display order; the general CV's groups (`show_on_cv`) when left out. */
   skills: z
     .array(slug)
     .min(1)

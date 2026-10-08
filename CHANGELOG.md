@@ -5,12 +5,17 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-08
+
+Phase 10: CVs by role.
+
 ### Added
 - CVs by role (AI/ML Engineer, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) in English and Indonesian: built at deploy time into `/downloads/cv/` and listed on the page `/cv/`, linked from the footer ("Resumes" / "Resume") next to the site statistics (kept out of search results); each stays within two ATS-friendly pages (T10.2, T10.3).
 - CV variant model: `content/cv-variants.yaml` (role line, summary, focus, section order, skill groups per variant) and optional focus labels on highlights, with schema, CMS menu "Varian CV", and tests; variants only select and order existing content (T10.1, D10).
 
 ### Changed
 - AI case study drafts run twice a day (09:41 and 21:41 WIB) because GitHub sometimes skips a scheduled run; the first daily run on 2026-10-08 never started (T8.2).
+- Phase 10 close-out: README, roadmap, content guide, and SRS match the code; the main CV link on `/cv/` takes its role line from `profile.yaml` instead of a fixed UI string.
 
 ## [1.1.0] - 2026-10-08
 

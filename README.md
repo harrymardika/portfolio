@@ -3,7 +3,7 @@
 Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Decklify), dwibahasa, dengan CV dan Portfolio PDF yang dibuat otomatis, di-host sendiri di server rumah.
 
 - **Live:** https://harry.mardika.my.id (Indonesia: https://harry.mardika.my.id/id/)
-- **Status:** online sejak 2026-10-06. Fase 0–9 selesai; Fase 10 (CV per posisi) menunggu tinjauan pemilik; rencana Fase 11–13 (chatbot, formulir kesan & pesan, 3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
+- **Status:** online sejak 2026-10-06. Fase 0–10 selesai; rencana Fase 11–13 (chatbot, formulir kesan & pesan, 3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
 - **Dokumentasi:** [`docs/`](docs/README.md). Untuk pemilik, mulai dari **[panduan operasional](docs/10-operations.md)**.
 
 ## Fitur
