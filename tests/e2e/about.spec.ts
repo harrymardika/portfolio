@@ -45,7 +45,7 @@ test('Indonesian page shows translated headings, highlights, and skills', async 
   await expect(page.getByRole('heading', { level: 2, name: 'Pengalaman' })).toBeVisible();
   await expect(page.locator('#experience')).toContainText('Memimpin pengembangan Decklify');
   await expect(page.locator('#experience')).toContainText('Sekarang');
-  await expect(page.locator('#skills')).toContainText('Indonesia (penutur asli)');
+  await expect(page.locator('#skills')).toContainText('Inggris (B2)');
   // Every highlight is translated now; untranslated ones would be marked lang="en" (see TimelineItem).
   await expect(page.locator('#experience li[lang="en"]')).toHaveCount(0);
 });

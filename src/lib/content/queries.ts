@@ -62,8 +62,8 @@ export async function getCertifications(now: Date = new Date()): Promise<Certifi
 const byPosition = (a: { position: number }, b: { position: number }): number => a.position - b.position;
 
 /**
- * Skill groups in file order (Astro returns entries sorted by id). Every group without a surface, for CV
- * variants, which choose groups by id; only the groups shown there with one.
+ * Skill groups in file order (Astro returns entries sorted by id). With a surface, only the groups shown
+ * there; without one, every group (CV variants choose by id).
  */
 export async function getSkillGroups(surface?: Surface): Promise<SkillGroup[]> {
   const groups = sortedBy(await dataOf(getCollection('skills')), byPosition);

@@ -69,7 +69,7 @@ const content: CvContent = {
   ],
   skills: [
     { id: 'ml', position: 0, name: { en: 'ML' }, items: ['PyTorch'], show_on_web: true, show_on_cv: true },
-    { id: 'web', position: 1, name: { en: 'Web' }, items: ['Astro'], show_on_web: true, show_on_cv: true },
+    { id: 'web', position: 1, name: { en: 'Web' }, items: ['Astro'], show_on_web: true, show_on_cv: false },
     { id: 'data', position: 2, name: { en: 'Data' }, items: ['SQL'], show_on_web: true, show_on_cv: true },
   ],
 };
@@ -102,8 +102,11 @@ describe('CV variant selection', () => {
     expect(result.education[0]?.highlights.map((h) => h.en)).toEqual(['Thesis on CNNs']);
   });
 
-  it('keeps every skill group when the variant does not choose', () => {
-    expect(applyVariant(content, { focus: ['data'] }).skills).toHaveLength(3);
+  it('uses the general CV groups when the variant does not choose, but lets it pick hidden ones by id', () => {
+    expect(applyVariant(content, { focus: ['data'] }).skills.map((group) => group.id)).toEqual(['ml', 'data']);
+    expect(applyVariant(content, { focus: ['data'], skills: ['web'] }).skills.map((group) => group.id)).toEqual([
+      'web',
+    ]);
   });
 });
 

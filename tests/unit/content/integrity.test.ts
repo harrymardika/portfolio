@@ -160,19 +160,27 @@ describe('content files', () => {
       ...readdirSync(join(CONTENT_DIR, 'projects'))
         .filter((name) => name.endsWith('.md'))
         .map((name) => `projects/${name}`),
+      ...readdirSync(join(CONTENT_DIR, 'projects', 'id'))
+        .filter((name) => name.endsWith('.md'))
+        .map((name) => `projects/id/${name}`),
     ];
     const broken: string[] = [];
     const walk = (node: unknown, path: string): void => {
       if (Array.isArray(node)) node.forEach((item, index) => walk(item, `${path}[${index}]`));
-      else if (node !== null && typeof node === 'object')
+      else if (node !== null && typeof node === 'object') {
+        // A text in two languages has only `en`, `id` (and `focus` on highlights); any other key
+        // ("coaching", "SQL") is a split.
+        if ('en' in node && Object.keys(node).some((key) => !['en', 'id', 'focus'].includes(key)))
+          broken.push(`${path}: ${Object.keys(node).join(', ')}`);
         for (const [key, value] of Object.entries(node)) {
           if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) broken.push(`${path}: "${key}"`);
           walk(value, `${path}.${key}`);
         }
+      }
     };
     for (const file of files) {
-      const text = file.endsWith('.md') ? (parseFrontmatter(read(file)).data as unknown) : load(read(file));
-      walk(text, file);
+      const data = file.endsWith('.md') ? (parseFrontmatter(read(file)).data as unknown) : load(read(file));
+      walk(data, file);
     }
     expect(broken).toEqual([]);
   });

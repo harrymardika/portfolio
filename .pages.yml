@@ -308,7 +308,9 @@ content:
             description: Nama teknologi cukup diisi bahasa Inggris.
             component: localized
             list: { min: 1, collapsible: false }
-          - { name: show_on_web, component: showOnWeb }
+          - name: show_on_web
+            component: showOnWeb
+            description: Juga mengatur Portfolio PDF.
           - name: show_on_cv
             component: showOnCv
             description: Matikan agar grup ini tidak tampil di CV umum (tetap bisa dipilih varian CV).

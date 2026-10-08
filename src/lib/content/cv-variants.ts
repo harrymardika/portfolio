@@ -4,6 +4,7 @@
  */
 import { PROFESSIONAL_CATEGORIES } from './experience';
 import { CV_SECTIONS } from './schemas';
+import { visibleOn } from './visibility';
 import type {
   CvSection,
   CvVariant,
@@ -46,7 +47,9 @@ export interface CvContent {
 /**
  * Apply a variant: jobs and degrees always stay (no gaps in the work history); leadership roles and
  * trainings whose highlights all belong to other focus areas are left out; skill groups follow the variant's order.
- * Awards and certifications are not filtered. Pass content already filtered for the CV (`show_on_cv`).
+ * Awards and certifications are not filtered. Pass experience, education, and trainings already
+ * filtered for the CV (`show_on_cv`); skill groups arrive unfiltered: a variant picks them by id, or
+ * gets the groups shown on the general CV when it names none.
  */
 export function applyVariant(content: CvContent, variant: Pick<CvVariant, 'focus' | 'skills'>): CvContent {
   const { focus } = variant;
@@ -66,6 +69,6 @@ export function applyVariant(content: CvContent, variant: Pick<CvVariant, 'focus
   });
   const skills = variant.skills
     ? variant.skills.flatMap((id) => content.skills.filter((group) => group.id === id))
-    : content.skills;
+    : visibleOn(content.skills, 'cv');
   return { experience, education, trainings, skills };
 }
