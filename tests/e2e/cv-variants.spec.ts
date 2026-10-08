@@ -8,13 +8,13 @@ import { expect, test } from '@playwright/test';
 import { UI } from '../../src/lib/i18n/ui';
 import { cvVariants } from './helpers';
 
-test('the footer links to the CVs by role, in the page language', async ({ page }) => {
+test('the footer links to the CVs by role ("Resumes"), in the page language', async ({ page }) => {
   for (const [path, locale, target] of [
     ['/', 'en', /\/cv\/$/],
     ['/id/', 'id', /\/id\/cv\/$/],
   ] as const) {
     await page.goto(path);
-    await page.getByRole('contentinfo').getByRole('link', { name: UI[locale]['cvVariants.title'] }).click();
+    await page.getByRole('contentinfo').getByRole('link', { name: UI[locale]['footer.cvVariants'] }).click();
     await expect(page).toHaveURL(target);
     await expect(page.getByRole('heading', { level: 1, name: UI[locale]['cvVariants.title'] })).toBeVisible();
   }
