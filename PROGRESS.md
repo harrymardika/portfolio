@@ -22,6 +22,7 @@
 | 10 | CV per posisi (§B) | 🔄 Aktif (dimulai atas izin pemilik sebelum T9.2 selesai) |
 | 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
+| 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
 Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 9–12: `docs/11-roadmap.md`**
 
@@ -157,6 +158,19 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [ ] **T12.1** Formulir + antrean moderasi (D15)
   - Kriteria: `POST /api/messages` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/messages.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
 
+## Fase 13: 3D tambahan (`docs/11-roadmap.md` §H, D17)
+
+Pratinjau yang disetujui pemilik: https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9gfw (privat). Aturan 3D di `docs/03-design-system.md` §6 berlaku untuk semua: HTML setara sebagai fallback, mati otomatis di perangkat lemah, satu frame diam untuk reduced motion, berhenti saat tidak terlihat, ≤ 180 KB JS 3D per halaman, Lighthouse ≥ 90/95.
+
+- [ ] **T13.1** Peta proyek di halaman Projects + komponen bersama
+  - Kriteria: studi kasus sebagai titik di ruang 3D per bidang (kategori dari `profile.projects.categories`), hover/ketuk menampilkan judul, klik membuka studi kasus, filter bidang yang ada ikut menyorot; putar/hover/label menjadi modul bersama di `src/scenes/core/`; tanpa 3D tetap grid kartu; e2e + axe; Lighthouse `/projects/` ≥ 90.
+- [ ] **T13.2** 404 ala computer vision
+  - Kriteria: halaman melayang dan kotak deteksi (dari kartu foto) memindai lalu mengunci "page · not found 0.99"; teks 404 dan tautan tetap HTML; label dari kamus UI (EN/ID).
+- [ ] **T13.3** Rasi skill di halaman About
+  - Kriteria: grup skill dari `skills.yaml` sebagai rasi, sorot per grup; tanpa 3D tetap daftar chip; hanya grup `show_on_web`.
+- [ ] **T13.4** Globe pengunjung di halaman Statistik
+  - Kriteria: titik negara dari statistik publik yang sudah ada (tanpa data baru yang disimpan); tabel koordinat negara statis; tanpa 3D atau saat API mati tetap daftar negara.
+
 ---
 
 ## Keputusan pemilik
@@ -178,6 +192,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D11 | Skill tambahan | Dikonfirmasi satu per satu (2026-10-08): SQL, Pandas/NumPy, scikit-learn, Apache Airflow, Apache Spark/PySpark, Vertex AI, BigQuery, Cloud Run, LangChain, Power BI, Tableau, Looker/Looker Studio, Figma, Jira, Notion, Scrum/Agile, Git, Linux |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
+| D17 | 3D tambahan | **Keempatnya** (peta proyek, 404, rasi skill, globe pengunjung), di halaman selain beranda, **setelah Fase 11 dan 12**, urutan Proyek → 404 → Skill → Globe (2026-10-08) |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
 **Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
@@ -197,6 +212,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · Rencana 3D tambahan (Fase 13)
+- Pemilik meminta 3D lain yang menarik. Dibuat pratinjau interaktif empat ide (peta proyek, rasi skill, globe pengunjung, 404) dengan data dan palet situs; pemilik memilih **keempatnya**, dikerjakan **setelah Fase 11 dan 12** (D17).
+- Dikerjakan: Fase 13 (T13.1–T13.4) dan §H di `docs/11-roadmap.md`. Belum ada kode.
+- Langkah berikutnya: Fase 11 butuh keputusan D13–D14 dari pemilik.
 
 ### 2026-10-08 · Claude Code (Opus) · T9.2 skill lebih lengkap
 - D11 diputuskan: pemilik mencentang semua kandidat, lalu mengonfirmasi setiap tool di pilihan gabungan (Airflow dan Spark, Power BI/Tableau/Looker, Jira dan Notion).
@@ -218,8 +238,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - Pemilik: tambah Medium; Neurontara Data Clash sebenarnya tim finalis; "Finalis" atau "Tim Finalis"?
 - Dikerjakan: platform sosial `medium` (skema, ikon, label, statistik klik `outbound`, CMS, docs 01/04/08); penghargaan memakai "Finalist"/"Finalis" secara konsisten dengan keterangan tim dalam kurung. Label footer "Resumes"/"Resume" (pilihan pemilik) juga sudah tayang.
 - Belum: -. Langkah berikutnya: tinjauan pemilik atas 12 PDF varian (T10.3), D11 (skill), hasil uji draf AI dua bahasa.
-
-### 2026-10-08 · Claude Code (Opus) · T10.3 tinjauan pemilik: varian dipisah, tautan footer
-- Pemilik: (1) pisahkan Product Manager dan Project Manager; (2) Management Trainee adalah program, bukan jabatan; (3) tautan daftar varian di footer di samping statistik.
-- Dikerjakan: label fokus baru `project` (10 poin delivery/koordinasi); varian `product-manager` dan `project-manager` menggantikan `product-project-manager`; baris peran MT menjadi "Informatics Graduate · Technology & Leadership". Daftar varian pindah dari `/print/cv-variants/` ke halaman situs biasa **`/cv/`** ("CV per posisi"), ditautkan di footer, tetap noindex; unduhan tercatat sebagai `download-cv`. Saran saya agar tetap tersembunyi (positioning AI Product Manager) sudah disampaikan; pemilik memilih footer.
-- Belum: tinjauan akhir pemilik atas 12 PDF varian.

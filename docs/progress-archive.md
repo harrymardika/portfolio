@@ -2,6 +2,11 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · T10.3 tinjauan pemilik: varian dipisah, tautan footer
+- Pemilik: (1) pisahkan Product Manager dan Project Manager; (2) Management Trainee adalah program, bukan jabatan; (3) tautan daftar varian di footer di samping statistik.
+- Dikerjakan: label fokus baru `project` (10 poin delivery/koordinasi); varian `product-manager` dan `project-manager` menggantikan `product-project-manager`; baris peran MT menjadi "Informatics Graduate · Technology & Leadership". Daftar varian pindah dari `/print/cv-variants/` ke halaman situs biasa **`/cv/`** ("CV per posisi"), ditautkan di footer, tetap noindex; unduhan tercatat sebagai `download-cv`. Saran saya agar tetap tersembunyi (positioning AI Product Manager) sudah disampaikan; pemilik memilih footer.
+- Belum: tinjauan akhir pemilik atas 12 PDF varian.
+
 ### 2026-10-08 · Claude Code (Opus) · Fase 10: varian CV (T10.1–T10.3)
 - D10 disempurnakan bersama pemilik: pemilik tidak ingin membuat PDF di laptop, jadi PDF varian dibuat saat deploy di `/downloads/cv/` (tanpa tautan, dilarang di robots.txt), dengan daftar di `/print/cv-variants/`.
 - T10.1: `content/cv-variants.yaml`, label `focus` pada poin pencapaian, `applyVariant` (pekerjaan dan pendidikan selalu tampil; kepemimpinan/pelatihan yang tidak relevan disembunyikan), skema, menu CMS "Varian CV", tes. Temuan reviewer diperbaiki (gelar menyimpan poin pertama, tebal di ringkasan varian, skill unik, tes CMS untuk multi-select).
