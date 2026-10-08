@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'bun:test';
 
-import { eventPayloadSchema } from '@/lib/stats/events';
+import { readFileSync } from 'node:fs';
+
+import { SOCIAL_PLATFORMS } from '@/lib/content/schemas';
+import { eventPayloadSchema, OUTBOUND_DETAILS } from '@/lib/stats/events';
 import {
   clientAddress,
   countryCode,
@@ -21,6 +24,16 @@ describe('eventPayloadSchema', () => {
     ).toBe(true);
     expect(
       eventPayloadSchema.safeParse({ type: 'outbound', path: '/', lang: 'en', detail: 'github' }).success,
+    ).toBe(true);
+  });
+
+  it('counts clicks on every social platform in profile.yaml, and nothing else', () => {
+    expect([...OUTBOUND_DETAILS].sort()).toEqual([...SOCIAL_PLATFORMS].sort());
+    // The beacon (an inline script) keeps its own allowlist; it must name every platform.
+    const beacon = readFileSync('src/components/layout/StatsBeacon.astro', 'utf8');
+    expect(OUTBOUND_DETAILS.filter((platform) => !beacon.includes(`outbound === '${platform}'`))).toEqual([]);
+    expect(
+      eventPayloadSchema.safeParse({ type: 'outbound', path: '/', lang: 'en', detail: 'medium' }).success,
     ).toBe(true);
   });
 

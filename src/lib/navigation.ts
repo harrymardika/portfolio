@@ -20,5 +20,6 @@ export const SOCIAL_LABELS = {
   linkedin: 'LinkedIn',
   instagram: 'Instagram',
   github: 'GitHub',
+  medium: 'Medium',
   email: 'Email',
 } as const;

@@ -22,12 +22,12 @@ Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──
 | `pageview` | path (tanpa query), bahasa, domain asal (referrer), negara (`CF-IPCountry`) | Setiap halaman dimuat |
 | `download-cv` | `{ lang }` | Tombol Download CV (T4.4) dan tautan PDF di halaman `/cv/` (varian CV, Fase 10); jumlahnya menggabungkan CV utama dan varian, bedakan lewat path `/cv/` |
 | `download-portfolio` | `{ lang }` | Tombol Portfolio PDF (T4.4) |
-| `outbound` | `{ platform: linkedin \| instagram \| github \| email }` | Klik tautan sosial |
+| `outbound` | `{ platform: linkedin \| instagram \| github \| medium \| email }` | Klik tautan sosial |
 | `ref` *(privat)* | nilai `?ref=` | Kunjungan dari tautan lamaran |
 
 Nama dan bentuk event didefinisikan di satu tempat, `src/lib/stats/events.ts` (skema Zod yang dipakai beacon dan layanan). Beacon (`src/components/layout/StatsBeacon.astro`, aturan murni di `src/lib/stats/beacon.ts`) mendengarkan klik pada elemen dengan atribut:
 - `data-download="cv|portfolio"` (tombol unduh), dan
-- `data-outbound="linkedin|instagram|github|email"` (tautan sosial di footer dan bagian Contact).
+- `data-outbound="linkedin|instagram|github|medium|email"` (tautan sosial di footer dan bagian Contact).
 
 Kapan beacon mengirim:
 - hanya jika build dibuat dengan `PUBLIC_STATS_ENABLED=true` (production);

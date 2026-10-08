@@ -18,7 +18,7 @@ import {
 const RANGE_ERROR = { message: '`end` must not be before `start`', path: ['end'] };
 const hasValidRange = (item: { start: string; end: string }): boolean => isValidRange(item.start, item.end);
 
-export const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'github', 'email'] as const;
+export const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'github', 'medium', 'email'] as const;
 export const EXPERIENCE_CATEGORIES = ['work', 'founder', 'research', 'leadership', 'teaching', 'program'] as const;
 
 /** Focus labels on highlights; a CV variant shows the highlights of its focus (T10.1). */

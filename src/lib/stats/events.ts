@@ -10,7 +10,7 @@ export const EVENT_TYPES = ['pageview', 'download', 'outbound'] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 
 export const DOWNLOAD_DETAILS = ['cv', 'portfolio'] as const;
-export const OUTBOUND_DETAILS = ['linkedin', 'instagram', 'github', 'email'] as const;
+export const OUTBOUND_DETAILS = ['linkedin', 'instagram', 'github', 'medium', 'email'] as const;
 
 /** Where the beacon posts; Caddy routes /api/stats/* to the stats service. */
 export const STATS_EVENT_URL = '/api/stats/event';

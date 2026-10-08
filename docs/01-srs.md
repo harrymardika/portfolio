@@ -36,6 +36,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | GitHub | `harrymardika` |
 | LinkedIn | https://www.linkedin.com/in/harry-mardika/ |
 | Instagram | `@harry.mrdk` → https://www.instagram.com/harry.mrdk/ |
+| Medium | `@harrymardika` → https://medium.com/@harrymardika |
 | Email publik | harrymardika48@gmail.com |
 | Nomor HP | **Tidak ditampilkan** di web maupun PDF publik |
 
@@ -44,7 +45,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | ID | Kebutuhan | Prioritas |
 |---|---|---|
 | FR-01 | Menampilkan profil (nama, peran, ringkasan, foto, statistik unggulan) | Wajib |
-| FR-02 | Menampilkan tautan kontak: email, LinkedIn, Instagram, GitHub | Wajib |
+| FR-02 | Menampilkan tautan kontak: email, LinkedIn, Instagram, GitHub, Medium | Wajib |
 | FR-03 | 🆕 Menampilkan perjalanan karier sebagai jalur 3D interaktif dengan fallback timeline HTML | Wajib |
 | FR-04 | Menampilkan pengalaman, pendidikan, penghargaan, pelatihan, sertifikat **yang masih berlaku**, dan skills | Wajib |
 | FR-05 | Menampilkan proyek: gabungan case study lokal (`content/projects`) dan repo GitHub bertopic `portfolio` | Wajib |

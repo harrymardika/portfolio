@@ -5,7 +5,7 @@ test('the contact section lists email first, then the social profiles', async ({
   const section = page.locator('#contact');
   await expect(section.getByRole('heading', { level: 2 })).toHaveText("Let's talk.");
   const links = section.locator('li a');
-  await expect(links).toHaveText(['Email', 'LinkedIn', 'Instagram', 'GitHub']);
+  await expect(links).toHaveText(['Email', 'LinkedIn', 'Instagram', 'GitHub', 'Medium']);
   await expect(links.first()).toHaveAttribute('href', 'mailto:harrymardika48@gmail.com');
   await expect(section.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
     'href',

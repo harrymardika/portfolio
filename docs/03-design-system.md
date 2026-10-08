@@ -96,6 +96,6 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 
 ## 8. Ikon & media
 
-- Ikon: satu set konsisten (Lucide via `astro-icon` atau SVG inline). Logo sosial resmi untuk LinkedIn, Instagram, dan GitHub.
+- Ikon: satu set konsisten (Lucide via `astro-icon` atau SVG inline). Ikon sosial (LinkedIn, Instagram, GitHub, Medium, email) digambar ulang dengan gaya outline yang sama (`src/components/ui/Icon.astro`).
 - Foto profil: `content/media/profile.jpg` (1024×1024). Gunakan `astro:assets` untuk varian AVIF/WebP responsif.
 - Latar foto saat ini biru. Ini sengaja dibiarkan kontras di atas hijau (keputusan tertunda D3 di `PROGRESS.md`).

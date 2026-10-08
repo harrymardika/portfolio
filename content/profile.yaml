@@ -52,6 +52,9 @@ socials:
   - platform: github
     url: https://github.com/harrymardika
     handle: harrymardika
+  - platform: medium
+    url: https://medium.com/@harrymardika
+    handle: "@harrymardika"
   - platform: email
     url: mailto:harrymardika48@gmail.com
     handle: harrymardika48@gmail.com

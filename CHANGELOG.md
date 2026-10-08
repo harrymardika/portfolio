@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- Medium profile (https://medium.com/@harrymardika) in the footer, the contact section, the portfolio PDF, and structured data; clicks are counted like the other social links.
 - CVs by role (AI/ML Engineer, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) in English and Indonesian: built at deploy time into `/downloads/cv/` and listed on the page `/cv/`, linked from the footer ("Resumes" / "Resume") next to the site statistics (kept out of search results); each stays within two ATS-friendly pages (T10.2, T10.3).
 - CV variant model: `content/cv-variants.yaml` (role line, summary, focus, section order, skill groups per variant) and optional focus labels on highlights, with schema, CMS menu "Varian CV", and tests; variants only select and order existing content (T10.1, D10).
 - "Kind words" / "Kesan & pesan" on the home page: messages people left for Harry, from `content/messages.yaml` (editable in the CMS), shown only with the writer's permission and hidden while the list is empty (T9.4, D15).
@@ -61,6 +62,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- Award titles: "Finalist" / "Finalis" everywhere, with team context in parentheses (Neurontara Data Clash is now "Finalist (Top 5 of 40 Teams)"; Gunadarma Business Idea Competition drops "Team").
 - New positioning: the role line is now "AI Product Manager" on the site, CV, Portfolio PDF, and structured data; the tagline, summary, and the three hero numbers lead with product outcomes (launch in 3 months, +45 NPS) and keep AI engineering as the differentiator (T9.1).
 - The CV is printed in black, lists Education and Skills right after the Summary, and shows key results in bold; mark a phrase `**like this**` in content/ to make it bold on the CV, the portfolio PDF, and the About page.
 - The Homelab page is replaced by a site statistics page at `/stats/`, linked from the footer instead of the main menu; the footer no longer says how the site is built.

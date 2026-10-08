@@ -48,6 +48,13 @@ const { name, class: className = 'size-5', label } = Astro.props;
       <path d="M9 18c-4.51 2-5-2-7-2" />
     </>
   )}
+  {name === 'medium' && (
+    <>
+      <ellipse cx="7" cy="12" rx="5" ry="6" />
+      <ellipse cx="16.75" cy="12" rx="1.75" ry="5.5" />
+      <path d="M21.5 6.5v11" />
+    </>
+  )}
   {name === 'email' && (
     <>
       <rect x="2" y="4" width="20" height="16" rx="2" />

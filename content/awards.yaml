@@ -20,15 +20,15 @@ items:
 
   - id: gunadarma-business-idea-2025
     title:
-      en: Finalist Team, Gunadarma Business Idea Competition
-      id: Tim Finalis Gunadarma Business Idea Competition
+      en: Finalist, Gunadarma Business Idea Competition
+      id: Finalis Gunadarma Business Idea Competition
     issuer: { en: "Universitas Gunadarma" }
     date: "2025"
 
   - id: neurontara-2025
     title:
-      en: Top 5 of 40 Teams, Regression Rumble, Neurontara Data Clash
-      id: 5 Besar dari 40 Tim, Regression Rumble, Neurontara Data Clash
+      en: Finalist (Top 5 of 40 Teams), Regression Rumble, Neurontara Data Clash
+      id: Finalis (5 Besar dari 40 Tim), Regression Rumble, Neurontara Data Clash
     issuer: { en: "Neurontara" }
     date: "2025"
 

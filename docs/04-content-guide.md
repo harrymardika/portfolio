@@ -71,7 +71,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | `email` | string | ✔ | |
 | `photo` | path | ✔ | Relatif ke `content/` |
 | `status_badge` | LocalizedText | | Kosongkan agar tidak tampil |
-| `socials[]` | `{ platform, url, handle? }` | ✔ | `platform`: `linkedin` · `instagram` · `github` · `email` |
+| `socials[]` | `{ platform, url, handle? }` | ✔ | `platform`: `linkedin` · `instagram` · `github` · `medium` · `email` |
 | `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero |
 | `journey` | `{ title, intro }` (LocalizedText) | ✔ | Judul (boleh `*penekanan*`) dan paragraf bagian Journey |
 | `projects` | `{ intro }` (LocalizedText) | ✔ | Paragraf pembuka halaman Projects dan bagian proyek pilihan di beranda |

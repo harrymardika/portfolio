@@ -37,6 +37,10 @@ test('the footer links to every social profile from profile.yaml', async ({ page
     'href',
     'https://www.instagram.com/harry.mrdk/',
   );
+  await expect(footer.getByRole('link', { name: /^Medium/ })).toHaveAttribute(
+    'href',
+    'https://medium.com/@harrymardika',
+  );
   await expect(footer.getByRole('link', { name: /^GitHub/ })).toHaveAttribute(
     'href',
     'https://github.com/harrymardika',

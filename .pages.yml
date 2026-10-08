@@ -119,7 +119,7 @@ content:
           - name: platform
             type: select
             required: true
-            options: { values: [linkedin, instagram, github, email] }
+            options: { values: [linkedin, instagram, github, medium, email] }
           - { name: url, label: URL, type: string, required: true }
           - { name: handle, label: Nama yang ditampilkan, type: string }
       - name: stats

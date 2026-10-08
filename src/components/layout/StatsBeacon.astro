@@ -51,6 +51,7 @@ const enabled = import.meta.env.PUBLIC_STATS_ENABLED === 'true';
         outbound === 'linkedin' ||
         outbound === 'instagram' ||
         outbound === 'github' ||
+        outbound === 'medium' ||
         outbound === 'email'
       ) {
         send({ type: 'outbound', path: location.pathname, lang, detail: outbound });
