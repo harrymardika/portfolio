@@ -62,6 +62,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- Contributor workflow: older session log entries move from `PROGRESS.md` to `docs/progress-archive.md`, AI agents read only the docs a task needs, and project Claude Code settings (`.claude/settings.json`) allow the verification commands and block reading the private `CV/` folder and `.env`.
 - Award titles: "Finalist" / "Finalis" everywhere, with team context in parentheses (Neurontara Data Clash is now "Finalist (Top 5 of 40 Teams)"; Gunadarma Business Idea Competition drops "Team").
 - New positioning: the role line is now "AI Product Manager" on the site, CV, Portfolio PDF, and structured data; the tagline, summary, and the three hero numbers lead with product outcomes (launch in 3 months, +45 NPS) and keep AI engineering as the differentiator (T9.1).
 - The CV is printed in black, lists Education and Skills right after the Summary, and shows key results in bold; mark a phrase `**like this**` in content/ to make it bold on the CV, the portfolio PDF, and the About page.

@@ -3,14 +3,14 @@
 Berlaku untuk **semua** AI agent (Claude Code, Codex, Cursor, Copilot, Gemini, dll.) dan developer manusia.
 Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan konteks.
 
-## 1. Urutan membaca (wajib, sebelum menulis kode)
+## 1. Urutan membaca (sebelum menulis kode)
 
-1. `PROGRESS.md`: status terkini, tugas berikutnya, keputusan tertunda, log sesi terakhir
-2. `docs/01-srs.md`: kebutuhan (apa yang dibangun dan kenapa)
-3. `docs/02-architecture.md`: struktur folder, alur data, batas modul
-4. `docs/05-coding-standards.md`: aturan kode dan Definition of Done
-5. Dokumen spesifik tugas (lihat tabel di bawah)
-6. `docs/adr/`: keputusan yang **tidak boleh diubah diam-diam**
+Baca secukupnya sesuai tugas, jangan seluruh `docs/` di setiap sesi: konteks yang terlalu panjang memboroskan token dan menurunkan kualitas hasil.
+
+1. **Selalu:** `PROGRESS.md`: status terkini, fase aktif, keputusan pemilik, log sesi terbaru. Riwayat lama ada di `docs/progress-archive.md`; baca hanya bila butuh riwayat keputusan atau koreksi data.
+2. **Tugas kode** (fitur, refactor, tes): `docs/02-architecture.md` (struktur folder, alur data, batas modul) dan `docs/05-coding-standards.md` (aturan kode, Definition of Done). Tambah `docs/01-srs.md` bila tugasnya menambah atau mengubah kebutuhan.
+3. Dokumen spesifik tugas (lihat tabel di bawah).
+4. `docs/adr/`: cek ADR terkait sebelum mengubah keputusan teknis. Keputusan di sana **tidak boleh diubah diam-diam**.
 
 | Jika tugasnya tentang... | Baca juga |
 |---|---|
@@ -34,7 +34,7 @@ Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan
    Commit **hanya** jika perintah itu sukses. Saat merangkai perintah di shell, gunakan `bun run verify && git commit ...`, jangan `;`.
    Hati-hati dengan heredoc (`git commit -F - <<'EOF'`): baris setelah penutup `EOF` adalah perintah **baru** di luar rantai `&&`. Lebih aman memakai skrip dengan `set -e`.
 7. **Perbarui dokumentasi** yang terdampak (arsitektur, content guide, dll.).
-8. **Tutup:** ubah `[~]` menjadi `[x]`, tambah entri di **Log sesi** `PROGRESS.md` dan `CHANGELOG.md` (bagian *Unreleased*).
+8. **Tutup:** ubah `[~]` menjadi `[x]`, tambah entri di **Log sesi** `PROGRESS.md` dan `CHANGELOG.md` (bagian *Unreleased*). Jika log sesi sudah lebih dari ±5 entri, pindahkan yang lama ke `docs/progress-archive.md`.
 9. **Commit** dengan Conventional Commits: `feat(journey): add 3D career path section (T2.3)`.
 
 > Jika kehabisan waktu/limit di tengah tugas: biarkan `[~]`, tulis di Log sesi **apa yang sudah, apa yang belum, dan langkah berikutnya**, lalu commit sebagai `wip(...)`. Agent berikutnya melanjutkan dari catatan itu.

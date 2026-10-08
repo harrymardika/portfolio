@@ -55,6 +55,7 @@ Salin ke AI agent mana pun:
 Baca AGENTS.md lalu PROGRESS.md. Kerjakan tugas berikutnya yang belum selesai di fase aktif
 (atau: kerjakan T2.3). Ikuti alur kerja di AGENTS.md §2 dan Definition of Done.
 Sebelum menulis kode, jelaskan rencanamu singkat (file yang dibuat/diubah).
+Jika ada yang ambigu atau ada beberapa pilihan, tanyakan dulu sebelum mulai.
 ```
 
 ### Template saat limit hampir habis

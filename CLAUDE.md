@@ -2,6 +2,7 @@
 
 # Tambahan khusus Claude Code
 
+- Jika permintaan ambigu atau ada beberapa pilihan (desain, cakupan, letak), **tanyakan dulu** dengan pilihan yang jelas sebelum mengubah kode. Jangan menebak lalu menunggu dikoreksi.
 - Gunakan **plan mode** untuk tugas yang menyentuh lebih dari 3 file atau mengubah arsitektur.
 - Sebelum menyatakan tugas selesai, jalankan verifikasi dari Definition of Done dan laporkan hasilnya apa adanya.
 - Setelah perubahan UI, jalankan aplikasi dan lihat hasilnya (skill `run`, atau screenshot dengan Playwright), ukuran desktop dan HP.
