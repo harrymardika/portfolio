@@ -13,6 +13,7 @@ import { file, glob } from 'astro/loaders';
 import {
   awardSchema,
   certificationSchema,
+  cvVariantSchema,
   educationSchema,
   experienceSchema,
   milestoneSchema,
@@ -66,6 +67,10 @@ export const collections = {
       parser: (text) => parseYamlList(text, 'items', { withPosition: true, mayBeEmpty: true }),
     }),
     schema: messageSchema,
+  }),
+  cvVariants: defineCollection({
+    loader: listFile('cv-variants', 'variants', { withPosition: true, mayBeEmpty: true }),
+    schema: cvVariantSchema,
   }),
   journey: defineCollection({
     loader: listFile('journey', 'milestones', { withPosition: true }),

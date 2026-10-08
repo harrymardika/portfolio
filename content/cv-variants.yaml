@@ -1,0 +1,3 @@
+# CV variants (T10, decision D10): one CV per kind of position, built from the same content.
+# Each variant only selects and orders existing text. See docs/04-content-guide.md.
+variants: []

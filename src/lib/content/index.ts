@@ -4,6 +4,7 @@
  */
 export * from './categories';
 export * from './certifications';
+export * from './cv-variants';
 export * from './dates';
 export * from './emphasis';
 export * from './experience';

@@ -21,6 +21,28 @@ const hasValidRange = (item: { start: string; end: string }): boolean => isValid
 export const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'github', 'email'] as const;
 export const EXPERIENCE_CATEGORIES = ['work', 'founder', 'research', 'leadership', 'teaching', 'program'] as const;
 
+/** Focus labels on highlights; a CV variant shows the highlights of its focus (T10.1). */
+export const FOCUS_AREAS = ['ai', 'data', 'product', 'leadership'] as const;
+
+/** CV sections a variant can order or leave out; the summary always comes first. */
+export const CV_SECTIONS = [
+  'education',
+  'skills',
+  'experience',
+  'leadership',
+  'training',
+  'awards',
+  'certifications',
+] as const;
+
+/**
+ * One achievement line. `focus` is optional: an unlabeled highlight shows in every CV variant;
+ * the website, the general CV, and the portfolio ignore it.
+ */
+export const highlight = localizedText.extend({
+  focus: z.array(z.enum(FOCUS_AREAS)).min(1).optional(),
+});
+
 export const profileSchema = z.strictObject({
   name: z.string().trim().min(1),
   role: localizedText,
@@ -64,7 +86,7 @@ export const experienceSchema = z
     location: z.string().trim().min(1),
     start: yearMonth,
     end: endDate,
-    highlights: z.array(localizedText).min(1, 'Add at least one highlight'),
+    highlights: z.array(highlight).min(1, 'Add at least one highlight'),
     tags: z.array(z.string().trim().min(1)).default([]),
     ...visibility,
   })
@@ -79,7 +101,7 @@ export const educationSchema = z
     start: yearMonth,
     end: endDate,
     gpa: z.string().trim().min(1).optional(),
-    highlights: z.array(localizedText).default([]),
+    highlights: z.array(highlight).default([]),
     ...visibility,
   })
   .refine(hasValidRange, RANGE_ERROR);
@@ -93,7 +115,7 @@ export const trainingSchema = z
     start: yearMonth,
     end: endDate,
     tags: z.array(z.string().trim().min(1)).default([]),
-    highlights: z.array(localizedText).default([]),
+    highlights: z.array(highlight).default([]),
     ...visibility,
   })
   .refine(hasValidRange, RANGE_ERROR);
@@ -188,6 +210,25 @@ export const messageSchema = z.strictObject({
   approved: yearMonth,
 });
 
+/**
+ * A CV for one kind of position (T10.1, D10). It only selects and orders existing content: its own
+ * role line and summary, which highlights show (by focus), the section order, and the skill groups.
+ */
+export const cvVariantSchema = z.strictObject({
+  id: slug,
+  position,
+  name: localizedText,
+  role: localizedText,
+  summary: localizedText,
+  focus: z.array(z.enum(FOCUS_AREAS)).min(1),
+  sections: z
+    .array(z.enum(CV_SECTIONS))
+    .min(1)
+    .refine((list) => new Set(list).size === list.length, 'List each section once'),
+  /** Skill group ids in display order; all groups when left out. */
+  skills: z.array(slug).min(1).optional(),
+});
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Education = z.infer<typeof educationSchema>;
@@ -198,5 +239,9 @@ export type SkillGroup = z.infer<typeof skillGroupSchema>;
 export type Milestone = z.infer<typeof milestoneSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type Message = z.infer<typeof messageSchema>;
+export type Highlight = z.infer<typeof highlight>;
+export type CvVariant = z.infer<typeof cvVariantSchema>;
+export type FocusArea = (typeof FOCUS_AREAS)[number];
+export type CvSection = (typeof CV_SECTIONS)[number];
 export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 export type ExperienceCategory = (typeof EXPERIENCE_CATEGORIES)[number];

@@ -132,7 +132,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
 
-- [ ] **T10.1** Model data varian (D10)
+- [x] **T10.1** Model data varian (D10)
   - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
 - [ ] **T10.2** Pembuat PDF per varian
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
@@ -174,7 +174,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D7 | Spesifikasi server | Dibaca dari server via SSH: IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB (header `docs/07-deployment.md`). OS diinstal ulang pemilik menjadi **Debian 13 (trixie)** pada 2026-10-06 (dari fastfetch pemilik); Docker 29.8.2 + Compose 5.6.0 (dibaca via SSH setelah deploy, 2026-10-06) |
 | D8 | Baris peran | **AI Product Manager** di website, CV umum, Portfolio PDF, dan JSON-LD (2026-10-07). Jabatan di Pengalaman tetap faktual (Founder & CEO, AI Engineer) |
 | D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering**: suara produk lebih dulu (masalah pengguna, peluncuran, metrik), kemampuan AI sebagai pembeda; jalur lain lewat varian CV (2026-10-07) |
-| D10 | Varian CV | **5 varian** (AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee); **publik hanya CV umum**, varian lain untuk dikirim saat melamar. **CV per perusahaan tidak dibuat** (2026-10-07) |
+| D10 | Varian CV | **5 varian** (AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee); **website hanya menautkan CV umum**, varian lain untuk dikirim saat melamar. **CV per perusahaan tidak dibuat** (2026-10-07). PDF varian dibuat saat deploy dan disimpan **di situs pada alamat yang tidak ditautkan** (`/downloads/cv/`), karena pemilik tidak ingin membuatnya di laptop (2026-10-08) |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |

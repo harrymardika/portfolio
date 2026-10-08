@@ -20,6 +20,7 @@ import {
   skillGroupSchema,
   trainingSchema,
   messageSchema,
+  cvVariantSchema,
 } from '@/lib/content/schemas';
 import { hasStrayStrongMarker } from '@/lib/content/emphasis';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
@@ -49,6 +50,7 @@ const LIST_FILES = [
   { file: 'skills.yaml', key: 'groups', schema: skillGroupSchema, withPosition: true },
   { file: 'journey.yaml', key: 'milestones', schema: milestoneSchema, withPosition: true },
   { file: 'messages.yaml', key: 'items', schema: messageSchema, withPosition: true, mayBeEmpty: true },
+  { file: 'cv-variants.yaml', key: 'variants', schema: cvVariantSchema, withPosition: true, mayBeEmpty: true },
   // The e2e fixture (MESSAGES_FILE) must stay valid too, or the e2e build fails.
   {
     file: '../tests/fixtures/messages.yaml',
@@ -99,6 +101,17 @@ describe('content files', () => {
       expectValid(projectSchema, readFrontmatter(`projects/${name}`), `projects/${name}`);
     });
   }
+
+  it('every CV variant lists existing skill groups', () => {
+    const groups = new Set(parseYamlList(read('skills.yaml'), 'groups').map((group) => group['id']));
+    const variants = parseYamlList(read('cv-variants.yaml'), 'variants', { mayBeEmpty: true });
+    const unknown = variants.flatMap((variant) =>
+      ((variant['skills'] as string[] | undefined) ?? [])
+        .filter((id) => !groups.has(id))
+        .map((id) => `${String(variant['id'])}: ${id}`),
+    );
+    expect(unknown).toEqual([]);
+  });
 
   it('every journey milestone `ref` points to an existing item', () => {
     const knownIds = new Set(

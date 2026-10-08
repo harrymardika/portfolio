@@ -31,6 +31,17 @@ components:
     fields:
       - { name: en, label: English, type: text, required: true }
       - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: text }
+  # One achievement line, with optional focus labels for the CV variants (T10.1).
+  highlight:
+    type: object
+    fields:
+      - { name: en, label: English, type: text, required: true }
+      - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: text }
+      - name: focus
+        label: Fokus untuk varian CV (opsional)
+        description: 'Kosong = tampil di semua varian CV. ai = AI/ML, data = data, product = produk/proyek, leadership = kepemimpinan.'
+        type: select
+        options: { values: [ai, data, product, leadership], multiple: true }
   slug:
     type: string
     required: true
@@ -174,7 +185,7 @@ content:
           - name: highlights
             label: Pencapaian (satu kalimat, diawali kata kerja)
             description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
-            component: localizedLong
+            component: highlight
             list: { min: 1, collapsible: false }
           - { name: tags, label: Tag, type: string, list: true }
           - { name: show_on_web, component: showOnWeb }
@@ -201,7 +212,7 @@ content:
           - name: highlights
             label: Pencapaian
             description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
-            component: localizedLong
+            component: highlight
             list: true
           - { name: show_on_web, component: showOnWeb }
           - { name: show_on_cv, component: showOnCv }
@@ -227,7 +238,7 @@ content:
           - name: highlights
             label: Pencapaian
             description: Frasa di antara **dua bintang** ditebalkan (CV, About, Portfolio); cukup 1–2 per poin.
-            component: localizedLong
+            component: highlight
             list: true
           - { name: show_on_web, component: showOnWeb }
           - { name: show_on_cv, component: showOnCv }
@@ -318,6 +329,44 @@ content:
             label: Kaitan
             description: id pengalaman atau slug proyek yang diceritakan milestone ini (opsional).
             component: optionalSlug
+
+  - name: cvVariants
+    label: Varian CV
+    description: 'Satu CV per jenis posisi, dibuat otomatis saat deploy (docs/09). Varian hanya memilih dan mengurutkan isi yang sudah ada.'
+    type: file
+    path: content/cv-variants.yaml
+    format: yaml
+    fields:
+      - name: variants
+        label: Varian
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{id}' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: name, label: Nama (untuk nama file), component: localized, required: true }
+          - { name: role, label: Baris peran di CV, component: localized, required: true }
+          - name: summary
+            label: Ringkasan
+            description: Hanya fakta yang sudah ada di konten. Frasa di antara **dua bintang** ditebalkan.
+            component: localizedLong
+            required: true
+          - name: focus
+            label: Fokus poin yang ditampilkan
+            description: Poin tanpa label fokus selalu tampil.
+            type: select
+            required: true
+            options: { values: [ai, data, product, leadership], multiple: true, min: 1 }
+          - name: sections
+            label: Urutan bagian (setelah ringkasan)
+            description: Geser untuk mengurutkan. Bagian yang tidak dimasukkan tidak tampil; masing-masing sekali saja.
+            type: select
+            list: { min: 1 }
+            options: { values: [education, skills, experience, leadership, training, awards, certifications] }
+          - name: skills
+            label: Grup skill (urutan tampil)
+            description: id grup dari menu Skill. Kosong = semua grup.
+            type: string
+            list: true
 
   - name: messages
     label: Kesan & pesan

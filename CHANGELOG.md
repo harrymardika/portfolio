@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
+- CV variant model: `content/cv-variants.yaml` (role line, summary, focus, section order, skill groups per variant) and optional focus labels on highlights, with schema, CMS menu "Varian CV", and tests; variants only select and order existing content (T10.1, D10).
 - "Kind words" / "Kesan & pesan" on the home page: messages people left for Harry, from `content/messages.yaml` (editable in the CMS), shown only with the writer's permission and hidden while the list is empty (T9.4, D15).
 - Indonesian case studies: all 11 case study bodies are translated (`content/projects/id/`), shown on `/id/` pages and in the Indonesian Portfolio PDF, editable in the CMS, with tests that keep sections and images in step with the English version; AI drafts now include the Indonesian body (T9.3, D12).
 - Search and field filters on the Projects page (Computer Vision, NLP & Generative AI, and more, set in profile.yaml), with result counts and shareable links such as `/projects/?filter=computer-vision`.

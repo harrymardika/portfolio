@@ -19,6 +19,7 @@ import {
   projectTranslationSchema,
   skillGroupSchema,
   messageSchema,
+  cvVariantSchema,
   trainingSchema,
 } from '@/lib/content/schemas';
 import { SLUG, YEAR_MONTH } from '@/lib/content/schemas/primitives';
@@ -33,7 +34,7 @@ interface Field {
   list?: boolean | { min?: number };
   default?: unknown;
   pattern?: string | { regex: string };
-  options?: { values?: (string | { name: string })[] };
+  options?: { values?: (string | { name: string })[]; multiple?: boolean };
 }
 interface Entry {
   name: string;
@@ -105,7 +106,8 @@ function checkField(path: string, field: Field, schema: ZodLike, mode: RequiredM
   }
   const inner = core(schema);
   const isArray = inner._zod.def.type === 'array';
-  if (Boolean(field.list) !== isArray)
+  // A select with `multiple` saves an array, like a list.
+  if (Boolean(field.list || field.options?.multiple) !== isArray)
     problems.push(`${at}: editor list=${Boolean(field.list)}, schema array=${isArray}`);
   const scalar = isArray ? core(inner._zod.def['element'] as ZodLike) : inner;
   if ((field.type === 'number') !== (scalar._zod.def.type === 'number')) {
@@ -238,6 +240,7 @@ describe('.pages.yml', () => {
       ...compare('skills', listFields('skills', 'groups'), shapeOf(skillGroupSchema), ['position']),
       ...compare('journey', listFields('journey', 'milestones'), shapeOf(milestoneSchema), ['position']),
       ...compare('messages', listFields('messages', 'items'), shapeOf(messageSchema), ['position']),
+      ...compare('cvVariants', listFields('cvVariants', 'variants'), shapeOf(cvVariantSchema), ['position']),
     ];
     expect(problems).toEqual([]);
   });

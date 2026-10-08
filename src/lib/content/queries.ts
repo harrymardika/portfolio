@@ -15,6 +15,7 @@ import { visibleOn, type Surface } from './visibility';
 import type {
   Award,
   Certification,
+  CvVariant,
   Education,
   Experience,
   Milestone,
@@ -85,6 +86,11 @@ type ProjectEntry = Awaited<ReturnType<typeof getProjects>>[number];
 export async function getCaseStudyBody(project: ProjectEntry, locale: Locale) {
   const translation = locale === 'en' ? undefined : await getEntry('projectTranslations', project.id);
   return pickCaseStudyBody<ProjectEntry | NonNullable<typeof translation>>(project, translation, locale);
+}
+
+/** CV variants in file order (T10.1, D10). */
+export async function getCvVariants(): Promise<CvVariant[]> {
+  return sortedBy(await dataOf(getCollection('cvVariants')), byPosition);
 }
 
 /** Messages people left for the owner, in file order (T9.4); empty until someone has agreed to it. */

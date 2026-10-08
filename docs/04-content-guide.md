@@ -87,7 +87,7 @@ List `items[]`:
 | `category` | enum | ✔ | `work` · `founder` · `research` · `leadership` · `teaching` · `program` |
 | `location` | string | ✔ | |
 | `start`, `end` | `YYYY-MM` / `present` | ✔ | |
-| `highlights[]` | LocalizedText | ✔ | Poin pencapaian; utamakan angka |
+| `highlights[]` | LocalizedText + `focus?` | ✔ | Poin pencapaian; utamakan angka. `focus` opsional untuk varian CV (lihat `cv-variants.yaml`) |
 | `tags[]` | string | | Teknologi/keahlian |
 | `show_on_web`, `show_on_cv` | bool | | Default `true` |
 
@@ -107,6 +107,20 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 ### `journey.yaml`
 `milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.
+
+### `cv-variants.yaml` (Varian CV, Fase 10, D10)
+Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sama. Varian **hanya memilih dan mengurutkan**; tidak ada pengalaman yang ditulis ulang. CV umum di website tidak berubah.
+
+`variants[]`: `{ id, name, role, summary, focus[], sections[], skills? }`
+- `name`: nama varian (dipakai di nama file PDF). `role` dan `summary`: baris peran dan ringkasan khusus varian ini; ringkasan **hanya berisi fakta yang sudah ada** di konten.
+- `focus`: `ai` · `data` · `product` · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
+- `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
+- `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil; kosong = semua grup.
+
+**Label fokus pada poin pencapaian:** setiap `highlights[]` di experience, education, dan trainings boleh diberi `focus`, mis. `- { en: "...", id: "...", focus: [ai, data] }`. Aturan di varian:
+- pekerjaan (kategori `work`, `founder`, `research`) dan pendidikan **selalu tampil** agar riwayat tidak bolong; jika tidak ada poin yang cocok, tampil poin pertama;
+- peran kepemimpinan/mengajar dan pelatihan disembunyikan jika semua poinnya berlabel fokus lain;
+- penghargaan dan sertifikat selalu tampil.
 
 ### `messages.yaml` (Kesan & pesan, T9.4)
 Pesan yang ditinggalkan orang lain untuk Anda (atasan, rekan, peserta bootcamp, teman). Tampil di beranda dengan judul **"Kind words" / "Kesan & pesan"**, dalam urutan file; **bagian ini tersembunyi selama daftarnya kosong**. Di CMS: menu **Kesan & pesan**.
