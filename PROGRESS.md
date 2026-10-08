@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau varian CV (T10.3) di `/cv/`; pemilik mengisi kesan & pesan; menunggu D13–D14 (asisten AI) sebelum Fase 11
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.6 penutupan Fase 9 (semua tugas Fase 9 selesai); pemilik meninjau varian CV (T10.3) di `/cv/` dan contoh letak asisten AI (D13)
 
 ## Ringkasan
 
@@ -130,6 +130,8 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [x] **T9.5** Format angka konsisten di semua bahasa (D16)
   - Aturan: **ikuti aturan baku tiap bahasa**. EN: titik desimal, koma ribuan (`92.5%`, `12,000`). ID (PUEBI): koma desimal, titik ribuan (`92,5%`, `12.000`). Berlaku di web, CV, Portfolio PDF, statistik, studi kasus terjemahan (T9.3), draf AI.
   - Kriteria: nilai yang ditulis sekali untuk dua bahasa (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman/PDF ID (`localizeNumber`); tes unit menolak desimal yang tertukar di `content/` dan kamus UI; aturan ditulis di docs/04 §6 dan prompt draf AI.
+- [ ] **T9.6** Penutupan Fase 9: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
 
@@ -139,6 +141,8 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
 - [~] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee · *Claude Code: terisi, menunggu tinjauan pemilik di `/cv/`*
   - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
+- [ ] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 11: Asisten AI "Tanya tentang Harry" (`docs/11-roadmap.md` §E)
 
@@ -152,11 +156,15 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: set uji ±25 pertanyaan (fakta, di luar topik, data pribadi, *prompt injection*) dengan hasil yang dicatat; e2e dengan API tiruan; `/security-review`.
 - [ ] **T11.5** Deploy dan pemantauan
   - Kriteria: dokumen operasional (docs/07, docs/10: key, kuota, mematikan fitur); jumlah pertanyaan tampil di statistik privat.
+- [ ] **T11.6** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
 
 - [ ] **T12.1** Formulir + antrean moderasi (D15)
   - Kriteria: `POST /api/messages` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/messages.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
+- [ ] **T12.2** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 13: 3D tambahan (`docs/11-roadmap.md` §H, D17)
 
@@ -172,6 +180,8 @@ Pratinjau yang disetujui pemilik: https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9
   - Kriteria: titik negara dari statistik publik yang sudah ada (tanpa data baru yang disimpan); tabel koordinat negara statis; tanpa 3D atau saat API mati tetap daftar negara.
 
 ---
+- [ ] **T13.5** Penutupan Fase 13: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Keputusan pemilik
 
@@ -193,14 +203,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D17 | 3D tambahan | **Keempatnya** (peta proyek, 404, rasi skill, globe pengunjung), di halaman selain beranda, **setelah Fase 11 dan 12**, urutan Proyek → 404 → Skill → Globe (2026-10-08) |
+| D14 | Asisten AI: penyedia & penyimpanan | **Gemini utama, Groq cadangan** (batas tier gratis Groq dicek di ADR T11.1), dengan pemberitahuan privasi singkat di bawah kotak tanya; **teks pertanyaan tidak disimpan**, hanya jumlahnya di statistik privat (2026-10-08) |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
 **Belum diputuskan (Fase 9–12, rincian dan rekomendasi di `docs/11-roadmap.md`):**
 
 | No | Pertanyaan | Rekomendasi |
 |---|---|---|
-| D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
-| D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
+| D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tombol "Tanya tentang saya" di hero beranda (pratinjau: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a, menunggu pemilik) |
 
 ## Catatan data
 
@@ -212,6 +222,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · Penutupan fase dan keputusan asisten AI
+- Pemilik meminta proyek dirapikan dan didokumentasikan di setiap akhir fase. Ditambahkan `AGENTS.md` §2a (checklist penutupan) dan tugas penutup T9.6, T10.4, T11.6, T12.2, T13.5.
+- D14 diputuskan: Gemini utama, Groq cadangan, pertanyaan tidak disimpan. D13: pemilik meminta contoh; pratinjau tombol di hero + bagian "Tanya tentang saya" di About: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.
+- Langkah berikutnya: T9.6 (Fase 9 sudah selesai semua tugasnya); D13 setelah pemilik melihat pratinjau.
 
 ### 2026-10-08 · Claude Code (Opus) · Rencana 3D tambahan (Fase 13)
 - Pemilik meminta 3D lain yang menarik. Dibuat pratinjau interaktif empat ide (peta proyek, rasi skill, globe pengunjung, 404) dengan data dan palet situs; pemilik memilih **keempatnya**, dikerjakan **setelah Fase 11 dan 12** (D17).
@@ -233,8 +248,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - Pemilik bertanya cara terbaik memakai Claude Code (Graphify, CLAUDE.md, pengaturan, subagent, cara menulis prompt). Saran: Graphify belum perlu untuk repo sekecil ini; pemborosan token terbesar adalah `PROGRESS.md` yang dibaca utuh setiap sesi.
 - Dikerjakan: log sesi lama pindah ke `docs/progress-archive.md` (PROGRESS.md 520 → ±230 baris); urutan baca di `AGENTS.md` §1 hanya mewajibkan bagian status dan log terbaru; `.claude/settings.json` (izin perintah verifikasi dan git yang hanya membaca, larangan membaca `CV/` dan `.env`); `CLAUDE.md` dan template di `docs/06` meminta agent bertanya dulu bila permintaan ambigu.
 - Catatan: larangan baca di `.claude/settings.json` berlaku untuk tool Read/Edit Claude Code, bukan pagar mutlak (perintah shell tetap bisa membaca file). Aturan tertulis di `AGENTS.md` §3 tetap berlaku.
-
-### 2026-10-08 · Claude Code (Opus) · Medium dan judul "Finalis"
-- Pemilik: tambah Medium; Neurontara Data Clash sebenarnya tim finalis; "Finalis" atau "Tim Finalis"?
-- Dikerjakan: platform sosial `medium` (skema, ikon, label, statistik klik `outbound`, CMS, docs 01/04/08); penghargaan memakai "Finalist"/"Finalis" secara konsisten dengan keterangan tim dalam kurung. Label footer "Resumes"/"Resume" (pilihan pemilik) juga sudah tayang.
-- Belum: -. Langkah berikutnya: tinjauan pemilik atas 12 PDF varian (T10.3), D11 (skill), hasil uji draf AI dua bahasa.

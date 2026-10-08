@@ -2,6 +2,11 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Medium dan judul "Finalis"
+- Pemilik: tambah Medium; Neurontara Data Clash sebenarnya tim finalis; "Finalis" atau "Tim Finalis"?
+- Dikerjakan: platform sosial `medium` (skema, ikon, label, statistik klik `outbound`, CMS, docs 01/04/08); penghargaan memakai "Finalist"/"Finalis" secara konsisten dengan keterangan tim dalam kurung. Label footer "Resumes"/"Resume" (pilihan pemilik) juga sudah tayang.
+- Belum: -. Langkah berikutnya: tinjauan pemilik atas 12 PDF varian (T10.3), D11 (skill), hasil uji draf AI dua bahasa.
+
 ### 2026-10-08 · Claude Code (Opus) · T10.3 tinjauan pemilik: varian dipisah, tautan footer
 - Pemilik: (1) pisahkan Product Manager dan Project Manager; (2) Management Trainee adalah program, bukan jabatan; (3) tautan daftar varian di footer di samping statistik.
 - Dikerjakan: label fokus baru `project` (10 poin delivery/koordinasi); varian `product-manager` dan `project-manager` menggantikan `product-project-manager`; baris peran MT menjadi "Informatics Graduate · Technology & Leadership". Daftar varian pindah dari `/print/cv-variants/` ke halaman situs biasa **`/cv/`** ("CV per posisi"), ditautkan di footer, tetap noindex; unduhan tercatat sebagai `download-cv`. Saran saya agar tetap tersembunyi (positioning AI Product Manager) sudah disampaikan; pemilik memilih footer.

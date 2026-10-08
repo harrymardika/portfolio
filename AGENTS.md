@@ -39,6 +39,17 @@ Baca secukupnya sesuai tugas, jangan seluruh `docs/` di setiap sesi: konteks yan
 
 > Jika kehabisan waktu/limit di tengah tugas: biarkan `[~]`, tulis di Log sesi **apa yang sudah, apa yang belum, dan langkah berikutnya**, lalu commit sebagai `wip(...)`. Agent berikutnya melanjutkan dari catatan itu.
 
+## 2a. Penutupan fase (wajib, permintaan pemilik 2026-10-08)
+
+Setiap fase diakhiri satu tugas **penutupan** (`T<fase>.Z`, tugas terakhir di fase itu) setelah semua tugas lain `[x]`. Tujuannya: proyek tetap rapi dan terdokumentasi, sehingga siapa pun bisa melanjutkan.
+
+1. **Rapikan kode:** hapus kode, file, komponen, kunci teks UI, dan dependency yang tidak terpakai; hapus branch lokal/remote yang sudah di-merge; selesaikan atau catat `TODO` yang tersisa; tes yang di-skip diperiksa alasannya.
+2. **Periksa dokumentasi terhadap kode:** `README.md` (status, fitur), `docs/02-architecture.md` (struktur folder, alur data), `docs/04-content-guide.md` (file dan field baru), `docs/07`/`docs/10` bila ada layanan atau secret baru, ADR baru bila ada keputusan teknis, `docs/11-roadmap.md` bila rencana berubah.
+3. **`PROGRESS.md`:** tandai fase ✅ di tabel Ringkasan, tulis **ringkasan fase** (apa yang dibangun, keputusan pemilik, sisa pekerjaan untuk pemilik) di log sesi, dan pindahkan log lama ke `docs/progress-archive.md`.
+4. **`CHANGELOG.md`:** pindahkan entri fase dari *Unreleased* ke bagian rilis bertanggal untuk fase itu.
+5. **Verifikasi akhir:** `bun run verify`, lalu cek situs live setelah deploy (halaman utama EN/ID, PDF, statistik).
+6. **Laporan ke pemilik:** ringkasan singkat dalam Bahasa Indonesia: apa yang selesai, apa yang menunggu keputusannya, dan fase berikutnya.
+
 ## 3. Aturan keras (jangan dilanggar)
 
 - **Isi website tidak boleh di-hardcode di komponen.** Semua teks profil, pengalaman, proyek, dll. berasal dari `content/`. Teks UI (label tombol, judul bagian) berasal dari `src/lib/i18n/`.
