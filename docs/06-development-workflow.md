@@ -61,7 +61,7 @@ Satu sesi = satu tugas. Mulai dengan prompt **Lanjutkan** (atau **Tugas tertentu
 | Selesai bekerja, atau limit hampir habis | 5. Tutup sesi |
 | Sebelum merge | 6. Review |
 
-Template di bawah bisa disalin ke AI agent mana pun. Ganti bagian `<...>`.
+Template di bawah bisa disalin ke AI agent mana pun. Ganti bagian `<...>`. Claude Code, Codex, dan Cursor memuat `AGENTS.md` otomatis; untuk agent lain, awali prompt dengan "Baca AGENTS.md dulu."
 
 #### 1. Lanjutkan
 ```
@@ -76,7 +76,7 @@ Jika semua tugas berikutnya menunggu keputusan pemilik, agent akan menjawab deng
 ```
 Kerjakan <T-ID> (<nama tugas>). <Keputusan atau bahan dari saya, jika ada.>
 Batasan: <yang tidak boleh diubah, gaya, bahasa>.
-Selesai jika: kriteria di PROGRESS.md terpenuhi, bun run verify lulus, dan saya lihat screenshot desktop + HP.
+Selesai jika: kriteria di PROGRESS.md terpenuhi, bun run verify lulus, dan (untuk perubahan tampilan) saya lihat screenshot desktop + HP.
 Buat rencana dulu, tunggu persetujuan saya.
 ```
 
@@ -94,10 +94,11 @@ Tambahkan sebagai tugas baru di fase yang sesuai (ID + kriteria penerimaan), tun
 
 #### 5. Tutup sesi
 ```
-Kita berhenti di sini. Perbarui PROGRESS.md (status + log sesi: sudah, belum, langkah berikutnya) dan CHANGELOG.md,
-jalankan bun run verify, lalu commit. Jangan push.
+Kita berhenti di sini. Perbarui log sesi di PROGRESS.md (sudah, belum, langkah berikutnya), lalu jalankan bun run verify.
+Jika tugas selesai dan verify lulus: tandai [x], perbarui CHANGELOG.md, commit.
+Jika belum selesai atau verify belum lulus: biarkan [~], catat apa yang gagal, commit sebagai wip(...).
+Jangan push.
 ```
-Jika tugas belum selesai, agent membiarkan tanda `[~]` dan meng-commit sebagai `wip(...)` (`AGENTS.md` §2).
 
 #### 6. Review
 ```

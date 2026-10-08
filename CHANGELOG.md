@@ -1,16 +1,41 @@
 # Changelog
 
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versi mengikuti [SemVer](https://semver.org/).
-Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
+Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebuah fase ditutup, entrinya dipindah ke rilis bertanggal (`AGENTS.md` §2a).
 
 ## [Unreleased]
 
 ### Added
-- Medium profile (https://medium.com/@harrymardika) in the footer, the contact section, the portfolio PDF, and structured data; clicks are counted like the other social links.
 - CVs by role (AI/ML Engineer, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) in English and Indonesian: built at deploy time into `/downloads/cv/` and listed on the page `/cv/`, linked from the footer ("Resumes" / "Resume") next to the site statistics (kept out of search results); each stays within two ATS-friendly pages (T10.2, T10.3).
 - CV variant model: `content/cv-variants.yaml` (role line, summary, focus, section order, skill groups per variant) and optional focus labels on highlights, with schema, CMS menu "Varian CV", and tests; variants only select and order existing content (T10.1, D10).
+
+## [1.1.0] - 2026-10-08
+
+Phase 9: personal branding and content.
+
+### Added
+- Medium profile (https://medium.com/@harrymardika) in the footer, the contact section, the portfolio PDF, and structured data; clicks are counted like the other social links.
 - "Kind words" / "Kesan & pesan" on the home page: messages people left for Harry, from `content/messages.yaml` (editable in the CMS), shown only with the writer's permission and hidden while the list is empty (T9.4, D15).
 - Indonesian case studies: all 11 case study bodies are translated (`content/projects/id/`), shown on `/id/` pages and in the Indonesian Portfolio PDF, editable in the CMS, with tests that keep sections and images in step with the English version; AI drafts now include the Indonesian body (T9.3, D12).
+
+### Changed
+- Contributor workflow: every phase now ends with a close-out task (tidy unused code and branches, check docs against code, phase summary, dated CHANGELOG release, final verify and live check), listed in `AGENTS.md` §2a.
+- Plans: phase 11 is a floating "Ask Harry" chatbot (separate assistant service, no stored conversations, Gemini with Groq fallback), and phase 13 adds four 3D scenes off the home page (project map, 404, skill constellation, visitor globe); not built yet.
+- Skills regrouped into eight groups (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & product, Product & project management, Leadership, Languages) with the skills the owner confirmed (SQL, Pandas/NumPy, scikit-learn, Airflow, Spark, Google Cloud, LangChain, BI tools, Figma, Jira, Notion, Scrum, Git, Linux); CV variants pick the relevant groups, and the general CV leaves out the Web & product and Leadership groups to stay at two pages (T9.2, D11).
+- Contributor workflow: `docs/06-development-workflow.md` has ready-to-copy prompts for each kind of AI agent session (continue, a specific task, resume interrupted work, a new request, close the session, review) and habits for Claude Code.
+- Contributor workflow: older session log entries move from `PROGRESS.md` to `docs/progress-archive.md`, AI agents read only the docs a task needs, and project Claude Code settings (`.claude/settings.json`) allow the verification commands and block reading the private `CV/` folder and `.env`.
+- Award titles: "Finalist" / "Finalis" everywhere, with team context in parentheses (Neurontara Data Clash is now "Finalist (Top 5 of 40 Teams)"; Gunadarma Business Idea Competition drops "Team").
+- New positioning: the role line is now "AI Product Manager" on the site, CV, Portfolio PDF, and structured data; the tagline, summary, and the three hero numbers lead with product outcomes (launch in 3 months, +45 NPS) and keep AI engineering as the differentiator (T9.1).
+- Phase 9 close-out: README, architecture, roadmap, and docs index match the code; an unused UI string is removed.
+
+### Fixed
+- Numbers follow each language's rules everywhere: Indonesian pages and PDFs now show headline numbers as `92,5%` instead of `92.5%`, and a test rejects mixed decimal separators in content and UI text (T9.5, D16).
+
+## [1.0.0] - 2026-10-07
+
+Phases 0–8: the site, PDFs, statistics, deployment to the home server (live since 2026-10-06), quality checks, the CMS, and AI case study drafts.
+
+### Added
 - Search and field filters on the Projects page (Computer Vision, NLP & Generative AI, and more, set in profile.yaml), with result counts and shareable links such as `/projects/?filter=computer-vision`.
 - A case study about this site itself (Projects → Self-hosted portfolio platform).
 - Owner operations guide (`docs/10-operations.md`): accounts and secrets, routine tasks, maintenance checklists, troubleshooting, and recovery; the README now describes the live site.
@@ -62,13 +87,6 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
-- Contributor workflow: every phase now ends with a close-out task (tidy unused code and branches, check docs against code, phase summary, dated CHANGELOG release, final verify and live check), listed in `AGENTS.md` §2a.
-- Plans: phase 11 is a floating "Ask Harry" chatbot (separate assistant service, no stored conversations, Gemini with Groq fallback), and phase 13 adds four 3D scenes off the home page (project map, 404, skill constellation, visitor globe); not built yet.
-- Skills regrouped into eight groups (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & product, Product & project management, Leadership, Languages) with the skills the owner confirmed (SQL, Pandas/NumPy, scikit-learn, Airflow, Spark, Google Cloud, LangChain, BI tools, Figma, Jira, Notion, Scrum, Git, Linux); CV variants pick the relevant groups, and the general CV leaves out the Web & product and Leadership groups to stay at two pages (T9.2, D11).
-- Contributor workflow: `docs/06-development-workflow.md` has ready-to-copy prompts for each kind of AI agent session (continue, a specific task, resume interrupted work, a new request, close the session, review) and habits for Claude Code.
-- Contributor workflow: older session log entries move from `PROGRESS.md` to `docs/progress-archive.md`, AI agents read only the docs a task needs, and project Claude Code settings (`.claude/settings.json`) allow the verification commands and block reading the private `CV/` folder and `.env`.
-- Award titles: "Finalist" / "Finalis" everywhere, with team context in parentheses (Neurontara Data Clash is now "Finalist (Top 5 of 40 Teams)"; Gunadarma Business Idea Competition drops "Team").
-- New positioning: the role line is now "AI Product Manager" on the site, CV, Portfolio PDF, and structured data; the tagline, summary, and the three hero numbers lead with product outcomes (launch in 3 months, +45 NPS) and keep AI engineering as the differentiator (T9.1).
 - The CV is printed in black, lists Education and Skills right after the Summary, and shows key results in bold; mark a phrase `**like this**` in content/ to make it bold on the CV, the portfolio PDF, and the About page.
 - The Homelab page is replaced by a site statistics page at `/stats/`, linked from the footer instead of the main menu; the footer no longer says how the site is built.
 - Merging an AI draft pull request now publishes the case study directly; no separate publish step.
@@ -79,7 +97,6 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - The journey 3D scene starts only when scrolled near, and shaders compile ahead of the first frame, cutting main-thread blocking on the home page by about three quarters.
 
 ### Fixed
-- Numbers follow each language's rules everywhere: Indonesian pages and PDFs now show headline numbers as `92,5%` instead of `92.5%`, and a test rejects mixed decimal separators in content and UI text (T9.5, D16).
 - The server status badge no longer makes the statistics page scroll sideways on phones.
 - Hoax and BCA case study metrics now say they are training values and show the validation values from the repos.
 - E2E builds use a separate GitHub cache and output directory, so test fixtures never appear in dev or production (T3.2).

@@ -99,35 +99,42 @@ Aturan:
 ├── src/
 │   ├── content.config.ts        # mendaftarkan collection + loader (skema diimpor dari lib/content/schemas)
 │   ├── lib/
-│   │   ├── content/             # schemas/ (Zod, murni), yaml.ts (parser), helper murni, queries (astro:content)
+│   │   ├── content/             # schemas/ (Zod, murni), yaml.ts (parser), helper murni (localize, localizeNumber,
+│   │   │                        #   cv-variants, …), queries (astro:content)
 │   │   ├── navigation.ts        # NAV_ITEMS (menu utama) dan label platform sosial
+│   │   ├── site.ts, downloads.ts # URL situs; nama file dan path unduhan PDF (CV umum, varian, Portfolio)
 │   │   ├── theme.ts             # logika tema terang/gelap
-│   │   ├── i18n/                # locales.ts, ui.ts (kamus), format.ts (fill), path helpers
+│   │   ├── i18n/                # locales.ts, ui.ts (kamus), format.ts (fill), routing.ts (path per bahasa)
 │   │   ├── github/              # schemas, select (murni), client (REST, retry), sync (I/O diinjeksi)
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
-│   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld (murni); person.ts (khusus Astro)
+│   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld, html (baca HTML build) (murni); person.ts (khusus Astro)
 │   │   └── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
 │   ├── components/
-│   │   ├── layout/              # BaseLayout, Header, Footer, LangSwitch, ThemeToggle, SkipLink
-│   │   ├── ui/                  # Button, Badge, Stat, Icon, Card, Dialog (generik, tanpa domain)
-│   │   ├── hero/                # Hero.astro (+ island kartu 3D)
-│   │   ├── journey/             # Journey.astro, JourneyTimeline.astro (fallback)
-│   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang)
+│   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
+│   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
+│   │   ├── hero/                # Hero.astro (+ island 3D), PhotoCard.astro (kartu statis)
+│   │   ├── journey/             # Journey.astro (timeline HTML + island 3D), MilestoneDetail (dialog)
+│   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang), SelectedProjects
 │   │   ├── about/               # AboutSection, TimelineItem
+│   │   ├── messages/            # Messages (kesan & pesan di beranda, T9.4)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
-│   │   └── print/               # CvDocument, PortfolioDocument
+│   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
+│   │   └── print/               # CvDocument, CvEntry, PortfolioDocument
 │   ├── scenes/
-│   │   ├── core/                # createRenderer, loop, visibility, reducedMotion, webglSupport, dispose
+│   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
+│   │   │                        #   palette, pointer, types (kontrak SceneModule)
 │   │   ├── photo-card/          # kartu foto 3D + kotak deteksi
 │   │   └── journey-path/        # jalur karier 3D
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
+│   │                            #   · PrintLayout (halaman cetak PDF)
 │   ├── pages/
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
 │   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
 │   │   │   └── print/cv.astro, print/cv/[variant].astro, print/portfolio.astro; cv.astro (daftar CV per posisi)
-│   │   └── 404.astro
+│   │   ├── 404.astro, robots.txt.ts
+│   │   └── og-template.astro    # templat gambar pratinjau (dipotret saat build)
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
 ├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
@@ -204,6 +211,8 @@ Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi
 - **URL:** jangan menulis path manual. Gunakan `localizePath(path, locale)` dan `alternates(pathname)` dari `@/lib/i18n` (semua path diakhiri `/`).
 - `BaseLayout` otomatis menulis `<html lang>`, canonical, dan `hreflang` (`en`, `id`, `x-default`).
 - Teks konten memakai tipe `LocalizedText = { en: string; id?: string }`. Helper `localize(text, locale)` mengembalikan `id` jika ada, jika tidak `en`.
+- Angka yang ditulis sekali untuk dua bahasa (`value` di `stats`/`metrics`, `gpa`) ditulis gaya Inggris dan ditampilkan lewat `localizeNumber(value, locale)`: `92.5%` → `92,5%` di halaman dan PDF Indonesia (D16, T9.5).
+- Body studi kasus bahasa Indonesia ada di `content/projects/id/<slug>.md`; bila belum ada, halaman `id` memakai body Inggris dengan catatan (T9.3).
 - Teks UI ada di `src/lib/i18n/ui.ts` sebagai kamus bertipe, sehingga kunci yang hilang menjadi error TypeScript.
 
 ## 8. Keamanan

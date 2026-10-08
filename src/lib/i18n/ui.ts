@@ -110,7 +110,6 @@ const en = {
   'portfolio.selected': 'Selected work',
   'portfolio.more': 'More projects',
   'portfolio.contact': "Let's work together",
-  'portfolio.page': 'Page',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -220,7 +219,6 @@ const id: Record<UiKey, string> = {
   'portfolio.selected': 'Karya pilihan',
   'portfolio.more': 'Proyek lainnya',
   'portfolio.contact': 'Mari bekerja sama',
-  'portfolio.page': 'Halaman',
 };
 
 export const UI: Readonly<Record<Locale, Readonly<Record<UiKey, string>>>> = { en, id };

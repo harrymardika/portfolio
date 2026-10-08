@@ -1,6 +1,8 @@
-# 11 · Rencana lanjutan (Fase 9–12)
+# 11 · Rencana lanjutan (Fase 9–13)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 6 varian (Product dan Project Manager terpisah), PDF varian didaftar di `/cv/` dan ditautkan di footer (2026-10-08), **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D17 sudah diambil pemilik** (2026-10-07 dan 2026-10-08); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–13).
+>
+> **Status (2026-10-08):** Fase 9 selesai; Fase 10 tinggal tinjauan pemilik atas PDF varian (T10.3); Fase 11–13 belum dimulai.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -8,16 +10,19 @@
 
 | Fase | Isi | Kenapa | Ukuran |
 |---|---|---|---|
-| 9 | **Personal branding & konten**: positioning, baris peran, skill lebih lengkap, catatan/terjemahan studi kasus, testimoni (statis) | Pondasi untuk fase lain; kebanyakan isi, sedikit kode | Kecil–sedang |
+| 9 ✅ | **Personal branding & konten**: positioning, baris peran, skill lebih lengkap, terjemahan studi kasus, kesan & pesan (tampilan), format angka | Pondasi untuk fase lain; kebanyakan isi, sedikit kode | Kecil–sedang |
 | 10 | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
-| 11 | **Asisten AI "Tanya tentang Harry"** di situs | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM/RAG secara langsung | Besar (layanan baru, ADR) |
-| 12 | **Formulir testimoni** dengan moderasi (opsional) | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
+| 11 | **Chatbot "Tanya Harry"** di sudut setiap halaman | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM secara langsung | Besar (layanan baru, ADR) |
+| 12 | **Formulir kesan & pesan** dengan moderasi | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
+| 13 | **3D tambahan** di halaman selain beranda | Lebih banyak 3D sesuai tema tanpa memberatkan beranda | Sedang |
 
-Urutan disarankan 9 → 10 → 11 → 12. Fase 10 dan 11 sama-sama memakai hasil Fase 9 (positioning dan skill), jadi jangan dibalik. Fase 12 boleh dilewati.
+Urutan: 9 → 10 → 11 → 12 → 13. Fase 10 dan 11 sama-sama memakai hasil Fase 9 (positioning dan skill), jadi jangan dibalik. Fase 12 tidak lagi opsional (D15). Fase 13 dikerjakan setelah Fase 11 dan 12 (D17). Setiap fase ditutup dengan tugas penutupan (`AGENTS.md` §2a).
 
 ---
 
 ## A. Personal branding: AI Engineer, Product, Data, atau semuanya?
+
+**Keputusan (D8, D9, 2026-10-07):** baris peran **AI Product Manager**; positioning AI Product Manager dengan kemampuan AI engineering sebagai pembeda (suara produk lebih dulu). Ini menggantikan rekomendasi "AI Engineer" di bawah. Dikerjakan di T9.1.
 
 **Masalahnya.** Pemilik bisa di beberapa jalur: AI Engineer, Product/Project Manager, Data Engineer, Data Analyst. Kalau situs mengaku semuanya sejajar ("AI Engineer | PM | Data Engineer | Analyst"), pembaca tidak tahu Anda ahli di mana, dan setiap jalur terlihat setengah-setengah.
 
@@ -37,9 +42,11 @@ Contoh hasilnya:
 
 **Tentang "AI Engineer · Founder, Decklify" (pertanyaan pemilik): sebaiknya diubah.** Baris itu dibaca pertama kali oleh recruiter. "Founder" di posisi paling atas bisa ditangkap sebagai "sedang sibuk dengan startup sendiri, mungkin tidak bisa full-time", dan nama Decklify belum dikenal. Decklify tetap tampil kuat di Pengalaman, Journey, dan Projects. Baris itu juga dipakai di CV dan JSON-LD, jadi CV per posisi (Fase 10) nanti punya baris perannya sendiri.
 
-**Keputusan D8**: pilih baris peran: (a) "AI Engineer", (b) "AI Engineer · AI products, end to end", (c) tulisan Anda sendiri.
+Pilihan yang dulu diajukan untuk D8: (a) "AI Engineer", (b) "AI Engineer · AI products, end to end", (c) tulisan Anda sendiri.
 
 ## B. CV per posisi (dan per perusahaan?)
+
+**Keputusan (D10, 2026-10-07 dan 2026-10-08):** 6 varian (Product dan Project Manager terpisah), PDF dibuat saat deploy di `/downloads/cv/`, didaftar di halaman `/cv/` yang ditautkan di footer (noindex). **CV per perusahaan tidak dibuat** (poin 4 batal). CV umum memakai baris peran AI Product Manager (D8).
 
 **Rekomendasi: varian per posisi dari data yang sama; versi per perusahaan hanya privat.**
 
@@ -57,6 +64,8 @@ Batas yang dijaga: maksimal 2 halaman per varian (dites), ATS-friendly, tanpa no
 
 ## C. Skill lebih lengkap
 
+**Keputusan (D11, 2026-10-08):** semua kandidat dikonfirmasi satu per satu oleh pemilik; `skills.yaml` menjadi 8 grup, dan grup yang tidak muat di CV umum ditandai `show_on_cv: false` (T9.2).
+
 **Masalahnya.** `content/skills.yaml` hanya 5 grup dan ±25 item; banyak yang sudah terbukti di proyek belum tercantum (mis. Python, SQL, LangChain, OpenCV, Streamlit, Prometheus/Grafana), dan pemilik menyebut GCP dan LangChain.
 
 **Rekomendasi:**
@@ -66,6 +75,8 @@ Batas yang dijaga: maksimal 2 halaman per varian (dites), ATS-friendly, tanpa no
 - Di website semua tampil per grup; di CV tiap varian menampilkan grup yang relevan (Fase 10). Tanpa "bar persentase" (tidak ramah ATS, sudah dilarang docs/09).
 
 ## D. Studi kasus berbahasa Indonesia
+
+**Keputusan (D12, 2026-10-07): pilihan (c)**, semua 11 studi kasus diterjemahkan; istilah teknis/asing tetap bahasa Inggris. Selesai dan ditinjau pemilik 2026-10-08 (T9.3).
 
 Ringkasan, peran, dan angka sudah dwibahasa; isi Problem/Approach/Result hanya bahasa Inggris dengan catatan. Pilihan (**D12**):
 - **(a) Rekomendasi:** catatan diganti menjadi "Ringkasan di atas dalam bahasa Indonesia; detail teknis ditulis dalam bahasa Inggris." (1 baris teks UI).
@@ -100,12 +111,14 @@ flowchart LR
 
 ## F. Komentar atau testimoni dari orang lain
 
-> **Pembaruan 2026-10-08:** atas permintaan pemilik, istilahnya menjadi **kesan & pesan** ("Kind words"): pesan yang ditinggalkan orang lain untuk pemilik, di `content/messages.yaml` (T9.4). Rancangan di bawah tetap berlaku dengan nama baru.
+**Keputusan (D15, 2026-10-07):** langsung dengan formulir bermoderasi (Fase 12 tidak opsional); tidak ada yang tampil sebelum disetujui pemilik.
+
+> **Pembaruan 2026-10-08:** atas permintaan pemilik, istilahnya menjadi **kesan & pesan** ("Kind words"): pesan yang ditinggalkan orang lain untuk pemilik. Tahap 1 sudah dibangun di `content/messages.yaml` (T9.4), bukan `testimonials.yaml`; Portfolio PDF belum memuatnya. Rancangan di bawah tetap berlaku dengan nama baru.
 
 **Rekomendasi: bukan kolom komentar bebas, melainkan testimoni yang dikurasi.** Kolom komentar terbuka di portfolio mengundang spam dan pesan yang tidak relevan, butuh moderasi setiap hari, dan satu komentar buruk tampil di depan recruiter. Yang memberi nilai adalah **rekomendasi dari orang yang pernah bekerja dengan Anda**.
 
 - **Tahap 1 (Fase 9, statis):** `content/testimonials.yaml`: nama, peran, hubungan ("atasan di …", "peserta bootcamp"), kutipan EN/ID, tautan LinkedIn opsional, **tanggal persetujuan**. Tampil 2–4 testimoni di beranda/About, dan opsional di Portfolio PDF. Sumber: rekomendasi LinkedIn, pesan dari peserta/mentor, dengan izin orangnya.
-- **Tahap 2 (Fase 12, opsional):** formulir "Tulis testimoni" → tersimpan sebagai **antrean moderasi** (SQLite di server, tidak pernah tampil otomatis) → pemilik meninjau (perintah `bun run testimonials` atau halaman privat ber-token) → yang disetujui masuk `testimonials.yaml` lewat Pull Request. Anti-spam: honeypot + batas per IP; Cloudflare Turnstile hanya jika perlu (skrip pihak ketiga, butuh ADR + perubahan CSP).
+- **Tahap 2 (Fase 12):** formulir "Tulis testimoni" → tersimpan sebagai **antrean moderasi** (SQLite di server, tidak pernah tampil otomatis) → pemilik meninjau (perintah `bun run testimonials` atau halaman privat ber-token) → yang disetujui masuk `testimonials.yaml` lewat Pull Request. Anti-spam: honeypot + batas per IP; Cloudflare Turnstile hanya jika perlu (skrip pihak ketiga, butuh ADR + perubahan CSP).
 - Keputusan: **D15**.
 
 ---
@@ -120,16 +133,19 @@ Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi,
 
 Pemilik ingin lebih banyak 3D yang sesuai tema. Agar beranda (sudah dua scene, skor performa mepet) tetap ringan, 3D baru ditaruh di halaman lain: **peta proyek** (Projects; studi kasus sebagai titik di "ruang embedding" per bidang), **404 ala computer vision** (kotak deteksi mengunci "page · not found"), **rasi skill** (About), dan **globe pengunjung** (Statistik). Pratinjau interaktif disetujui pemilik pada 2026-10-08; dikerjakan setelah Fase 11 dan 12. Komponen bersama (putar, hover, label) dibangun di T13.1 dan dipakai ulang.
 
-## Keputusan yang dibutuhkan
+## Keputusan
 
-| No | Pertanyaan | Rekomendasi | Menentukan |
+Semua sudah diputuskan pemilik. Rekomendasi awal dan alasannya ada di bagian masing-masing di atas.
+
+| No | Pertanyaan | Keputusan pemilik | Tugas |
 |---|---|---|---|
-| D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | "AI Engineer" atau "AI Engineer · AI products, end to end" | T9.1 |
-| D9 | Positioning: AI Engineer utama + produk & data sebagai pendukung? | Ya | T9.1, Fase 10 |
-| D10 | Varian CV mana, dan apakah ditaruh di website | **Diputuskan:** 6 varian (Product dan Project Manager terpisah); PDF dibuat saat deploy di `/downloads/cv/`, didaftar di `/cv/` yang ditautkan di footer (noindex) | T10.x |
-| D11 | Skill tambahan yang benar-benar dikuasai (checklist) | Centang dari daftar kandidat | T9.2 |
-| D12 | Studi kasus bahasa Indonesia | (a) ganti kalimat catatan | T9.3 |
-| D13 | Asisten AI: lanjut? di beranda, About, atau tombol mengambang? | Lanjut; bagian di About + tautan dari beranda | Fase 11 |
-| D14 | Asisten AI: penyedia dan penyimpanan pertanyaan | Penyedia yang tidak memakai data untuk pelatihan (kebijakannya dicek saat T11.1), atau Gemini gratis dengan pemberitahuan; pertanyaan tidak disimpan | T11.x |
-| D16 | Format angka | **Diputuskan:** aturan baku tiap bahasa (EN `92.5%`, ID `92,5%`) | T9.5 |
-| D15 | Testimoni: statis saja, atau juga formulir bermoderasi | Statis dulu (Fase 9); formulir nanti jika ada permintaan | T9.4, Fase 12 |
+| D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | **AI Product Manager** (2026-10-07) | T9.1 |
+| D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering** (2026-10-07) | T9.1, Fase 10 |
+| D10 | Varian CV mana, dan apakah ditaruh di website | **6 varian**, PDF di `/downloads/cv/`, halaman `/cv/` ditautkan di footer (noindex); tanpa CV per perusahaan (2026-10-07; varian dan `/cv/` 2026-10-08) | T10.x |
+| D11 | Skill tambahan yang benar-benar dikuasai | **Semua kandidat**, dikonfirmasi satu per satu (2026-10-08) | T9.2 |
+| D12 | Studi kasus bahasa Indonesia | **(c) Terjemahkan semua**, istilah teknis tetap bahasa Inggris (2026-10-07) | T9.3 |
+| D13 | Asisten AI: lanjut dan letaknya | **Lanjut, chatbot di sudut kanan bawah** setiap halaman, bukan halaman cetak (2026-10-08) | Fase 11 |
+| D14 | Asisten AI: penyedia dan penyimpanan | **Gemini utama, Groq cadangan**; teks pertanyaan tidak disimpan (2026-10-08) | T11.x |
+| D15 | Kesan & pesan: statis saja, atau juga formulir | **Langsung dengan formulir bermoderasi** (2026-10-07) | T9.4, Fase 12 |
+| D16 | Format angka | **Aturan baku tiap bahasa** (EN `92.5%`, ID `92,5%`) (2026-10-08) | T9.5 |
+| D17 | 3D tambahan | **Keempatnya**, setelah Fase 11 dan 12, urutan Proyek → 404 → Skill → Globe (2026-10-08) | Fase 13 |

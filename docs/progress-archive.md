@@ -2,6 +2,23 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Penutupan fase dan keputusan asisten AI
+- Pemilik meminta proyek dirapikan dan didokumentasikan di setiap akhir fase. Ditambahkan `AGENTS.md` §2a (checklist penutupan) dan tugas penutup T9.6, T10.4, T11.6, T12.2, T13.5.
+- D14 diputuskan: Gemini utama, Groq cadangan, pertanyaan tidak disimpan. D13: pemilik meminta contoh; pratinjau tombol di hero + bagian "Tanya tentang saya" di About: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.
+- Langkah berikutnya: T9.6 (Fase 9 sudah selesai semua tugasnya); D13 setelah pemilik melihat pratinjau.
+
+### 2026-10-08 · Claude Code (Opus) · Rencana 3D tambahan (Fase 13)
+- Pemilik meminta 3D lain yang menarik. Dibuat pratinjau interaktif empat ide (peta proyek, rasi skill, globe pengunjung, 404) dengan data dan palet situs; pemilik memilih **keempatnya**, dikerjakan **setelah Fase 11 dan 12** (D17).
+- Dikerjakan: Fase 13 (T13.1–T13.4) dan §H di `docs/11-roadmap.md`. Belum ada kode.
+- Langkah berikutnya: Fase 11 butuh keputusan D13–D14 dari pemilik.
+
+### 2026-10-08 · Claude Code (Opus) · T9.2 skill lebih lengkap
+- D11 diputuskan: pemilik mencentang semua kandidat, lalu mengonfirmasi setiap tool di pilihan gabungan (Airflow dan Spark, Power BI/Tableau/Looker, Jira dan Notion).
+- Dikerjakan: `skills.yaml` menjadi 8 grup (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & produk, Manajemen produk & proyek, Kepemimpinan, Bahasa), ditambah skill yang sudah terbukti di konten (Python, OpenCV, Streamlit, Prometheus/Grafana, Gemini API) dan dua skill produk dari Decklify yang ada di pratinjau yang disetujui pemilik (validasi produk dengan NPS, model bisnis); grup skill setiap varian CV diperbarui. Tes baru menolak teks yang terpotong karena koma tanpa tanda kutip di `{ ... }` (sebelumnya potongan itu terhapus diam-diam oleh `pruneEmpty`).
+- CV umum sempat 3 halaman. Pilihan pemilik: penulisan diringkas tanpa pengulangan (mis. `SQL (PostgreSQL)`, `Spark/PySpark`, tanpa "MLOps" di grup Cloud & MLOps) dan grup Web & produk serta Kepemimpinan tidak tampil di CV umum (`show_on_cv: false`, baru untuk grup skill), tetap di website dan varian. Hasil: CV umum dan 12 varian semuanya 2 halaman.
+- Catatan: sesi lain sempat berpindah branch dan meng-stash di folder yang sama saat T9.2 dikerjakan; perubahan dipulihkan dari commit `911d2d2` ke branch bersih. Jangan jalankan dua sesi yang menulis kode di folder yang sama.
+- Belum: -. Langkah berikutnya: tinjauan pemilik atas PDF varian (T10.3); D13–D14 untuk Fase 11.
+
 ### 2026-10-08 · Claude Code (Opus) · Template prompt sesi
 - Pemilik minta cara menulis prompt untuk membuka sesi baru dan melanjutkan progres. `docs/06-development-workflow.md` §3 kini berisi siklus satu sesi, 6 template (lanjutkan, tugas tertentu, lanjutkan yang terputus, permintaan baru, tutup sesi, review), cara menulis permintaan sendiri, dan kebiasaan di Claude Code.
 - Belum di-push (atas permintaan pemilik), begitu juga commit setup sebelumnya.

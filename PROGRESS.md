@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (penutupan T9.6) dan Fase 10 (T10.3 menunggu tinjauan pemilik) · **Tugas berikutnya:** T9.6 penutupan Fase 9 → T11.1 (rencana chatbot sudah disetujui); pemilik meninjau 12 PDF varian CV di `/cv/`
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 10 (T10.3 menunggu tinjauan pemilik) dan Fase 11 · **Tugas berikutnya:** T11.1 (rencana chatbot sudah disetujui); pemilik meninjau 12 PDF varian CV di `/cv/`, lalu T10.4
 
 ## Ringkasan
 
@@ -18,13 +18,13 @@
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
-| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 T9.1–T9.5 selesai; tinggal penutupan (T9.6) |
+| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | 🔄 T10.1–T10.2 selesai; T10.3 menunggu tinjauan pemilik, lalu penutupan (T10.4) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; mulai setelah T9.6 |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; berikutnya (T11.1) |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
-Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 9–12: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–9 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 10–13: `docs/11-roadmap.md`**
 
 ---
 
@@ -115,7 +115,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [x] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge): Gemini, cadangan Groq (ADR 0013). Run nyata pertama 2026-10-07: Gemini 503 → Groq → [PR #1](https://github.com/harrymardika/portfolio/pull/1) untuk `camera-genai`
 - [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
 
-## Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F)
+## Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F) ✅
 
 - [x] **T9.1** Positioning dan baris peran (D8, D9) · disetujui pemilik 2026-10-07. *Sisa untuk pemilik: samakan headline LinkedIn menjadi "AI Product Manager".*
   - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
@@ -130,7 +130,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 - [x] **T9.5** Format angka konsisten di semua bahasa (D16)
   - Aturan: **ikuti aturan baku tiap bahasa**. EN: titik desimal, koma ribuan (`92.5%`, `12,000`). ID (PUEBI): koma desimal, titik ribuan (`92,5%`, `12.000`). Berlaku di web, CV, Portfolio PDF, statistik, studi kasus terjemahan (T9.3), draf AI.
   - Kriteria: nilai yang ditulis sekali untuk dua bahasa (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman/PDF ID (`localizeNumber`); tes unit menolak desimal yang tertukar di `content/` dan kamus UI; aturan ditulis di docs/04 §6 dan prompt draf AI.
-- [ ] **T9.6** Penutupan Fase 9: rapikan dan dokumentasikan (AGENTS.md §2a)
+- [x] **T9.6** Penutupan Fase 9: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 10: CV per posisi (`docs/11-roadmap.md` §B)
@@ -224,6 +224,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-08 · Claude Code (Opus) · T9.6 penutupan Fase 9 (ringkasan fase)
+- **Dibangun di Fase 9:** positioning **AI Product Manager** di hero, About, CV umum, Portfolio, JSON-LD (T9.1); `skills.yaml` 8 grup dengan `show_on_cv` agar CV umum tetap 2 halaman (T9.2); 11 studi kasus bahasa Indonesia di `content/projects/id/` dengan fallback dan tes kesamaan struktur (T9.3); bagian "Kind words / Kesan & pesan" dari `content/messages.yaml`, tersembunyi selama kosong (T9.4); format angka per bahasa lewat `localizeNumber` + tes (T9.5). Tambahan di luar tugas: profil Medium, judul "Finalist", template prompt sesi.
+- **Keputusan pemilik:** D8, D9, D11, D12, D15, D16 (dan rencana D13, D14, D17 untuk Fase 11 dan 13).
+- **Penutupan:** satu kunci teks UI tak terpakai (`portfolio.page`) dan `src/lib/seo/.gitkeep` dihapus; tidak ada dependency, komponen, atau aset yang tak terpakai; tidak ada `TODO`; semua `test.skip` beralasan. README, `docs/02` (struktur folder kini sesuai kode), `docs/11` (Fase 9–13, tabel keputusan D8–D17), `docs/README.md`, dan tabel `AGENTS.md` §1 diperbarui. CHANGELOG punya rilis **1.0.0 (2026-10-07, Fase 0–8)** dan **1.1.0 (2026-10-08, Fase 9)**; `package.json` ikut 1.1.0. Branch lokal `feat/T9.2-skills` dihapus setelah perbaikan `docs/06` di dalamnya (commit `911d2d2`, belum ada di `main`, berbeda dari catatan serah terima) dibawa ke `main`; branch remote `drafts/case-study-camera-genai` dihapus.
+- **Sisa untuk pemilik:** headline LinkedIn "AI Product Manager"; meninjau 12 PDF varian di `/cv/` (T10.3); mengisi `content/messages.yaml` bila sudah ada pesan yang diizinkan; memastikan run draf AI dua bahasa pertama (tab *Actions* → *Case study drafts*).
+- **Cek situs live:** menunggu deploy setelah push (beranda EN/ID, PDF, `/stats/`).
+- **Fase berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten); T10.4 setelah tinjauan T10.3.
+
 ### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
 - **Sudah (sesi ini):** T9.1 positioning, T9.2 skill (8 grup, CV umum tetap 2 halaman), T9.3 studi kasus ID, T9.4 kesan & pesan, T9.5 format angka; Fase 10 T10.1–T10.2 dan isi T10.3 (6 varian di `/cv/`, tautan footer "Resumes"); Medium dan judul "Finalist"; aturan penutupan fase (`AGENTS.md` §2a); rencana Fase 11 (chatbot di sudut, D13/D14) dan Fase 13 (empat 3D, D17). Semua sudah di-push kecuali commit penutup ini.
 - **Belum:** T9.6 penutupan Fase 9; T10.3 tinjauan pemilik atas 12 PDF varian lalu T10.4; seluruh Fase 11–13. Uji draf AI dua bahasa belum terjadi (run terjadwal 2026-10-08 02:41 UTC belum muncul sampai 05:44 UTC; GitHub bisa menunda atau melewatkan jadwal): cek tab *Actions*, atau jalankan *Case study drafts* manual.
@@ -234,20 +242,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - Pemilik membandingkan pratinjau dan memilih **chatbot di sudut** (D13), lalu meminta rencana yang matang. Rencana disetujui: layanan terpisah `services/assistant`, pengetahuan lengkap (Gemini) + ringkas (Groq, karena batas ±8 ribu token/menit), tanpa penyimpanan percakapan di server, batas per pengunjung dan harian, validasi jawaban, kill switch, widget yang dimuat saat diklik, uji ±30 pertanyaan lewat workflow manual.
 - Dikerjakan: Fase 11 ditulis ulang (T11.1–T11.7), D13 dicatat, `docs/11-roadmap.md` §E diperbarui. Belum ada kode.
 - Langkah berikutnya: T9.6 (penutupan Fase 9), lalu T11.1.
-
-### 2026-10-08 · Claude Code (Opus) · Penutupan fase dan keputusan asisten AI
-- Pemilik meminta proyek dirapikan dan didokumentasikan di setiap akhir fase. Ditambahkan `AGENTS.md` §2a (checklist penutupan) dan tugas penutup T9.6, T10.4, T11.6, T12.2, T13.5.
-- D14 diputuskan: Gemini utama, Groq cadangan, pertanyaan tidak disimpan. D13: pemilik meminta contoh; pratinjau tombol di hero + bagian "Tanya tentang saya" di About: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.
-- Langkah berikutnya: T9.6 (Fase 9 sudah selesai semua tugasnya); D13 setelah pemilik melihat pratinjau.
-
-### 2026-10-08 · Claude Code (Opus) · Rencana 3D tambahan (Fase 13)
-- Pemilik meminta 3D lain yang menarik. Dibuat pratinjau interaktif empat ide (peta proyek, rasi skill, globe pengunjung, 404) dengan data dan palet situs; pemilik memilih **keempatnya**, dikerjakan **setelah Fase 11 dan 12** (D17).
-- Dikerjakan: Fase 13 (T13.1–T13.4) dan §H di `docs/11-roadmap.md`. Belum ada kode.
-- Langkah berikutnya: Fase 11 butuh keputusan D13–D14 dari pemilik.
-
-### 2026-10-08 · Claude Code (Opus) · T9.2 skill lebih lengkap
-- D11 diputuskan: pemilik mencentang semua kandidat, lalu mengonfirmasi setiap tool di pilihan gabungan (Airflow dan Spark, Power BI/Tableau/Looker, Jira dan Notion).
-- Dikerjakan: `skills.yaml` menjadi 8 grup (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & produk, Manajemen produk & proyek, Kepemimpinan, Bahasa), ditambah skill yang sudah terbukti di konten (Python, OpenCV, Streamlit, Prometheus/Grafana, Gemini API) dan dua skill produk dari Decklify yang ada di pratinjau yang disetujui pemilik (validasi produk dengan NPS, model bisnis); grup skill setiap varian CV diperbarui. Tes baru menolak teks yang terpotong karena koma tanpa tanda kutip di `{ ... }` (sebelumnya potongan itu terhapus diam-diam oleh `pruneEmpty`).
-- CV umum sempat 3 halaman. Pilihan pemilik: penulisan diringkas tanpa pengulangan (mis. `SQL (PostgreSQL)`, `Spark/PySpark`, tanpa "MLOps" di grup Cloud & MLOps) dan grup Web & produk serta Kepemimpinan tidak tampil di CV umum (`show_on_cv: false`, baru untuk grup skill), tetap di website dan varian. Hasil: CV umum dan 12 varian semuanya 2 halaman.
-- Catatan: sesi lain sempat berpindah branch dan meng-stash di folder yang sama saat T9.2 dikerjakan; perubahan dipulihkan dari commit `911d2d2` ke branch bersih. Jangan jalankan dua sesi yang menulis kode di folder yang sama.
-- Belum: -. Langkah berikutnya: tinjauan pemilik atas PDF varian (T10.3); D13–D14 untuk Fase 11.
