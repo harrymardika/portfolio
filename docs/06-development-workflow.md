@@ -48,27 +48,89 @@ Kolom **Sejak** menunjukkan tugas yang menambahkan perintah itu. Perintah dengan
 - **Subagent hanya untuk peran yang jelas:** riset/eksplorasi, dan review (`.claude/agents/reviewer.md`).
 - **Tugas kecil, sesi pendek.** Satu tugas `T-ID` per sesi atau branch. Konteks yang terlalu panjang menurunkan kualitas hasil.
 
-### Template perintah untuk memulai sesi
-Salin ke AI agent mana pun:
+### Siklus satu sesi
 
+Satu sesi = satu tugas. Mulai dengan prompt **Lanjutkan** (atau **Tugas tertentu**), akhiri dengan prompt **Tutup sesi**. Sesi baru tidak ingat percakapan sebelumnya; ia hanya tahu apa yang tertulis di `PROGRESS.md`, jadi prompt penutup itulah yang membuat sesi berikutnya bisa melanjutkan.
+
+| Situasi | Pakai template |
+|---|---|
+| Membuka sesi baru, ingin melanjutkan progres | 1. Lanjutkan |
+| Sudah tahu tugas yang mau dikerjakan | 2. Tugas tertentu |
+| Sesi sebelumnya terputus di tengah tugas | 3. Lanjutkan pekerjaan yang terputus |
+| Ide atau perbaikan yang belum ada di `PROGRESS.md` | 4. Permintaan baru |
+| Selesai bekerja, atau limit hampir habis | 5. Tutup sesi |
+| Sebelum merge | 6. Review |
+
+Template di bawah bisa disalin ke AI agent mana pun. Ganti bagian `<...>`.
+
+#### 1. Lanjutkan
 ```
-Baca AGENTS.md lalu PROGRESS.md. Kerjakan tugas berikutnya yang belum selesai di fase aktif
-(atau: kerjakan T2.3). Ikuti alur kerja di AGENTS.md §2 dan Definition of Done.
-Sebelum menulis kode, jelaskan rencanamu singkat (file yang dibuat/diubah).
-Jika ada yang ambigu atau ada beberapa pilihan, tanyakan dulu sebelum mulai.
+Lanjutkan proyek ini. Baca PROGRESS.md (status, fase aktif, keputusan pemilik, log sesi terbaru), lalu:
+1. Ringkas dalam 3–5 poin: posisi proyek sekarang, tugas berikutnya, dan apa yang menunggu keputusan saya.
+2. Usulkan satu tugas untuk dikerjakan, dengan rencana singkat: file yang diubah dan cara verifikasinya.
+3. Tunggu persetujuan saya sebelum menulis kode. Kalau ada yang ambigu, tanya dengan pilihan.
+```
+Jika semua tugas berikutnya menunggu keputusan pemilik, agent akan menjawab dengan daftar keputusan itu. Jawab keputusannya, lalu minta agent melanjutkan.
+
+#### 2. Tugas tertentu
+```
+Kerjakan <T-ID> (<nama tugas>). <Keputusan atau bahan dari saya, jika ada.>
+Batasan: <yang tidak boleh diubah, gaya, bahasa>.
+Selesai jika: kriteria di PROGRESS.md terpenuhi, bun run verify lulus, dan saya lihat screenshot desktop + HP.
+Buat rencana dulu, tunggu persetujuan saya.
 ```
 
-### Template saat limit hampir habis
+#### 3. Lanjutkan pekerjaan yang terputus
 ```
-Hentikan pekerjaan di titik yang aman. Perbarui PROGRESS.md: tandai tugas [~], tulis di Log sesi
-apa yang sudah selesai, apa yang belum, dan langkah berikutnya yang spesifik. Commit sebagai wip.
+Sesi sebelumnya berhenti di tengah tugas. Cek git status, branch aktif, tugas bertanda [~] di PROGRESS.md,
+dan log sesi terakhir. Jelaskan apa yang sudah dan belum selesai, lalu usulkan langkah berikutnya.
 ```
 
-### Template review
+#### 4. Permintaan baru
+```
+Saya ingin <apa yang diinginkan>, karena <alasannya>. Ini belum ada di PROGRESS.md.
+Tambahkan sebagai tugas baru di fase yang sesuai (ID + kriteria penerimaan), tunjukkan ke saya dulu, baru kerjakan.
+```
+
+#### 5. Tutup sesi
+```
+Kita berhenti di sini. Perbarui PROGRESS.md (status + log sesi: sudah, belum, langkah berikutnya) dan CHANGELOG.md,
+jalankan bun run verify, lalu commit. Jangan push.
+```
+Jika tugas belum selesai, agent membiarkan tanda `[~]` dan meng-commit sebagai `wip(...)` (`AGENTS.md` §2).
+
+#### 6. Review
 ```
 Jalankan subagent reviewer (atau /code-review) untuk branch ini terhadap tugas <T-ID>.
 Perbaiki semua temuan blocker dan should-fix, lalu jalankan ulang verifikasi.
 ```
+
+### Menulis permintaan sendiri
+
+Jika tidak ada template yang cocok, sertakan lima hal ini agar agent tidak perlu menebak (dan Anda tidak perlu banyak mengoreksi):
+
+1. **Tujuan:** apa yang ingin dicapai, dan **kenapa**.
+2. **Konteks:** halaman, file, atau `T-ID` terkait; contoh yang mirip.
+3. **Batasan:** yang tidak boleh diubah.
+4. **Selesai jika:** hasil yang bisa dicek (tes lulus, screenshot, PDF tetap 2 halaman).
+5. **"Kalau ada yang ambigu, tanya dulu."**
+
+Contoh: *"tambahin Medium di sosmed"* kurang jelas. Lebih baik: *"Tambahkan link Medium saya (<url>) ke daftar sosial media, datanya dari `content/`. Tampil di footer dan CV, setelah GitHub. Selesai jika verify lulus dan saya lihat screenshot desktop + HP. Kalau ada pilihan desain, tanya dulu."*
+
+Follow-up untuk menyempurnakan hasil ("warnanya agak gelapkan") itu wajar. Jika Anda mengoreksi hal yang **sama** dua kali, minta agent mencatatnya di `CLAUDE.md` atau memory agar tidak terulang.
+
+### Kebiasaan di Claude Code
+
+| Kapan | Lakukan |
+|---|---|
+| Ganti tugas | `/clear` (sesi bersih; konteks lama tidak ikut terbawa) |
+| Tugas besar, lebih dari 3 file | Shift+Tab sampai *plan mode*; koreksi rencananya sebelum kode ditulis |
+| Agent salah arah | **Esc** untuk berhenti; **Esc Esc** untuk kembali ke titik sebelumnya |
+| Sesi terasa panjang | `/context` untuk melihat pemakaian; `/compact` jika tugas belum selesai |
+| Hanya ingin melanjutkan **obrolan** yang terputus | `claude --continue` atau `/resume`. Untuk tugas baru, lebih baik sesi bersih dengan template 1 |
+| Tugas ringan (typo, ganti teks) | Turunkan model/effort lewat `/model` |
+
+Pengaturan izin proyek ada di `.claude/settings.json`: perintah verifikasi dan git yang hanya membaca berjalan tanpa bertanya; folder `CV/` dan file `.env` tidak bisa dibaca lewat tool baca/tulis Claude Code. Ubah file itu jika ada perintah yang perlu ditambah.
 
 ### Jika Anda coding sendiri (tanpa AI)
 Alurnya sama: ambil tugas di `PROGRESS.md` → branch → kerjakan → `bun run check && bun test` → perbarui `PROGRESS.md` dan `CHANGELOG.md` → commit → PR.

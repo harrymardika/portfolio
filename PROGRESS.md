@@ -198,6 +198,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-08 · Claude Code (Opus) · Template prompt sesi
+- Pemilik minta cara menulis prompt untuk membuka sesi baru dan melanjutkan progres. `docs/06-development-workflow.md` §3 kini berisi siklus satu sesi, 6 template (lanjutkan, tugas tertentu, lanjutkan yang terputus, permintaan baru, tutup sesi, review), cara menulis permintaan sendiri, dan kebiasaan di Claude Code.
+- Belum di-push (atas permintaan pemilik), begitu juga commit setup sebelumnya.
+
 ### 2026-10-08 · Claude Code (Opus) · Setup Claude Code dan hemat konteks
 - Pemilik bertanya cara terbaik memakai Claude Code (Graphify, CLAUDE.md, pengaturan, subagent, cara menulis prompt). Saran: Graphify belum perlu untuk repo sekecil ini; pemborosan token terbesar adalah `PROGRESS.md` yang dibaca utuh setiap sesi.
 - Dikerjakan: log sesi lama pindah ke `docs/progress-archive.md` (PROGRESS.md 520 → ±230 baris); urutan baca di `AGENTS.md` §1 hanya mewajibkan bagian status dan log terbaru; `.claude/settings.json` (izin perintah verifikasi dan git yang hanya membaca, larangan membaca `CV/` dan `.env`); `CLAUDE.md` dan template di `docs/06` meminta agent bertanya dulu bila permintaan ambigu.
@@ -218,14 +222,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - T10.1: `content/cv-variants.yaml`, label `focus` pada poin pencapaian, `applyVariant` (pekerjaan dan pendidikan selalu tampil; kepemimpinan/pelatihan yang tidak relevan disembunyikan), skema, menu CMS "Varian CV", tes. Temuan reviewer diperbaiki (gelar menyimpan poin pertama, tebal di ringkasan varian, skill unik, tes CMS untuk multi-select).
 - T10.2: `CvDocument` mengikuti urutan bagian varian; halaman `/print/cv/<id>/`; 10 PDF tambahan, semuanya 2 halaman dan ±200 KB; tes e2e per varian (urutan bagian, baris peran, tanpa nomor HP, ≤ 2 halaman), dan tes bahwa tidak ada halaman yang menautkan varian.
 - T10.3: lima varian (AI/ML Engineer, Data Engineer, Data Analyst, Product / Project Manager, Management Trainee) dengan ringkasan EN/ID dari fakta yang sudah ada; 49 poin diberi label fokus. **Belum:** tinjauan pemilik. Varian data masih tipis karena skill data (SQL, Pandas, dll.) menunggu D11/T9.2.
-
-### 2026-10-08 · Claude Code (Opus) · Tinjauan T9.3, uji draf AI, mulai Fase 10
-- Pemilik menyetujui 11 terjemahan studi kasus: T9.3 selesai.
-- Pemilik meminta Fase 10 dikerjakan sekarang walau T9.2 (D11) belum diputuskan; aturan "jangan loncat fase" dikesampingkan atas izin pemilik.
-- Uji draf AI dua bahasa: 9 repo bertopic `portfolio` tanpa studi kasus memenuhi syarat (README cukup panjang), jadi run terjadwal 2026-10-08 02:41 UTC menjadi uji nyata pertama (2 repo per run: `rocm-test`, `netflix-big-data-analytics`). Tidak bisa dipicu manual dari laptop (tanpa token GitHub).
-
-### 2026-10-08 · Claude Code (Opus) · T9.4 kesan & pesan
-- Pemilik: ini pesan yang ditinggalkan orang lain, tidak harus bernama "testimoni". Nama bagian menjadi **"Kind words" / "Kesan & pesan"**; file `content/messages.yaml`, menu CMS "Kesan & pesan", `role` opsional.
-- Dikerjakan: skema `messageSchema` (wajib `approved` = bulan izin), loader yang menerima daftar kosong, bagian di beranda (antara Projects dan Contact, `figure`/`blockquote`, fallback `lang="en"`), fixture e2e fiktif lewat `MESSAGES_FILE`, tes unit/e2e/axe. File awal kosong, jadi **belum ada yang tampil di situs**; tidak ada pesan yang dikarang.
-- Langkah berikutnya: pemilik menambahkan pesan (dengan izin) lewat CMS; T12.1 nanti mengisi file yang sama lewat formulir.
-

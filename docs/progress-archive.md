@@ -2,6 +2,16 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Tinjauan T9.3, uji draf AI, mulai Fase 10
+- Pemilik menyetujui 11 terjemahan studi kasus: T9.3 selesai.
+- Pemilik meminta Fase 10 dikerjakan sekarang walau T9.2 (D11) belum diputuskan; aturan "jangan loncat fase" dikesampingkan atas izin pemilik.
+- Uji draf AI dua bahasa: 9 repo bertopic `portfolio` tanpa studi kasus memenuhi syarat (README cukup panjang), jadi run terjadwal 2026-10-08 02:41 UTC menjadi uji nyata pertama (2 repo per run: `rocm-test`, `netflix-big-data-analytics`). Tidak bisa dipicu manual dari laptop (tanpa token GitHub).
+
+### 2026-10-08 · Claude Code (Opus) · T9.4 kesan & pesan
+- Pemilik: ini pesan yang ditinggalkan orang lain, tidak harus bernama "testimoni". Nama bagian menjadi **"Kind words" / "Kesan & pesan"**; file `content/messages.yaml`, menu CMS "Kesan & pesan", `role` opsional.
+- Dikerjakan: skema `messageSchema` (wajib `approved` = bulan izin), loader yang menerima daftar kosong, bagian di beranda (antara Projects dan Contact, `figure`/`blockquote`, fallback `lang="en"`), fixture e2e fiktif lewat `MESSAGES_FILE`, tes unit/e2e/axe. File awal kosong, jadi **belum ada yang tampil di situs**; tidak ada pesan yang dikarang.
+- Langkah berikutnya: pemilik menambahkan pesan (dengan izin) lewat CMS; T12.1 nanti mengisi file yang sama lewat formulir.
+
 ### 2026-10-08 · Claude Code (Opus) · T9.3 studi kasus bahasa Indonesia
 - Dikerjakan: body Indonesia di `content/projects/id/<slug>.md` (koleksi `projectTranslations`, helper `getCaseStudyBody`), dipakai halaman studi kasus dan Portfolio PDF ID; catatan "ditulis dalam bahasa Inggris" + `lang="en"` hanya bila terjemahan belum ada. Menu CMS "Studi kasus (Indonesia)"; menu "Studi kasus" tidak lagi menampilkan subfolder. Tes kesamaan struktur (judul bagian, gambar, judul) dan format angka ID. Draf AI (T8.2) kini menulis Problem/Approach/Result dalam EN + ID dan membuka PR berisi dua file.
 - 11 studi kasus diterjemahkan oleh Claude (istilah teknis tetap Inggris, D12; angka gaya ID, D16). Judul proyek tetap satu bahasa seperti sebelumnya.
