@@ -47,6 +47,8 @@ test('the sitemap lists every public page in both languages and no utility pages
   ])
     expect(locs).toContain(path);
   expect(locs.filter((path) => /print|404|og-template/.test(path))).toEqual([]);
+  // CVs by role are linked from the footer but kept out of search (D10).
+  expect(locs.filter((path) => /\/cv\/$/.test(path))).toEqual([]);
   expect(xml).toContain('hreflang="id" href="https://harry.mardika.my.id/id/about/"');
 });
 

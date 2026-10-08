@@ -84,6 +84,7 @@ Website portfolio pribadi yang menjadi etalase profesional Harry Mardika, sekali
 | `/projects/<slug>/` | `/id/projects/<slug>/` | Case study |
 | `/about/` | `/id/about/` | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skills |
 | `/stats/` | `/id/stats/` | Statistik situs dan status server live (tautan di footer) |
+| `/cv/` | `/id/cv/` | CV per posisi: daftar PDF varian CV (tautan di footer, `noindex`, D10) |
 | `/print/cv/`, `/print/portfolio/` | `/id/print/...` | Sumber PDF (tidak ditautkan di navigasi, `noindex`) |
 
 ## 6. Infrastruktur

@@ -1,6 +1,6 @@
 # 11 · Rencana lanjutan (Fase 9–12)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 5 varian, PDF varian didaftar di `/cv/` dan ditautkan di footer (2026-10-08), **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 6 varian (Product dan Project Manager terpisah), PDF varian didaftar di `/cv/` dan ditautkan di footer (2026-10-08), **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -9,7 +9,7 @@
 | Fase | Isi | Kenapa | Ukuran |
 |---|---|---|---|
 | 9 | **Personal branding & konten**: positioning, baris peran, skill lebih lengkap, catatan/terjemahan studi kasus, testimoni (statis) | Pondasi untuk fase lain; kebanyakan isi, sedikit kode | Kecil–sedang |
-| 10 | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee; versi khusus perusahaan (privat) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
+| 10 | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
 | 11 | **Asisten AI "Tanya tentang Harry"** di situs | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM/RAG secara langsung | Besar (layanan baru, ADR) |
 | 12 | **Formulir testimoni** dengan moderasi (opsional) | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
 

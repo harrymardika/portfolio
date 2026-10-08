@@ -88,19 +88,20 @@ variants:
     role: { en: Project Manager, id: Project Manager }
     summary:
       en: >-
-        Project lead who delivers with a clear plan and clear ownership. Led a 5-person team to a **commercial
-        launch in 3 months** and managed IDR 5.85M in national grant funding with **100% accountability**; ran
-        end-to-end operations of a hackathon for **100+ participants and 30 teams**; and managed cross-functional
-        teams organizing workshops, technical events, and competition preparation programs. A background in AI
-        engineering helps scope technical work realistically. Informatics graduate (**GPA 3.99/4.00**).
+        Project lead with a record of delivery. As founder of Decklify, an AI SaaS, led a 5-person team to a
+        **commercial launch in 3 months** and managed IDR 5.85M in national grant funding with **100%
+        accountability**; ran end-to-end operations of a hackathon for **100+ participants and 30 teams**; and
+        managed cross-functional teams organizing workshops, technical events, and competition preparation
+        programs. Hands-on AI engineering experience (computer vision, language, edge deployment). Informatics
+        graduate (**GPA 3.99/4.00**).
       id: >-
-        Pemimpin proyek yang bekerja dengan rencana dan pembagian tanggung jawab yang jelas. Memimpin tim 5 orang
+        Pemimpin proyek dengan rekam jejak penyelesaian. Sebagai pendiri Decklify, SaaS AI, memimpin tim 5 orang
         hingga **peluncuran komersial dalam 3 bulan** dan mengelola dana hibah nasional Rp5,85 juta dengan
         **akuntabilitas 100%**; menjalankan operasional hackathon dari awal hingga akhir untuk **100+ peserta dan
         30 tim**; serta mengelola tim lintas fungsi yang menyelenggarakan workshop, acara teknis, dan program
-        persiapan kompetisi. Latar belakang AI engineering membantu menakar pekerjaan teknis secara realistis.
-        Lulusan Informatika (**IPK 3,99/4,00**).
-    focus: [project, leadership]
+        persiapan kompetisi. Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di
+        edge). Lulusan Informatika (**IPK 3,99/4,00**).
+    focus: [project]
     sections: [experience, leadership, skills, education, awards, training, certifications]
     skills: [leadership, product-web, ml-cv, languages]
 

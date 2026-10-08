@@ -51,7 +51,7 @@ test('the skip link and footer are translated on Indonesian pages', async ({ pag
 });
 
 test('no page shows a phone number', async ({ page }) => {
-  for (const path of ['/', '/id/']) {
+  for (const path of ['/', '/id/', '/cv/', '/id/cv/']) {
     await page.goto(path);
     expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
   }
@@ -59,7 +59,17 @@ test('no page shows a phone number', async ({ page }) => {
 
 test('no page scrolls sideways on a small phone', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
-  for (const path of ['/', '/id/', '/about/', '/projects/', '/projects/decklify/', '/stats/', '/id/stats/']) {
+  for (const path of [
+    '/',
+    '/id/',
+    '/about/',
+    '/projects/',
+    '/projects/decklify/',
+    '/stats/',
+    '/id/stats/',
+    '/cv/',
+    '/id/cv/',
+  ]) {
     await page.goto(path);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

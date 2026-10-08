@@ -7,7 +7,7 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getCvVariants, getProfile } from '@/lib/content/queries';
-import { DOWNLOADS_DIR, variantDownloads } from '@/lib/downloads';
+import { downloadPath, DOWNLOADS_DIR, variantDownloads } from '@/lib/downloads';
 import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -23,6 +23,7 @@ const rows = variants.map((variant) => ({
   variant,
   files: variantDownloads(profile.name, [variant]).map((download) => ({
     label: download.locale.toUpperCase(),
+    lang: download.locale,
     href: `/${DOWNLOADS_DIR}/${download.file}`,
   })),
 }));
@@ -38,6 +39,16 @@ const rows = variants.map((variant) => ({
   <div class="mx-auto grid max-w-[860px] gap-6 px-[clamp(16px,4vw,40px)] py-16">
     <h1 class="text-h2">{t['cvVariants.title']}</h1>
     <p class="text-ink-muted">{t['cvVariants.intro']}</p>
+    <p>
+      <a
+        href={downloadPath(profile.name, 'cv', locale)}
+        download
+        data-download="cv"
+        class="inline-flex min-h-11 items-center font-semibold text-forest-ink underline underline-offset-4"
+      >
+        {t['cvVariants.main']}
+      </a>
+    </p>
     {rows.length === 0 ? (
       <p>{t['cvVariants.empty']}</p>
     ) : (
@@ -68,6 +79,8 @@ const rows = variants.map((variant) => ({
                     {files.map((file) => (
                       <a
                         href={file.href}
+                        hreflang={file.lang}
+                        download
                         data-download="cv"
                         class="inline-flex min-h-11 items-center font-semibold text-forest-ink underline underline-offset-4"
                         aria-label={`${localize(variant.name, locale)} ${t['cvVariants.files']} ${file.label}`}

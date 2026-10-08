@@ -20,7 +20,7 @@ Browser ──sendBeacon──► Cloudflare ──► Caddy /api/stats/* ──
 | Event | Data | Pemicu |
 |---|---|---|
 | `pageview` | path (tanpa query), bahasa, domain asal (referrer), negara (`CF-IPCountry`) | Setiap halaman dimuat |
-| `download-cv` | `{ lang }` | Tombol Download CV (T4.4) |
+| `download-cv` | `{ lang }` | Tombol Download CV (T4.4) dan tautan PDF di halaman `/cv/` (varian CV, Fase 10); jumlahnya menggabungkan CV utama dan varian, bedakan lewat path `/cv/` |
 | `download-portfolio` | `{ lang }` | Tombol Portfolio PDF (T4.4) |
 | `outbound` | `{ platform: linkedin \| instagram \| github \| email }` | Klik tautan sosial |
 | `ref` *(privat)* | nilai `?ref=` | Kunjungan dari tautan lamaran |

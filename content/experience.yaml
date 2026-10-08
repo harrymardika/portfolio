@@ -14,7 +14,7 @@ items:
     highlights:
       - en: Leading development of Decklify, an AI-powered SaaS platform that automates presentation creation from text, documents, or legacy PPTX files.
         id: "Memimpin pengembangan Decklify, platform SaaS berbasis AI yang mengotomatiskan pembuatan presentasi dari teks, dokumen, atau file PPTX lama."
-        focus: [ai, product]
+        focus: [ai, product, project]
       - en: Built and launched the product from scratch to **commercial launch** at decklify.id within **3 months** (Next.js, Go, PostgreSQL).
         id: "Membangun produk dari nol hingga **peluncuran komersial** di decklify.id dalam **3 bulan** (Next.js, Go, PostgreSQL)."
         focus: [product, ai, project]
