@@ -43,3 +43,5 @@ Thumbs.db
 
 # Lighthouse CI reports (bun run lighthouse)
 .lighthouseci/
+# Report of scripts/assistant-eval.ts (T11.5)
+assistant-eval-report.md

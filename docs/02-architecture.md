@@ -114,7 +114,7 @@ Aturan:
 │   │   └── assistant/           # chatbot (ADR 0014): knowledge (skema), sections + project-sections + text (konten → teks),
 │   │                            #   budget (token, versi ringkas, cek path, PHONE_PATTERN), ask (permintaan, prompt,
 │   │                            #   pemeriksa jawaban), limits (batas pemakaian), chat (sisi browser: obrolan per tab,
-│   │                            #   body permintaan, membaca jawaban); tanpa API Node, aman untuk browser
+│   │                            #   body permintaan, membaca jawaban), eval (penilai uji T11.5); tanpa API Node
 │   ├── components/
 │   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
@@ -144,16 +144,19 @@ Aturan:
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
 ├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
-├── services/assistant/          # chatbot "Tanya Harry" (Bun, tanpa penyimpanan): handler (POST /api/ask, health), server
+├── services/assistant/          # chatbot "Tanya Harry" (Bun, tanpa penyimpanan): handler (POST /api/ask, health),
+│                                #   routes (penyedia + pengetahuan, dipakai juga uji), server
 ├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-knowledge, generate-csp, precompress,
-│                                #   serve-build, lighthouse-summary, draft-case-studies, stats-report, check-tokens;
+│                                #   serve-build, lighthouse-summary, draft-case-studies, stats-report, check-tokens,
+│                                #   assistant-eval (uji chatbot T11.5);
 │                                #   lib/static-server.ts (server build untuk Chromium), lib/compression.ts
 ├── tests/
 │   ├── unit/                    # cermin struktur src/lib
-│   └── e2e/                     # Playwright: halaman, i18n, 3D, unduhan, a11y (axe), SEO, deployment
+│   ├── e2e/                     # Playwright: halaman, i18n, 3D, unduhan, a11y (axe), SEO, deployment
+│   └── eval/                    # assistant-cases.yaml: pertanyaan uji chatbot dengan model sungguhan (T11.5)
 ├── docker/                      # Dockerfile, Caddyfile, compose.yml, compose.dev.yml, deploy/ (timer, update, backup)
 ├── .pages.yml                   # editor browser Pages CMS untuk content/ (ADR 0011)
-└── .github/workflows/           # ci.yml, deploy.yml, case-study-drafts.yml (§5)
+└── .github/workflows/           # ci.yml, deploy.yml, case-study-drafts.yml, assistant-eval.yml (§5)
 ```
 
 ## 5. Alur build
@@ -184,6 +187,7 @@ bun run build
 |---|---|---|
 | `ci.yml` (*CI*) | Pull request; dipanggil `deploy.yml` | `bun run verify` (check → unit → e2e), Lighthouse CI + ringkasan anotasi |
 | `deploy.yml` (*Deploy*) | Push ke `main`, jadwal `17 */6 * * *` (UTC), manual | `ci.yml` → build image `web` + `stats` → push ke GHCR (`latest`, `sha-<commit>`) |
+| `assistant-eval.yml` (*Assistant eval*) | Manual saja | Build + ±30 pertanyaan uji ke chatbot dengan model sungguhan → laporan di ringkasan run (T11.5, `docs/assistant-eval.md`) |
 | `case-study-drafts.yml` (*Case study drafts*) | Jadwal `41 2,14 * * *` (UTC, dua kali sehari), manual | `bun run drafts`: draf studi kasus AI → satu PR per repo (ADR 0013) |
 
 **Sesudah image tayang di GHCR** (server, `docker/deploy/`): `portfolio-update.timer` (2 menit setelah boot, lalu tiap 10 menit) → `update.sh`: `docker compose pull` → `up -d --wait` → jika image `web` berubah, hapus cache Cloudflare untuk hostname situs (ADR 0010, 0012). Dari commit sampai tayang ±20 menit.

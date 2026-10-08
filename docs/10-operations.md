@@ -25,7 +25,7 @@ flowchart LR
 | Layanan | Fungsi di proyek ini | Jika bermasalah |
 |---|---|---|
 | **GitHub** (repo `harrymardika/portfolio`, publik) | Sumber kode dan isi; menjalankan semua workflow | Situs tetap tayang versi terakhir; tidak ada update |
-| **GitHub Actions** | `CI` (PR), `Deploy` (push ke `main`, tiap 6 jam, manual), `Case study drafts` (dua kali sehari, manual) | Lihat §5.1 |
+| **GitHub Actions** | `CI` (PR), `Deploy` (push ke `main`, tiap 6 jam, manual), `Case study drafts` (dua kali sehari, manual), `Assistant eval` (manual, [docs/assistant-eval.md](assistant-eval.md)) | Lihat §5.1 |
 | **GHCR** (`portfolio-web`, `portfolio-stats`, `portfolio-assistant`, publik) | Menyimpan image; server menariknya tanpa login | Server tetap menjalankan image yang sudah ada |
 | **mardika-server** (laptop Debian 13 di rumah) | Menjalankan Caddy + stats + chatbot di `/opt/portfolio`; diakses lewat Tailscale | Lihat §5.2; Cloudflare masih menyajikan salinan |
 | **Cloudflare** (zona `mardika.my.id`) | DNS, Tunnel, cache HTML 7 hari, HTTPS | Situs tidak bisa dibuka sama sekali |
