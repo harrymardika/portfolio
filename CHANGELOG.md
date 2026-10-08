@@ -62,6 +62,8 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- Contributor workflow: every phase now ends with a close-out task (tidy unused code and branches, check docs against code, phase summary, dated CHANGELOG release, final verify and live check), listed in `AGENTS.md` §2a.
+- Plans: phase 11 is a floating "Ask Harry" chatbot (separate assistant service, no stored conversations, Gemini with Groq fallback), and phase 13 adds four 3D scenes off the home page (project map, 404, skill constellation, visitor globe); not built yet.
 - Skills regrouped into eight groups (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & product, Product & project management, Leadership, Languages) with the skills the owner confirmed (SQL, Pandas/NumPy, scikit-learn, Airflow, Spark, Google Cloud, LangChain, BI tools, Figma, Jira, Notion, Scrum, Git, Linux); CV variants pick the relevant groups, and the general CV leaves out the Web & product and Leadership groups to stay at two pages (T9.2, D11).
 - Contributor workflow: `docs/06-development-workflow.md` has ready-to-copy prompts for each kind of AI agent session (continue, a specific task, resume interrupted work, a new request, close the session, review) and habits for Claude Code.
 - Contributor workflow: older session log entries move from `PROGRESS.md` to `docs/progress-archive.md`, AI agents read only the docs a task needs, and project Claude Code settings (`.claude/settings.json`) allow the verification commands and block reading the private `CV/` folder and `.env`.

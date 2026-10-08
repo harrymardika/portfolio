@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** T9.6 penutupan Fase 9; lalu Fase 11 mulai T11.1 (rencana chatbot sudah disetujui); pemilik meninjau varian CV (T10.3)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (penutupan T9.6) dan Fase 10 (T10.3 menunggu tinjauan pemilik) · **Tugas berikutnya:** T9.6 penutupan Fase 9 → T11.1 (rencana chatbot sudah disetujui); pemilik meninjau 12 PDF varian CV di `/cv/`
 
 ## Ringkasan
 
@@ -18,9 +18,9 @@
 | 6 | Docker, CI/CD, deploy ke home server | ✅ Selesai: online di server Debian 13 sejak 2026-10-06 |
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
-| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
-| 10 | CV per posisi (§B) | 🔄 Aktif (dimulai atas izin pemilik sebelum T9.2 selesai) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Setelah Fase 9 |
+| 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 T9.1–T9.5 selesai; tinggal penutupan (T9.6) |
+| 10 | CV per posisi (§B) | 🔄 T10.1–T10.2 selesai; T10.3 menunggu tinjauan pemilik, lalu penutupan (T10.4) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; mulai setelah T9.6 |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -224,6 +224,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
+- **Sudah (sesi ini):** T9.1 positioning, T9.2 skill (8 grup, CV umum tetap 2 halaman), T9.3 studi kasus ID, T9.4 kesan & pesan, T9.5 format angka; Fase 10 T10.1–T10.2 dan isi T10.3 (6 varian di `/cv/`, tautan footer "Resumes"); Medium dan judul "Finalist"; aturan penutupan fase (`AGENTS.md` §2a); rencana Fase 11 (chatbot di sudut, D13/D14) dan Fase 13 (empat 3D, D17). Semua sudah di-push kecuali commit penutup ini.
+- **Belum:** T9.6 penutupan Fase 9; T10.3 tinjauan pemilik atas 12 PDF varian lalu T10.4; seluruh Fase 11–13. Uji draf AI dua bahasa belum terjadi (run terjadwal 2026-10-08 02:41 UTC belum muncul sampai 05:44 UTC; GitHub bisa menunda atau melewatkan jadwal): cek tab *Actions*, atau jalankan *Case study drafts* manual.
+- **Langkah berikutnya:** (1) T9.6 sesuai `AGENTS.md` §2a, termasuk menghapus branch lokal `feat/T9.2-skills` (tercampur dengan commit sesi lain, isinya sudah di `main`) dan branch remote `drafts/case-study-camera-genai` yang sudah di-merge; (2) T11.1.
+- **Catatan:** jangan jalankan dua sesi yang menulis kode di folder yang sama; sesi lain sempat berpindah branch dan meng-stash di tengah T9.2. Pratinjau pemilik: 3D https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9gfw, chatbot https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a. Commit ini belum di-push (permintaan pemilik).
+
 ### 2026-10-08 · Claude Code (Opus) · Rencana Fase 11: chatbot di sudut
 - Pemilik membandingkan pratinjau dan memilih **chatbot di sudut** (D13), lalu meminta rencana yang matang. Rencana disetujui: layanan terpisah `services/assistant`, pengetahuan lengkap (Gemini) + ringkas (Groq, karena batas ±8 ribu token/menit), tanpa penyimpanan percakapan di server, batas per pengunjung dan harian, validasi jawaban, kill switch, widget yang dimuat saat diklik, uji ±30 pertanyaan lewat workflow manual.
 - Dikerjakan: Fase 11 ditulis ulang (T11.1–T11.7), D13 dicatat, `docs/11-roadmap.md` §E diperbarui. Belum ada kode.
@@ -245,7 +251,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - CV umum sempat 3 halaman. Pilihan pemilik: penulisan diringkas tanpa pengulangan (mis. `SQL (PostgreSQL)`, `Spark/PySpark`, tanpa "MLOps" di grup Cloud & MLOps) dan grup Web & produk serta Kepemimpinan tidak tampil di CV umum (`show_on_cv: false`, baru untuk grup skill), tetap di website dan varian. Hasil: CV umum dan 12 varian semuanya 2 halaman.
 - Catatan: sesi lain sempat berpindah branch dan meng-stash di folder yang sama saat T9.2 dikerjakan; perubahan dipulihkan dari commit `911d2d2` ke branch bersih. Jangan jalankan dua sesi yang menulis kode di folder yang sama.
 - Belum: -. Langkah berikutnya: tinjauan pemilik atas PDF varian (T10.3); D13–D14 untuk Fase 11.
-
-### 2026-10-08 · Claude Code (Opus) · Template prompt sesi
-- Pemilik minta cara menulis prompt untuk membuka sesi baru dan melanjutkan progres. `docs/06-development-workflow.md` §3 kini berisi siklus satu sesi, 6 template (lanjutkan, tugas tertentu, lanjutkan yang terputus, permintaan baru, tutup sesi, review), cara menulis permintaan sendiri, dan kebiasaan di Claude Code.
-- Belum di-push (atas permintaan pemilik), begitu juga commit setup sebelumnya.
