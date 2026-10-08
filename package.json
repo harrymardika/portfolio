@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "bun run fetch:github && astro dev",
-    "build": "bun run fetch:github && astro build && bun run pdf && bun run og && bun run sitemap && bun run csp",
+    "build": "bun run fetch:github && astro build && bun run pdf && bun run og && bun run sitemap && bun run knowledge && bun run csp",
     "preview": "astro preview",
     "astro": "astro",
     "fetch:github": "bun scripts/fetch-github.ts",
@@ -19,6 +19,7 @@
     "og": "bun scripts/generate-og.ts",
     "sitemap": "bun scripts/generate-sitemap.ts",
     "csp": "bun scripts/generate-csp.ts",
+    "knowledge": "bun scripts/generate-knowledge.ts",
     "stats:dev": "bun services/stats/server.ts",
     "stats:report": "bun scripts/stats-report.ts",
     "typecheck": "astro check",

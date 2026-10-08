@@ -11,7 +11,7 @@ Cara termudah, juga dari HP.
 1. **Sekali saja:** buka [app.pagescms.org](https://app.pagescms.org), masuk dengan akun GitHub, lalu pasang GitHub App Pages CMS **hanya** untuk repo `harrymardika/portfolio` (pilih *Only select repositories*). Periksa daftar izin di layar instalasi (lihat ADR 0011); cabut di GitHub *Settings → Applications* jika tidak dipakai lagi.
 2. Pilih repo `portfolio`, branch `main`. Menu di kiri sama dengan tabel di bawah (Profil, Pengalaman, Studi kasus, dll.). Teks dwibahasa punya kolom *English* (wajib) dan *Indonesia* (kosongkan untuk memakai bahasa Inggris).
 3. Klik **Save**. Itu menjadi satu commit ke `main`, lalu GitHub Actions memeriksa data (skema, tes, Lighthouse). Jika lolos, web dan PDF ter-update dalam ±15–25 menit (build ±8 menit + server menarik image tiap 10 menit).
-4. **Jika data salah**, workflow Deploy di tab *Actions* GitHub berwarna merah dan **web lama tetap tayang**. Buka run itu untuk membaca pesan error (menyebut file, item, dan field), perbaiki di Pages CMS, simpan lagi.
+4. **Jika data salah**, workflow Deploy di tab *Actions* GitHub berwarna merah dan **web lama tetap tayang**. Buka run itu untuk membaca pesan error (menyebut file, item, dan field), perbaiki di Pages CMS, simpan lagi. Isi situs juga menjadi pengetahuan chatbot; pesan yang diawali `Assistant knowledge:` dijelaskan di [docs/10 §5.8](10-operations.md).
 
 Catatan: editor menulis ulang file YAML tanpa komentar. Simpan catatan di dokumen ini atau `PROGRESS.md`, bukan sebagai komentar di `content/`.
 

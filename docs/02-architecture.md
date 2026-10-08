@@ -109,7 +109,9 @@ Aturan:
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
 │   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld, html (baca HTML build) (murni); person.ts (khusus Astro)
-│   │   └── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
+│   │   ├── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
+│   │   └── assistant/           # pengetahuan chatbot (ADR 0014): knowledge (skema), sections + project-sections + text
+│   │                            #   (konten → teks), budget (token, versi ringkas, cek path, PHONE_PATTERN)
 │   ├── components/
 │   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
@@ -133,12 +135,12 @@ Aturan:
 │   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
 │   │   │   └── print/cv.astro, print/cv/[variant].astro, print/portfolio.astro; cv.astro (daftar CV per posisi)
-│   │   ├── 404.astro, robots.txt.ts
+│   │   ├── 404.astro, robots.txt.ts, assistant-knowledge.json.ts (sumber pengetahuan chatbot, hanya saat build)
 │   │   └── og-template.astro    # templat gambar pratinjau (dipotret saat build)
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
 ├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
-├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-csp, precompress,
+├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-knowledge, generate-csp, precompress,
 │                                #   serve-build, lighthouse-summary, draft-case-studies, stats-report, check-tokens;
 │                                #   lib/static-server.ts (server build untuk Chromium), lib/compression.ts
 ├── tests/
@@ -162,7 +164,11 @@ bun run build
   3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf + downloads/cv/*.pdf (varian CV, didaftar di /cv/) (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
   4. scripts/generate-og.ts      → <outDir>/og/*.jpg (template /og-template/ + Chromium, 1200×630, ≤ 150 KB)
   5. scripts/generate-sitemap.ts → <outDir>/sitemap.xml (dari canonical + hreflang tiap halaman; noindex dilewati)
-  6. scripts/generate-csp.ts     → build-meta/csp.caddy (hash setiap script inline; gagal jika ada font data:)
+  6. scripts/generate-knowledge.ts → build-meta/knowledge.json (lengkap, EN+ID) + knowledge-compact.json (EN, ≤ 5 ribu token)
+                                   untuk chatbot (ADR 0014): dari endpoint build /assistant-knowledge.json (query yang sama
+                                   dengan halaman), path dicek terhadap output, gagal jika tautan mati, nomor HP, atau melebihi
+                                   anggaran token; endpoint dihapus dari output
+  7. scripts/generate-csp.ts     → build-meta/csp.caddy (hash setiap script inline; gagal jika ada font data:)
   Hanya di Docker: scripts/precompress.ts → salinan .br/.gz di samping file teks (docs/07 §4)
   BUILD_OUT_DIR mengganti folder output (Astro dan skrip PDF membaca variabel yang sama)
 ```

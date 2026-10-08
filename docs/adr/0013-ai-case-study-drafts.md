@@ -27,3 +27,4 @@ Repo GitHub dengan topic `portfolio` otomatis tampil sebagai kartu di halaman Pr
 - Model dan ID-nya bisa berubah; ganti konstanta `GEMINI_MODEL` / `GROQ_MODEL` di `src/lib/drafts/providers.ts`.
 - Menutup PR tanpa merge tidak menghapus branch-nya, sehingga repo itu tidak dibuatkan draf lagi sampai branch dihapus.
 - Sejak T9.3 (2026-10-08) PR yang sama juga berisi body bahasa Indonesia `content/projects/id/<slug>.md`. Keputusan di atas tidak berubah.
+- Catatan 2026-10-08 (ADR 0014): penyedia Gemini/Groq akan dipindah ke `src/lib/ai/` di T11.2 agar dipakai bersama chatbot; konstanta `GEMINI_MODEL`/`GROQ_MODEL` ikut pindah ke sana. Keputusan di atas tidak berubah.

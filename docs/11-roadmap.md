@@ -101,7 +101,7 @@ flowchart LR
 ```
 
 - **Layanan terpisah** `services/assistant` (image sendiri, 128 MB, read-only, tanpa volume): key AI hanya ada di sini; gangguan AI tidak memengaruhi statistik.
-- **Pengetahuan = isi situs saja**, dibuat saat build. Dua ukuran: lengkap (±15–20 ribu token, Gemini) dan ringkas (≤ 5 ribu token, Groq; model gpt-oss di Groq dibatasi ±8 ribu token/menit). Tanpa vector DB.
+- **Pengetahuan = isi situs saja**, dibuat saat build (T11.1, [ADR 0014](adr/0014-ask-harry-assistant.md)). Dua ukuran: lengkap (EN+ID dengan isi studi kasus, ±16 ribu token, Gemini) dan ringkas (EN tanpa detail, ±4,1 ribu dari batas 5 ribu token, Groq; model gpt-oss di Groq dibatasi 8 ribu token/menit). Tanpa vector DB.
 - **Tanpa penyimpanan:** browser mengirim maksimal 6 pesan terakhir setiap bertanya; percakapan hanya di `sessionStorage` tab itu. Server mencatat jumlah, bukan teks.
 - **Batas:** 1–500 karakter per pertanyaan; 10/jam dan 30/hari per pengunjung (hash harian, tanpa IP); 300/hari total; ≤ 3 permintaan bersamaan; timeout 20 s.
 - **Pengaman jawaban:** prompt membatasi topik dan menolak data pribadi; jawaban JSON divalidasi (teks biasa, tautan hanya path situs yang ada, pola nomor HP ditolak); kill switch `ASSISTANT_ENABLED`.

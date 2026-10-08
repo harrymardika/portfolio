@@ -4,6 +4,7 @@ node_modules
 dist
 dist-e2e
 build-meta
+build-meta-e2e
 .data
 test-results
 .astro

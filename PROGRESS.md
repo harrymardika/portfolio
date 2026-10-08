@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten; rencana chatbot sudah disetujui)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.2 (layanan `services/assistant`: `POST /api/ask`)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; berikutnya (T11.1) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1 selesai; berikutnya T11.2 (layanan `services/assistant`) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -148,7 +148,7 @@ Progres keseluruhan: **Fase 0–10 selesai; situs online sejak 2026-10-06. Renca
 
 Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinjau yang dipilih pemilik: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a (bagian 3).
 
-- [ ] **T11.1** ADR 0014 + pengetahuan dari konten
+- [x] **T11.1** ADR 0014 + pengetahuan dari konten
   - Kriteria: ADR 0014 (layanan terpisah, penyedia, privasi tanpa penyimpanan, batas, tanpa vector DB, widget sudut, kill switch); `knowledge.json` (lengkap, untuk Gemini) dan `knowledge-compact.json` (≤ 5 ribu token, untuk Groq) dibuat saat build dari `content/` publik saja, beserta daftar path situs yang boleh ditautkan; tes: tanpa nomor HP, tanpa draf, ukuran di bawah batas, path valid.
 - [ ] **T11.2** Layanan `services/assistant` (`POST /api/ask`, `GET /api/ask/health`)
   - Kriteria: penyedia Gemini/Groq direfaktor ke `src/lib/ai/` (dipakai juga draf T8.2); validasi masuk (Origin, ukuran, 1–500 karakter, riwayat ≤ 6 pesan, bot); batas per pengunjung 10/jam dan 30/hari (hash harian, tanpa IP), total 300/hari, ≤ 3 permintaan bersamaan, timeout 20 s; jawaban JSON tervalidasi (teks biasa, tautan hanya path situs, pola nomor HP ditolak), Gemini → Groq → pesan cadangan; kill switch `ASSISTANT_ENABLED`; log tanpa teks pertanyaan; tes unit dengan penyedia tiruan.
@@ -224,11 +224,18 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-08 · Claude Code (Opus) · T11.1 ADR 0014 + pengetahuan chatbot
+- **Keputusan pemilik:** chatbot boleh mengetahui **semua isi publik web** (termasuk email publik dan kartu repo GitHub; tanpa nomor HP, draf, item tersembunyi).
+- **Dikerjakan:** `docs/adr/0014-ask-harry-assistant.md` (layanan terpisah, Gemini → Groq → pesan cadangan, tanpa penyimpanan, batas pemakaian, tanpa vector DB, widget sudut, kill switch; kuota Groq dicek: `gpt-oss-120b` 8 ribu token/menit, 1.000 permintaan dan 200 ribu token/hari; kuota Gemini hanya terlihat di AI Studio). `src/lib/assistant/` (skema, penyusun bagian, anggaran) + endpoint build `src/pages/assistant-knowledge.json.ts` yang memakai query halaman, dan langkah build `scripts/generate-knowledge.ts` → `build-meta/knowledge.json` (±15.900 token, batas 25 ribu) dan `knowledge-compact.json` (±4.100, batas 5 ribu); build gagal jika tautan mati, pola nomor HP, atau melewati anggaran; endpoint dihapus dari situs. 23 tes unit baru.
+- **Catatan ukuran:** versi ringkas awalnya ±5.700 token; poin pengalaman ke-3 dan seterusnya, tag, tautan, dan isi studi kasus dipindah ke `detail` (hanya versi lengkap) agar ada ruang untuk ±9 studi kasus dari draf AI.
+- **Dari review:** tes e2e `assistant-knowledge.spec.ts` membuktikan pengetahuan hanya berisi studi kasus yang terbit (tanpa draf), tanpa pola nomor HP, path valid, dan endpoint tidak tersaji (404); build e2e kini menulis ke `build-meta-e2e/` agar tidak menimpa pengetahuan asli; judul studi kasus menjadi label ("Problem:") dan tautan Markdown dibuang; file hasil divalidasi skemanya; peringatan di atas 90% anggaran; kesan & pesan jadi bagian sendiri (2 pertama di versi ringkas); PDF varian CV boleh ditautkan; panduan error di docs/10 §5.8 dan docs/04.
+- **Langkah berikutnya:** T11.2 (layanan `services/assistant`, refaktor penyedia ke `src/lib/ai/`).
+
 ### 2026-10-08 · Claude Code (Opus) · T10.4 penutupan Fase 10 (ringkasan fase)
 - **Dibangun di Fase 10:** model varian `content/cv-variants.yaml` dengan label fokus pada `highlights` (T10.1); PDF per varian EN/ID saat deploy di `/downloads/cv/`, masing-masing ≤ 2 halaman, ATS-friendly, tanpa nomor HP, dites per varian (T10.2); 6 varian (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) di halaman `/cv/` (noindex) yang ditautkan di footer "Resumes" (T10.3).
 - **Keputusan pemilik:** D10 (6 varian, Product dan Project dipisah, tanpa CV per perusahaan, tautan footer); 12 PDF varian disetujui 2026-10-08.
 - **Penutupan:** tidak ada kode, kunci teks UI, dependency, aset, atau branch yang tersisa (dicek ulang setelah T9.6); `docs/02` dan `docs/09` sudah memuat varian. Dari review: `docs/04` (tabel file kini memuat `cv-variants.yaml` dan `messages.yaml`, menu CMS *Varian CV*, dan default `skills` varian yang benar: grup CV umum, bukan semua grup), SRS (FR-08a, route cetak varian), dan label "CV utama" di `/cv/` yang kini mengambil baris peran dari `profile.yaml` (sebelumnya tertulis di kamus UI). README dan `docs/11` diperbarui statusnya. CHANGELOG rilis **1.2.0 (2026-10-08)** berisi Fase 10 dan jadwal draf dua kali sehari; `package.json` 1.2.0.
-- **Cek situs live:** menunggu deploy setelah push.
+- **Cek situs live (2026-10-08, build dari `88035b0`):** beranda EN/ID, `/cv/` dan `/id/cv/`, `/stats/`, PDF utama dan varian, `/api/stats/summary` menjawab 200; label "Main CV (AI Product Manager)" / "CV utama (AI Product Manager)" kini dari `profile.yaml`. Tag `v1.2.0` di-push atas izin pemilik (berlaku juga untuk rilis penutupan fase berikutnya).
 - **Sisa untuk pemilik:** tidak ada untuk Fase 10. Bila ingin varian baru atau mengubah isi varian: CMS → *Varian CV* (docs/04).
 - **Fase berikutnya:** Fase 11, mulai T11.1 (ADR 0014 + `knowledge.json`).
 

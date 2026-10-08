@@ -5,6 +5,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Added
+- Knowledge for the "Ask Harry" chatbot, built with every deploy from the public site content only (no drafts, hidden items, or phone numbers): a full English and Indonesian version for Gemini and a compact English one for Groq, with link, phone-number, and size checks that stop the build (T11.1, ADR 0014).
+
 ## [1.2.0] - 2026-10-08
 
 Phase 10: CVs by role.

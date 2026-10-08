@@ -3,6 +3,7 @@ node_modules/
 dist/
 dist-e2e/
 build-meta/
+build-meta-e2e/
 .astro/
 .output/
 coverage/

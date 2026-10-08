@@ -153,6 +153,13 @@ Sering muncul sesaat setelah didaftarkan. Cek `curl -sI https://harry.mardika.my
 ### 5.7 Statistik kosong atau `/stats/` menulis "offline"
 `/stats/` menulis "offline" jika `/api/health` gagal: server mati (§5.2) dan pengunjung melihat salinan Cloudflare. Jika situs hidup tetapi angka tidak bertambah: `cd /opt/portfolio && docker compose logs --tail 50 stats` di server.
 
+### 5.8 Build gagal: "Assistant knowledge: …"
+Setiap build menyusun pengetahuan chatbot dari isi situs (ADR 0014) dan berhenti jika ada yang tidak aman. Situs lama tetap tayang. Pesan dan cara memperbaikinya:
+- **`… links to paths the build does not have: /…`**: sebuah bagian menunjuk halaman yang tidak ada (mis. studi kasus diganti nama). Biasanya perlu perbaikan kode di `src/lib/assistant/`; minta AI agent memperbaikinya.
+- **`… contains something that looks like a phone number`**: ada teks di `content/` yang mirip nomor HP (`08…` atau `+62…`). Hapus atau ubah teks itu. Nomor HP tidak boleh tampil di situs.
+- **`knowledge-compact.json is about N tokens, over the budget of 5000`**: isi situs sudah terlalu banyak untuk versi ringkas (penyedia cadangan Groq). Ini bisa terjadi setelah studi kasus baru di-merge, repo baru diberi topic `portfolio`, atau ringkasan diperpanjang. Jangan menaikkan batasnya; minta AI agent memindahkan teks panjang ke `detail` (hanya versi lengkap) di `src/lib/assistant/`. Log build sudah memperingatkan saat ukuran melewati 90%.
+- **`knowledge.json … over the budget of 25000`**: sama, untuk versi lengkap (Gemini).
+
 ## 6. Pemulihan
 
 ### 6.1 Kembali ke versi sebelumnya
