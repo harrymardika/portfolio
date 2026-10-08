@@ -25,6 +25,7 @@ import {
 import { hasStrayStrongMarker } from '@/lib/content/emphasis';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
 import { parseYamlList, parseYamlSingleton, pruneEmpty } from '@/lib/content/yaml';
+import { fileSlug } from '@/lib/downloads';
 import { githubConfigSchema } from '@/lib/github';
 
 import type { z } from 'astro/zod';
@@ -102,6 +103,12 @@ describe('content files', () => {
     });
   }
 
+  it('every CV variant has its own PDF file name', () => {
+    const variants = parseYamlList(read('cv-variants.yaml'), 'variants', { mayBeEmpty: true });
+    const names = variants.map((variant) => fileSlug((variant['name'] as { en: string }).en));
+    expect(names.filter((name, index) => names.indexOf(name) !== index)).toEqual([]);
+  });
+
   it('every CV variant lists existing skill groups', () => {
     const groups = new Set(parseYamlList(read('skills.yaml'), 'groups').map((group) => group['id']));
     const variants = parseYamlList(read('cv-variants.yaml'), 'variants', { mayBeEmpty: true });
@@ -139,7 +146,8 @@ describe('content files', () => {
     const all = files.flatMap((file) => strings(load(read(file)), file));
     expect(all.filter(([, text]) => hasStrayStrongMarker(text)).map(([path]) => path)).toEqual([]);
     // Only these fields render bold; anywhere else (tagline, titles, journey copy) asterisks would show.
-    const renderedBold = /^profile\.yaml\.summary\.(en|id)$|\.highlights\[\d+\]\.(en|id)$/;
+    const renderedBold =
+      /^profile\.yaml\.summary\.(en|id)$|^cv-variants\.yaml\.variants\[\d+\]\.summary\.(en|id)$|\.highlights\[\d+\]\.(en|id)$/;
     expect(all.filter(([path, text]) => text.includes('**') && !renderedBold.test(path)).map(([path]) => path)).toEqual([]);
   });
 

@@ -13,6 +13,7 @@ items:
         id: "**Empat kali Mahasiswa Berprestasi (MAPRES)**, semester 4 hingga 7."
       - en: "Undergraduate thesis: “Javanese Script (Aksara Jawa) Classification Based on YOLO26 with Visualization and Interpretation of Convolution Filters.”"
         id: "Skripsi: “Klasifikasi Aksara Jawa Berbasis YOLO26 dengan Visualisasi dan Interpretasi Filter Konvolusi.”"
+        focus: [ai]
 
   - id: sman2-mandau
     institution: SMA Negeri 2 Mandau

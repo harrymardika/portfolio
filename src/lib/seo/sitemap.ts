@@ -11,6 +11,7 @@ export interface SitemapPage {
 }
 
 import { decodeEntities } from './html';
+import { CV_VARIANTS_DIR, DOWNLOADS_DIR } from '@/lib/downloads';
 
 /** Attribute value with HTML entities decoded (buildSitemap escapes again for XML). */
 const attribute = (tag: string, name: string): string | undefined => {
@@ -62,12 +63,13 @@ export function buildSitemap(pages: readonly SitemapPage[]): string {
   ].join('\n');
 }
 
-/** robots.txt: everything public is crawlable; the API is not a page. */
+/** robots.txt: everything public is crawlable; the API is not a page; CV variants are sent, not found (T10.2). */
 export function buildRobots(site: string | URL): string {
   return [
     'User-agent: *',
     'Allow: /',
     'Disallow: /api/',
+    `Disallow: /${DOWNLOADS_DIR}/${CV_VARIANTS_DIR}/`,
     '',
     `Sitemap: ${new URL('/sitemap.xml', site).href}`,
     '',

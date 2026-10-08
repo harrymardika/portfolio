@@ -105,9 +105,9 @@ describe('buildSitemap', () => {
 });
 
 describe('buildRobots', () => {
-  it('allows crawling, hides the API, and points at the sitemap', () => {
+  it('allows crawling, hides the API and the CV variants, and points at the sitemap', () => {
     expect(buildRobots(SITE)).toBe(
-      `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`,
+      `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /downloads/cv/\n\nSitemap: ${SITE}/sitemap.xml\n`,
     );
   });
 });

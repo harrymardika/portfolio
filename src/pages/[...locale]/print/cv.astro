@@ -2,15 +2,7 @@
 /** Source page for the CV PDF (scripts/generate-pdf.ts). Not linked in the navigation; noindex. */
 import CvDocument from '@/components/print/CvDocument.astro';
 import PrintLayout from '@/layouts/PrintLayout.astro';
-import {
-  getAwards,
-  getCertifications,
-  getEducation,
-  getExperience,
-  getProfile,
-  getSkillGroups,
-  getTrainings,
-} from '@/lib/content/queries';
+import { getCvData } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
 
 export const getStaticPaths = localeStaticPaths;
@@ -20,28 +12,10 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const [profile, experience, education, trainings, awards, certifications, skills] = await Promise.all([
-  getProfile(),
-  getExperience('cv'),
-  getEducation('cv'),
-  getTrainings('cv'),
-  getAwards('cv'),
-  getCertifications(),
-  getSkillGroups(),
-]);
+const data = await getCvData();
 const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
 ---
 
-<PrintLayout locale={locale} title={`${profile.name} · ${UI[locale]['cv.title']}`} size="portrait">
-  <CvDocument
-    locale={locale}
-    profile={profile}
-    siteUrl={siteUrl}
-    experience={experience}
-    education={education}
-    trainings={trainings}
-    awards={awards}
-    certifications={certifications}
-    skills={skills}
-  />
+<PrintLayout locale={locale} title={`${data.profile.name} · ${UI[locale]['cv.title']}`} size="portrait">
+  <CvDocument locale={locale} siteUrl={siteUrl} {...data} />
 </PrintLayout>

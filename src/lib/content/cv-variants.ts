@@ -3,6 +3,7 @@
  * or rewrites text, so every variant stays as true as the general CV.
  */
 import { PROFESSIONAL_CATEGORIES } from './experience';
+import { CV_SECTIONS } from './schemas';
 import type {
   CvSection,
   CvVariant,
@@ -14,16 +15,8 @@ import type {
   Training,
 } from './schemas';
 
-/** Section order of the general CV (docs/09-pdf-generation.md §2). */
-export const DEFAULT_CV_SECTIONS: readonly CvSection[] = [
-  'education',
-  'skills',
-  'experience',
-  'leadership',
-  'training',
-  'awards',
-  'certifications',
-];
+/** Section order of the general CV (docs/09-pdf-generation.md §2): the order CV_SECTIONS is listed in. */
+export const DEFAULT_CV_SECTIONS: readonly CvSection[] = CV_SECTIONS;
 
 /** An unlabeled highlight belongs to every variant; a labeled one to variants sharing a focus. */
 export function showsHighlight(item: Pick<Highlight, 'focus'>, focus: readonly FocusArea[]): boolean {
@@ -53,7 +46,7 @@ export interface CvContent {
 /**
  * Apply a variant: jobs and degrees always stay (no gaps in the work history); leadership roles and
  * trainings whose highlights all belong to other focus areas are left out; skill groups follow the variant's order.
- * Awards and certifications are not filtered.
+ * Awards and certifications are not filtered. Pass content already filtered for the CV (`show_on_cv`).
  */
 export function applyVariant(content: CvContent, variant: Pick<CvVariant, 'focus' | 'skills'>): CvContent {
   const { focus } = variant;
@@ -64,7 +57,7 @@ export function applyVariant(content: CvContent, variant: Pick<CvVariant, 'focus
   });
   const education = content.education.map((item) => ({
     ...item,
-    highlights: pickHighlights(item.highlights, focus),
+    highlights: pickHighlights(item.highlights, focus, true),
   }));
   const trainings = content.trainings.flatMap((item) => {
     const highlights = pickHighlights(item.highlights, focus);

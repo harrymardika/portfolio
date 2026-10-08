@@ -1,0 +1,45 @@
+---
+/**
+ * Source page for a CV variant PDF (T10.2, D10): the general CV's content, selected and ordered by
+ * content/cv-variants.yaml. Not linked anywhere; noindex like every print page.
+ */
+import CvDocument from '@/components/print/CvDocument.astro';
+import PrintLayout from '@/layouts/PrintLayout.astro';
+import { applyVariant, localize, type CvVariant } from '@/lib/content';
+import { getCvData, getCvVariants } from '@/lib/content/queries';
+import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
+
+export async function getStaticPaths() {
+  const variants = await getCvVariants();
+  return localeStaticPaths().flatMap(({ params, props }) =>
+    variants.map((variant) => ({ params: { ...params, variant: variant.id }, props: { ...props, variant } })),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  variant: CvVariant;
+}
+
+const { locale, variant } = Astro.props;
+const data = await getCvData();
+const selected = applyVariant(data, variant);
+const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
+const role = localize(variant.role, locale);
+---
+
+<PrintLayout
+  locale={locale}
+  title={`${data.profile.name} · ${UI[locale]['cv.title']} · ${role}`}
+  size="portrait"
+>
+  <CvDocument
+    locale={locale}
+    siteUrl={siteUrl}
+    {...data}
+    {...selected}
+    role={role}
+    summary={localize(variant.summary, locale)}
+    sections={variant.sections}
+  />
+</PrintLayout>

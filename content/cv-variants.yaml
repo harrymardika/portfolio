@@ -1,3 +1,103 @@
-# CV variants (T10, decision D10): one CV per kind of position, built from the same content.
-# Each variant only selects and orders existing text. See docs/04-content-guide.md.
-variants: []
+# CV variants (Phase 10, decision D10): one CV per kind of position, built from the same content.
+# Each variant only selects and orders existing text; the summary repeats facts already in content/.
+# PDFs: /downloads/cv/ (unlinked), listed at /print/cv-variants/. See docs/04-content-guide.md.
+variants:
+  - id: ai-ml-engineer
+    name: { en: AI/ML Engineer, id: AI/ML Engineer }
+    role: { en: AI/ML Engineer, id: AI/ML Engineer }
+    summary:
+      en: >-
+        AI engineer who builds and ships computer vision, language, and edge AI systems. Built a real-time
+        multimodal crisis-detection model with **92.5% accuracy (AUC 0.96)** and deployed it on Hailo-8L at
+        **5–8 ms latency**; engineered a crowd violence detection engine that **cut computational overhead by
+        45%**. Founder of Decklify, an AI SaaS launched commercially in 3 months. Informatics graduate
+        (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and mentor to **75+ learners**.
+      id: >-
+        AI engineer yang membangun dan meluncurkan sistem computer vision, bahasa, dan edge AI. Membangun model
+        deteksi krisis multimodal real-time dengan **akurasi 92,5% (AUC 0,96)** dan men-deploy-nya di Hailo-8L
+        dengan **latensi 5–8 ms**; merancang mesin deteksi kekerasan massa yang **memangkas beban komputasi
+        45%**. Pendiri Decklify, SaaS AI yang diluncurkan secara komersial dalam 3 bulan. Lulusan Informatika
+        (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan membimbing **75+ peserta**.
+    focus: [ai]
+    sections: [skills, experience, education, training, awards, leadership, certifications]
+    skills: [ml-cv, deploy-infra, product-web, languages]
+
+  - id: data-engineer
+    name: { en: Data Engineer, id: Data Engineer }
+    role: { en: Data Engineer, id: Data Engineer }
+    summary:
+      en: >-
+        Engineer focused on the data side of AI systems, from data pipelines to production models. Led the data and
+        optimization pipeline for **11k+ images and 1k+ transcripts**, built end-to-end ML pipelines with
+        TensorFlow Extended (TFX) monitored in Prometheus and Grafana, and migrated RAG storage from FAISS to a
+        Qdrant vector database for faster semantic search. Informatics graduate (**GPA 3.99/4.00**) and
+        GEMASTIK XVIII Data Mining finalist.
+      id: >-
+        Engineer yang berfokus pada sisi data dari sistem AI, mulai dari pipeline data hingga model di produksi.
+        Memimpin pipeline data dan optimasi untuk **11 ribu+ citra dan 1 ribu+ transkrip**, membangun pipeline
+        ML end-to-end dengan TensorFlow Extended (TFX) yang dipantau di Prometheus dan Grafana, serta
+        memindahkan penyimpanan RAG dari FAISS ke vector database Qdrant agar pencarian semantik lebih cepat.
+        Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
+    focus: [data]
+    sections: [skills, experience, training, education, awards, certifications, leadership]
+    skills: [deploy-infra, ml-cv, product-web, languages]
+
+  - id: data-analyst
+    name: { en: Data Analyst, id: Data Analyst }
+    role: { en: Data Analyst, id: Data Analyst }
+    summary:
+      en: >-
+        Analytical, product-minded engineer who turns data into decisions. Validated Decklify's product-market
+        fit with **+45 NPS** and an 8.39/10 satisfaction score, and designed a business model with an 83.68%
+        contribution margin. Built models for forecasting, recommendation, and classification, including LSTM
+        stock prediction, film recommendations, and a spending-behavior model with **90% accuracy**.
+        Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining finalist.
+      id: >-
+        Engineer yang analitis dan berpikir produk, mengubah data menjadi keputusan. Memvalidasi product-market
+        fit Decklify dengan **NPS +45** dan skor kepuasan 8,39/10, serta merancang model bisnis dengan
+        contribution margin 83,68%. Membangun model untuk peramalan, rekomendasi, dan klasifikasi, termasuk
+        prediksi saham dengan LSTM, rekomendasi film, dan model perilaku belanja dengan **akurasi 90%**.
+        Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
+    focus: [data, product]
+    sections: [skills, experience, training, education, awards, certifications, leadership]
+    skills: [ml-cv, product-web, deploy-infra, languages]
+
+  - id: product-project-manager
+    name: { en: Product / Project Manager, id: Product / Project Manager }
+    role: { en: Product / Project Manager, id: Product / Project Manager }
+    summary:
+      en: >-
+        Product and project lead who takes ideas from user problem to launch. As founder of Decklify, led a
+        5-person team to a **commercial launch in 3 months**, validated product-market fit (**+45 NPS** in the
+        first 2 weeks), and managed national grant funding with 100% accountability. Ran a hackathon for
+        **100+ participants** and cross-functional community programs. Hands-on AI engineering keeps plans
+        grounded in what the technology can deliver. Informatics graduate (**GPA 3.99/4.00**).
+      id: >-
+        Pemimpin produk dan proyek yang membawa ide dari masalah pengguna hingga peluncuran. Sebagai pendiri
+        Decklify, memimpin tim 5 orang hingga **peluncuran komersial dalam 3 bulan**, memvalidasi
+        product-market fit (**NPS +45** di 2 minggu pertama), dan mengelola dana hibah nasional dengan
+        akuntabilitas 100%. Menjalankan hackathon untuk **100+ peserta** dan program komunitas lintas fungsi.
+        Pengalaman langsung di AI engineering membuat rencana berpijak pada kemampuan nyata teknologi.
+        Lulusan Informatika (**IPK 3,99/4,00**).
+    focus: [product, leadership]
+    sections: [experience, leadership, skills, education, awards, training, certifications]
+    skills: [product-web, leadership, ml-cv, languages]
+
+  - id: management-trainee
+    name: { en: Management Trainee, id: Management Trainee }
+    role: { en: Management Trainee, id: Management Trainee }
+    summary:
+      en: >-
+        Fast-learning graduate with leadership experience across a startup, a tech community, and teaching.
+        Founded Decklify and led a 5-person team to a **commercial launch in 3 months**; selected as **1 of 800
+        Google Student Ambassadors from 12,000+ applicants**; four-time Most Outstanding Student (MAPRES) with
+        a **GPA of 3.99/4.00**; mentored **75+ learners** and ran a hackathon for 100+ participants.
+      id: >-
+        Lulusan yang cepat belajar dengan pengalaman memimpin di startup, komunitas teknologi, dan pengajaran.
+        Mendirikan Decklify dan memimpin tim 5 orang hingga **peluncuran komersial dalam 3 bulan**; terpilih
+        sebagai **1 dari 800 Google Student Ambassador dari 12.000+ pendaftar**; empat kali Mahasiswa
+        Berprestasi (MAPRES) dengan **IPK 3,99/4,00**; membimbing **75+ peserta** dan menjalankan hackathon
+        untuk 100+ peserta.
+    focus: [leadership, product]
+    sections: [education, experience, leadership, awards, skills, training, certifications]
+    skills: [leadership, product-web, ml-cv, languages]

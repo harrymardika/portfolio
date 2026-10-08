@@ -91,6 +91,7 @@ Aturan:
 │   ├── certifications.yaml
 │   ├── skills.yaml
 │   ├── journey.yaml
+│   ├── cv-variants.yaml         # varian CV per posisi (Fase 10): memilih & mengurutkan isi
 │   ├── messages.yaml            # kesan & pesan dari orang lain (T9.4), kosong = tidak tampil
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
 │   ├── projects/*.md            # studi kasus; projects/id/*.md = body bahasa Indonesia (T9.3)
@@ -125,7 +126,7 @@ Aturan:
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
 │   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
-│   │   │   └── print/cv.astro, print/portfolio.astro
+│   │   │   └── print/cv.astro, print/cv/[variant].astro, print/cv-variants.astro, print/portfolio.astro
 │   │   └── 404.astro
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
@@ -151,7 +152,7 @@ bun run build
                                    e2e terisolasi: GITHUB_FIXTURE=tests/fixtures/github.json,
                                    GITHUB_CACHE=…/github.e2e.json, output dist-e2e/ (tidak menyentuh dist/)
   2. astro build                 → dist/  (validasi Zod terjadi di sini)
-  3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
+  3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf + downloads/cv/*.pdf (varian CV, tanpa tautan) (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
   4. scripts/generate-og.ts      → <outDir>/og/*.jpg (template /og-template/ + Chromium, 1200×630, ≤ 150 KB)
   5. scripts/generate-sitemap.ts → <outDir>/sitemap.xml (dari canonical + hreflang tiap halaman; noindex dilewati)
   6. scripts/generate-csp.ts     → build-meta/csp.caddy (hash setiap script inline; gagal jika ada font data:)

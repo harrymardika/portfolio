@@ -1,7 +1,8 @@
 ---
 /**
  * ATS-friendly CV (docs/09-pdf-generation.md §2): one column, real text, standard headings,
- * no photo, no graphics, no phone number. Data comes from content/ via the page.
+ * no photo, no graphics, no phone number. Data comes from content/ via the page. A CV variant (T10.2)
+ * passes its own role line, summary, and section order; the content itself is already selected.
  */
 import CvEntry from './CvEntry.astro';
 import RichText from '@/components/ui/RichText.astro';
@@ -11,7 +12,9 @@ import {
   formatYearMonth,
   localize,
   splitExperience,
+  DEFAULT_CV_SECTIONS,
   type Award,
+  type CvSection,
   type Certification,
   type Education,
   type Experience,
@@ -32,10 +35,26 @@ interface Props {
   awards: Award[];
   certifications: Certification[];
   skills: SkillGroup[];
+  /** Variant overrides; the general CV uses the profile's role and summary. */
+  role?: string;
+  summary?: string;
+  sections?: readonly CvSection[];
 }
 
-const { locale, profile, siteUrl, experience, education, trainings, awards, certifications, skills } =
-  Astro.props;
+const {
+  locale,
+  profile,
+  siteUrl,
+  experience,
+  education,
+  trainings,
+  awards,
+  certifications,
+  skills,
+  role = localize(profile.role, locale),
+  summary = localize(profile.summary, locale),
+  sections = DEFAULT_CV_SECTIONS,
+} = Astro.props;
 const t = UI[locale];
 const present = t['date.present'];
 const range = (item: { start: string; end: string }): string => formatDateRange(item, locale, present);
@@ -58,7 +77,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
 <div class="cv">
   <header class="cv-header">
     <h1>{profile.name}</h1>
-    <p class="cv-role">{localize(profile.role, locale)}</p>
+    <p class="cv-role">{role}</p>
     <p class="cv-contacts">
       <span>{profile.location}</span>
       {contacts.map((contact) => (
@@ -78,107 +97,113 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
   <section>
     <h2>{t['cv.summary']}</h2>
     <p>
-      <RichText text={localize(profile.summary, locale)} />
+      <RichText text={summary} />
     </p>
   </section>
 
-  <section>
-    <h2>{t['about.education']}</h2>
-    {education.map((item) => (
-      <CvEntry
-        locale={locale}
-        title={`${localize(item.degree, locale)}${item.gpa ? ` · ${t['common.gpa']} ${localizeNumber(item.gpa, locale)}` : ''}`}
-        subtitle={item.institution}
-        location={item.location}
-        dates={range(item)}
-        highlights={item.highlights}
-      />
-    ))}
-  </section>
-
-  <section>
-    <h2>{t['about.skills']}</h2>
-    <ul class="cv-list">
-      {skills.map((group) => (
-        <li>
-          <strong>{localize(group.name, locale)}:</strong>{' '}
-          {group.items.map((item) => localize(item, locale)).join(', ')}
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section>
-    <h2>{t['about.experience']}</h2>
-    {professional.map((item) => (
-      <CvEntry
-        locale={locale}
-        title={localize(item.role, locale)}
-        subtitle={item.organization}
-        location={item.location}
-        dates={range(item)}
-        highlights={item.highlights}
-      />
-    ))}
-  </section>
-
-  {leadership.length > 0 && (
-    <section>
-      <h2>{t['about.leadership']}</h2>
-      {leadership.map((item) => (
-        <CvEntry
-          locale={locale}
-          title={localize(item.role, locale)}
-          subtitle={item.organization}
-          location={item.location}
-          dates={range(item)}
-          highlights={item.highlights}
-        />
-      ))}
-    </section>
-  )}
-
-  {trainings.length > 0 && (
-    <section>
-      <h2>{t['about.training']}</h2>
-      {trainings.map((item) => (
-        <CvEntry
-          locale={locale}
-          title={localize(item.program, locale)}
-          subtitle={item.institution}
-          location={item.location}
-          dates={range(item)}
-          highlights={item.highlights}
-        />
-      ))}
-    </section>
-  )}
-
-  <section>
-    <h2>{t['about.awards']}</h2>
-    <ul class="cv-list">
-      {awards.map((award) => (
-        <li>
-          {localize(award.title, locale)} · {localize(award.issuer, locale)} · {awardDate(award.date)}
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  {certifications.length > 0 && (
-    <section>
-      <h2>{t['about.certifications']}</h2>
-      <ul class="cv-list">
-        {certifications.map((cert) => (
-          <li>
-            {cert.name} · {cert.issuer} · {formatYearMonth(cert.issued, locale)}
-            {cert.expires && `–${formatYearMonth(cert.expires, locale)}`}
-            {cert.credential_id && ` · ${t['about.credential']}: ${cert.credential_id}`}
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+  {sections.map((section) => (
+    <>
+      {section === 'education' && (
+        <section>
+          <h2>{t['about.education']}</h2>
+          {education.map((item) => (
+            <CvEntry
+              locale={locale}
+              title={`${localize(item.degree, locale)}${item.gpa ? ` · ${t['common.gpa']} ${localizeNumber(item.gpa, locale)}` : ''}`}
+              subtitle={item.institution}
+              location={item.location}
+              dates={range(item)}
+              highlights={item.highlights}
+            />
+          ))}
+        </section>
+      )}
+      {section === 'skills' && (
+        <section>
+          <h2>{t['about.skills']}</h2>
+          <ul class="cv-list">
+            {skills.map((group) => (
+              <li>
+                <strong>{localize(group.name, locale)}:</strong>{' '}
+                {group.items.map((item) => localize(item, locale)).join(', ')}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {section === 'experience' && (
+        <section>
+          <h2>{t['about.experience']}</h2>
+          {professional.map((item) => (
+            <CvEntry
+              locale={locale}
+              title={localize(item.role, locale)}
+              subtitle={item.organization}
+              location={item.location}
+              dates={range(item)}
+              highlights={item.highlights}
+            />
+          ))}
+        </section>
+      )}
+      {section === 'leadership' && leadership.length > 0 && (
+        <section>
+          <h2>{t['about.leadership']}</h2>
+          {leadership.map((item) => (
+            <CvEntry
+              locale={locale}
+              title={localize(item.role, locale)}
+              subtitle={item.organization}
+              location={item.location}
+              dates={range(item)}
+              highlights={item.highlights}
+            />
+          ))}
+        </section>
+      )}
+      {section === 'training' && trainings.length > 0 && (
+        <section>
+          <h2>{t['about.training']}</h2>
+          {trainings.map((item) => (
+            <CvEntry
+              locale={locale}
+              title={localize(item.program, locale)}
+              subtitle={item.institution}
+              location={item.location}
+              dates={range(item)}
+              highlights={item.highlights}
+            />
+          ))}
+        </section>
+      )}
+      {section === 'awards' && (
+        <section>
+          <h2>{t['about.awards']}</h2>
+          <ul class="cv-list">
+            {awards.map((award) => (
+              <li>
+                {localize(award.title, locale)} · {localize(award.issuer, locale)} · {awardDate(award.date)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {section === 'certifications' && certifications.length > 0 && (
+        <section>
+          <h2>{t['about.certifications']}</h2>
+          <ul class="cv-list">
+            {certifications.map((cert) => (
+              <li>
+                {cert.name} · {cert.issuer} · {formatYearMonth(cert.issued, locale)}
+                {cert.expires && `–${formatYearMonth(cert.expires, locale)}`}
+                {cert.credential_id && ` · ${t['about.credential']}: ${cert.credential_id}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </>
+  ))}
 </div>
 
 <style>

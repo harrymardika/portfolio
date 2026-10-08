@@ -7,14 +7,14 @@
  * Requires Playwright's Chromium (`bunx playwright install chromium`).
  */
 import { mkdir, readFile, stat } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 import { chromium } from '@playwright/test';
 import { load } from 'js-yaml';
 
-import { profileSchema } from '../src/lib/content/schemas';
-import { pruneEmpty } from '../src/lib/content/yaml';
-import { allDownloads, DOWNLOADS_DIR } from '../src/lib/downloads';
+import { cvVariantSchema, profileSchema } from '../src/lib/content/schemas';
+import { parseYamlList, pruneEmpty } from '../src/lib/content/yaml';
+import { allDownloads, DOWNLOADS_DIR, variantDownloads } from '../src/lib/downloads';
 import { requireBuild, serveBuild } from './lib/static-server';
 
 const ROOT = join(import.meta.dir, '..');
@@ -29,6 +29,12 @@ const profile = profileSchema.parse(
   pruneEmpty(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8'))),
 );
 
+// CV variants (T10.2): unlinked PDFs in downloads/cv/, from the same print template.
+const variants = parseYamlList(await readFile(join(ROOT, 'content/cv-variants.yaml'), 'utf8'), 'variants', {
+  withPosition: true,
+  mayBeEmpty: true,
+}).map((entry) => cvVariantSchema.parse(entry));
+
 const server = serveBuild(OUT_DIR);
 
 await mkdir(TARGET_DIR, { recursive: true });
@@ -36,12 +42,13 @@ const browser = await chromium.launch();
 let failed = false;
 try {
   const page = await browser.newPage();
-  for (const download of allDownloads(profile.name)) {
+  for (const download of [...allDownloads(profile.name), ...variantDownloads(profile.name, variants)]) {
     const url = new URL(download.source, server.url).href;
     const response = await page.goto(url, { waitUntil: 'networkidle' });
     if (response?.status() !== 200) throw new Error(`${download.source} returned ${response?.status()}`);
     await page.evaluate(() => document.fonts.ready);
     const path = join(TARGET_DIR, download.file);
+    await mkdir(dirname(path), { recursive: true });
     // preferCSSPageSize: paper size and margins come from @page in PrintLayout.
     await page.pdf({ path, preferCSSPageSize: true, printBackground: true, tagged: true, outline: true });
     const bytes = (await stat(path)).size;

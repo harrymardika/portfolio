@@ -106,9 +106,10 @@ function checkField(path: string, field: Field, schema: ZodLike, mode: RequiredM
   }
   const inner = core(schema);
   const isArray = inner._zod.def.type === 'array';
-  // A select with `multiple` saves an array, like a list.
-  if (Boolean(field.list || field.options?.multiple) !== isArray)
-    problems.push(`${at}: editor list=${Boolean(field.list)}, schema array=${isArray}`);
+  // A select with `multiple` saves an array, like a list; both together would save an array of arrays.
+  const editorArray = Boolean(field.list) || Boolean(field.options?.multiple);
+  if (field.list && field.options?.multiple) problems.push(`${at}: editor has both list and multiple`);
+  if (editorArray !== isArray) problems.push(`${at}: editor array=${editorArray}, schema array=${isArray}`);
   const scalar = isArray ? core(inner._zod.def['element'] as ZodLike) : inner;
   if ((field.type === 'number') !== (scalar._zod.def.type === 'number')) {
     problems.push(`${at}: editor type "${field.type}" vs schema "${scalar._zod.def.type}"`);

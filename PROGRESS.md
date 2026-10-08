@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** Fase 10 (disetujui pemilik sebelum T9.2 selesai); pemilik mengisi kesan & pesan; menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau varian CV (T10.3) di `/print/cv-variants/`; T9.2 menunggu D11; pemilik mengisi kesan & pesan; menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -19,7 +19,7 @@
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | 🔄 Aktif |
-| 10 | CV per posisi (§B) | ⏳ Setelah Fase 9 |
+| 10 | CV per posisi (§B) | 🔄 Aktif (dimulai atas izin pemilik sebelum T9.2 selesai) |
 | 11 | Asisten AI "Tanya tentang Harry" (§E) | ⏳ Setelah Fase 9 |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah T9.4 |
 
@@ -134,9 +134,9 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 
 - [x] **T10.1** Model data varian (D10)
   - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
-- [ ] **T10.2** Pembuat PDF per varian
+- [x] **T10.2** Pembuat PDF per varian
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
-- [ ] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee
+- [~] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product/Project, Management Trainee · *Claude Code: terisi, menunggu tinjauan pemilik di `/print/cv-variants/`*
   - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
 
 ## Fase 11: Asisten AI "Tanya tentang Harry" (`docs/11-roadmap.md` §E)
@@ -197,6 +197,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · Fase 10: varian CV (T10.1–T10.3)
+- D10 disempurnakan bersama pemilik: pemilik tidak ingin membuat PDF di laptop, jadi PDF varian dibuat saat deploy di `/downloads/cv/` (tanpa tautan, dilarang di robots.txt), dengan daftar di `/print/cv-variants/`.
+- T10.1: `content/cv-variants.yaml`, label `focus` pada poin pencapaian, `applyVariant` (pekerjaan dan pendidikan selalu tampil; kepemimpinan/pelatihan yang tidak relevan disembunyikan), skema, menu CMS "Varian CV", tes. Temuan reviewer diperbaiki (gelar menyimpan poin pertama, tebal di ringkasan varian, skill unik, tes CMS untuk multi-select).
+- T10.2: `CvDocument` mengikuti urutan bagian varian; halaman `/print/cv/<id>/`; 10 PDF tambahan, semuanya 2 halaman dan ±200 KB; tes e2e per varian (urutan bagian, baris peran, tanpa nomor HP, ≤ 2 halaman), dan tes bahwa tidak ada halaman yang menautkan varian.
+- T10.3: lima varian (AI/ML Engineer, Data Engineer, Data Analyst, Product / Project Manager, Management Trainee) dengan ringkasan EN/ID dari fakta yang sudah ada; 49 poin diberi label fokus. **Belum:** tinjauan pemilik. Varian data masih tipis karena skill data (SQL, Pandas, dll.) menunggu D11/T9.2.
 
 ### 2026-10-08 · Claude Code (Opus) · Tinjauan T9.3, uji draf AI, mulai Fase 10
 - Pemilik menyetujui 11 terjemahan studi kasus: T9.3 selesai.

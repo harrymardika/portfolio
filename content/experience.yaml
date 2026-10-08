@@ -14,14 +14,19 @@ items:
     highlights:
       - en: Leading development of Decklify, an AI-powered SaaS platform that automates presentation creation from text, documents, or legacy PPTX files.
         id: "Memimpin pengembangan Decklify, platform SaaS berbasis AI yang mengotomatiskan pembuatan presentasi dari teks, dokumen, atau file PPTX lama."
+        focus: [ai, product]
       - en: Built and launched the product from scratch to **commercial launch** at decklify.id within **3 months** (Next.js, Go, PostgreSQL).
         id: "Membangun produk dari nol hingga **peluncuran komersial** di decklify.id dalam **3 bulan** (Next.js, Go, PostgreSQL)."
+        focus: [product, ai]
       - en: "Validated product-market fit: **+45 NPS**, 8.39/10 satisfaction score, and **100+ decks** generated for 50+ users in the first 2 weeks."
         id: "Memvalidasi product-market fit: **NPS +45**, skor kepuasan 8,39/10, dan **100+ presentasi** dibuat oleh 50+ pengguna dalam 2 minggu pertama."
+        focus: [product]
       - en: Designed a business model with an **83.68% contribution margin** and break-even at 11 transactions per month.
         id: "Merancang model bisnis dengan **contribution margin 83,68%** dan titik impas pada 11 transaksi per bulan."
+        focus: [product]
       - en: Led a 5-person team and managed IDR 5.85M in **national grant funding** with 100% accountability.
         id: "Memimpin tim beranggotakan 5 orang dan mengelola **dana hibah nasional** sebesar Rp5,85 juta dengan akuntabilitas 100%."
+        focus: [leadership, product]
 
   - id: mitra-teknologi-gemilang
     organization: PT. Mitra Teknologi Gemilang
@@ -34,12 +39,16 @@ items:
     highlights:
       - en: Engineered a **real-time crowd violence detection engine** combining YOLO and a Temporal Shift Module (TSM) to process concurrent RTSP CCTV streams.
         id: "Merekayasa **mesin deteksi kekerasan massa real-time** yang menggabungkan YOLO dan Temporal Shift Module (TSM) untuk memproses beberapa siaran CCTV RTSP secara bersamaan."
+        focus: [ai, data]
       - en: Architected an optimized video pipeline using Grid-9-Modified (5 active cells) frame decomposition, **reducing computational overhead by 45%** while keeping tracking accurate with ByteTrack.
         id: "Merancang pipeline video teroptimasi dengan dekomposisi frame Grid-9-Modified (5 sel aktif) yang **mengurangi beban komputasi sebesar 45%** dengan pelacakan tetap akurat menggunakan ByteTrack."
+        focus: [ai, data]
       - en: Integrated the Google Gemini API into the surveillance architecture for automated multimodal reasoning on live camera feeds.
         id: "Mengintegrasikan Google Gemini API ke arsitektur pengawasan untuk penalaran multimodal otomatis pada siaran kamera langsung."
+        focus: [ai]
       - en: Migrated the multi-agent orchestrator's RAG storage from local FAISS to a scalable Qdrant vector database, speeding up semantic search for real-time event and location queries.
         id: "Memigrasikan penyimpanan RAG pada orkestrator multi-agent dari FAISS lokal ke basis data vektor Qdrant yang skalabel, sehingga pencarian semantik untuk kueri kejadian dan lokasi real-time menjadi lebih cepat."
+        focus: [ai, data]
 
   - id: google-student-ambassador
     organization: Google
@@ -54,10 +63,13 @@ items:
         id: "Terpilih sebagai **1 dari 800 Ambassador dari 12.000+ pendaftar** di seluruh Indonesia untuk kepemimpinan dan advokasi AI."
       - en: Co-coordinated the campus team for the Google Gemini Arena, helping the university secure 1st place in the Gemini Arena Challenge.
         id: "Turut mengoordinasikan tim kampus pada Google Gemini Arena dan membantu universitas meraih juara 1 Gemini Arena Challenge."
+        focus: [leadership]
       - en: Co-created content featured on @googleindonesia that generated 5k+ engagements and **100k+ views**.
         id: "Turut membuat konten yang ditampilkan di @googleindonesia dan menghasilkan 5 ribu+ interaksi serta **100 ribu+ tayangan**."
+        focus: [leadership, product]
       - en: Led referral and on-campus advocacy campaigns, engaging **300+ students** through events and AI workshops.
         id: "Memimpin kampanye referral dan advokasi di kampus yang menjangkau **300+ mahasiswa** melalui acara dan workshop AI."
+        focus: [leadership]
 
   - id: gunadarma-ai-researcher
     organization: Universitas Gunadarma
@@ -70,12 +82,16 @@ items:
     highlights:
       - en: Built a real-time multimodal crisis-detection system fusing facial emotion, body-pose cues, and speech sentiment, achieving **92.5% accuracy (AUC 0.96)** and 0.92 F1-score in early suicide-risk detection.
         id: "Membangun sistem deteksi krisis multimodal real-time yang menggabungkan emosi wajah, isyarat pose tubuh, dan sentimen ucapan, dengan **akurasi 92,5% (AUC 0,96)** dan F1-score 0,92 untuk deteksi dini risiko bunuh diri."
+        focus: [ai, data]
       - en: Designed optimized MobileNetV3 CNNs and a precision-tuned fusion mechanism, **cutting life-critical false negatives by 35%**.
         id: "Merancang CNN MobileNetV3 yang teroptimasi dan mekanisme fusi yang disetel untuk presisi, sehingga **false negative yang kritis berkurang 35%**."
+        focus: [ai]
       - en: Optimized Edge AI deployment on Hailo-8L, reaching **5–8 ms latency and 30+ FPS** at about 2 W, a 300–500% improvement over CPU.
         id: "Mengoptimalkan deployment Edge AI di Hailo-8L hingga mencapai **latensi 5–8 ms dan 30+ FPS** pada daya sekitar 2 W, 300–500% lebih baik dibanding CPU."
+        focus: [ai]
       - en: Led the full data and optimization pipeline (11k+ images, 1k+ transcripts) and applied 8-bit quantization, **cutting model size by 40%** with no accuracy drop.
         id: "Memimpin seluruh pipeline data dan optimasi (11 ribu+ gambar, 1 ribu+ transkrip) serta menerapkan kuantisasi 8-bit yang **memperkecil ukuran model 40%** tanpa penurunan akurasi."
+        focus: [ai, data]
 
   - id: gdgoc-director-ml
     organization: Google Developer Groups on Campus Universitas Gunadarma
@@ -88,14 +104,19 @@ items:
     highlights:
       - en: Led machine learning strategy, curriculum development, and community growth.
         id: "Memimpin strategi machine learning, pengembangan kurikulum, dan pertumbuhan komunitas."
+        focus: [leadership]
       - en: Oversaw ML education programs (GenAI, LLMs, RAG) and ensured consistent learning quality.
         id: "Mengawasi program edukasi ML (GenAI, LLM, RAG) dan menjaga kualitas pembelajaran tetap konsisten."
+        focus: [leadership, ai]
       - en: Mentored **24 participants** in a bootcamp through practical ML workflows and real-world projects.
         id: "Membimbing **24 peserta** bootcamp melalui alur kerja ML praktis dan proyek nyata."
+        focus: [leadership]
       - en: Developed an automated certificate generation system that reduced manual administrative work.
         id: "Mengembangkan sistem pembuatan sertifikat otomatis yang mengurangi pekerjaan administratif manual."
+        focus: [product]
       - en: Managed cross-functional teams organizing workshops, technical events, and competition preparation programs.
         id: "Mengelola tim lintas fungsi dalam menyelenggarakan workshop, acara teknis, dan program persiapan kompetisi."
+        focus: [leadership, product]
 
   - id: gdgoc-ml-associate
     organization: Google Developer Groups on Campus Universitas Gunadarma
@@ -108,10 +129,13 @@ items:
     highlights:
       - en: Designed and delivered weekly classes on Machine Learning and AI, including GenAI and Retrieval-Augmented Generation.
         id: "Merancang dan mengajar kelas mingguan Machine Learning dan AI, termasuk GenAI dan Retrieval-Augmented Generation."
+        focus: [ai, leadership]
       - en: Mentored Competemate participants through hands-on project guidance and collaborative problem-solving.
         id: "Membimbing peserta Competemate melalui pendampingan proyek langsung dan pemecahan masalah secara kolaboratif."
+        focus: [leadership]
       - en: Led the Gunadarma Code Week (GCW) 2025 Hackathon, managing end-to-end operations for **100+ participants and 30 teams**.
         id: "Memimpin Hackathon Gunadarma Code Week (GCW) 2025 dan mengelola operasional menyeluruh untuk **100+ peserta dan 30 tim**."
+        focus: [leadership, product]
 
   - id: lepkom-lab-assistant
     organization: LePKom Universitas Gunadarma
@@ -124,8 +148,10 @@ items:
     highlights:
       - en: Guided and mentored **30+ students** in developing foundational HTML and JavaScript skills.
         id: "Membimbing **30+ mahasiswa** dalam membangun dasar keterampilan HTML dan JavaScript."
+        focus: [leadership]
       - en: Managed laboratory systems for LSP certification exams, keeping exam environments stable for 40+ students.
         id: "Mengelola sistem laboratorium untuk ujian sertifikasi LSP sehingga lingkungan ujian tetap stabil bagi 40+ peserta."
+        focus: [leadership]
 
   - id: idcamp-facilitator
     organization: Indosat Ooredoo Hutchison Digital Camp
@@ -138,10 +164,13 @@ items:
     highlights:
       - en: Mentored **25 intermediate-level participants**, ensuring timely course completion and strong engagement.
         id: "Membimbing **25 peserta tingkat menengah** agar menyelesaikan kursus tepat waktu dengan keterlibatan yang tinggi."
+        focus: [leadership, ai]
       - en: Managed live sessions and resolved participant questions in under 24 hours.
         id: "Mengelola sesi langsung dan menjawab pertanyaan peserta dalam waktu kurang dari 24 jam."
+        focus: [leadership]
       - en: Supported program growth by engaging networks, contributing to a measurable increase in enrollment.
         id: "Mendukung pertumbuhan program melalui jejaring, yang berkontribusi pada peningkatan jumlah pendaftar secara terukur."
+        focus: [leadership]
 
   - id: dbs-coding-camp-facilitator
     organization: Coding Camp powered by DBS Foundation
@@ -154,10 +183,13 @@ items:
     highlights:
       - en: Mentored 27 intermediate-level participants, achieving a **65% graduation rate** through structured guidance.
         id: "Membimbing 27 peserta tingkat menengah dengan **tingkat kelulusan 65%** melalui pendampingan yang terstruktur."
+        focus: [leadership, ai]
       - en: Led advanced training for 25 expert-level participants, driving a **60% graduation rate** in an applied Machine Learning course.
         id: "Memimpin pelatihan lanjutan untuk 25 peserta tingkat expert dengan **tingkat kelulusan 60%** pada kursus Machine Learning terapan."
+        focus: [leadership, ai]
       - en: Built a collaborative and inclusive learning environment that strengthened technical skills and learner outcomes.
         id: "Membangun lingkungan belajar yang kolaboratif dan inklusif yang memperkuat keterampilan teknis dan hasil belajar peserta."
+        focus: [leadership]
 
   - id: gunadarma-research-assistant
     organization: Universitas Gunadarma
@@ -170,14 +202,19 @@ items:
     highlights:
       - en: Developed an AI-powered summarization system using BERT that automates the review of academic proposals and reduces manual evaluation time.
         id: "Mengembangkan sistem peringkasan berbasis AI menggunakan BERT yang mengotomatiskan peninjauan proposal akademik dan mengurangi waktu evaluasi manual."
+        focus: [ai, data]
       - en: "Achieved **ROUGE-1 56.63%**, ROUGE-2 47.38%, and ROUGE-L 51.14%."
         id: "Mencapai **ROUGE-1 56,63%**, ROUGE-2 47,38%, dan ROUGE-L 51,14%."
+        focus: [ai, data]
       - en: Designed hybrid algorithms to improve sentence weighting and summary coherence.
         id: "Merancang algoritma hibrida untuk meningkatkan pembobotan kalimat dan koherensi ringkasan."
+        focus: [ai]
       - en: Applied cosine similarity and semantic analysis to preserve meaning and structure in summaries.
         id: "Menerapkan cosine similarity dan analisis semantik untuk menjaga makna dan struktur ringkasan."
+        focus: [ai, data]
       - en: Served as the **primary developer** in a doctoral research team, turning research concepts into a working ML pipeline.
         id: "Menjadi **pengembang utama** dalam tim riset doktoral, mengubah konsep riset menjadi pipeline ML yang berfungsi."
+        focus: [ai, data]
 
   - id: green-leadership-indonesia
     organization: Green Leadership Indonesia
@@ -191,7 +228,10 @@ items:
     highlights:
       - en: Organized "Eco Warrior", an environmental education event with the Ministry of Environment and Forestry that engaged **40+ children** in sustainability practices.
         id: "Menyelenggarakan \"Eco Warrior\", acara edukasi lingkungan bersama Kementerian Lingkungan Hidup dan Kehutanan yang melibatkan **40+ anak** dalam praktik keberlanjutan."
+        focus: [leadership]
       - en: Strengthened leadership values grounded in environmental stewardship and Pancasila-based principles.
         id: "Memperkuat nilai kepemimpinan yang berlandaskan kepedulian lingkungan dan prinsip Pancasila."
+        focus: [leadership]
       - en: Developed research, critical thinking, and problem-solving skills on climate and environmental issues.
         id: "Mengembangkan keterampilan riset, berpikir kritis, dan pemecahan masalah pada isu iklim dan lingkungan."
+        focus: [leadership]

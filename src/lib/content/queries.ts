@@ -88,6 +88,20 @@ export async function getCaseStudyBody(project: ProjectEntry, locale: Locale) {
   return pickCaseStudyBody<ProjectEntry | NonNullable<typeof translation>>(project, translation, locale);
 }
 
+/** Everything the CV shows (surface `cv`), shared by the general CV and its variants. */
+export async function getCvData() {
+  const [profile, experience, education, trainings, awards, certifications, skills] = await Promise.all([
+    getProfile(),
+    getExperience('cv'),
+    getEducation('cv'),
+    getTrainings('cv'),
+    getAwards('cv'),
+    getCertifications(),
+    getSkillGroups(),
+  ]);
+  return { profile, experience, education, trainings, awards, certifications, skills };
+}
+
 /** CV variants in file order (T10.1, D10). */
 export async function getCvVariants(): Promise<CvVariant[]> {
   return sortedBy(await dataOf(getCollection('cvVariants')), byPosition);

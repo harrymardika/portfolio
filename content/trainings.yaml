@@ -16,10 +16,13 @@ items:
         id: "**Lulus dengan predikat Distinction** (rata-rata nilai 94,5/100)."
       - en: Built Dompet Juara, a personal finance web app that uses ML to analyze spending behavior and personalize financial advice.
         id: "Membangun Dompet Juara, aplikasi web keuangan pribadi yang memakai ML untuk menganalisis pola pengeluaran dan memberi saran keuangan yang personal."
+        focus: [ai, product, data]
       - en: Led the ML team through an end-to-end pipeline (preparation, modeling, evaluation, deployment) with **90% model accuracy**.
         id: "Memimpin tim ML melalui pipeline end-to-end (persiapan data, pemodelan, evaluasi, deployment) dengan **akurasi model 90%**."
+        focus: [ai, leadership, data]
       - en: Deployed inference services with FastAPI and TensorFlow, integrated with React.js, Hapi.js, and Supabase, delivered as a PWA.
         id: "Men-deploy layanan inferensi dengan FastAPI dan TensorFlow yang terintegrasi dengan React.js, Hapi.js, dan Supabase, disajikan sebagai PWA."
+        focus: [ai, product]
 
   - id: tbi-english
     institution: TBI Bandung
@@ -42,6 +45,7 @@ items:
     highlights:
       - en: Completed three stages covering Python, algorithms, IoT with ESP32, data science, and deep learning.
         id: "Menyelesaikan tiga tahap yang mencakup Python, algoritma, IoT dengan ESP32, data science, dan deep learning."
+        focus: [ai, data]
 
   - id: idcamp-ml-developer
     institution: Indosat Ooredoo Hutchison Digital Camp
@@ -57,7 +61,10 @@ items:
         id: "Menyelesaikan semua level (Beginner, Intermediate, Expert) dengan **rating bintang 5** di setiap proyek."
       - en: Built a stock price prediction system with LSTM in TensorFlow (KerasTuner) and PyTorch (Optuna).
         id: "Membangun sistem prediksi harga saham dengan LSTM di TensorFlow (KerasTuner) dan PyTorch (Optuna)."
+        focus: [ai, data]
       - en: Developed a film recommendation system using content-based and collaborative filtering (K-Means + deep learning).
         id: "Mengembangkan sistem rekomendasi film dengan content-based dan collaborative filtering (K-Means + deep learning)."
+        focus: [ai, data]
       - en: Designed end-to-end ML pipelines with TensorFlow Extended (TFX), cloud deployment, and monitoring with Prometheus and Grafana.
         id: "Merancang pipeline ML end-to-end dengan TensorFlow Extended (TFX), deployment cloud, serta pemantauan dengan Prometheus dan Grafana."
+        focus: [ai, data]

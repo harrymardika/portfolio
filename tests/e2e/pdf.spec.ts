@@ -7,6 +7,10 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 import type { TextItem } from 'pdfjs-dist/types/src/display/api';
 
+import { localize } from '../../src/lib/content/localize';
+import { variantDownloads } from '../../src/lib/downloads';
+import { cvVariants } from './helpers';
+
 async function readPdf(bytes: Buffer) {
   const doc = await getDocument({ data: new Uint8Array(bytes), useSystemFonts: false }).promise;
   const pages: string[] = [];
@@ -19,7 +23,7 @@ async function readPdf(bytes: Buffer) {
   return { numPages: doc.numPages, text: pages.join('\n').replace(/\s+/g, ' '), title: info.Title ?? '' };
 }
 
-const CASES = [
+const CASES: { file: string; maxPages: number; maxBytes: number; mustContain: string[] }[] = [
   {
     file: 'Harry-Mardika-CV-EN.pdf',
     maxPages: 2,
@@ -45,6 +49,18 @@ const CASES = [
     mustContain: ['Karya pilihan'],
   },
 ];
+
+// CV variants (T10.2): same budgets as the general CV, and the variant's own role line.
+for (const variant of cvVariants()) {
+  for (const download of variantDownloads('Harry Mardika', [variant])) {
+    CASES.push({
+      file: download.file,
+      maxPages: 2,
+      maxBytes: 1_000_000,
+      mustContain: [localize(variant.role, download.locale)],
+    });
+  }
+}
 
 for (const { file, maxPages, maxBytes, mustContain } of CASES) {
   test(`${file} is generated with selectable text and no phone number`, async ({ request }) => {

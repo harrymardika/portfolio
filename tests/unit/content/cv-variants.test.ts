@@ -97,6 +97,11 @@ describe('CV variant selection', () => {
     expect(result.skills.map((group) => group.id)).toEqual(['data', 'ml']);
   });
 
+  it('keeps the first highlight of a degree when none match, so it never appears empty', () => {
+    const result = applyVariant(content, { focus: ['data'] });
+    expect(result.education[0]?.highlights.map((h) => h.en)).toEqual(['Thesis on CNNs']);
+  });
+
   it('keeps every skill group when the variant does not choose', () => {
     expect(applyVariant(content, { focus: ['data'] }).skills).toHaveLength(3);
   });
@@ -122,5 +127,6 @@ describe('cvVariantSchema', () => {
     expect(cvVariantSchema.safeParse({ ...variant, focus: [] }).success).toBe(false);
     expect(cvVariantSchema.safeParse({ ...variant, sections: ['projects'] }).success).toBe(false);
     expect(cvVariantSchema.safeParse({ ...variant, sections: ['skills', 'skills'] }).success).toBe(false);
+    expect(cvVariantSchema.safeParse({ ...variant, skills: ['ml', 'ml'] }).success).toBe(false);
   });
 });

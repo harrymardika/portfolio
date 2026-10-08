@@ -9,7 +9,8 @@ import type { Page } from '@playwright/test';
 
 import { parseFrontmatter } from '../../src/lib/content/frontmatter';
 import { compareProjects, isPublished } from '../../src/lib/content/projects';
-import { projectSchema } from '../../src/lib/content/schemas/entities';
+import { cvVariantSchema, projectSchema, type CvVariant } from '../../src/lib/content/schemas/entities';
+import { parseYamlList } from '../../src/lib/content/yaml';
 
 export const SCENE_READY_TIMEOUT = 30_000;
 
@@ -58,4 +59,12 @@ export function publishedCaseStudies(): {
     .filter(({ data }) => isPublished(data))
     .sort((a, b) => compareProjects(a.data, b.data))
     .map(({ slug, data: { title, featured }, translated }) => ({ slug, title, featured, translated }));
+}
+
+/** The CV variants (T10), read from content/cv-variants.yaml so new variants are tested automatically. */
+export function cvVariants(): CvVariant[] {
+  const file = join(import.meta.dirname, '..', '..', 'content', 'cv-variants.yaml');
+  return parseYamlList(readFileSync(file, 'utf8'), 'variants', { withPosition: true, mayBeEmpty: true }).map(
+    (entry) => cvVariantSchema.parse(entry),
+  );
 }

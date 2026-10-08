@@ -1,0 +1,85 @@
+---
+/**
+ * Owner's list of the CV variant PDFs (T10.2, D10). Unlinked, noindex, no statistics beacon: one
+ * address to bookmark instead of ten file names. The PDFs are made by scripts/generate-pdf.ts.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { localize } from '@/lib/content';
+import { getCvVariants, getProfile } from '@/lib/content/queries';
+import { DOWNLOADS_DIR, variantDownloads } from '@/lib/downloads';
+import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const [profile, variants] = await Promise.all([getProfile(), getCvVariants()]);
+const rows = variants.map((variant) => ({
+  variant,
+  files: variantDownloads(profile.name, [variant]).map((download) => ({
+    label: download.locale.toUpperCase(),
+    href: `/${DOWNLOADS_DIR}/${download.file}`,
+  })),
+}));
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${profile.name} · ${t['cvVariants.title']}`}
+  noindex
+  linkAlternates={false}
+  track={false}
+>
+  <main id="main" class="mx-auto grid max-w-[860px] gap-6 px-[clamp(16px,4vw,40px)] py-14">
+    <h1 class="text-h2">{t['cvVariants.title']}</h1>
+    <p class="text-ink-muted">{t['cvVariants.intro']}</p>
+    {rows.length === 0 ? (
+      <p>{t['cvVariants.empty']}</p>
+    ) : (
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left text-sm">
+          <thead>
+            <tr class="border-b border-line">
+              <th scope="col" class="py-2 pr-4">
+                {t['cvVariants.variant']}
+              </th>
+              <th scope="col" class="py-2 pr-4">
+                {t['cvVariants.role']}
+              </th>
+              <th scope="col" class="py-2">
+                {t['cvVariants.files']}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ variant, files }) => (
+              <tr class="border-b border-line">
+                <th scope="row" class="py-3 pr-4 font-semibold">
+                  {localize(variant.name, locale)}
+                </th>
+                <td class="py-3 pr-4 text-ink-muted">{localize(variant.role, locale)}</td>
+                <td class="py-3">
+                  <span class="flex gap-3">
+                    {files.map((file) => (
+                      <a
+                        href={file.href}
+                        class="inline-flex min-h-11 items-center font-semibold text-forest-ink underline underline-offset-4"
+                        aria-label={`${localize(variant.name, locale)} ${t['cvVariants.files']} ${file.label}`}
+                      >
+                        {file.label}
+                      </a>
+                    ))}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </main>
+</BaseLayout>

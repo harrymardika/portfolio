@@ -36,16 +36,44 @@ export function printPath(kind: DownloadKind, locale: Locale): string {
   return localizePath(`/print/${kind}/`, locale);
 }
 
-/** Every PDF to generate: each kind in each locale. */
-export function allDownloads(
-  name: string,
-): { kind: DownloadKind; locale: Locale; file: string; source: string }[] {
+export interface Download {
+  kind: DownloadKind;
+  locale: Locale;
+  /** Path inside the downloads folder, e.g. "Harry-Mardika-CV-EN.pdf" or "cv/…-Data-Engineer-EN.pdf". */
+  file: string;
+  /** The print page it is made from. */
+  source: string;
+}
+
+/** Every public PDF: each kind in each locale. */
+export function allDownloads(name: string): Download[] {
   return DOWNLOAD_KINDS.flatMap((kind) =>
     LOCALES.map((locale) => ({
       kind,
       locale,
       file: downloadFileName(name, kind, locale),
       source: printPath(kind, locale),
+    })),
+  );
+}
+
+/**
+ * Unlinked folder for the CV variants (T10.2, D10): on the site so the owner can fetch them anywhere,
+ * but never linked, kept out of the sitemap, and disallowed in robots.txt.
+ */
+export const CV_VARIANTS_DIR = 'cv';
+
+/** One PDF per CV variant and locale, e.g. "cv/Harry-Mardika-CV-Data-Engineer-EN.pdf". */
+export function variantDownloads(
+  name: string,
+  variants: readonly { id: string; name: { en: string } }[],
+): Download[] {
+  return variants.flatMap((variant) =>
+    LOCALES.map((locale) => ({
+      kind: 'cv' as const,
+      locale,
+      file: `${CV_VARIANTS_DIR}/${fileSlug(name)}-CV-${fileSlug(variant.name.en)}-${locale.toUpperCase()}.pdf`,
+      source: localizePath(`/print/cv/${variant.id}/`, locale),
     })),
   );
 }

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'bun:test';
 
-import { allDownloads, downloadFileName, downloadPath, fileSlug, printPath } from '@/lib/downloads';
+import {
+  allDownloads,
+  downloadFileName,
+  downloadPath,
+  fileSlug,
+  printPath,
+  variantDownloads,
+} from '@/lib/downloads';
 
 describe('downloads', () => {
   it('builds stable, URL-safe file names', () => {
@@ -22,6 +29,24 @@ describe('downloads', () => {
       'Harry-Mardika-CV-ID.pdf',
       'Harry-Mardika-Portfolio-EN.pdf',
       'Harry-Mardika-Portfolio-ID.pdf',
+    ]);
+  });
+
+  it('puts CV variants in their own unlinked folder, one per locale', () => {
+    const variants = [{ id: 'data-engineer', name: { en: 'Data Engineer' } }];
+    expect(variantDownloads('Harry Mardika', variants)).toEqual([
+      {
+        kind: 'cv',
+        locale: 'en',
+        file: 'cv/Harry-Mardika-CV-Data-Engineer-EN.pdf',
+        source: '/print/cv/data-engineer/',
+      },
+      {
+        kind: 'cv',
+        locale: 'id',
+        file: 'cv/Harry-Mardika-CV-Data-Engineer-ID.pdf',
+        source: '/id/print/cv/data-engineer/',
+      },
     ]);
   });
 });

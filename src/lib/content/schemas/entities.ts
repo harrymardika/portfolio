@@ -226,7 +226,11 @@ export const cvVariantSchema = z.strictObject({
     .min(1)
     .refine((list) => new Set(list).size === list.length, 'List each section once'),
   /** Skill group ids in display order; all groups when left out. */
-  skills: z.array(slug).min(1).optional(),
+  skills: z
+    .array(slug)
+    .min(1)
+    .refine((list) => new Set(list).size === list.length, 'List each skill group once')
+    .optional(),
 });
 
 export type Profile = z.infer<typeof profileSchema>;

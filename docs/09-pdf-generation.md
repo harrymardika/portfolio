@@ -30,6 +30,12 @@ Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `d
 - Font: Plus Jakarta Sans (body) dan Young Serif (nama saja), keduanya di-embed. Ukuran 8,6 pt agar muat 2 halaman seperti CV asli.
 - PDF ber-*tag* (struktur heading terbaca ATS dan pembaca layar). Metadata: judul dokumen dari `<title>` (mis. "Harry Mardika · CV"). *Author/keywords* tidak diisi: Chromium tidak mendukungnya dan tidak sebanding dengan menambah library PDF.
 
+## 2a. Varian CV per posisi (Fase 10, D10)
+
+- Didefinisikan di `content/cv-variants.yaml` (docs/04). Halaman cetaknya `/print/cv/<id>/` dan `/id/print/cv/<id>/`, memakai template CV umum yang sama (`CvDocument.astro`) dengan baris peran, ringkasan, urutan bagian, dan poin yang dipilih varian (`applyVariant`).
+- `scripts/generate-pdf.ts` mencetaknya saat build ke `downloads/cv/`, mis. `/downloads/cv/Harry-Mardika-CV-Data-Engineer-EN.pdf`. Aturan sama dengan CV umum: ≤ 2 halaman, ≤ 1 MB, teks bisa dipilih, tanpa nomor HP (dites per varian di `tests/e2e/pdf.spec.ts`).
+- **Tidak ditautkan dari mana pun** dan `robots.txt` melarang `/downloads/cv/`. Daftar semua varian ada di halaman tanpa tautan **`/print/cv-variants/`** (noindex, tanpa statistik); simpan alamat itu untuk mengunduh saat melamar. Alamat tanpa tautan tetap bisa dibuka siapa pun yang mengetahuinya; isinya sama-sama data publik dari `content/`.
+
 ## 3. Aturan Portfolio (visual)
 
 - A4 landscape. Isi: sampul (foto, peran), profil singkat, Journey, proyek `featured: true` (urut `order`) dengan angka unggulan, skills, kontak.

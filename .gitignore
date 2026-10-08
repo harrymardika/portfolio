@@ -22,9 +22,9 @@ src/data/generated/
 !.env.example
 
 # Private source material (raw CV files contain a phone number; data is extracted into content/)
-CV/
+/CV/
 # Raw original photos; optimized copies live in content/media/
-Photos/
+/Photos/
 *.docx
 /Dokumen Perencanaan*.pdf
 

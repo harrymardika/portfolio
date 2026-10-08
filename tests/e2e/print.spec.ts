@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-import { publishedCaseStudies } from './helpers';
+import { localize } from '../../src/lib/content/localize';
+import { UI, type UiKey } from '../../src/lib/i18n/ui';
+import { cvVariants, publishedCaseStudies } from './helpers';
 
 for (const [path, headings] of [
   [
@@ -108,5 +110,62 @@ test('awards and certifications are plain one-line lists, so bold stays meaningf
     const section = page.locator('.cv section').filter({ has: page.getByRole('heading', { name: heading }) });
     await expect(section.locator('li').first()).toBeVisible();
     await expect(section.locator('strong')).toHaveCount(0);
+  }
+});
+
+/** Heading of each CV section a variant can order (CvDocument.astro). */
+const SECTION_HEADINGS: Record<string, UiKey> = {
+  education: 'about.education',
+  skills: 'about.skills',
+  experience: 'about.experience',
+  leadership: 'about.leadership',
+  training: 'about.training',
+  awards: 'about.awards',
+  certifications: 'about.certifications',
+};
+/** Sections a variant may leave out when nothing in them matches its focus. */
+const OPTIONAL_SECTIONS = new Set(['leadership', 'training', 'certifications']);
+
+for (const variant of cvVariants()) {
+  for (const locale of ['en', 'id'] as const) {
+    const path = `${locale === 'en' ? '' : '/id'}/print/cv/${variant.id}/`;
+    test(`${path} is the ${variant.id} CV: its role line and its section order`, async ({ page }) => {
+      await page.goto(path);
+      const t = UI[locale];
+      await expect(page.locator('.cv-role')).toHaveText(localize(variant.role, locale));
+      const actual = await page.locator('.cv h2').allTextContents();
+      const expected = [
+        t['cv.summary'],
+        ...variant.sections.map((section) => t[SECTION_HEADINGS[section] ?? 'cv.summary']),
+      ];
+      expect(actual).toEqual(expected.filter((heading) => actual.includes(heading)));
+      for (const section of variant.sections.filter((section) => !OPTIONAL_SECTIONS.has(section)))
+        expect(actual).toContain(t[SECTION_HEADINGS[section] ?? 'cv.summary']);
+      await expect(page.locator('img, canvas, svg')).toHaveCount(0);
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+      expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+      expect(await page.locator('.cv').innerText()).not.toContain('**');
+    });
+  }
+}
+
+test('the owner page lists every CV variant with working PDF links, and is not indexed', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/print/cv-variants/');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  const links = page.locator('main table a');
+  await expect(links).toHaveCount(cvVariants().length * 2);
+  for (const href of await links.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''))) {
+    expect(href).toMatch(/^\/downloads\/cv\/.+\.pdf$/);
+    expect((await request.head(href)).status()).toBe(200);
+  }
+});
+
+test('no page links to the CV variants', async ({ page }) => {
+  for (const path of ['/', '/about/', '/id/', '/print/cv/']) {
+    await page.goto(path);
+    await expect(page.locator('a[href*="/downloads/cv/"], a[href*="/print/cv-variants/"]')).toHaveCount(0);
   }
 });
