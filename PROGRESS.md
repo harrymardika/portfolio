@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau terjemahan T9.3 dan mengisi kesan & pesan (T9.4); menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** Fase 10 (disetujui pemilik sebelum T9.2 selesai); pemilik mengisi kesan & pesan; menunggu D11 (skill), D13–D14 (asisten AI)
 
 ## Ringkasan
 
@@ -120,7 +120,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
 - [ ] **T9.2** Skill lebih lengkap (D11)
   - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
-- [~] **T9.3** Studi kasus bahasa Indonesia (D12) · *Claude Code: 11 terjemahan tayang sebagai draf, menunggu tinjauan pemilik*
+- [x] **T9.3** Studi kasus bahasa Indonesia (D12) · terjemahan disetujui pemilik 2026-10-08
   - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
   - Kriteria: body `content/projects/id/<slug>.md` untuk semua studi kasus, fallback ke Inggris (+ catatan) bila belum ada; menu CMS; Portfolio PDF ID memakai terjemahan; tes kesamaan struktur EN/ID (judul bagian, gambar); terjemahan ditinjau pemilik; draf AI baru (T8.2) ikut menulis versi ID.
 - [x] **T9.4** Tampilan kesan & pesan (dulu "testimoni"; D15; formulirnya T12.1)
@@ -197,6 +197,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas.
+
+### 2026-10-08 · Claude Code (Opus) · Tinjauan T9.3, uji draf AI, mulai Fase 10
+- Pemilik menyetujui 11 terjemahan studi kasus: T9.3 selesai.
+- Pemilik meminta Fase 10 dikerjakan sekarang walau T9.2 (D11) belum diputuskan; aturan "jangan loncat fase" dikesampingkan atas izin pemilik.
+- Uji draf AI dua bahasa: 9 repo bertopic `portfolio` tanpa studi kasus memenuhi syarat (README cukup panjang), jadi run terjadwal 2026-10-08 02:41 UTC menjadi uji nyata pertama (2 repo per run: `rocm-test`, `netflix-big-data-analytics`). Tidak bisa dipicu manual dari laptop (tanpa token GitHub).
 
 ### 2026-10-08 · Claude Code (Opus) · T9.4 kesan & pesan
 - Pemilik: ini pesan yang ditinggalkan orang lain, tidak harus bernama "testimoni". Nama bagian menjadi **"Kind words" / "Kesan & pesan"**; file `content/messages.yaml`, menu CMS "Kesan & pesan", `role` opsional.
