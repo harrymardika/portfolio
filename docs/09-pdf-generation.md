@@ -34,7 +34,7 @@ Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `d
 
 - Didefinisikan di `content/cv-variants.yaml` (docs/04). Halaman cetaknya `/print/cv/<id>/` dan `/id/print/cv/<id>/`, memakai template CV umum yang sama (`CvDocument.astro`) dengan baris peran, ringkasan, urutan bagian, dan poin yang dipilih varian (`applyVariant`).
 - `scripts/generate-pdf.ts` mencetaknya saat build ke `downloads/cv/`, mis. `/downloads/cv/Harry-Mardika-CV-Data-Engineer-EN.pdf`. Aturan sama dengan CV umum: ≤ 2 halaman, ≤ 1 MB, teks bisa dipilih, tanpa nomor HP (dites per varian di `tests/e2e/pdf.spec.ts`).
-- **Tidak ditautkan dari mana pun** dan `robots.txt` melarang `/downloads/cv/`. Daftar semua varian ada di halaman tanpa tautan **`/print/cv-variants/`** (noindex, tanpa statistik); simpan alamat itu untuk mengunduh saat melamar. Alamat tanpa tautan tetap bisa dibuka siapa pun yang mengetahuinya; isinya sama-sama data publik dari `content/`.
+- Didaftar di halaman **`/cv/`** ("CV per posisi", EN + ID) yang ditautkan di **footer** di samping "Statistik situs" (keputusan pemilik, D10). Halaman itu noindex dan `robots.txt` melarang `/downloads/cv/`, jadi varian tidak muncul di hasil pencarian; unduhan tercatat di statistik sebagai `download-cv`.
 
 ## 3. Aturan Portfolio (visual)
 

@@ -58,8 +58,8 @@ export function allDownloads(name: string): Download[] {
 }
 
 /**
- * Unlinked folder for the CV variants (T10.2, D10): on the site so the owner can fetch them anywhere,
- * but never linked, kept out of the sitemap, and disallowed in robots.txt.
+ * Folder for the CV variants (T10.2, D10), listed on /cv/ and kept out of search results
+ * (robots.txt disallows it).
  */
 export const CV_VARIANTS_DIR = 'cv';
 

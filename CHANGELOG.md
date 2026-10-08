@@ -6,7 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 ## [Unreleased]
 
 ### Added
-- CV variants per position (AI/ML Engineer, Data Engineer, Data Analyst, Product / Project Manager, Management Trainee) in English and Indonesian: built at deploy time into the unlinked `/downloads/cv/` folder and listed on the unlinked page `/print/cv-variants/`; each stays within two ATS-friendly pages (T10.2, T10.3).
+- CVs by role (AI/ML Engineer, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) in English and Indonesian: built at deploy time into `/downloads/cv/` and listed on the page `/cv/`, linked from the footer next to the site statistics (kept out of search results); each stays within two ATS-friendly pages (T10.2, T10.3).
 - CV variant model: `content/cv-variants.yaml` (role line, summary, focus, section order, skill groups per variant) and optional focus labels on highlights, with schema, CMS menu "Varian CV", and tests; variants only select and order existing content (T10.1, D10).
 - "Kind words" / "Kesan & pesan" on the home page: messages people left for Harry, from `content/messages.yaml` (editable in the CMS), shown only with the writer's permission and hidden while the list is empty (T9.4, D15).
 - Indonesian case studies: all 11 case study bodies are translated (`content/projects/id/`), shown on `/id/` pages and in the Indonesian Portfolio PDF, editable in the CMS, with tests that keep sections and images in step with the English version; AI drafts now include the Indonesian body (T9.3, D12).

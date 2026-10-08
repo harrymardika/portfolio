@@ -39,9 +39,9 @@ components:
       - { name: id, label: Indonesia (kosongkan = pakai Inggris), type: text }
       - name: focus
         label: Fokus untuk varian CV (opsional)
-        description: 'Kosong = tampil di semua varian CV. ai = AI/ML, data = data, product = produk/proyek, leadership = kepemimpinan.'
+        description: 'Kosong = tampil di semua varian CV. ai = AI/ML, data = data, product = produk, project = manajemen proyek/delivery, leadership = kepemimpinan.'
         type: select
-        options: { values: [ai, data, product, leadership], multiple: true }
+        options: { values: [ai, data, product, project, leadership], multiple: true }
   slug:
     type: string
     required: true
@@ -355,7 +355,7 @@ content:
             description: Poin tanpa label fokus selalu tampil.
             type: select
             required: true
-            options: { values: [ai, data, product, leadership], multiple: true, min: 1 }
+            options: { values: [ai, data, product, project, leadership], multiple: true, min: 1 }
           - name: sections
             label: Urutan bagian (setelah ringkasan)
             description: Geser untuk mengurutkan. Bagian yang tidak dimasukkan tidak tampil; masing-masing sekali saja.

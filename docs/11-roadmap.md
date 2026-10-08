@@ -1,6 +1,6 @@
 # 11 · Rencana lanjutan (Fase 9–12)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 5 varian, website hanya menautkan CV umum (PDF varian di `/downloads/cv/` tanpa tautan, 2026-10-08), **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. **Sudah diputuskan pemilik (2026-10-07):** D8 = baris peran **AI Product Manager**; D9 = positioning AI Product Manager dengan kemampuan AI engineering (menggantikan rekomendasi §A di bawah); D10 = 5 varian, PDF varian didaftar di `/cv/` dan ditautkan di footer (2026-10-08), **tanpa CV per perusahaan** (§B poin 4 batal); D12 = terjemahkan semua studi kasus, istilah teknis tetap bahasa Inggris; D15 = langsung dengan formulir bermoderasi. Dokumen ini menjelaskan **apa** yang akan dibangun berikutnya, **kenapa**, dan **keputusan apa** yang perlu diambil pemilik sebelum tugasnya dikerjakan. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–12); keputusan yang belum diambil ditandai **D8–D15** di sana.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -122,7 +122,7 @@ Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi,
 |---|---|---|---|
 | D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | "AI Engineer" atau "AI Engineer · AI products, end to end" | T9.1 |
 | D9 | Positioning: AI Engineer utama + produk & data sebagai pendukung? | Ya | T9.1, Fase 10 |
-| D10 | Varian CV mana, dan apakah ditaruh di website | **Diputuskan:** 5 varian; website hanya menautkan CV umum; PDF varian dibuat saat deploy di `/downloads/cv/` (tanpa tautan), daftarnya di `/print/cv-variants/` | T10.x |
+| D10 | Varian CV mana, dan apakah ditaruh di website | **Diputuskan:** 6 varian (Product dan Project Manager terpisah); PDF dibuat saat deploy di `/downloads/cv/`, didaftar di `/cv/` yang ditautkan di footer (noindex) | T10.x |
 | D11 | Skill tambahan yang benar-benar dikuasai (checklist) | Centang dari daftar kandidat | T9.2 |
 | D12 | Studi kasus bahasa Indonesia | (a) ganti kalimat catatan | T9.3 |
 | D13 | Asisten AI: lanjut? di beranda, About, atau tombol mengambang? | Lanjut; bagian di About + tautan dari beranda | Fase 11 |

@@ -113,7 +113,7 @@ Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sam
 
 `variants[]`: `{ id, name, role, summary, focus[], sections[], skills? }`
 - `name`: nama varian (dipakai di nama file PDF). `role` dan `summary`: baris peran dan ringkasan khusus varian ini; ringkasan **hanya berisi fakta yang sudah ada** di konten.
-- `focus`: `ai` · `data` · `product` · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
+- `focus`: `ai` · `data` · `product` (produk) · `project` (manajemen proyek/delivery) · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
 - `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
 - `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil; kosong = semua grup.
 

@@ -19,7 +19,7 @@ items:
         focus: [ai, product, data]
       - en: Led the ML team through an end-to-end pipeline (preparation, modeling, evaluation, deployment) with **90% model accuracy**.
         id: "Memimpin tim ML melalui pipeline end-to-end (persiapan data, pemodelan, evaluasi, deployment) dengan **akurasi model 90%**."
-        focus: [ai, leadership, data]
+        focus: [ai, leadership, data, project]
       - en: Deployed inference services with FastAPI and TensorFlow, integrated with React.js, Hapi.js, and Supabase, delivered as a PWA.
         id: "Men-deploy layanan inferensi dengan FastAPI dan TensorFlow yang terintegrasi dengan React.js, Hapi.js, dan Supabase, disajikan sebagai PWA."
         focus: [ai, product]

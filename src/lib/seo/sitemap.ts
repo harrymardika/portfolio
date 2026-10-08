@@ -63,7 +63,7 @@ export function buildSitemap(pages: readonly SitemapPage[]): string {
   ].join('\n');
 }
 
-/** robots.txt: everything public is crawlable; the API is not a page; CV variants are sent, not found (T10.2). */
+/** robots.txt: everything public is crawlable; the API is not a page; CV variant PDFs stay out of search (T10.2). */
 export function buildRobots(site: string | URL): string {
   return [
     'User-agent: *',

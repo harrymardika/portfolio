@@ -29,7 +29,7 @@ const profile = profileSchema.parse(
   pruneEmpty(load(await readFile(join(ROOT, 'content/profile.yaml'), 'utf8'))),
 );
 
-// CV variants (T10.2): unlinked PDFs in downloads/cv/, from the same print template.
+// CV variants (T10.2): PDFs in downloads/cv/ (listed on /cv/), from the same print template.
 const variants = parseYamlList(await readFile(join(ROOT, 'content/cv-variants.yaml'), 'utf8'), 'variants', {
   withPosition: true,
   mayBeEmpty: true,

@@ -148,24 +148,3 @@ for (const variant of cvVariants()) {
     });
   }
 }
-
-test('the owner page lists every CV variant with working PDF links, and is not indexed', async ({
-  page,
-  request,
-}) => {
-  await page.goto('/print/cv-variants/');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
-  const links = page.locator('main table a');
-  await expect(links).toHaveCount(cvVariants().length * 2);
-  for (const href of await links.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''))) {
-    expect(href).toMatch(/^\/downloads\/cv\/.+\.pdf$/);
-    expect((await request.head(href)).status()).toBe(200);
-  }
-});
-
-test('no page links to the CV variants', async ({ page }) => {
-  for (const path of ['/', '/about/', '/id/', '/print/cv/']) {
-    await page.goto(path);
-    await expect(page.locator('a[href*="/downloads/cv/"], a[href*="/print/cv-variants/"]')).toHaveCount(0);
-  }
-});

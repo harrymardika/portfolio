@@ -32,7 +32,7 @@ describe('downloads', () => {
     ]);
   });
 
-  it('puts CV variants in their own unlinked folder, one per locale', () => {
+  it('puts CV variants in their own folder, one per locale', () => {
     const variants = [{ id: 'data-engineer', name: { en: 'Data Engineer' } }];
     expect(variantDownloads('Harry Mardika', variants)).toEqual([
       {

@@ -1,9 +1,10 @@
 ---
 /**
- * Owner's list of the CV variant PDFs (T10.2, D10). Unlinked, noindex, no statistics beacon: one
- * address to bookmark instead of ten file names. The PDFs are made by scripts/generate-pdf.ts.
+ * CVs by role (T10.2, D10): every CV variant PDF in both languages, linked from the footer at the
+ * owner's request. noindex so search results keep the main positioning; downloads are counted like the
+ * hero's CV button. The PDFs are made by scripts/generate-pdf.ts.
  */
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
 import { localize } from '@/lib/content';
 import { getCvVariants, getProfile } from '@/lib/content/queries';
 import { DOWNLOADS_DIR, variantDownloads } from '@/lib/downloads';
@@ -27,14 +28,14 @@ const rows = variants.map((variant) => ({
 }));
 ---
 
-<BaseLayout
+<PageLayout
   locale={locale}
-  title={`${profile.name} · ${t['cvVariants.title']}`}
+  title={`${t['cvVariants.title']} · ${profile.name}`}
+  description={t['cvVariants.intro']}
+  profile={profile}
   noindex
-  linkAlternates={false}
-  track={false}
 >
-  <main id="main" class="mx-auto grid max-w-[860px] gap-6 px-[clamp(16px,4vw,40px)] py-14">
+  <div class="mx-auto grid max-w-[860px] gap-6 px-[clamp(16px,4vw,40px)] py-16">
     <h1 class="text-h2">{t['cvVariants.title']}</h1>
     <p class="text-ink-muted">{t['cvVariants.intro']}</p>
     {rows.length === 0 ? (
@@ -67,6 +68,7 @@ const rows = variants.map((variant) => ({
                     {files.map((file) => (
                       <a
                         href={file.href}
+                        data-download="cv"
                         class="inline-flex min-h-11 items-center font-semibold text-forest-ink underline underline-offset-4"
                         aria-label={`${localize(variant.name, locale)} ${t['cvVariants.files']} ${file.label}`}
                       >
@@ -81,5 +83,5 @@ const rows = variants.map((variant) => ({
         </table>
       </div>
     )}
-  </main>
-</BaseLayout>
+  </div>
+</PageLayout>

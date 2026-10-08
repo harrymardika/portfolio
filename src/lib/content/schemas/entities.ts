@@ -22,7 +22,7 @@ export const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'github', 'email'] as 
 export const EXPERIENCE_CATEGORIES = ['work', 'founder', 'research', 'leadership', 'teaching', 'program'] as const;
 
 /** Focus labels on highlights; a CV variant shows the highlights of its focus (T10.1). */
-export const FOCUS_AREAS = ['ai', 'data', 'product', 'leadership'] as const;
+export const FOCUS_AREAS = ['ai', 'data', 'product', 'project', 'leadership'] as const;
 
 /** CV sections a variant can order or leave out; the summary always comes first. */
 export const CV_SECTIONS = [

@@ -92,9 +92,9 @@ const en = {
   'about.issued': 'Issued',
   'about.expires': 'Valid until',
   'cv.title': 'CV',
-  'cvVariants.title': 'CV variants',
+  'cvVariants.title': 'CVs by role',
   'cvVariants.intro':
-    'An unlisted page: CVs for specific roles, made from the same content as the general CV, to send when applying. The website links only the general CV.',
+    'CVs tailored to specific roles, made from the same content as my main CV. Download the one that matches the position.',
   'cvVariants.empty': 'No CV variants yet.',
   'cvVariants.variant': 'Variant',
   'cvVariants.role': 'Role line',
@@ -200,9 +200,9 @@ const id: Record<UiKey, string> = {
   'about.issued': 'Terbit',
   'about.expires': 'Berlaku hingga',
   'cv.title': 'CV',
-  'cvVariants.title': 'Varian CV',
+  'cvVariants.title': 'CV per posisi',
   'cvVariants.intro':
-    'Halaman tanpa tautan: CV untuk posisi tertentu, dibuat dari isi yang sama dengan CV umum, untuk dikirim saat melamar. Website hanya menautkan CV umum.',
+    'CV yang disesuaikan per posisi, dibuat dari isi yang sama dengan CV utama saya. Unduh yang sesuai dengan posisinya.',
   'cvVariants.empty': 'Belum ada varian CV.',
   'cvVariants.variant': 'Varian',
   'cvVariants.role': 'Baris peran',

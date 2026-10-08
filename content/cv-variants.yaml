@@ -1,6 +1,6 @@
 # CV variants (Phase 10, decision D10): one CV per kind of position, built from the same content.
 # Each variant only selects and orders existing text; the summary repeats facts already in content/.
-# PDFs: /downloads/cv/ (unlinked), listed at /print/cv-variants/. See docs/04-content-guide.md.
+# PDFs: /downloads/cv/, listed on /cv/ (linked from the footer). See docs/04-content-guide.md.
 variants:
   - id: ai-ml-engineer
     name: { en: AI/ML Engineer, id: AI/ML Engineer }
@@ -62,30 +62,52 @@ variants:
     sections: [skills, experience, training, education, awards, certifications, leadership]
     skills: [ml-cv, product-web, deploy-infra, languages]
 
-  - id: product-project-manager
-    name: { en: Product / Project Manager, id: Product / Project Manager }
-    role: { en: Product / Project Manager, id: Product / Project Manager }
+  - id: product-manager
+    name: { en: Product Manager, id: Product Manager }
+    role: { en: Product Manager, id: Product Manager }
     summary:
       en: >-
-        Product and project lead who takes ideas from user problem to launch. As founder of Decklify, led a
-        5-person team to a **commercial launch in 3 months**, validated product-market fit (**+45 NPS** in the
-        first 2 weeks), and managed national grant funding with 100% accountability. Ran a hackathon for
-        **100+ participants** and cross-functional community programs. Hands-on AI engineering keeps plans
+        Product manager who takes ideas from user problem to launched product. As founder of Decklify, launched
+        an AI SaaS commercially in **3 months**, validated product-market fit with **+45 NPS** and an 8.39/10
+        satisfaction score in the first 2 weeks, and designed a business model with an **83.68% contribution
+        margin** and break-even at 11 transactions per month. Hands-on AI engineering keeps product decisions
         grounded in what the technology can deliver. Informatics graduate (**GPA 3.99/4.00**).
       id: >-
-        Pemimpin produk dan proyek yang membawa ide dari masalah pengguna hingga peluncuran. Sebagai pendiri
-        Decklify, memimpin tim 5 orang hingga **peluncuran komersial dalam 3 bulan**, memvalidasi
-        product-market fit (**NPS +45** di 2 minggu pertama), dan mengelola dana hibah nasional dengan
-        akuntabilitas 100%. Menjalankan hackathon untuk **100+ peserta** dan program komunitas lintas fungsi.
-        Pengalaman langsung di AI engineering membuat rencana berpijak pada kemampuan nyata teknologi.
+        Product manager yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai pendiri
+        Decklify, meluncurkan SaaS AI secara komersial dalam **3 bulan**, memvalidasi product-market fit dengan
+        **NPS +45** dan skor kepuasan 8,39/10 di 2 minggu pertama, serta merancang model bisnis dengan
+        **contribution margin 83,68%** dan titik impas pada 11 transaksi per bulan. Pengalaman langsung di AI
+        engineering membuat keputusan produk berpijak pada kemampuan nyata teknologi. Lulusan Informatika
+        (**IPK 3,99/4,00**).
+    focus: [product]
+    sections: [experience, skills, education, leadership, awards, training, certifications]
+    skills: [product-web, ml-cv, leadership, languages]
+
+  - id: project-manager
+    name: { en: Project Manager, id: Project Manager }
+    role: { en: Project Manager, id: Project Manager }
+    summary:
+      en: >-
+        Project lead who delivers with a clear plan and clear ownership. Led a 5-person team to a **commercial
+        launch in 3 months** and managed IDR 5.85M in national grant funding with **100% accountability**; ran
+        end-to-end operations of a hackathon for **100+ participants and 30 teams**; and managed cross-functional
+        teams organizing workshops, technical events, and competition preparation programs. A background in AI
+        engineering helps scope technical work realistically. Informatics graduate (**GPA 3.99/4.00**).
+      id: >-
+        Pemimpin proyek yang bekerja dengan rencana dan pembagian tanggung jawab yang jelas. Memimpin tim 5 orang
+        hingga **peluncuran komersial dalam 3 bulan** dan mengelola dana hibah nasional Rp5,85 juta dengan
+        **akuntabilitas 100%**; menjalankan operasional hackathon dari awal hingga akhir untuk **100+ peserta dan
+        30 tim**; serta mengelola tim lintas fungsi yang menyelenggarakan workshop, acara teknis, dan program
+        persiapan kompetisi. Latar belakang AI engineering membantu menakar pekerjaan teknis secara realistis.
         Lulusan Informatika (**IPK 3,99/4,00**).
-    focus: [product, leadership]
+    focus: [project, leadership]
     sections: [experience, leadership, skills, education, awards, training, certifications]
-    skills: [product-web, leadership, ml-cv, languages]
+    skills: [leadership, product-web, ml-cv, languages]
 
   - id: management-trainee
     name: { en: Management Trainee, id: Management Trainee }
-    role: { en: Management Trainee, id: Management Trainee }
+    # The programme applied for, not a job held, so the role line describes the candidate.
+    role: { en: Informatics Graduate · Technology & Leadership, id: Lulusan Informatika · Teknologi & Kepemimpinan }
     summary:
       en: >-
         Fast-learning graduate with leadership experience across a startup, a tech community, and teaching.

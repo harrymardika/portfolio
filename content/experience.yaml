@@ -17,7 +17,7 @@ items:
         focus: [ai, product]
       - en: Built and launched the product from scratch to **commercial launch** at decklify.id within **3 months** (Next.js, Go, PostgreSQL).
         id: "Membangun produk dari nol hingga **peluncuran komersial** di decklify.id dalam **3 bulan** (Next.js, Go, PostgreSQL)."
-        focus: [product, ai]
+        focus: [product, ai, project]
       - en: "Validated product-market fit: **+45 NPS**, 8.39/10 satisfaction score, and **100+ decks** generated for 50+ users in the first 2 weeks."
         id: "Memvalidasi product-market fit: **NPS +45**, skor kepuasan 8,39/10, dan **100+ presentasi** dibuat oleh 50+ pengguna dalam 2 minggu pertama."
         focus: [product]
@@ -26,7 +26,7 @@ items:
         focus: [product]
       - en: Led a 5-person team and managed IDR 5.85M in **national grant funding** with 100% accountability.
         id: "Memimpin tim beranggotakan 5 orang dan mengelola **dana hibah nasional** sebesar Rp5,85 juta dengan akuntabilitas 100%."
-        focus: [leadership, product]
+        focus: [leadership, product, project]
 
   - id: mitra-teknologi-gemilang
     organization: PT. Mitra Teknologi Gemilang
@@ -63,13 +63,13 @@ items:
         id: "Terpilih sebagai **1 dari 800 Ambassador dari 12.000+ pendaftar** di seluruh Indonesia untuk kepemimpinan dan advokasi AI."
       - en: Co-coordinated the campus team for the Google Gemini Arena, helping the university secure 1st place in the Gemini Arena Challenge.
         id: "Turut mengoordinasikan tim kampus pada Google Gemini Arena dan membantu universitas meraih juara 1 Gemini Arena Challenge."
-        focus: [leadership]
+        focus: [leadership, project]
       - en: Co-created content featured on @googleindonesia that generated 5k+ engagements and **100k+ views**.
         id: "Turut membuat konten yang ditampilkan di @googleindonesia dan menghasilkan 5 ribu+ interaksi serta **100 ribu+ tayangan**."
         focus: [leadership, product]
       - en: Led referral and on-campus advocacy campaigns, engaging **300+ students** through events and AI workshops.
         id: "Memimpin kampanye referral dan advokasi di kampus yang menjangkau **300+ mahasiswa** melalui acara dan workshop AI."
-        focus: [leadership]
+        focus: [leadership, project]
 
   - id: gunadarma-ai-researcher
     organization: Universitas Gunadarma
@@ -116,7 +116,7 @@ items:
         focus: [product]
       - en: Managed cross-functional teams organizing workshops, technical events, and competition preparation programs.
         id: "Mengelola tim lintas fungsi dalam menyelenggarakan workshop, acara teknis, dan program persiapan kompetisi."
-        focus: [leadership, product]
+        focus: [leadership, product, project]
 
   - id: gdgoc-ml-associate
     organization: Google Developer Groups on Campus Universitas Gunadarma
@@ -135,7 +135,7 @@ items:
         focus: [leadership]
       - en: Led the Gunadarma Code Week (GCW) 2025 Hackathon, managing end-to-end operations for **100+ participants and 30 teams**.
         id: "Memimpin Hackathon Gunadarma Code Week (GCW) 2025 dan mengelola operasional menyeluruh untuk **100+ peserta dan 30 tim**."
-        focus: [leadership, product]
+        focus: [leadership, product, project]
 
   - id: lepkom-lab-assistant
     organization: LePKom Universitas Gunadarma
@@ -151,7 +151,7 @@ items:
         focus: [leadership]
       - en: Managed laboratory systems for LSP certification exams, keeping exam environments stable for 40+ students.
         id: "Mengelola sistem laboratorium untuk ujian sertifikasi LSP sehingga lingkungan ujian tetap stabil bagi 40+ peserta."
-        focus: [leadership]
+        focus: [leadership, project]
 
   - id: idcamp-facilitator
     organization: Indosat Ooredoo Hutchison Digital Camp
@@ -167,7 +167,7 @@ items:
         focus: [leadership, ai]
       - en: Managed live sessions and resolved participant questions in under 24 hours.
         id: "Mengelola sesi langsung dan menjawab pertanyaan peserta dalam waktu kurang dari 24 jam."
-        focus: [leadership]
+        focus: [leadership, project]
       - en: Supported program growth by engaging networks, contributing to a measurable increase in enrollment.
         id: "Mendukung pertumbuhan program melalui jejaring, yang berkontribusi pada peningkatan jumlah pendaftar secara terukur."
         focus: [leadership]
@@ -228,7 +228,7 @@ items:
     highlights:
       - en: Organized "Eco Warrior", an environmental education event with the Ministry of Environment and Forestry that engaged **40+ children** in sustainability practices.
         id: "Menyelenggarakan \"Eco Warrior\", acara edukasi lingkungan bersama Kementerian Lingkungan Hidup dan Kehutanan yang melibatkan **40+ anak** dalam praktik keberlanjutan."
-        focus: [leadership]
+        focus: [leadership, project]
       - en: Strengthened leadership values grounded in environmental stewardship and Pancasila-based principles.
         id: "Memperkuat nilai kepemimpinan yang berlandaskan kepedulian lingkungan dan prinsip Pancasila."
         focus: [leadership]
