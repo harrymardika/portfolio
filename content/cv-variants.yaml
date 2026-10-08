@@ -20,7 +20,7 @@ variants:
         (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan membimbing **75+ peserta**.
     focus: [ai]
     sections: [skills, experience, education, training, awards, leadership, certifications]
-    skills: [ml-cv, deploy-infra, product-web, languages]
+    skills: [ai-ml, llm-genai, cloud-mlops, data, languages]
 
   - id: data-engineer
     name: { en: Data Engineer, id: Data Engineer }
@@ -40,7 +40,7 @@ variants:
         Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
     focus: [data]
     sections: [skills, experience, training, education, awards, certifications, leadership]
-    skills: [deploy-infra, ml-cv, product-web, languages]
+    skills: [data, cloud-mlops, ai-ml, languages]
 
   - id: data-analyst
     name: { en: Data Analyst, id: Data Analyst }
@@ -60,7 +60,7 @@ variants:
         Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
     focus: [data, product]
     sections: [skills, experience, training, education, awards, certifications, leadership]
-    skills: [ml-cv, product-web, deploy-infra, languages]
+    skills: [data, ai-ml, product-management, languages]
 
   - id: product-manager
     name: { en: Product Manager, id: Product Manager }
@@ -81,7 +81,7 @@ variants:
         (**IPK 3,99/4,00**).
     focus: [product]
     sections: [experience, skills, education, leadership, awards, training, certifications]
-    skills: [product-web, ml-cv, leadership, languages]
+    skills: [product-management, web-product, ai-ml, llm-genai, languages]
 
   - id: project-manager
     name: { en: Project Manager, id: Project Manager }
@@ -103,7 +103,7 @@ variants:
         edge). Lulusan Informatika (**IPK 3,99/4,00**).
     focus: [project]
     sections: [experience, leadership, skills, education, awards, training, certifications]
-    skills: [leadership, product-web, ml-cv, languages]
+    skills: [product-management, leadership, web-product, languages]
 
   - id: management-trainee
     name: { en: Management Trainee, id: Management Trainee }
@@ -123,4 +123,4 @@ variants:
         untuk 100+ peserta.
     focus: [leadership, product]
     sections: [education, experience, leadership, awards, skills, training, certifications]
-    skills: [leadership, product-web, ml-cv, languages]
+    skills: [leadership, product-management, data, languages]

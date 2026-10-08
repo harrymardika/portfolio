@@ -151,6 +151,32 @@ describe('content files', () => {
     expect(all.filter(([path, text]) => text.includes('**') && !renderedBold.test(path)).map(([path]) => path)).toEqual([]);
   });
 
+  it('has no text split by an unquoted comma inside { ... }', () => {
+    // `{ en: A (b, c) }` parses as the key "c)" with a null value. Blank values are pruned before
+    // validation (pruneEmpty, for the browser editor), so the text would be cut silently. Every real
+    // key is a plain identifier, so anything else is a broken one-line mapping.
+    const files = [
+      ...readdirSync(CONTENT_DIR).filter((name) => name.endsWith('.yaml')),
+      ...readdirSync(join(CONTENT_DIR, 'projects'))
+        .filter((name) => name.endsWith('.md'))
+        .map((name) => `projects/${name}`),
+    ];
+    const broken: string[] = [];
+    const walk = (node: unknown, path: string): void => {
+      if (Array.isArray(node)) node.forEach((item, index) => walk(item, `${path}[${index}]`));
+      else if (node !== null && typeof node === 'object')
+        for (const [key, value] of Object.entries(node)) {
+          if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) broken.push(`${path}: "${key}"`);
+          walk(value, `${path}.${key}`);
+        }
+    };
+    for (const file of files) {
+      const text = file.endsWith('.md') ? (parseFrontmatter(read(file)).data as unknown) : load(read(file));
+      walk(text, file);
+    }
+    expect(broken).toEqual([]);
+  });
+
   it('contains no phone numbers', () => {
     const files = [
       'profile.yaml',

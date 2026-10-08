@@ -33,7 +33,7 @@ const [profile, experience, education, trainings, awards, certifications, skills
   getTrainings(),
   getAwards(),
   getCertifications(),
-  getSkillGroups(),
+  getSkillGroups('web'),
 ]);
 const { professional, leadership } = splitExperience(experience);
 const jsonLd = [await getPersonJsonLd(locale, Astro.site)];

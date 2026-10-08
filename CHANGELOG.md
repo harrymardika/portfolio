@@ -62,6 +62,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**.
 - Reviewer subagent for Claude Code (`.claude/agents/reviewer.md`).
 
 ### Changed
+- Skills regrouped into eight groups (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & product, Product & project management, Leadership, Languages) with the skills the owner confirmed (SQL, Pandas/NumPy, scikit-learn, Airflow, Spark, Google Cloud, LangChain, BI tools, Figma, Jira, Notion, Scrum, Git, Linux); CV variants pick the relevant groups, and the general CV leaves out the Web & product and Leadership groups to stay at two pages (T9.2, D11).
 - Contributor workflow: `docs/06-development-workflow.md` has ready-to-copy prompts for each kind of AI agent session (continue, a specific task, resume interrupted work, a new request, close the session, review) and habits for Claude Code.
 - Contributor workflow: older session log entries move from `PROGRESS.md` to `docs/progress-archive.md`, AI agents read only the docs a task needs, and project Claude Code settings (`.claude/settings.json`) allow the verification commands and block reading the private `CV/` folder and `.env`.
 - Award titles: "Finalist" / "Finalis" everywhere, with team context in parentheses (Neurontara Data Clash is now "Finalist (Top 5 of 40 Teams)"; Gunadarma Business Idea Competition drops "Team").

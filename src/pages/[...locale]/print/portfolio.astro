@@ -28,7 +28,7 @@ const [profile, milestones, awards, items, entries, skills] = await Promise.all(
   getAwards('cv'),
   getProjectItems(),
   getProjects(),
-  getSkillGroups(),
+  getSkillGroups('web'),
 ]);
 const isFeatured = (
   item: (typeof items)[number],

@@ -154,6 +154,8 @@ export const skillGroupSchema = z.strictObject({
   name: localizedText,
   /** Technology names stay plain strings; everyday words (languages, soft skills) can be translated. */
   items: z.array(z.union([z.string().trim().min(1), localizedText])).min(1),
+  /** `show_on_cv: false` keeps a group off the general CV (two pages); CV variants pick groups by id. */
+  ...visibility,
 });
 
 export const milestoneSchema = z.strictObject({

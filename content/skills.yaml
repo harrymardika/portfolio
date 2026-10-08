@@ -1,41 +1,79 @@
-# Skill groups. Schema: docs/04-content-guide.md §3.
+# Skill groups, shown in this order on the About page and the CV. Schema: docs/04-content-guide.md §3.
+# Only skills the owner can explain in an interview (decision D11, 2026-10-08).
 
 groups:
-  - id: ml-cv
-    name: { en: Machine learning & computer vision, id: Machine learning & computer vision }
+  - id: ai-ml
+    name: { en: AI & machine learning, id: AI & machine learning }
     items:
+      - { en: "Python" }
       - { en: "PyTorch" }
-      - { en: "TensorFlow / Keras" }
+      - { en: "TensorFlow/Keras" }
+      - { en: "scikit-learn" }
+      - { en: "OpenCV" }
       - { en: "YOLO" }
-      - { en: "Computer Vision" }
-      - { en: "NLP" }
-      - { en: "RAG" }
       - { en: "Deep Learning" }
       - { en: "Multimodal AI" }
+      - { en: "Edge AI" }
 
-  - id: deploy-infra
-    name: { en: Deployment & infrastructure, id: Deployment & infrastruktur }
+  - id: llm-genai
+    name: { en: LLM & generative AI, id: LLM & generative AI }
     items:
+      - { en: "NLP" }
+      - { en: "RAG" }
+      - { en: "LangChain" }
+      - { en: "Gemini API" }
+      - { en: "Qdrant/FAISS" }
+
+  - id: data
+    name: { en: Data, id: Data }
+    items:
+      - { en: "SQL (PostgreSQL)" }
+      - { en: "Pandas/NumPy" }
+      - { en: "Spark/PySpark" }
+      - { en: "Airflow" }
+      - { en: "BigQuery" }
+      - { en: "Power BI" }
+      - { en: "Tableau" }
+      - { en: "Looker Studio" }
+
+  - id: cloud-mlops
+    name: { en: Cloud & MLOps, id: Cloud & MLOps }
+    items:
+      - { en: "GCP (Vertex AI, Cloud Run)" }
       - { en: "Docker" }
-      - { en: "MLOps" }
       - { en: "TFX" }
       - { en: "FastAPI" }
-      - { en: "Edge AI (Hailo-8L)" }
-      - { en: "Qdrant / FAISS" }
-      - { en: "Microsoft Azure" }
+      - { en: "Prometheus/Grafana" }
+      - { en: "Azure" }
       - { en: "Alibaba Cloud" }
+      - { en: "Git" }
+      - { en: "Linux" }
 
-  - id: product-web
-    name: { en: Product & web, id: Produk & web }
+  - id: web-product
+    name: { en: Web & product, id: Web & produk }
+    # Two-page general CV (owner, 2026-10-08): left out there, kept on the website and in variants.
+    show_on_cv: false
     items:
       - { en: "Next.js" }
-      - { en: "Go" }
-      - { en: "PostgreSQL" }
       - { en: "React.js" }
+      - { en: "Go" }
       - { en: "Supabase" }
+      - { en: "Streamlit" }
+      - { en: "Figma" }
+
+  - id: product-management
+    name: { en: Product & project management, id: Manajemen produk & proyek }
+    items:
+      - { en: "Scrum/Agile" }
+      - { en: "Jira" }
+      - { en: "Notion" }
+      - { en: Product validation (NPS), id: Validasi produk (NPS) }
+      - { en: Business modeling, id: Model bisnis }
 
   - id: leadership
     name: { en: Leadership & communication, id: Kepemimpinan & komunikasi }
+    # Shown on the website and in the CV variants that pick it; the general CV shows it through experience.
+    show_on_cv: false
     items:
       - { en: Team mentoring, id: Mentoring tim }
       - { en: Curriculum design, id: Desain kurikulum }
@@ -45,5 +83,5 @@ groups:
   - id: languages
     name: { en: Languages, id: Bahasa }
     items:
-      - { en: Indonesian (native), id: Bahasa Indonesia (penutur asli) }
-      - { en: "English (professional working, B2)", id: "Bahasa Inggris (profesional, B2)" }
+      - { en: Indonesian (native), id: Indonesia (penutur asli) }
+      - { en: English (B2), id: Inggris (B2) }

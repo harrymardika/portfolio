@@ -104,6 +104,8 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 ### `skills.yaml`
 `groups[]`: `{ id, name: LocalizedText, items: (string | LocalizedText)[] }`. Nama teknologi cukup ditulis biasa (`PyTorch`); kata sehari-hari ditulis dwibahasa (`{ en: Public speaking, id: Berbicara di depan umum }`). Urutan grup di file = urutan tampil.
 
+Grup saat ini (urutan tampil): `ai-ml`, `llm-genai`, `data`, `cloud-mlops`, `web-product`, `product-management`, `leadership`, `languages`. **Hanya skill yang sanggup Anda jelaskan saat wawancara** (D11). Grup dengan `show_on_cv: false` tidak tampil di **CV umum** (agar tetap 2 halaman), tetapi tetap di website dan bisa dipilih varian CV; saat ini `web-product` dan `leadership`. Tulis ringkas dan hindari pengulangan (mis. `SQL (PostgreSQL)`, bukan dua item). Id grup dipakai `cv-variants.yaml` (`skills`); mengganti id berarti memperbarui varian juga (dicek tes). Teks yang mengandung koma di dalam `{ ... }` wajib diberi tanda kutip; tes menolak baris yang terpotong karena koma.
+
 ### `journey.yaml`
 `milestones[]` (**urutan file = urutan di jalur**, paling lama di atas): `{ id, year, title: LocalizedText, subtitle: LocalizedText, ref? }`. Jangan menulis field `position`; field itu ditambahkan otomatis oleh parser.
 `ref` mengarah ke `id` di experience/awards/education agar dialog detail bisa menampilkan cerita lengkap. Disarankan 4–6 titik.

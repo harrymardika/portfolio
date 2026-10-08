@@ -2,6 +2,7 @@
 /** Source page for the CV PDF (scripts/generate-pdf.ts). Not linked in the navigation; noindex. */
 import CvDocument from '@/components/print/CvDocument.astro';
 import PrintLayout from '@/layouts/PrintLayout.astro';
+import { visibleOn } from '@/lib/content';
 import { getCvData } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
 
@@ -13,9 +14,11 @@ interface Props {
 
 const { locale } = Astro.props;
 const data = await getCvData();
+// The general CV leaves out groups marked `show_on_cv: false`; variants choose their own groups.
+const skills = visibleOn(data.skills, 'cv');
 const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
 ---
 
 <PrintLayout locale={locale} title={`${data.profile.name} · ${UI[locale]['cv.title']}`} size="portrait">
-  <CvDocument locale={locale} siteUrl={siteUrl} {...data} />
+  <CvDocument locale={locale} siteUrl={siteUrl} {...data} skills={skills} />
 </PrintLayout>

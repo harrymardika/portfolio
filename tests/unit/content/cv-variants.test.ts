@@ -68,9 +68,9 @@ const content: CvContent = {
     },
   ],
   skills: [
-    { id: 'ml', position: 0, name: { en: 'ML' }, items: ['PyTorch'] },
-    { id: 'web', position: 1, name: { en: 'Web' }, items: ['Astro'] },
-    { id: 'data', position: 2, name: { en: 'Data' }, items: ['SQL'] },
+    { id: 'ml', position: 0, name: { en: 'ML' }, items: ['PyTorch'], show_on_web: true, show_on_cv: true },
+    { id: 'web', position: 1, name: { en: 'Web' }, items: ['Astro'], show_on_web: true, show_on_cv: true },
+    { id: 'data', position: 2, name: { en: 'Data' }, items: ['SQL'], show_on_web: true, show_on_cv: true },
   ],
 };
 

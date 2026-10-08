@@ -2,6 +2,12 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · Fase 10: varian CV (T10.1–T10.3)
+- D10 disempurnakan bersama pemilik: pemilik tidak ingin membuat PDF di laptop, jadi PDF varian dibuat saat deploy di `/downloads/cv/` (tanpa tautan, dilarang di robots.txt), dengan daftar di `/print/cv-variants/`.
+- T10.1: `content/cv-variants.yaml`, label `focus` pada poin pencapaian, `applyVariant` (pekerjaan dan pendidikan selalu tampil; kepemimpinan/pelatihan yang tidak relevan disembunyikan), skema, menu CMS "Varian CV", tes. Temuan reviewer diperbaiki (gelar menyimpan poin pertama, tebal di ringkasan varian, skill unik, tes CMS untuk multi-select).
+- T10.2: `CvDocument` mengikuti urutan bagian varian; halaman `/print/cv/<id>/`; 10 PDF tambahan, semuanya 2 halaman dan ±200 KB; tes e2e per varian (urutan bagian, baris peran, tanpa nomor HP, ≤ 2 halaman), dan tes bahwa tidak ada halaman yang menautkan varian.
+- T10.3: lima varian (AI/ML Engineer, Data Engineer, Data Analyst, Product / Project Manager, Management Trainee) dengan ringkasan EN/ID dari fakta yang sudah ada; 49 poin diberi label fokus. **Belum:** tinjauan pemilik. Varian data masih tipis karena skill data (SQL, Pandas, dll.) menunggu D11/T9.2.
+
 ### 2026-10-08 · Claude Code (Opus) · Tinjauan T9.3, uji draf AI, mulai Fase 10
 - Pemilik menyetujui 11 terjemahan studi kasus: T9.3 selesai.
 - Pemilik meminta Fase 10 dikerjakan sekarang walau T9.2 (D11) belum diputuskan; aturan "jangan loncat fase" dikesampingkan atas izin pemilik.

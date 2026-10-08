@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau varian CV (T10.3) di `/cv/`; T9.2 menunggu D11; pemilik mengisi kesan & pesan; menunggu D11 (skill), D13–D14 (asisten AI)
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 9 (`docs/11-roadmap.md`) · **Tugas berikutnya:** pemilik meninjau varian CV (T10.3) di `/cv/`; pemilik mengisi kesan & pesan; menunggu D13–D14 (asisten AI) sebelum Fase 11
 
 ## Ringkasan
 
@@ -118,7 +118,7 @@ Progres keseluruhan: **Fase 0–8 selesai; situs online sejak 2026-10-06. Rencan
 
 - [x] **T9.1** Positioning dan baris peran (D8, D9) · disetujui pemilik 2026-10-07. *Sisa untuk pemilik: samakan headline LinkedIn menjadi "AI Product Manager".*
   - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
-- [ ] **T9.2** Skill lebih lengkap (D11)
+- [x] **T9.2** Skill lebih lengkap (D11)
   - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
 - [x] **T9.3** Studi kasus bahasa Indonesia (D12) · terjemahan disetujui pemilik 2026-10-08
   - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
@@ -175,6 +175,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D8 | Baris peran | **AI Product Manager** di website, CV umum, Portfolio PDF, dan JSON-LD (2026-10-07). Jabatan di Pengalaman tetap faktual (Founder & CEO, AI Engineer) |
 | D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering**: suara produk lebih dulu (masalah pengguna, peluncuran, metrik), kemampuan AI sebagai pembeda; jalur lain lewat varian CV (2026-10-07) |
 | D10 | Varian CV | **6 varian** (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee; Product dan Project dipisah 2026-10-08). **CV per perusahaan tidak dibuat** (2026-10-07). PDF varian dibuat saat deploy di `/downloads/cv/` (pemilik tidak ingin membuatnya di laptop) dan **ditautkan di footer** lewat halaman `/cv/` "CV per posisi" (label footer: "Resumes" / "Resume", pilihan pemilik; istilah "CV" tetap dipakai di tempat lain), atas pilihan pemilik walau disarankan tetap tersembunyi; halaman tetap noindex agar hasil pencarian tetap memuat positioning utama (2026-10-08). Varian MT memakai baris peran "Informatics Graduate · Technology & Leadership" karena MT adalah program yang dilamar |
+| D11 | Skill tambahan | Dikonfirmasi satu per satu (2026-10-08): SQL, Pandas/NumPy, scikit-learn, Apache Airflow, Apache Spark/PySpark, Vertex AI, BigQuery, Cloud Run, LangChain, Power BI, Tableau, Looker/Looker Studio, Figma, Jira, Notion, Scrum/Agile, Git, Linux |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
@@ -183,7 +184,6 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 | No | Pertanyaan | Rekomendasi |
 |---|---|---|
-| D11 | Skill tambahan | Pemilik mencentang daftar kandidat |
 | D13 | Asisten AI: lanjut dan letaknya | Lanjut; bagian di About + tautan dari beranda |
 | D14 | Asisten AI: penyedia & penyimpanan pertanyaan | Tanpa penyimpanan; penyedia dicek kebijakan datanya |
 
@@ -197,6 +197,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · T9.2 skill lebih lengkap
+- D11 diputuskan: pemilik mencentang semua kandidat, lalu mengonfirmasi setiap tool di pilihan gabungan (Airflow dan Spark, Power BI/Tableau/Looker, Jira dan Notion).
+- Dikerjakan: `skills.yaml` menjadi 8 grup (AI & ML, LLM & generative AI, Data, Cloud & MLOps, Web & produk, Manajemen produk & proyek, Kepemimpinan, Bahasa), ditambah skill yang sudah terbukti di konten (Python, OpenCV, Streamlit, Prometheus/Grafana, Gemini API); grup skill setiap varian CV diperbarui. Tes baru menolak teks yang terpotong karena koma tanpa tanda kutip di `{ ... }` (sebelumnya potongan itu terhapus diam-diam oleh `pruneEmpty`).
+- CV umum sempat 3 halaman. Pilihan pemilik: penulisan diringkas tanpa pengulangan (mis. `SQL (PostgreSQL)`, `Spark/PySpark`, tanpa "MLOps" di grup Cloud & MLOps) dan grup Web & produk serta Kepemimpinan tidak tampil di CV umum (`show_on_cv: false`, baru untuk grup skill), tetap di website dan varian. Hasil: CV umum dan 12 varian semuanya 2 halaman.
+- Catatan: sesi lain sempat berpindah branch dan meng-stash di folder yang sama saat T9.2 dikerjakan; perubahan dipulihkan dari commit `911d2d2` ke branch bersih. Jangan jalankan dua sesi yang menulis kode di folder yang sama.
+- Belum: -. Langkah berikutnya: tinjauan pemilik atas PDF varian (T10.3); D13–D14 untuk Fase 11.
 
 ### 2026-10-08 · Claude Code (Opus) · Template prompt sesi
 - Pemilik minta cara menulis prompt untuk membuka sesi baru dan melanjutkan progres. `docs/06-development-workflow.md` §3 kini berisi siklus satu sesi, 6 template (lanjutkan, tugas tertentu, lanjutkan yang terputus, permintaan baru, tutup sesi, review), cara menulis permintaan sendiri, dan kebiasaan di Claude Code.
@@ -216,9 +223,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - Pemilik: (1) pisahkan Product Manager dan Project Manager; (2) Management Trainee adalah program, bukan jabatan; (3) tautan daftar varian di footer di samping statistik.
 - Dikerjakan: label fokus baru `project` (10 poin delivery/koordinasi); varian `product-manager` dan `project-manager` menggantikan `product-project-manager`; baris peran MT menjadi "Informatics Graduate · Technology & Leadership". Daftar varian pindah dari `/print/cv-variants/` ke halaman situs biasa **`/cv/`** ("CV per posisi"), ditautkan di footer, tetap noindex; unduhan tercatat sebagai `download-cv`. Saran saya agar tetap tersembunyi (positioning AI Product Manager) sudah disampaikan; pemilik memilih footer.
 - Belum: tinjauan akhir pemilik atas 12 PDF varian.
-
-### 2026-10-08 · Claude Code (Opus) · Fase 10: varian CV (T10.1–T10.3)
-- D10 disempurnakan bersama pemilik: pemilik tidak ingin membuat PDF di laptop, jadi PDF varian dibuat saat deploy di `/downloads/cv/` (tanpa tautan, dilarang di robots.txt), dengan daftar di `/print/cv-variants/`.
-- T10.1: `content/cv-variants.yaml`, label `focus` pada poin pencapaian, `applyVariant` (pekerjaan dan pendidikan selalu tampil; kepemimpinan/pelatihan yang tidak relevan disembunyikan), skema, menu CMS "Varian CV", tes. Temuan reviewer diperbaiki (gelar menyimpan poin pertama, tebal di ringkasan varian, skill unik, tes CMS untuk multi-select).
-- T10.2: `CvDocument` mengikuti urutan bagian varian; halaman `/print/cv/<id>/`; 10 PDF tambahan, semuanya 2 halaman dan ±200 KB; tes e2e per varian (urutan bagian, baris peran, tanpa nomor HP, ≤ 2 halaman), dan tes bahwa tidak ada halaman yang menautkan varian.
-- T10.3: lima varian (AI/ML Engineer, Data Engineer, Data Analyst, Product / Project Manager, Management Trainee) dengan ringkasan EN/ID dari fakta yang sudah ada; 49 poin diberi label fokus. **Belum:** tinjauan pemilik. Varian data masih tipis karena skill data (SQL, Pandas, dll.) menunggu D11/T9.2.
