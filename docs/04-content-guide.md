@@ -226,7 +226,7 @@ categories:
 
 ### Draf studi kasus otomatis oleh AI (T8.2, ADR 0013)
 
-Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Setiap hari (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
+Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Dua kali sehari, pukul 09:41 dan 21:41 WIB (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
 
 1. Buka PR-nya → tab **Files changed**, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result) dan terjemahannya `content/projects/id/<slug>.md`. AI hanya membaca README: cek peran Anda, angka, dan hasil.
 2. Perbaiki yang kurang tepat langsung di PR (⋯ → **Edit file**).

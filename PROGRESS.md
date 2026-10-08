@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 10 (T10.3 menunggu tinjauan pemilik) dan Fase 11 · **Tugas berikutnya:** T11.1 (rencana chatbot sudah disetujui); pemilik meninjau 12 PDF varian CV di `/cv/`, lalu T10.4
+**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 10 (penutupan T10.4) dan Fase 11 · **Tugas berikutnya:** T10.4 penutupan Fase 10 → T11.1 (rencana chatbot sudah disetujui)
 
 ## Ringkasan
 
@@ -19,7 +19,7 @@
 | 7 | Kualitas: SEO, a11y, performa, header keamanan | ✅ Selesai (Lighthouse ≥ 90/95 di CI, Observatory A+) |
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
-| 10 | CV per posisi (§B) | 🔄 T10.1–T10.2 selesai; T10.3 menunggu tinjauan pemilik, lalu penutupan (T10.4) |
+| 10 | CV per posisi (§B) | 🔄 T10.1–T10.3 selesai; tinggal penutupan (T10.4) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ⏳ Rencana disetujui; berikutnya (T11.1) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
@@ -139,7 +139,7 @@ Progres keseluruhan: **Fase 0–9 selesai; situs online sejak 2026-10-06. Rencan
   - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
 - [x] **T10.2** Pembuat PDF per varian
   - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
-- [~] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee · *Claude Code: terisi, menunggu tinjauan pemilik di `/cv/`*
+- [x] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee · disetujui pemilik 2026-10-08
   - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
 - [ ] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
@@ -223,6 +223,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-08 · Claude Code (Opus) · Tindak lanjut T9.6: T10.3, tag rilis, jadwal draf AI
+- **T10.3 disetujui pemilik** (12 PDF varian "sudah bagus"); tinggal penutupan Fase 10 (T10.4).
+- Tag git `v1.0.0` (commit `0918c4e`, akhir 2026-10-07) dan `v1.1.0` (`aacf06e`, penutupan Fase 9) di-push atas izin pemilik.
+- **Jadwal draf AI:** run terjadwal pertama (2026-10-08 02:41 UTC) tidak pernah dibuat GitHub (API: 0 run `schedule`); jadwal `Deploy` juga terlambat atau terlewat beberapa kali. Penyebab di sisi GitHub (jadwal *best-effort*). Pilihan pemilik: dua jadwal per hari (`41 2,14 * * *`), dicatat di docs/10 §3 dan §5.5.
+- Ada 9 repo bertopic `portfolio` tanpa studi kasus; pemilik setuju semuanya dibuatkan draf (±2 PR per run sampai habis). Semua sudah ada di `include` `content/github.yaml`, jadi menghapus topic hanya menghentikan draf, kartunya tetap tampil.
+- Pemilik bertanya cara mengisi kesan & pesan; dijelaskan (CMS → *Kesan & pesan*, hanya dengan izin penulis). Belum ada isi.
+- **Langkah berikutnya:** cek run draf berikutnya (21:41 WIB) membuka PR dua bahasa; T10.4; T11.1.
 
 ### 2026-10-08 · Claude Code (Opus) · T9.6 penutupan Fase 9 (ringkasan fase)
 - **Dibangun di Fase 9:** positioning **AI Product Manager** di hero, About, CV umum, Portfolio, JSON-LD (T9.1); `skills.yaml` 8 grup dengan `show_on_cv` agar CV umum tetap 2 halaman (T9.2); 11 studi kasus bahasa Indonesia di `content/projects/id/` dengan fallback dan tes kesamaan struktur (T9.3); bagian "Kind words / Kesan & pesan" dari `content/messages.yaml`, tersembunyi selama kosong (T9.4); format angka per bahasa lewat `localizeNumber` + tes (T9.5). Tambahan di luar tugas: profil Medium, judul "Finalist", template prompt sesi.

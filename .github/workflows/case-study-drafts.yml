@@ -6,8 +6,11 @@
 name: Case study drafts
 
 on:
+  # GitHub runs schedules on a best-effort basis and sometimes drops one under load (the first
+  # 02:41 run on 2026-10-08 never started), so a second slot catches up the same day. Repos that
+  # already have a draft branch are skipped, so the extra run costs no AI quota when nothing is new.
   schedule:
-    - cron: '41 2 * * *'
+    - cron: '41 2,14 * * *'
   workflow_dispatch:
 
 permissions: {}

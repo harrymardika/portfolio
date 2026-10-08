@@ -77,7 +77,7 @@ Syarat: Bun 1.3+ dan Node.js 22.12+. Semua perintah: [docs/06-development-workfl
 ├── scripts/                   # Build & alat: GitHub sync, PDF, gambar pratinjau, sitemap, CSP, draf AI
 ├── tests/                     # unit (bun test) & e2e (Playwright + axe)
 ├── docker/                    # Dockerfile, Caddyfile, compose produksi & dev, deploy/ (server)
-├── .github/workflows/         # ci, deploy (+ jadwal 6 jam), case-study-drafts (harian)
+├── .github/workflows/         # ci, deploy (+ jadwal 6 jam), case-study-drafts (2× sehari)
 └── docs/                      # Dokumentasi, ADR, prototipe tema
 ```
 

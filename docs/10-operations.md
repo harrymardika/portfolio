@@ -18,14 +18,14 @@ flowchart LR
   GHCR -->|timer 10 menit| SRV[mardika-server<br/>/opt/portfolio]
   SRV -->|Tunnel| CF[Cloudflare<br/>cache 7 hari]
   CF --> V((Pengunjung))
-  AI[Gemini / Groq] -.->|harian| PR
+  AI[Gemini / Groq] -.->|2× sehari| PR
   GSC[Google Search Console] -.->|membaca sitemap| CF
 ```
 
 | Layanan | Fungsi di proyek ini | Jika bermasalah |
 |---|---|---|
 | **GitHub** (repo `harrymardika/portfolio`, publik) | Sumber kode dan isi; menjalankan semua workflow | Situs tetap tayang versi terakhir; tidak ada update |
-| **GitHub Actions** | `CI` (PR), `Deploy` (push ke `main`, tiap 6 jam, manual), `Case study drafts` (harian, manual) | Lihat §5.1 |
+| **GitHub Actions** | `CI` (PR), `Deploy` (push ke `main`, tiap 6 jam, manual), `Case study drafts` (dua kali sehari, manual) | Lihat §5.1 |
 | **GHCR** (`portfolio-web`, `portfolio-stats`, publik) | Menyimpan image; server menariknya tanpa login | Server tetap menjalankan image yang sudah ada |
 | **mardika-server** (laptop Debian 13 di rumah) | Menjalankan Caddy + stats di `/opt/portfolio`; diakses lewat Tailscale | Lihat §5.2; Cloudflare masih menyajikan salinan |
 | **Cloudflare** (zona `mardika.my.id`) | DNS, Tunnel, cache HTML 7 hari, HTTPS | Situs tidak bisa dibuka sama sekali |
@@ -58,7 +58,7 @@ Catatan:
 | Tugas | Cara | Tayang |
 |---|---|---|
 | Mengubah teks, pengalaman, sertifikat, terjemahan | Pages CMS → *Save* ([docs/04 §1](04-content-guide.md)) | ±20 menit |
-| Menambah proyek dari GitHub | Beri repo topic `portfolio` (repo harus publik, README jelas) | Kartu: ≤ 6 jam (jadwal Deploy). Draf studi kasus: PR keesokan harinya |
+| Menambah proyek dari GitHub | Beri repo topic `portfolio` (repo harus publik, README jelas) | Kartu: ≤ 6 jam (jadwal Deploy). Draf studi kasus: PR pada jadwal berikutnya (09:41 atau 21:41 WIB) |
 | Meninjau draf studi kasus AI | Tab *Pull requests* → label `ai-draft` → periksa checklist → **Merge** (= tayang) | ±20 menit setelah merge |
 | Menolak draf AI | Tolak permanen: *Close* saja, **branch dibiarkan** (repo itu tidak dibuatkan draf lagi). Ingin draf baru: *Close* lalu *Delete branch* | – |
 | Membuat draf sekarang, tanpa menunggu jadwal | *Actions → Case study drafts → Run workflow* | – |
@@ -68,8 +68,10 @@ Catatan:
 
 Jadwal otomatis (UTC; WIB = UTC+7):
 - `Deploy`: menit 17 setiap 6 jam (00:17, 06:17, 12:17, 18:17 UTC): sinkron GitHub, PDF baru, sertifikat kedaluwarsa disembunyikan.
-- `Case study drafts`: 02:41 UTC (09:41 WIB) setiap hari, maksimal 2 repo per run.
+- `Case study drafts`: 02:41 dan 14:41 UTC (09:41 dan 21:41 WIB) setiap hari, maksimal 2 repo per run.
 - Server: `portfolio-update.timer` tiap 10 menit; backup statistik 03:30 (jam server) setiap hari, 14 salinan terakhir di `/opt/portfolio/backups/`.
+
+Jadwal GitHub bersifat *best-effort*: run terjadwal bisa terlambat berjam-jam atau dilewati saat GitHub sibuk (contoh: run draf pertama 2026-10-08 09:41 WIB tidak pernah dibuat, dan beberapa jadwal `Deploy` juga terlewat). Karena itu draf punya dua jadwal per hari. Jika tidak bisa menunggu, jalankan manual (*Run workflow*).
 
 ## 4. Perawatan berkala
 
@@ -140,7 +142,7 @@ Buka run *Case study drafts* terakhir; repo yang gagal dibuatkan draf (README te
 - [ ] Repo punya README yang menjelaskan proyeknya (kosong atau di bawah ±200 karakter dilewati).
 - [ ] Belum ada studi kasus untuk repo itu (`links.repo` sama, atau nama file sama dengan nama repo dalam huruf kecil dan tanda hubung, mis. `My_Repo` → `my-repo.md`).
 - [ ] Tidak ada branch lama `drafts/case-study-<nama>` (PR yang ditutup tanpa menghapus branch).
-- [ ] Sudah lewat jadwal 09:41 WIB, atau jalankan manual. Maksimal 2 repo per run.
+- [ ] Sudah lewat jadwal 09:41 atau 21:41 WIB dan run-nya benar-benar ada di tab *Actions* (GitHub kadang melewatkan jadwal), atau jalankan manual. Maksimal 2 repo per run.
 - [ ] Secret `GEMINI_API_KEY`/`GROQ_API_KEY` ada, dan izin *Allow GitHub Actions to create and approve pull requests* aktif.
 
 **Draf tanpa angka metrik:** angka hanya dipakai jika tertulis di README (pengaman terhadap angka karangan AI). Tulis hasil terukur di README repo, atau tambahkan metrik di PR/CMS.
