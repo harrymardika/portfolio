@@ -9,7 +9,7 @@ const { chromium } = require('@playwright/test');
 
 const PORT = process.env.PREVIEW_PORT ?? '4400';
 const median = (minScore) => ['error', { minScore, aggregationMethod: 'median-run' }];
-const PAGES = ['/', '/id/', '/about/', '/projects/', '/projects/decklify/', '/stats/'];
+const PAGES = ['/', '/id/', '/about/', '/projects/', '/projects/decklify/', '/stats/', '/messages/'];
 
 module.exports = {
   ci: {

@@ -42,7 +42,7 @@ describe('checkSubmission', () => {
   });
 
   it('marks a filled honeypot as spam without checking anything else', () => {
-    expect(checkSubmission({ website: 'https://spam.example' })).toEqual({ ok: false, spam: true });
+    expect(checkSubmission({ hp_field: 'https://spam.example' })).toEqual({ ok: false, spam: true });
   });
 
   it('reports each problem by field', () => {

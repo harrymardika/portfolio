@@ -27,7 +27,7 @@ export default defineConfig({
           // --ignore-lock keeps preview in the foreground even when Astro detects an AI agent.
           // E2E is isolated from real data and output: GITHUB_FIXTURE avoids the network and live GitHub data,
           // GITHUB_CACHE and BUILD_OUT_DIR keep the fixture build out of the cache and dist/ used by dev and production.
-          // MESSAGES_FILE: fictional messages, since the real list may be empty (the section is then hidden).
+          // MESSAGES_FILE: fictional messages, since the real list may be empty (the section then shows only the invitation).
           // BUILD_META_DIR keeps the fixture CSP and assistant knowledge out of build-meta/ (assistant-knowledge.spec.ts).
           command:
             `GITHUB_FIXTURE=tests/fixtures/github.json GITHUB_CACHE=src/data/generated/github.e2e.json ` +

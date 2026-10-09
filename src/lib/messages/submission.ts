@@ -85,10 +85,11 @@ function linkProblem(value: string): FieldProblem | null {
 
 /**
  * Check a submission from JSON or a plain form post (field values as strings, the consent box as "on").
- * The honeypot field `website` is hidden from people; anything in it marks the post as spam.
+ * The honeypot field `hp_field` is hidden from people (a name autofill does not recognise); anything in
+ * it marks the post as spam.
  */
 export function checkSubmission(input: Readonly<Record<string, unknown>>): SubmissionCheck {
-  if (text(input['website']) !== '') return { ok: false, spam: true };
+  if (text(input['hp_field']) !== '') return { ok: false, spam: true };
   const lang = LOCALES.find((locale) => locale === input['lang']) ?? 'en';
   const fields = {
     name: text(input['name']),

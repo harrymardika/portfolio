@@ -1,0 +1,341 @@
+---
+/**
+ * The "Leave a message" form (T12.2, ADR 0017). Works without JavaScript: a plain post to
+ * /api/messages answered with a redirect to the sent / not-sent page. With JavaScript it posts JSON and
+ * marks each field the service refused. Every text is UI copy; the owner's name and e-mail come from
+ * content/profile.yaml.
+ */
+import { MESSAGE_LIMITS } from '@/lib/messages';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  ownerName: string;
+  ownerEmail: string;
+}
+
+const { locale, ownerName, ownerEmail } = Astro.props;
+const t = UI[locale];
+const fill = (text: string): string => text.replaceAll('{name}', ownerName);
+const fields = [
+  { name: 'name', label: t['messages.form.name'], autocomplete: 'name', hint: null, required: true },
+  {
+    name: 'role',
+    label: t['messages.form.role'],
+    autocomplete: 'organization-title',
+    hint: t['messages.form.roleHint'],
+    required: false,
+  },
+  {
+    name: 'relationship',
+    label: fill(t['messages.form.relationship']),
+    autocomplete: 'off',
+    hint: t['messages.form.relationshipHint'],
+    required: true,
+  },
+] as const;
+const [before, after] = t['messages.form.privacy'].replaceAll('{name}', ownerName).split('{email}');
+---
+
+<form
+  class="grid gap-6"
+  method="post"
+  action="/api/messages"
+  data-message-form
+  data-sent={localizePath('/messages/sent/', locale)}
+  data-sending={t['messages.form.sending']}
+  data-count={t['messages.form.count'].replace('{max}', String(MESSAGE_LIMITS.message.max))}
+  data-error-required={t['messages.form.error.required']}
+  data-error-too-short={t['messages.form.error.tooShort']}
+  data-error-too-long={t['messages.form.error.tooLong']}
+  data-error-contact={t['messages.form.error.contact']}
+  data-error-link={t['messages.form.error.link']}
+  data-error-consent={t['messages.form.error.consent']}
+  data-error-general={t['messages.form.error.general']}
+  data-error-failed={t['messages.form.error.failed']}
+  data-error-limit={t['messages.form.error.limit']}
+  data-error-closed={t['messages.form.error.closed']}
+  data-error-network={t['messages.form.error.network']}
+>
+  <input type="hidden" name="lang" value={locale} />
+
+  {fields.map((field) => (
+    <div class="grid gap-1.5">
+      <label for={`msg-${field.name}`} class="font-semibold text-ink">
+        {field.label}
+      </label>
+      {field.hint && (
+        <p id={`msg-${field.name}-hint`} class="text-sm text-ink-muted">
+          {field.hint}
+        </p>
+      )}
+      <input
+        id={`msg-${field.name}`}
+        name={field.name}
+        type="text"
+        class="msg-input"
+        autocomplete={field.autocomplete}
+        required={field.required}
+        minlength={field.required ? MESSAGE_LIMITS[field.name].min : undefined}
+        maxlength={MESSAGE_LIMITS[field.name].max}
+        aria-describedby={field.hint ? `msg-${field.name}-hint` : undefined}
+      />
+      <p id={`msg-${field.name}-error`} class="msg-error" data-error-for={field.name} hidden />
+    </div>
+  ))}
+
+  <div class="grid gap-1.5">
+    <label for="msg-message" class="font-semibold text-ink">
+      {t['messages.form.message']}
+    </label>
+    <p id="msg-message-hint" class="text-sm text-ink-muted">
+      {t['messages.form.messageHint']
+        .replace('{min}', String(MESSAGE_LIMITS.message.min))
+        .replace('{max}', String(MESSAGE_LIMITS.message.max))}
+    </p>
+    <textarea
+      id="msg-message"
+      name="message"
+      class="msg-input min-h-40"
+      rows="6"
+      required
+      minlength={MESSAGE_LIMITS.message.min}
+      maxlength={MESSAGE_LIMITS.message.max}
+      aria-describedby="msg-message-hint msg-message-count"
+    ></textarea>
+    <p id="msg-message-count" class="text-sm text-ink-muted" data-counter hidden></p>
+    <p id="msg-message-error" class="msg-error" data-error-for="message" hidden></p>
+  </div>
+
+  <div class="grid gap-1.5">
+    <label for="msg-link" class="font-semibold text-ink">
+      {t['messages.form.link']}
+    </label>
+    <p id="msg-link-hint" class="text-sm text-ink-muted">
+      {t['messages.form.linkHint']}
+    </p>
+    <input
+      id="msg-link"
+      name="link"
+      type="url"
+      class="msg-input"
+      inputmode="url"
+      autocomplete="url"
+      pattern="[Hh][Tt][Tt][Pp][Ss]://.+"
+      maxlength={MESSAGE_LIMITS.link.max}
+      aria-describedby="msg-link-hint"
+    />
+    <p id="msg-link-error" class="msg-error" data-error-for="link" hidden></p>
+  </div>
+
+  <!-- Hidden from people (and screen readers); bots that fill every field reveal themselves. -->
+  <div class="msg-trap" aria-hidden="true">
+    <label for="msg-hp">{t['messages.form.honeypot']}</label>
+    <input id="msg-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="grid gap-1.5">
+    <div class="flex items-start gap-3">
+      <input id="msg-consent" name="consent" type="checkbox" class="mt-1 size-5 shrink-0" required />
+      <label for="msg-consent" class="text-ink">
+        {fill(t['messages.form.consent'])}
+      </label>
+    </div>
+    <p id="msg-consent-error" class="msg-error" data-error-for="consent" hidden></p>
+  </div>
+
+  <section
+    class="grid gap-2 rounded-xl border border-line bg-surface p-5 text-sm text-ink-muted"
+    aria-labelledby="msg-privacy-title"
+  >
+    <h2 id="msg-privacy-title" class="font-semibold text-ink">
+      {t['messages.form.privacyTitle']}
+    </h2>
+    <p>
+      {before}
+      <a href={`mailto:${ownerEmail}`} class="underline underline-offset-4">
+        {ownerEmail}
+      </a>
+      {after}
+    </p>
+  </section>
+
+  <p class="msg-status" data-form-status role="status" aria-live="polite"></p>
+
+  <button type="submit" class="msg-submit" data-submit>
+    {t['messages.form.submit']}
+  </button>
+</form>
+
+<style>
+  .msg-input {
+    width: 100%;
+    min-height: 2.75rem;
+    /* --ink-muted, not --line: a field's edge needs 3:1 against the page (WCAG 1.4.11). */
+    border: 1px solid var(--ink-muted);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.65rem 0.9rem;
+  }
+
+  .msg-input[aria-invalid='true'] {
+    border-color: var(--amber-deep);
+    border-width: 2px;
+  }
+
+  .msg-error,
+  .msg-status:not(:empty) {
+    color: var(--amber-deep);
+    font-weight: 600;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--forest);
+  }
+
+  .msg-trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .msg-submit {
+    justify-self: start;
+    min-height: 2.75rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--on-forest);
+    padding: 0 1.4rem;
+    font-weight: 600;
+  }
+
+  .msg-submit:disabled {
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  type Problem = 'required' | 'too-short' | 'too-long' | 'contact' | 'link' | 'consent';
+
+  const form = document.querySelector<HTMLFormElement>('[data-message-form]');
+  if (form) {
+    const text = (key: string): string => form.dataset[key] ?? '';
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const message = form.querySelector<HTMLTextAreaElement>('#msg-message');
+    const counter = form.querySelector<HTMLElement>('[data-counter]');
+    const problemText: Readonly<Record<Problem, string>> = {
+      required: text('errorRequired'),
+      'too-short': text('errorTooShort'),
+      'too-long': text('errorTooLong'),
+      contact: text('errorContact'),
+      link: text('errorLink'),
+      consent: text('errorConsent'),
+    };
+
+    const count = (): void => {
+      if (!message || !counter) return;
+      counter.hidden = false;
+      counter.textContent = text('count').replace('{count}', String(message.value.length));
+    };
+    message?.addEventListener('input', count);
+
+    const clear = (): void => {
+      if (status) status.textContent = '';
+      for (const error of form.querySelectorAll<HTMLElement>('[data-error-for]')) {
+        error.hidden = true;
+        error.textContent = '';
+        const field = form.elements.namedItem(error.dataset['errorFor'] ?? '');
+        if (field instanceof HTMLElement) {
+          field.removeAttribute('aria-invalid');
+          const described = (field.getAttribute('aria-describedby') ?? '')
+            .split(/\s+/)
+            .filter((id) => id && id !== error.id)
+            .join(' ');
+          if (described) field.setAttribute('aria-describedby', described);
+          else field.removeAttribute('aria-describedby');
+        }
+      }
+    };
+
+    const markProblems = (problems: Readonly<Record<string, Problem>>): void => {
+      let first: HTMLElement | null = null;
+      // Page order, not the order the service listed them in, so focus lands on the topmost field.
+      const names = [...form.querySelectorAll<HTMLElement>('[data-error-for]')].map(
+        (el) => el.dataset['errorFor'] ?? '',
+      );
+      for (const name of names) {
+        const problem = problems[name];
+        if (!problem) continue;
+        const error = form.querySelector<HTMLElement>(`[data-error-for="${CSS.escape(name)}"]`);
+        const field = form.elements.namedItem(name);
+        if (!error || !(field instanceof HTMLElement)) continue;
+        error.textContent = problemText[problem] ?? text('errorGeneral');
+        error.hidden = false;
+        field.setAttribute('aria-invalid', 'true');
+        const described = field.getAttribute('aria-describedby');
+        field.setAttribute('aria-describedby', described ? `${described} ${error.id}` : error.id);
+        first ??= field;
+      }
+      first?.focus();
+    };
+
+    let busy = false;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      // One post at a time; after success the page is already on its way to the thank-you page.
+      if (busy) return;
+      busy = true;
+      clear();
+      const data: Record<string, unknown> = Object.fromEntries(new FormData(form));
+      data['consent'] = (form.elements.namedItem('consent') as HTMLInputElement | null)?.checked === true;
+      const label = submit?.textContent ?? '';
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = text('sending');
+      }
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(data),
+        ...('timeout' in AbortSignal ? { signal: AbortSignal.timeout(15_000) } : {}),
+      })
+        .then(async (response) => {
+          if (response.ok) {
+            window.location.assign(text('sent'));
+            return true;
+          }
+          const body = (await response.json().catch(() => ({}))) as {
+            error?: string;
+            problems?: Record<string, Problem>;
+          };
+          if (body.error === 'invalid' && body.problems) markProblems(body.problems);
+          const key =
+            body.error === 'limit'
+              ? 'errorLimit'
+              : body.error === 'full' || body.error === 'disabled'
+                ? 'errorClosed'
+                : body.error === 'invalid' && body.problems
+                  ? 'errorGeneral'
+                  : 'errorFailed';
+          if (status) status.textContent = text(key);
+          return false;
+        })
+        .catch(() => {
+          if (status) status.textContent = text('errorNetwork');
+          return false;
+        })
+        .then((navigating) => {
+          if (navigating) return;
+          busy = false;
+          if (submit) {
+            submit.disabled = false;
+            submit.textContent = label;
+          }
+        });
+    });
+  }
+</script>

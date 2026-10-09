@@ -28,7 +28,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     // Dev only: forward stats calls to `bun run stats:dev` (production routes them through Caddy).
-    server: { proxy: { '/api/stats': 'http://localhost:8787' } },
+    server: { proxy: { '/api/stats': 'http://localhost:8787', '/api/messages': 'http://localhost:8787' } },
     // Never inline fonts as data: URIs; the CSP allows fonts from 'self' only (src/lib/security/csp.ts).
     build: { assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined) },
   },

@@ -88,7 +88,7 @@ describe('sending a message', () => {
 
   it('pretends a honeypot post succeeded but stores nothing, and logs it as spam', async () => {
     const { handler, logs } = setup();
-    const response = await handler(send({ ...body, website: 'https://spam.example' }));
+    const response = await handler(send({ ...body, hp_field: 'https://spam.example' }));
     expect(response.status).toBe(201);
     expect(store.pendingCount()).toBe(0);
     expect(logs).toEqual([{ event: 'message', status: 'spam' }]);

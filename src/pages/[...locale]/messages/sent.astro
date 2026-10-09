@@ -1,0 +1,44 @@
+---
+/**
+ * Where a plain form post (no JavaScript) lands after /api/messages (T12.2, ADR 0017); also the
+ * target after a successful JavaScript post. Not for search engines.
+ */
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getProfile } from '@/lib/content/queries';
+import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const profile = await getProfile();
+const text = t['messages.sent.text'].replaceAll('{name}', profile.name);
+---
+
+<PageLayout
+  locale={locale}
+  title={`${t['messages.sent.title']} · ${profile.name}`}
+  description={text}
+  profile={profile}
+  noindex
+>
+  <div class="mx-auto grid max-w-[680px] gap-6 px-[clamp(16px,4vw,40px)] py-16">
+    <h1 class="text-h2">{t['messages.sent.title']}</h1>
+    <p class="text-lg text-ink-muted">{text}</p>
+    <p class="flex flex-wrap gap-x-6 gap-y-2">
+      <a
+        href={localizePath('/messages/', locale)}
+        class="font-semibold text-forest-ink underline underline-offset-4"
+      >
+        {t['messages.backToForm']}
+      </a>
+      <a href={localizePath('/', locale)} class="font-semibold text-forest-ink underline underline-offset-4">
+        {t['messages.backHome']}
+      </a>
+    </p>
+  </div>
+</PageLayout>

@@ -1,0 +1,36 @@
+---
+/**
+ * "Leave a message" (T12.2, D15, ADR 0017): visitors leave kind words for the owner. Nothing they send is
+ * shown until the owner approves it; approved messages appear in the home page's "Kind words".
+ */
+import MessageForm from '@/components/messages/MessageForm.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getProfile } from '@/lib/content/queries';
+import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const profile = await getProfile();
+const intro = t['messages.form.intro'].replaceAll('{name}', profile.name);
+---
+
+<PageLayout
+  locale={locale}
+  title={`${t['messages.form.title']} · ${profile.name}`}
+  description={intro}
+  profile={profile}
+>
+  <div class="mx-auto grid max-w-[680px] gap-8 px-[clamp(16px,4vw,40px)] py-16">
+    <header class="grid gap-4">
+      <h1 class="text-h2">{t['messages.form.title']}</h1>
+      <p class="text-lg text-ink-muted">{intro}</p>
+    </header>
+    <MessageForm locale={locale} ownerName={profile.name} ownerEmail={profile.email} />
+  </div>
+</PageLayout>

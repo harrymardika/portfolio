@@ -92,7 +92,7 @@ Aturan:
 │   ├── skills.yaml
 │   ├── journey.yaml
 │   ├── cv-variants.yaml         # varian CV per posisi (Fase 10): memilih & mengurutkan isi
-│   ├── messages.yaml            # kesan & pesan dari orang lain (T9.4), kosong = tidak tampil
+│   ├── messages.yaml            # kesan & pesan dari orang lain (T9.4); yang dari formulir masuk lewat PR (ADR 0017)
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
 │   ├── projects/*.md            # studi kasus; projects/id/*.md = body bahasa Indonesia (T9.3)
 │   └── media/                   # foto & gambar yang dipakai konten
@@ -122,7 +122,7 @@ Aturan:
 │   │   ├── journey/             # Journey.astro (timeline HTML + island 3D), MilestoneDetail (dialog)
 │   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang), SelectedProjects
 │   │   ├── about/               # AboutSection, TimelineItem
-│   │   ├── messages/            # Messages (kesan & pesan di beranda, T9.4)
+│   │   ├── messages/            # Messages (kesan & pesan di beranda + ajakan, T9.4), MessageForm (formulir, T12.2)
 │   │   ├── assistant/           # AskWidget (chatbot di sudut, T11.4) + ask-panel.ts (dimuat saat diklik)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
@@ -138,6 +138,7 @@ Aturan:
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
 │   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
+│   │   │   ├── messages/index.astro (formulir), messages/sent.astro, messages/not-sent.astro (noindex)
 │   │   │   └── print/cv.astro, print/cv/[variant].astro, print/portfolio.astro; cv.astro (daftar CV per posisi)
 │   │   ├── 404.astro, robots.txt.ts, assistant-knowledge.json.ts (sumber pengetahuan chatbot, hanya saat build)
 │   │   └── og-template.astro    # templat gambar pratinjau (dipotret saat build)

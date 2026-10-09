@@ -1,30 +1,33 @@
 ---
 /**
  * "Kind words" / "Kesan & pesan" on the home page (T9.4, D15): messages people left for the owner,
- * from content/messages.yaml. Renders nothing while the list is empty. A message without an
- * Indonesian version is shown in English and marked lang="en".
+ * from content/messages.yaml, and a link to the form for leaving one (T12.2). While the list is empty
+ * only the invitation shows. A message without an Indonesian version is shown in English and marked
+ * lang="en".
  */
 import { isFallback, localize, type LocalizedText, type Message } from '@/lib/content';
-import { type Locale, UI } from '@/lib/i18n';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
   items: Message[];
+  /** The owner's name, for the invitation to leave a message. */
+  ownerName: string;
 }
 
-const { locale, items } = Astro.props;
+const { locale, items, ownerName } = Astro.props;
 const t = UI[locale];
 /** Role (optional) and relationship, each marked lang="en" on its own when not translated. */
 const details = (item: Message): LocalizedText[] =>
   item.role ? [item.role, item.relationship] : [item.relationship];
 ---
 
-{items.length > 0 && (
-  <section id="messages" aria-labelledby="messages-title" class="scroll-mt-20 border-t border-line">
-    <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
-      <h2 id="messages-title" class="text-h2">
-        {t['messages.title']}
-      </h2>
+<section id="messages" aria-labelledby="messages-title" class="scroll-mt-20 border-t border-line">
+  <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
+    <h2 id="messages-title" class="text-h2">
+      {t['messages.title']}
+    </h2>
+    {items.length > 0 && (
       <ul class="grid gap-5 md:grid-cols-2">
         {items.map((item) => (
           <li>
@@ -61,6 +64,15 @@ const details = (item: Message): LocalizedText[] =>
           </li>
         ))}
       </ul>
-    </div>
-  </section>
-)}
+    )}
+    <p class="flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-muted">
+      {t['messages.invite'].replaceAll('{name}', ownerName)}
+      <a
+        href={localizePath('/messages/', locale)}
+        class="inline-flex min-h-11 items-center rounded-full border border-line px-5 font-semibold text-forest-ink transition-colors hover:bg-surface"
+      >
+        {t['messages.leave']}
+      </a>
+    </p>
+  </div>
+</section>

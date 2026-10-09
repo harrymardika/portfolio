@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.2 (halaman formulir)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.3 (halaman tinjau privat)
 
 ## Ringkasan
 
@@ -21,7 +21,7 @@
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1 selesai; berikutnya T12.2 |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.2 selesai; berikutnya T12.3 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
 Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
@@ -173,7 +173,7 @@ Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di hal
 
 - [x] **T12.1** API kesan & pesan di layanan stats + ADR 0017
   - Kriteria: `POST /api/messages` (Origin, honeypot, bot, 3/pengunjung/hari, antrean ≤ 100, validasi termasuk tolak nomor HP/email/URL di teks, persetujuan tayang wajib; JSON atau form biasa → 303), disimpan *pending* di `messages.sqlite` terpisah (tanpa backup, tanpa IP); endpoint ber-token `MESSAGES_ADMIN_TOKEN` untuk tinjau (pending, approve, reject = hapus), workflow (approved, published = hapus), dan jumlah; pending > 90 hari terhapus otomatis; Caddy `/api/messages*` (no-store, ≤ 8 KiB); compose + `.env.example`; tes unit; `/security-review`.
-- [ ] **T12.2** Halaman formulir `/messages/` (EN/ID)
+- [x] **T12.2** Halaman formulir `/messages/` (EN/ID)
   - Kriteria: formulir dengan validasi per field, terkirim tanpa JS (303 ke halaman terima kasih / belum terkirim), pemberitahuan privasi, tautan dari bagian Kesan & pesan di beranda (tetap tampil walau kosong) dan footer; e2e + axe; Lighthouse ≥ 90/95.
 - [ ] **T12.3** Halaman tinjau privat
   - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
@@ -235,6 +235,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T12.2 halaman formulir
+- **Dikerjakan:** `/messages/` dan `/id/messages/` (`MessageForm.astro`): field nama, jabatan (opsional), hubungan, pesan (penghitung karakter), tautan profil (opsional), centang persetujuan, honeypot tersembunyi dari orang dan pembaca layar, kotak "Apa yang terjadi pada pesan Anda" (nama dan email pemilik dari `content/profile.yaml`). Dengan JS: kirim JSON, field yang ditolak diberi `aria-invalid` + pesan yang terhubung, fokus ke field pertama. Tanpa JS: form biasa → 303 ke `/messages/sent/` atau `/messages/not-sent/` (keduanya `noindex`). Bagian Kesan & pesan di beranda kini selalu menampilkan ajakan + tombol ke formulir; footer menautkannya.
+- **Dari review (tanpa blocker):** kirim ganda saat halaman berpindah dicegah; fokus ke field teratas yang ditolak (urutan halaman); pesan "coba lagi nanti" terpisah dari "periksa kolom"; penghitung karakter tidak lagi dibacakan tiap ketikan; garis tepi field memakai `--ink-muted` (kontras ≥ 3:1, WCAG 1.4.11); teks privasi dan persetujuan menyebut bahwa pesan yang disetujui juga ada di kode sumber publik GitHub; angka batas dari `MESSAGE_LIMITS`; honeypot bernama `hp_field` (tidak diisi autofill); proxy dev `/api/messages`; `/messages/` masuk Lighthouse CI; docs/02.
+- **Diuji:** 30 e2e (desktop + HP: kirim JSON, error per field, urutan fokus, kirim ganda, ID, honeypot, tanpa JS, noindex, tautan beranda/footer, axe terang/gelap); dilihat langsung di desktop dan HP; Lighthouse lokal (HP) `/messages/` 100/100/100/100, ketujuh halaman lulus ambang.
+- **Langkah berikutnya:** T12.3 (halaman tinjau privat).
 
 ### 2026-10-09 · Claude Code (Opus) · T12.1 API kesan & pesan
 - **Rencana Fase 12 disetujui pemilik** (formulir di halaman sendiri; tinjau di halaman privat ber-token; PR otomatis untuk pesan yang disetujui; tanpa email penulis; notifikasi harian lewat issue berisi jumlah saja). Pemilik meminta seluruh Fase 12 dikerjakan selagi ia pergi.

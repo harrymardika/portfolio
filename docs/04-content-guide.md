@@ -127,14 +127,14 @@ Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sam
 - penghargaan dan sertifikat selalu tampil.
 
 ### `messages.yaml` (Kesan & pesan, T9.4)
-Pesan yang ditinggalkan orang lain untuk Anda (atasan, rekan, peserta bootcamp, teman). Tampil di beranda dengan judul **"Kind words" / "Kesan & pesan"**, dalam urutan file; **bagian ini tersembunyi selama daftarnya kosong**. Di CMS: menu **Kesan & pesan**.
+Pesan yang ditinggalkan orang lain untuk Anda (atasan, rekan, peserta bootcamp, teman). Tampil di beranda dengan judul **"Kind words" / "Kesan & pesan"**, dalam urutan file, diikuti ajakan dan tombol **"Leave a message" / "Tinggalkan pesan"** ke formulir `/messages/` (selama daftar kosong, hanya ajakan itu yang tampil). Di CMS: menu **Kesan & pesan**.
 
 `items[]`: `{ id, name, role?: LocalizedText, relationship: LocalizedText, message: LocalizedText, link?, approved }`.
 - **Hanya dengan izin penulisnya (D15).** `approved` (wajib, `YYYY-MM`) = bulan orang itu mengizinkan pesannya ditampilkan. Simpan bukti izinnya (chat/email) di luar repo.
 - Tulis pesan apa adanya; memendekkan dengan "…" hanya dengan persetujuan penulis. `message.id` boleh menyusul (tampil bahasa Inggris dengan `lang="en"`).
 - `role` opsional (teman atau peserta tidak perlu jabatan); jika diisi, `en` wajib. `link` hanya profil publik dengan `https://` (mis. LinkedIn); email, nomor HP, dan WhatsApp ditolak skema.
 - Selama daftar kosong, build menulis peringatan `No items found in content/messages.yaml`. Itu normal, bukan error.
-- Sumber yang cocok: rekomendasi LinkedIn, pesan dari peserta/mentor. Formulir untuk pengunjung menyusul di T12.1 dan tetap melewati persetujuan Anda.
+- Sumber yang cocok: rekomendasi LinkedIn, pesan dari peserta/mentor, dan **formulir di `/messages/`** (Fase 12, ADR 0017). Pesan dari formulir tidak pernah tampil sendiri: Anda meninjaunya di halaman privat, dan yang disetujui masuk file ini lewat Pull Request (docs/10 §3.2).
 
 ### `projects/<slug>.md`
 Frontmatter:
