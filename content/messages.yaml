@@ -13,4 +13,11 @@
 #     link: https://www.linkedin.com/in/...    # optional
 #     approved: 2026-10                         # month they allowed the message to be published
 
-items: []
+items:
+  - id: workflow-test-1
+    name: Workflow Test 1
+    relationship:
+      en: Automated system test, please ignore
+    message:
+      en: This is automated test message 1 for the kind words workflow. Please ignore it.
+    approved: 2026-10
