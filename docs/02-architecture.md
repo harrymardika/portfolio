@@ -122,7 +122,8 @@ Aturan:
 │   │   ├── journey/             # Journey.astro (timeline HTML + island 3D), MilestoneDetail (dialog)
 │   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang), SelectedProjects
 │   │   ├── about/               # AboutSection, TimelineItem
-│   │   ├── messages/            # Messages (kesan & pesan di beranda + ajakan, T9.4), MessageForm (formulir, T12.2)
+│   │   ├── messages/            # Messages (kesan & pesan di beranda + ajakan, T9.4), MessageForm (formulir, T12.2),
+│   │   │                        #   MessageReview (antrean privat pemilik, T12.3)
 │   │   ├── assistant/           # AskWidget (chatbot di sudut, T11.4) + ask-panel.ts (dimuat saat diklik)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
@@ -138,7 +139,8 @@ Aturan:
 │   │   ├── [...locale]/         # SATU file per halaman untuk semua bahasa (lihat §7)
 │   │   │   ├── index.astro, about.astro, stats.astro
 │   │   │   ├── projects/index.astro, projects/[slug].astro
-│   │   │   ├── messages/index.astro (formulir), messages/sent.astro, messages/not-sent.astro (noindex)
+│   │   │   ├── messages/index.astro (formulir), messages/sent.astro, messages/not-sent.astro (noindex),
+│   │   │   │   messages/review.astro (tinjau privat ber-token, noindex, tanpa statistik)
 │   │   │   └── print/cv.astro, print/cv/[variant].astro, print/portfolio.astro; cv.astro (daftar CV per posisi)
 │   │   ├── 404.astro, robots.txt.ts, assistant-knowledge.json.ts (sumber pengetahuan chatbot, hanya saat build)
 │   │   └── og-template.astro    # templat gambar pratinjau (dipotret saat build)

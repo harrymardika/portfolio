@@ -1,0 +1,326 @@
+---
+/**
+ * The owner's private review queue for "Kind words" (T12.3, ADR 0017). The token is kept in
+ * sessionStorage for this tab only and sent as a bearer header; without it the API answers nothing.
+ * Visitor text is untrusted: it is only ever written with textContent, and a profile link only becomes
+ * a link when it is https. Every label is UI copy.
+ */
+import { LOCALE_TAGS, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+---
+
+<div
+  class="grid gap-8"
+  data-review
+  data-date-locale={LOCALE_TAGS[locale]}
+  data-loading={t['messages.review.loading']}
+  data-bad-token={t['messages.review.badToken']}
+  data-failed={t['messages.review.failed']}
+  data-summary={t['messages.review.summary']}
+  data-empty={t['messages.review.empty']}
+  data-sent={t['messages.review.sent']}
+  data-written-in={t['messages.review.writtenIn']}
+  data-lang-en={t['messages.review.langEn']}
+  data-lang-id={t['messages.review.langId']}
+  data-approve={t['messages.review.approve']}
+  data-reject={t['messages.review.reject']}
+  data-confirm-approve={t['messages.review.confirmApprove']}
+  data-confirm-reject={t['messages.review.confirmReject']}
+  data-approved={t['messages.review.approved']}
+  data-rejected={t['messages.review.rejected']}
+  data-action-failed={t['messages.review.actionFailed']}
+  data-gone={t['messages.review.gone']}
+>
+  <noscript>
+    <p class="font-semibold text-ink">{t['messages.review.noscript']}</p>
+  </noscript>
+
+  <form class="flex flex-wrap items-end gap-3" data-token-form hidden>
+    <div class="grid min-w-64 flex-1 gap-1.5">
+      <label for="review-token" class="font-semibold text-ink">
+        {t['messages.review.token']}
+      </label>
+      <input
+        id="review-token"
+        type="password"
+        class="review-input"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+    <button type="submit" class="review-button review-primary">
+      {t['messages.review.open']}
+    </button>
+  </form>
+
+  <div class="flex flex-wrap gap-3" data-signed-in hidden>
+    <button type="button" class="review-button" data-reload>
+      {t['messages.review.reload']}
+    </button>
+    <button type="button" class="review-button" data-forget>
+      {t['messages.review.forget']}
+    </button>
+  </div>
+
+  <p class="font-semibold" data-review-status role="status"></p>
+  <p class="text-ink-muted" data-review-summary tabindex="-1"></p>
+  <ul class="grid gap-5" data-review-list></ul>
+</div>
+
+<style>
+  .review-input {
+    width: 100%;
+    min-height: 2.75rem;
+    border: 1px solid var(--ink-muted);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.65rem 0.9rem;
+  }
+
+  /* Global: the card buttons are created by the script below, outside Astro's scoped styles. */
+  :global(.review-button) {
+    min-height: 2.75rem;
+    border: 1px solid var(--ink-muted);
+    border-radius: 999px;
+    padding: 0 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  :global(.review-primary) {
+    border-color: var(--forest);
+    background: var(--forest);
+    color: var(--on-forest);
+  }
+
+  /* Cards are created by the script below, outside Astro's scoped styles. */
+  :global([data-review-list] > li) {
+    display: grid;
+    gap: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+
+  :global([data-review-list] blockquote) {
+    white-space: pre-line;
+    color: var(--ink);
+  }
+</style>
+
+<script>
+  interface QueuedMessage {
+    readonly id: string;
+    readonly createdAt: string;
+    readonly lang: string;
+    readonly name: string;
+    readonly role: string | null;
+    readonly relationship: string;
+    readonly message: string;
+    readonly link: string | null;
+  }
+
+  const STORAGE_KEY = 'kindWordsToken';
+  const root = document.querySelector<HTMLElement>('[data-review]');
+  if (root) {
+    const text = (key: string): string => root.dataset[key] ?? '';
+    /** Fill a placeholder with a function, so "$&" in a visitor's name stays literal. */
+    const fill = (template: string, key: string, value: string | number): string =>
+      template.replaceAll(`{${key}}`, () => String(value));
+    const tokenForm = root.querySelector<HTMLFormElement>('[data-token-form]');
+    const tokenInput = root.querySelector<HTMLInputElement>('#review-token');
+    const signedIn = root.querySelector<HTMLElement>('[data-signed-in]');
+    const status = root.querySelector<HTMLElement>('[data-review-status]');
+    const summary = root.querySelector<HTMLElement>('[data-review-summary]');
+    const list = root.querySelector<HTMLUListElement>('[data-review-list]');
+    const dates = new Intl.DateTimeFormat(text('dateLocale') || undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+    const say = (message: string): void => {
+      if (status) status.textContent = message;
+    };
+    let token = '';
+    const counts = { pending: 0, approved: 0 };
+
+    const element = <K extends keyof HTMLElementTagNameMap>(
+      tag: K,
+      content?: string,
+      className?: string,
+    ): HTMLElementTagNameMap[K] => {
+      const node = document.createElement(tag);
+      if (content !== undefined) node.textContent = content;
+      if (className) node.className = className;
+      return node;
+    };
+
+    /** Only an https address may become a link; anything else stays text. */
+    const httpsUrl = (value: string): URL | null => {
+      try {
+        const url = new URL(value);
+        return url.protocol === 'https:' ? url : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const api = (path: string, method = 'GET'): Promise<Response> =>
+      fetch(path, { method, headers: { authorization: `Bearer ${token}` }, cache: 'no-store' });
+
+    const showSummary = (): void => {
+      if (!summary) return;
+      summary.textContent =
+        counts.pending === 0
+          ? `${text('empty')} ${fill(fill(text('summary'), 'pending', 0), 'approved', counts.approved)}`
+          : fill(fill(text('summary'), 'pending', counts.pending), 'approved', counts.approved);
+    };
+
+    const signedOut = (message = ''): void => {
+      token = '';
+      sessionStorage.removeItem(STORAGE_KEY);
+      if (tokenForm) tokenForm.hidden = false;
+      if (signedIn) signedIn.hidden = true;
+      if (summary) summary.textContent = '';
+      list?.replaceChildren();
+      say(message);
+    };
+
+    /** After a card goes, focus moves to the next card's heading, or to the summary when none is left. */
+    const removeCard = (item: HTMLLIElement): void => {
+      const next = (item.nextElementSibling ?? item.previousElementSibling)?.querySelector<HTMLElement>('h2');
+      item.remove();
+      showSummary();
+      (next ?? summary)?.focus();
+    };
+
+    const card = (message: QueuedMessage): HTMLLIElement => {
+      const item = element('li');
+      const heading = element('h2', message.name, 'text-lg font-semibold text-ink');
+      heading.id = `review-${message.id}`;
+      heading.tabIndex = -1;
+      item.append(heading);
+      item.append(
+        element('p', [message.role, message.relationship].filter(Boolean).join(' · '), 'text-ink-muted'),
+      );
+      const language = message.lang === 'id' ? text('langId') : text('langEn');
+      const when = dates.format(new Date(message.createdAt));
+      item.append(
+        element('p', `${text('sent')} ${when} · ${text('writtenIn')} ${language}`, 'text-sm text-ink-muted'),
+      );
+      if (message.link) {
+        const safe = httpsUrl(message.link);
+        if (safe) {
+          // The parsed address (punycode host) shows lookalike domains for what they are.
+          const link = element(
+            'a',
+            safe.href,
+            'w-max max-w-full break-all text-sm underline underline-offset-4',
+          );
+          link.href = safe.href;
+          link.rel = 'noopener noreferrer nofollow';
+          link.target = '_blank';
+          item.append(link);
+        } else {
+          item.append(element('p', message.link, 'text-sm text-ink-muted break-all'));
+        }
+      }
+      item.append(element('blockquote', message.message));
+
+      const actions = element('div', undefined, 'flex flex-wrap gap-3');
+      const buttons: HTMLButtonElement[] = [];
+      const act = (action: 'approve' | 'reject'): void => {
+        const question = fill(
+          text(action === 'approve' ? 'confirmApprove' : 'confirmReject'),
+          'writer',
+          message.name,
+        );
+        if (!window.confirm(question)) return;
+        for (const button of buttons) button.disabled = true;
+        api(`/api/messages/${encodeURIComponent(message.id)}/${action}`, 'POST')
+          .then((response) => {
+            if (response.status === 401) return signedOut(text('badToken'));
+            if (response.status === 404) {
+              // Handled elsewhere (another tab or device) or deleted after 90 days: it is gone either way.
+              counts.pending -= 1;
+              removeCard(item);
+              return say(text('gone'));
+            }
+            if (!response.ok) throw new Error(String(response.status));
+            counts.pending -= 1;
+            if (action === 'approve') counts.approved += 1;
+            removeCard(item);
+            say(text(action === 'approve' ? 'approved' : 'rejected'));
+          })
+          .catch(() => {
+            for (const button of buttons) button.disabled = false;
+            say(text('actionFailed'));
+          });
+      };
+      for (const action of ['approve', 'reject'] as const) {
+        const button = element(
+          'button',
+          text(action),
+          action === 'approve' ? 'review-button review-primary' : 'review-button',
+        );
+        button.type = 'button';
+        // Several cards: each button also names its writer for screen readers.
+        button.setAttribute('aria-describedby', heading.id);
+        button.addEventListener('click', () => act(action));
+        buttons.push(button);
+        actions.append(button);
+      }
+      item.append(actions);
+      return item;
+    };
+
+    /** Load the whole queue; `focus` moves focus into it once loaded (after opening or reloading). */
+    async function load(focus: boolean): Promise<void> {
+      say(text('loading'));
+      try {
+        const [pending, approved] = await Promise.all([
+          api('/api/messages/pending'),
+          api('/api/messages/approved'),
+        ]);
+        if (pending.status === 401 || approved.status === 401) return signedOut(text('badToken'));
+        if (!pending.ok || !approved.ok) throw new Error('queue');
+        const waiting = ((await pending.json()) as { messages: QueuedMessage[] }).messages;
+        const ready = ((await approved.json()) as { messages: QueuedMessage[] }).messages;
+        sessionStorage.setItem(STORAGE_KEY, token);
+        counts.pending = waiting.length;
+        counts.approved = ready.length;
+        if (tokenForm) tokenForm.hidden = true;
+        if (signedIn) signedIn.hidden = false;
+        list?.replaceChildren(...waiting.map(card));
+        showSummary();
+        say('');
+        if (focus) (list?.querySelector<HTMLElement>('h2') ?? summary)?.focus();
+      } catch {
+        say(text('failed'));
+      }
+    }
+
+    tokenForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      token = tokenInput?.value.trim() ?? '';
+      if (tokenInput) tokenInput.value = '';
+      if (token) void load(true);
+    });
+    root.querySelector('[data-reload]')?.addEventListener('click', () => void load(true));
+    root.querySelector('[data-forget]')?.addEventListener('click', () => {
+      signedOut();
+      tokenInput?.focus();
+    });
+
+    token = sessionStorage.getItem(STORAGE_KEY) ?? '';
+    if (token) void load(false);
+    else signedOut();
+  }
+</script>

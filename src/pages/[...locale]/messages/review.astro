@@ -1,0 +1,38 @@
+---
+/**
+ * The owner's private review queue for "Kind words" (T12.3, ADR 0017). Not linked anywhere, kept out of
+ * search engines and robots, and not counted in the site statistics. Useless without the owner token.
+ */
+import MessageReview from '@/components/messages/MessageReview.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getProfile } from '@/lib/content/queries';
+import { localeStaticPaths, type Locale, UI } from '@/lib/i18n';
+
+export const getStaticPaths = localeStaticPaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const profile = await getProfile();
+const intro = t['messages.review.intro'].replaceAll('{name}', profile.name);
+---
+
+<PageLayout
+  locale={locale}
+  title={`${t['messages.review.title']} · ${profile.name}`}
+  description={intro}
+  profile={profile}
+  noindex
+  track={false}
+>
+  <div class="mx-auto grid max-w-[760px] gap-8 px-[clamp(16px,4vw,40px)] py-16">
+    <header class="grid gap-4">
+      <h1 class="text-h2">{t['messages.review.title']}</h1>
+      <p class="text-lg text-ink-muted">{intro}</p>
+    </header>
+    <MessageReview locale={locale} />
+  </div>
+</PageLayout>

@@ -113,7 +113,14 @@ Pengunjung bisa meninggalkan pesan untuk Anda. **Tidak ada yang tampil sebelum A
 
 **Penulis minta pesannya dihapus:** sebelum diputuskan, tolak di halaman tinjau. Bila sudah disetujui, tutup PR-nya tanpa merge (salinan di server terhapus begitu PR dibuka) dan hapus branch-nya. Bila sudah tayang, hapus dari `content/messages.yaml` (CMS atau PR).
 
-Halaman tinjau (T12.3) serta PR otomatis dan notifikasi harian (T12.4) menyusul.
+**Meninjau pesan (bisa dari HP):** buka https://harry.mardika.my.id/messages/review/ (atau `/id/messages/review/`). Halaman ini tidak ditautkan di mana pun, `noindex`, dan tidak dihitung di statistik. Masukkan `MESSAGES_ADMIN_TOKEN` (salin dari password manager); token hanya diingat untuk tab itu. Setiap pesan tampil dengan nama, jabatan, hubungan, waktu kirim, bahasa, dan tautan profil (cek keasliannya di sana bila perlu):
+- **Setujui** → PR yang menambahkannya ke `content/messages.yaml` dibuka dalam satu jam (T12.4); **merge PR itu = tayang**. Sebelum merge, Anda bisa menyunting teks atau terjemahannya di PR.
+- **Tolak** → pesan langsung dihapus dari server.
+- **Muat ulang antrean** untuk melihat pesan yang baru masuk; **Lupakan token** setelah selesai bila memakai perangkat orang lain.
+
+Alamat halaman ini tercantum di `robots.txt` (agar tidak dirayapi), jadi siapa pun bisa tahu halamannya ada, tetapi tanpa token isinya kosong dan API menolak semua permintaan.
+
+PR otomatis dan notifikasi harian menyusul di T12.4.
 
 ## 4. Perawatan berkala
 

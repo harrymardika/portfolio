@@ -18,6 +18,8 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /** False keeps the page out of the site statistics (the owner's private review page). */
+  track?: boolean;
   jsonLd?: JsonLd[];
   profile: Pick<Profile, 'name' | 'socials'>;
 }

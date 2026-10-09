@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ## [Unreleased]
 
 ### Added
+- Private review page for the owner (`/messages/review/`, EN/ID): opens the queue with the owner token (kept for the tab only), shows each message as plain text with its writer, role, relationship, time, language, and profile link, and approves or rejects it after a confirmation; kept out of search engines, robots, and the site statistics (T12.3).
 - "Leave a message" page (`/messages/`, `/id/messages/`) with a form that works without JavaScript, marks each refused field, counts characters, and explains what is stored and for how long; thank-you and not-sent pages (kept out of search engines); the home page's "Kind words" now always invites visitors to the form, and the footer links to it (T12.2).
 - "Kind words" message API in the stats service, closed until `MESSAGES_ADMIN_TOKEN` is set: visitors' messages wait in a private queue (its own SQLite file, never backed up, no address or e-mail stored) until the owner approves or rejects them; rejected ones are deleted at once, unreviewed ones after 90 days, approved ones once their pull request opens (30 days at most); deleted text leaves no readable copy on disk. Checks: the site's origin, honeypot, bots, 3 messages per visitor per day, at most 100 waiting, no phone number, e-mail, or web address in the text, consent required; plain form posts work without JavaScript. Caddy route `/api/messages*` (never cached, bodies up to 8 KiB) (T12.1, ADR 0017).
 

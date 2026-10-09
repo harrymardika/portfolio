@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.3 (halaman tinjau privat)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.4 (workflow PR otomatis + notifikasi)
 
 ## Ringkasan
 
@@ -21,7 +21,7 @@
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.2 selesai; berikutnya T12.3 |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.3 selesai; berikutnya T12.4 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
 Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
@@ -175,7 +175,7 @@ Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di hal
   - Kriteria: `POST /api/messages` (Origin, honeypot, bot, 3/pengunjung/hari, antrean ≤ 100, validasi termasuk tolak nomor HP/email/URL di teks, persetujuan tayang wajib; JSON atau form biasa → 303), disimpan *pending* di `messages.sqlite` terpisah (tanpa backup, tanpa IP); endpoint ber-token `MESSAGES_ADMIN_TOKEN` untuk tinjau (pending, approve, reject = hapus), workflow (approved, published = hapus), dan jumlah; pending > 90 hari terhapus otomatis; Caddy `/api/messages*` (no-store, ≤ 8 KiB); compose + `.env.example`; tes unit; `/security-review`.
 - [x] **T12.2** Halaman formulir `/messages/` (EN/ID)
   - Kriteria: formulir dengan validasi per field, terkirim tanpa JS (303 ke halaman terima kasih / belum terkirim), pemberitahuan privasi, tautan dari bagian Kesan & pesan di beranda (tetap tampil walau kosong) dan footer; e2e + axe; Lighthouse ≥ 90/95.
-- [ ] **T12.3** Halaman tinjau privat
+- [x] **T12.3** Halaman tinjau privat
   - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
 - [ ] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
   - Kriteria: tiap jam pesan yang disetujui diterjemahkan AI (key `DRAFT_*`, teks dianggap tak tepercaya, diperiksa), ditambahkan ke `content/messages.yaml`, dicek tes konten, dibuka sebagai PR `kind-words` (merge = tayang), lalu dihapus dari server; tiap hari 08.00 WIB issue berisi jumlah pesan menunggu (tanpa isi); `/security-review`.
@@ -235,6 +235,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T12.3 halaman tinjau privat + token di server
+- **Server (atas izin pemilik mengerjakan seluruh Fase 12):** `compose.yml` baru disalin (cadangan di `backups/`), `MESSAGES_ADMIN_TOKEN` dibuat di `/opt/portfolio/.env` (tidak pernah dicetak; ambil dari sana untuk password manager) dan disalin ke secret repo GitHub; `docker compose up -d stats` → log `kind words form open`, `/api/messages/count` = 0, tanpa token 401.
+- **Dikerjakan:** `/messages/review/` + `/id/messages/review/` (`MessageReview.astro`): token di `sessionStorage` per tab, daftar pending (semua teks lewat `textContent`, tautan hanya bila https), ringkasan jumlah pending/approved, Setujui/Tolak dengan konfirmasi, token salah → dilupakan. `noindex`, `Disallow` di robots, `track={false}` (opsi baru di `PageLayout`).
+- **Diuji:** 12 e2e (teks aman dari XSS, tautan `javascript:` tetap teks, konfirmasi, token dikirim, token salah, privat/robots/tanpa statistik, axe terang/gelap, tombol ≥ 44 px); dilihat langsung di desktop dan HP (gaya tombol kartu sempat hilang karena dibuat skrip, diperbaiki dengan `:global`).
+- **Dari review (tanpa blocker):** setelah Setujui/Tolak kartu dihapus dan jumlah diperbarui di tempat (tadinya memuat ulang seluruh antrean, bisa balapan dan menimpa status sukses); tombol "Muat ulang antrean"; 404 = sudah diproses di tempat lain (kartu hilang, pesan jelas); fokus pindah ke kartu berikutnya / ringkasan / kolom token; tombol menyebut nama penulis (`aria-describedby`); placeholder diisi dengan fungsi (pola `$&` di nama tidak berlaku); tanggal sesuai bahasa halaman; tautan profil menampilkan alamat hasil parse (domain mirip terlihat); `autocomplete=current-password`. `/security-review`: tanpa temuan. 18 e2e.
+- **Langkah berikutnya:** T12.4 (workflow PR otomatis + notifikasi harian).
 
 ### 2026-10-09 · Claude Code (Opus) · T12.2 halaman formulir
 - **Dikerjakan:** `/messages/` dan `/id/messages/` (`MessageForm.astro`): field nama, jabatan (opsional), hubungan, pesan (penghitung karakter), tautan profil (opsional), centang persetujuan, honeypot tersembunyi dari orang dan pembaca layar, kotak "Apa yang terjadi pada pesan Anda" (nama dan email pemilik dari `content/profile.yaml`). Dengan JS: kirim JSON, field yang ditolak diberi `aria-invalid` + pesan yang terhubung, fokus ke field pertama. Tanpa JS: form biasa → 303 ke `/messages/sent/` atau `/messages/not-sent/` (keduanya `noindex`). Bagian Kesan & pesan di beranda kini selalu menampilkan ajakan + tombol ke formulir; footer menautkannya.

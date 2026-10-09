@@ -63,13 +63,18 @@ export function buildSitemap(pages: readonly SitemapPage[]): string {
   ].join('\n');
 }
 
-/** robots.txt: everything public is crawlable; the API is not a page; CV variant PDFs stay out of search (T10.2). */
+/**
+ * robots.txt: everything public is crawlable; the API is not a page; CV variant PDFs stay out of search
+ * (T10.2); the owner's message review page is private (T12.3).
+ */
 export function buildRobots(site: string | URL): string {
   return [
     'User-agent: *',
     'Allow: /',
     'Disallow: /api/',
     `Disallow: /${DOWNLOADS_DIR}/${CV_VARIANTS_DIR}/`,
+    'Disallow: /messages/review/',
+    'Disallow: /id/messages/review/',
     '',
     `Sitemap: ${new URL('/sitemap.xml', site).href}`,
     '',
