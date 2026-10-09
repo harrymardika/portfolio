@@ -29,7 +29,7 @@ flowchart LR
 ```
 
 Prinsip utama:
-1. **Statis terlebih dahulu.** Semua halaman di-render saat build dan disajikan Caddy. Satu-satunya proses aplikasi di runtime adalah service statistik kecil (`services/stats/`, ADR 0009); jika ia mati, situs tetap utuh. Ini cepat, aman, dan cocok dengan cache CDN.
+1. **Statis terlebih dahulu.** Semua halaman di-render saat build dan disajikan Caddy. Proses aplikasi di runtime hanya dua layanan kecil: statistik + antrean kesan & pesan (`services/stats/`, ADR 0009, 0017) dan chatbot (`services/assistant/`, ADR 0014); jika keduanya mati, situs tetap utuh. Ini cepat, aman, dan cocok dengan cache CDN.
 2. **Satu sumber data.** `content/` adalah satu-satunya tempat isi. Web, CV, dan Portfolio membaca data yang sama.
 3. **Validasi saat build.** Data salah berarti build gagal, sehingga tidak pernah sampai ke production.
 4. **3D adalah lapisan tambahan.** HTML statis sudah lengkap. Three.js hanya "menghias" jika perangkat mampu.

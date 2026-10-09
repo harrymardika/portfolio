@@ -27,7 +27,7 @@ export interface Translation {
 }
 
 const LANGUAGE: Readonly<Record<Locale, string>> = { en: 'English', id: 'Indonesian' };
-export const otherLocale = (locale: Locale): Locale => (locale === 'en' ? 'id' : 'en');
+const otherLocale = (locale: Locale): Locale => (locale === 'en' ? 'id' : 'en');
 
 const SYSTEM = `You translate a short message that a visitor left for the owner of a personal portfolio website, so it can be shown in both site languages.
 

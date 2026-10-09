@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.5 (penutupan Fase 12)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.1 (peta proyek 3D di halaman Projects)
 
 ## Ringkasan
 
@@ -21,10 +21,10 @@
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.4 selesai; berikutnya T12.5 (penutupan) |
-| 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | ✅ Selesai 2026-10-09 (rilis 1.4.0; formulir tayang) |
+| 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Berikutnya |
 
-Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–12 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
 
 ---
 
@@ -167,7 +167,7 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
 - [x] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: sesuai checklist §2a.
 
-## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
+## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15) ✅
 
 Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di halaman privat ber-token; yang disetujui otomatis jadi PR; tanpa email penulis; notifikasi harian lewat issue GitHub berisi jumlah saja). Repo publik: pesan yang belum disetujui tidak boleh masuk PR, issue, atau log Actions.
 
@@ -179,7 +179,7 @@ Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di hal
   - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
 - [x] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
   - Kriteria: tiap jam pesan yang disetujui diterjemahkan AI (key `DRAFT_*`, teks dianggap tak tepercaya, diperiksa), ditambahkan ke `content/messages.yaml`, dicek tes konten, dibuka sebagai PR `kind-words` (merge = tayang), lalu dihapus dari server; tiap hari 08.00 WIB issue berisi jumlah pesan menunggu (tanpa isi); `/security-review`.
-- [ ] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
+- [x] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 13: 3D tambahan (`docs/11-roadmap.md` §H, D17)
@@ -236,6 +236,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-09 · Claude Code (Opus) · T12.5 penutupan Fase 12 (ringkasan fase)
+- **Yang dibangun (Fase 12, ADR 0017):** formulir "Tinggalkan pesan" `/messages/` (EN/ID, tanpa JS tetap jalan, tanpa email penulis, persetujuan tayang wajib, honeypot, batas 3/hari); antrean privat di layanan stats (`messages.sqlite` terpisah tanpa backup, *rollback journal* + `secure_delete`, pending 90 hari, approved tanpa PR 30 hari, tanpa IP); halaman tinjau privat ber-token `/messages/review/`; workflow `kind-words.yml`: terjemahan AI → satu PR antrean `kind-words/queue` → hapus dari server, dan notifikasi harian berupa issue berisi jumlah saja. Satu aturan kontak (`src/lib/security/contact.ts`) untuk formulir, terjemahan, tes konten, dan chatbot.
+- **Keputusan pemilik:** formulir di halaman sendiri; tinjau di halaman privat; PR otomatis; tanpa email; notifikasi lewat issue GitHub; seluruh fase dikerjakan selagi pemilik pergi (token dipasang di server dan GitHub atas izin itu).
+- **Uji live:** kirim → notify (issue #4) → setujui/tolak → publish (PR #5, terjemahan, model antrean) → issue tertutup otomatis; PR uji ditutup, antrean server kosong. Satu bug ditemukan dan diperbaiki (terjemahan pesan tanpa jabatan).
+- **Rapikan:** tidak ada dependency baru, kunci teks UI semuanya terpakai, tidak ada `TODO`, branch fase ini terhapus (sisa: `drafts/case-study-rocm-test` milik PR #2), konstanta internal tidak lagi diekspor.
+- **Sisa untuk pemilik:** simpan `MESSAGES_ADMIN_TOKEN` dari `/opt/portfolio/.env` ke password manager; pastikan email notifikasi GitHub aktif untuk repo ini (*Watching*); review PR #2 dan draf AI yang menunggu; tutup issue #4/PR #5 tidak perlu (sudah ditutup).
+- **Fase berikutnya:** Fase 13, T13.1 (peta proyek 3D di halaman Projects).
+
 ### 2026-10-09 · Claude Code (Opus) · T12.4 workflow kesan & pesan
 - **Dikerjakan:** `kind-words.yml` (tiap jam `publish`, 08.07 WIB `notify`, manual) + `scripts/kind-words.ts` + `src/lib/messages/publish.ts`. Pesan yang disetujui → terjemahan AI (key `DRAFT_*`, teks pengunjung sebagai data, hasil dicek: skema, jabatan konsisten, tanpa kontak/markup) → entri divalidasi skema konten → **satu PR antrean** `kind-words/queue` (setiap pesan satu commit bertrailer `Kind-words-id`, sehingga tidak pernah dobel) → dihapus dari server setelah ada di PR terbuka. Pesan bahasa Inggris tetap masuk walau terjemahan gagal; pesan bahasa Indonesia dicoba lagi tiap jam. `notify`: satu issue berisi jumlah saja (email GitHub), komentar bila jumlah berubah, ditutup bila nol.
 - **Dari review:** *blocker*: tes konten memakai aturan nomor HP lama dan menolak `**`, sehingga pesan wajar ("08-10-2024", "Rp 62 000 000") gagal terus → **satu aturan kontak** di `src/lib/security/contact.ts` untuk formulir, terjemahan, tes konten, dan chatbot; `**` dibuang di formulir dan terjemahan. Banyak PR per pesan akan saling konflik → satu PR antrean; branch tanpa PR dianggap belum selesai; cron harian digeser dari awal jam; teks persetujuan dan docs menyebut bahwa isi pesan terbaca publik di GitHub begitu masuk PR. `/security-review`: tanpa temuan.
@@ -262,32 +270,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Dari review:** teks yang dihapus sempat tersisa di file WAL (diganti rollback journal, diuji dengan membaca file); purge tadinya hanya berjalan saat ada kiriman; aturan kontak salah menolak `ASP.NET`, tanggal, dan nominal Rupiah, tetapi meloloskan nomor bertitik/berkurung (aturan baru menghitung digit); body rusak kini 400 `malformed`; batas body dinaikkan ke 8 KiB agar form tanpa JS dengan aksen/emoji tidak terpotong Caddy; honeypot dicatat sebagai `spam`. `/security-review`: tanpa temuan.
 - **Diuji:** 61 tes unit pesan/stats; stack Docker lokal (170 tes e2e termasuk rute baru lewat Caddy).
 - **Langkah berikutnya:** T12.2 (halaman formulir `/messages/`, halaman terkirim/belum terkirim).
-
-### 2026-10-09 · Claude Code (Opus) · T11.7 penutupan Fase 11 (ringkasan fase)
-- **Yang dibangun (Fase 11):** chatbot "Tanya Harry" di sudut setiap halaman. Komponennya: pengetahuan dari isi publik situs saat build (tanpa nomor HP, tanpa vector DB); layanan `services/assistant` (Bun, 128 MB, tanpa penyimpanan, batas per pengunjung dan harian, kill switch); widget dialog non-modal EN/ID yang dimuat saat diklik, lembar bawah di HP, pemberitahuan privasi di balik tautan "Privacy"; eval manual dengan model sungguhan (30/30); statistik jumlah pertanyaan tanpa teks. Tambahan di luar rencana: key AI per fitur, draf AI per proyek multi-repo (ADR 0016), pesan error penyedia yang menyebut jenis kuota.
-- **Keputusan pemilik:** D13 (chatbot di sudut), D14 (Gemini utama, Groq cadangan, tanpa penyimpanan teks); 2026-10-09: nama key `ASSISTANT_*`/`DRAFT_*`, chatbot memakai `gemini-3.5-flash-lite` setelah membandingkan limit (ADR 0015), privasi dilipat, draf per proyek (ADR 0016), `DRAFT_*` disimpan di `.env` server sebagai arsip.
-- **Rapikan:** tidak ada dependency baru di fase ini, kunci teks UI semuanya terpakai, tidak ada `TODO` tersisa, tes yang di-skip semuanya beralasan (browser/viewport/stack deploy), branch fase ini sudah dihapus (sisa: `drafts/case-study-rocm-test` milik PR #2 yang masih terbuka).
-- **Sisa untuk pemilik:** review PR #2 (`rocm-test`) dan draf grup yang dibuat run terjadwal (Netflix, Chatbot RAG Gunadarma); setelah 1–2 minggu cek jumlah pertanyaan di statistik privat dan pemakaian AI Studio/Groq (bila mendekati batas: cache jawaban untuk 3 contoh pertanyaan).
-- **Fase berikutnya:** Fase 12, T12.1 (formulir kesan & pesan bermoderasi, D15).
-
-### 2026-10-09 · Claude Code (Opus) · T11.6b draf AI per proyek
-- **Pertanyaan pemilik:** proyek yang sama di beberapa repo dibuatkan berapa draf? Sebelumnya satu per repo (yang bertopic), dari satu README saja. **Keputusan pemilik:** satu grup di `content/github.yaml`, satu draf (ADR 0016).
-- **Dikerjakan:** `selectCandidates` mengembalikan proyek (`DraftCandidate`); grup menjadi kandidat bila salah satu anggota bertopic, tercakup bila repo anggota mana pun ditautkan, dan menunggu bila ada branch draf grup atau anggota; prompt membaca README semua anggota (12.000 karakter dibagi rata); judul/slug dari judul grup, `links.repo` = repo pertama; PR menyebut semua repo. Tes unit baru (24 tes draf).
-- **Dicek dengan data GitHub sungguhan (tanpa AI):** grup Netflix tertahan oleh branch PR #3 lama; grup Gunadarma (4 repo) dan Leukemia (2 repo) masing-masing satu kandidat; run berikutnya mendraf Chatbot RAG Gunadarma dan `pengolahan-citra`.
-- **Langkah berikutnya:** tutup PR #3 (Netflix, satu README) dan hapus branch-nya agar grup Netflix didraf ulang dari 3 README; T11.7.
-
-### 2026-10-09 · Claude Code (Opus) · T11.6 chatbot tayang
-- **Server** (persetujuan pemilik): `compose.yml` dan `update.sh` lama dicadangkan di `/opt/portfolio/backups/` (`*.20261009-1049`), versi baru disalin, `./update.sh` → ketiga container *healthy*, layanan memuat Gemini dan Groq. `ASSISTANT_ENABLED=true` ditambahkan ke `.env` (cadangan `.env` di `backups/`, mode 600); satu pertanyaan uji dijawab Gemini (±5 detik). `DRAFT_*` tetap ada di `.env` server sebagai arsip (pilihan pemilik; tidak dibaca layanan mana pun).
-- **Situs:** package GHCR `portfolio-assistant` dijadikan publik oleh pemilik; variabel repo `PUBLIC_ASSISTANT_ENABLED=true` dibuat, Deploy dijalankan, `update.sh` menarik image web baru dan menghapus cache Cloudflare.
-- **Dicek live (Playwright):** tombol "Ask about Harry"/"Tanya tentang Harry" muncul setelah health check; desktop EN (pertanyaan YOLO, 3 tautan studi kasus) dan HP ID (lembar bawah, "IPK 3,99") berfungsi; konsol tanpa error. Statistik privat: `asks.answered = 2`. Halaman utama EN/ID, `/cv/`, PDF: 200.
-- **Catatan security review (alamat pengunjung):** aman; layanan membaca `CF-Connecting-IP` yang selalu diisi Cloudflare, sama seperti statistik.
-- **Tindak lanjut (permintaan pemilik):** pemberitahuan privasi di bawah kotak tanya kini dilipat di balik tautan kecil "Privacy"/"Privasi" (elemen `<details>`, tanpa JS; isi D14 tetap, satu klik). Cache jawaban belum dibuat (D14: teks pertanyaan tidak disimpan); bila kuota mulai terasa, opsi yang aman privasi adalah jawaban tersimpan untuk 3 contoh pertanyaan. Cek jumlah pertanyaan di statistik privat dan pemakaian AI Studio setelah 1–2 minggu.
-- **Langkah berikutnya:** T11.7 (penutupan Fase 11, rilis bertanggal).
-
-### 2026-10-09 · Claude Code (Opus) · T11.5 uji chatbot selesai + T11.5b key terpisah dan Gemini Flash Lite
-- **Eval:** 4 run lewat `gh` (dipasang pemilik). Run 1–2 memakai key draf dan `gemini-3.5-flash`: kuota hariannya hanya 20 permintaan per project, habis di tengah run 1, sehingga run 2 gagal total di Gemini. Pesan error penyedia kini menyebut jenis kuota (`…PerDayPerProjectPerModel-FreeTier`) tanpa teks bebas. Run 3 (key chatbot, Flash Lite, `split`): 27/30. Run 4: **30/30**. Rincian di `docs/assistant-eval.md`.
-- **Perbaikan prompt:** angka mengikuti bahasa jawaban ("3.99" EN, "3,99" ID); jawaban selalu JSON, juga saat menolak. Penilai eval mengenali lebih banyak kata Indonesia (dua jawaban benar sempat dinilai salah).
-- **Keputusan pemilik (2026-10-09, ADR 0015):** nama key per fitur, sama di GitHub, server, compose, dan kode: `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` (chatbot) dan `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` (draf; workflow draf ikut diubah karena secret lama sudah dihapus). Rencana key backup dan "Groq dulu" dibatalkan setelah pemilik membandingkan limit di AI Studio dan console Groq: chatbot memakai `gemini-3.5-flash-lite` (500/hari, 15/menit) lalu Groq; draf tetap `gemini-3.5-flash` lalu Groq. Eval dibagi dua: 15 kasus Gemini, 15 Groq.
-- **Review:** subagent `reviewer` (tanpa blocker; temuan diperbaiki), `/security-review` seluruh Fase 11 (tanpa temuan). `bun run verify` lulus.
-- **Untuk pemilik (T11.6):** (1) `DRAFT_*` tidak dipakai di server; sebaiknya dihapus dari `/opt/portfolio/.env`. (2) Server belum menjalankan chatbot dan `compose.yml` di sana masih versi lama: ikuti docs/10 §3.1 (package GHCR `portfolio-assistant` publik → salin `compose.yml` dan `update.sh` → `./update.sh` → health). (3) Cek `trusted_proxies` Caddy di belakang cloudflared (catatan security review).
-- **Langkah berikutnya:** T11.6.

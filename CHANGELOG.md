@@ -5,6 +5,10 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-09
+
+Phase 12: the moderated kind words form.
+
 ### Added
 - `kind-words.yml` workflow: every hour, each approved message is translated into the other site language by AI (checked: plain text, no contact details), added to `content/messages.yaml`, checked by the content tests, and committed to the one open pull request (branch `kind-words/queue`; merging publishes them), then deleted from the server; every day at 08:07 WIB, an issue with only the number of messages waiting (GitHub e-mails the owner), closed once all are reviewed (T12.4).
 - Private review page for the owner (`/messages/review/`, EN/ID): opens the queue with the owner token (kept for the tab only), shows each message as plain text with its writer, role, relationship, time, language, and profile link, and approves or rejects it after a confirmation; kept out of search engines, robots, and the site statistics (T12.3).

@@ -7,8 +7,8 @@
  * are matched in lower case only, so names such as ASP.NET or Socket.IO are not taken for addresses.
  */
 export const PHONE_PATTERN = /(?:\+?\b62|\b0)[\s.\-()]*8(?:[\s.\-()]*\d){7,}|\+\d(?:[\s.\-()]*\d){7,}/;
-export const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
-export const URL_PATTERN = /https?:\/\/|www\.|\b[A-Za-z0-9-]+\.(?:com|net|org|io|id|co|me|app|dev|xyz)\b/;
+const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
+const URL_PATTERN = /https?:\/\/|www\.|\b[A-Za-z0-9-]+\.(?:com|net|org|io|id|co|me|app|dev|xyz)\b/;
 
 /** A phone number, e-mail address, or web address in free text. */
 export function hasContactDetails(value: string): boolean {

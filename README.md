@@ -3,7 +3,7 @@
 Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Decklify), dwibahasa, dengan CV dan Portfolio PDF yang dibuat otomatis, di-host sendiri di server rumah.
 
 - **Live:** https://harry.mardika.my.id (Indonesia: https://harry.mardika.my.id/id/)
-- **Status:** online sejak 2026-10-06. Fase 0–11 selesai (chatbot "Tanya Harry" tayang 2026-10-09); rencana Fase 12–13 (formulir kesan & pesan, 3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
+- **Status:** online sejak 2026-10-06. Fase 0–12 selesai (chatbot "Tanya Harry" dan formulir kesan & pesan tayang 2026-10-09); rencana Fase 13 (3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
 - **Dokumentasi:** [`docs/`](docs/README.md). Untuk pemilik, mulai dari **[panduan operasional](docs/10-operations.md)**.
 
 ## Fitur
@@ -13,7 +13,7 @@ Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Deckli
 | Dwibahasa | English di `/`, Bahasa Indonesia di `/id/`, dengan `hreflang` dan tombol ganti bahasa. Studi kasus juga diterjemahkan; angka mengikuti format tiap bahasa (`92.5%` / `92,5%`) |
 | Satu sumber data | Semua isi (profil, pengalaman, proyek, dll.) ada di [`content/`](content/). Website, CV, dan Portfolio PDF membaca data yang sama. |
 | CV & Portfolio PDF | Dibuat otomatis setiap build (EN dan ID). CV ramah ATS, maks. 2 halaman, tanpa nomor HP. Ditambah 6 CV per posisi (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) di `/cv/` (tautan "Resumes" di footer) |
-| Kesan & pesan | Pesan dari orang yang pernah bekerja dengan Harry di beranda, hanya dengan izin penulisnya (`content/messages.yaml`); tidak tampil jika kosong |
+| Kesan & pesan | Pesan dari orang yang pernah bekerja dengan Harry di beranda (`content/messages.yaml`). Pengunjung bisa menulis lewat formulir `/messages/`; tidak ada yang tampil sebelum pemilik menyetujuinya di halaman privat, lalu pesan masuk lewat Pull Request dengan terjemahan AI ([ADR 0017](docs/adr/0017-kind-words-form.md)) |
 | 3D | Kartu foto 3D di hero dan jalur karier 3D (Three.js). Kartu statis untuk perangkat tanpa GPU, hemat data, atau *reduced motion*. |
 | Edit dari browser | [Pages CMS](https://app.pagescms.org): setiap simpan menjadi commit dan tayang otomatis ([ADR 0011](docs/adr/0011-pages-cms.md)) |
 | Proyek dari GitHub | Repo yang dipilih di `content/github.yaml` atau ber-topic `portfolio` tampil otomatis, diperbarui tiap 6 jam |
