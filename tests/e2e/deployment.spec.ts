@@ -127,3 +127,21 @@ test('the assistant refuses other sites and oversized questions', async ({ baseU
   );
   expect(big.status).toBe(413);
 });
+
+test('the kind words form refuses other sites and oversized bodies, without caching', async ({ baseURL }) => {
+  // Node's fetch for the same reason as above: Caddy closes the connection on an oversized body.
+  const post = (origin: string, body: string) =>
+    fetch(new URL('/api/messages', baseURL), {
+      method: 'POST',
+      headers: { origin, 'content-type': 'application/json', 'user-agent': 'Mozilla/5.0 Playwright' },
+      body,
+    });
+  const foreign = await post('https://evil.example', '{"name":"x"}');
+  expect(foreign.status).toBe(403);
+  expect(foreign.headers.get('cache-control')).toBe('no-store');
+  // Caddy refuses bodies over 8 KiB before they reach the service.
+  const big = await post(new URL(baseURL ?? '').origin, JSON.stringify({ message: 'x'.repeat(10_000) }));
+  expect(big.status).toBe(413);
+  // The owner's queue is closed to anyone without the token.
+  expect([401, 404]).toContain((await fetch(new URL('/api/messages/pending', baseURL))).status);
+});

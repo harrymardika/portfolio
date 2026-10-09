@@ -5,9 +5,8 @@
  *   GET  /api/stats/summary   public aggregates, cached
  *   GET  /api/stats/private   tracking-link report, requires the admin token
  *   GET  /api/stats/health    liveness check
+ *   /api/messages*            the "Kind words" form and its moderation queue (messages.ts, ADR 0017)
  */
-import { timingSafeEqual } from 'node:crypto';
-
 import { eventPayloadSchema } from '../../src/lib/stats/events';
 import {
   clientAddress,
@@ -17,6 +16,8 @@ import {
   referrerHost,
   visitorHash,
 } from '../../src/lib/stats/privacy';
+
+import { bearer, sameToken } from './token';
 
 import type { StatsStore } from './store';
 import type { Summary } from '../../src/lib/stats/summary';
@@ -32,6 +33,8 @@ export interface HandlerOptions {
   readonly rateLimit?: number;
   /** Seconds the public summary is cached (in memory and by Cloudflare). */
   readonly summaryTtl?: number;
+  /** Handles /api/messages and below (messages.ts); without it those paths are 404. */
+  readonly messages?: ((request: Request) => Promise<Response>) | undefined;
 }
 
 const MAX_BODY_BYTES = 2_048;
@@ -45,12 +48,6 @@ const json = (body: unknown, status: number, headers: Record<string, string> = {
       ...headers,
     },
   });
-
-function sameToken(given: string, expected: string): boolean {
-  const a = Buffer.from(given);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
 
 export function createHandler(options: HandlerOptions): (request: Request) => Promise<Response> {
   const { store, siteHost, adminToken, now = () => new Date(), rateLimit = 60, summaryTtl = 300 } = options;
@@ -115,7 +112,7 @@ export function createHandler(options: HandlerOptions): (request: Request) => Pr
 
   function privateReport(request: Request): Response {
     if (!adminToken) return json({ error: 'Not found' }, 404);
-    const given = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
+    const given = bearer(request.headers);
     if (!sameToken(given, adminToken))
       return json({ error: 'Unauthorized' }, 401, { 'www-authenticate': 'Bearer' });
     return json(
@@ -134,6 +131,8 @@ export function createHandler(options: HandlerOptions): (request: Request) => Pr
       if (pathname === '/api/stats/summary' && request.method === 'GET') return summary();
       if (pathname === '/api/stats/private' && request.method === 'GET') return privateReport(request);
       if (pathname === '/api/stats/health' && request.method === 'GET') return json({ ok: true }, 200);
+      if (options.messages && (pathname === '/api/messages' || pathname.startsWith('/api/messages/')))
+        return await options.messages(request);
       return json({ error: 'Not found' }, 404);
     } catch (error) {
       console.error('stats: request failed', error);

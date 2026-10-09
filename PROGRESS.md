@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.1 (formulir kesan & pesan bermoderasi)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.2 (halaman formulir)
 
 ## Ringkasan
 
@@ -21,7 +21,7 @@
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Berikutnya |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1 selesai; berikutnya T12.2 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
 Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
@@ -169,9 +169,17 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
 
 ## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
 
-- [ ] **T12.1** Formulir + antrean moderasi (D15)
-  - Kriteria: `POST /api/messages` (honeypot, batas per IP, validasi), disimpan sebagai *pending* di SQLite, tidak pernah tampil otomatis; pemilik meninjau lewat perintah/halaman ber-token; yang disetujui masuk `content/messages.yaml` lewat PR; privasi dan penghapusan data dijelaskan.
-- [ ] **T12.2** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
+Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di halaman privat ber-token; yang disetujui otomatis jadi PR; tanpa email penulis; notifikasi harian lewat issue GitHub berisi jumlah saja). Repo publik: pesan yang belum disetujui tidak boleh masuk PR, issue, atau log Actions.
+
+- [x] **T12.1** API kesan & pesan di layanan stats + ADR 0017
+  - Kriteria: `POST /api/messages` (Origin, honeypot, bot, 3/pengunjung/hari, antrean ≤ 100, validasi termasuk tolak nomor HP/email/URL di teks, persetujuan tayang wajib; JSON atau form biasa → 303), disimpan *pending* di `messages.sqlite` terpisah (tanpa backup, tanpa IP); endpoint ber-token `MESSAGES_ADMIN_TOKEN` untuk tinjau (pending, approve, reject = hapus), workflow (approved, published = hapus), dan jumlah; pending > 90 hari terhapus otomatis; Caddy `/api/messages*` (no-store, ≤ 8 KiB); compose + `.env.example`; tes unit; `/security-review`.
+- [ ] **T12.2** Halaman formulir `/messages/` (EN/ID)
+  - Kriteria: formulir dengan validasi per field, terkirim tanpa JS (303 ke halaman terima kasih / belum terkirim), pemberitahuan privasi, tautan dari bagian Kesan & pesan di beranda (tetap tampil walau kosong) dan footer; e2e + axe; Lighthouse ≥ 90/95.
+- [ ] **T12.3** Halaman tinjau privat
+  - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
+- [ ] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
+  - Kriteria: tiap jam pesan yang disetujui diterjemahkan AI (key `DRAFT_*`, teks dianggap tak tepercaya, diperiksa), ditambahkan ke `content/messages.yaml`, dicek tes konten, dibuka sebagai PR `kind-words` (merge = tayang), lalu dihapus dari server; tiap hari 08.00 WIB issue berisi jumlah pesan menunggu (tanpa isi); `/security-review`.
+- [ ] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
 ## Fase 13: 3D tambahan (`docs/11-roadmap.md` §H, D17)
@@ -227,6 +235,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T12.1 API kesan & pesan
+- **Rencana Fase 12 disetujui pemilik** (formulir di halaman sendiri; tinjau di halaman privat ber-token; PR otomatis untuk pesan yang disetujui; tanpa email penulis; notifikasi harian lewat issue berisi jumlah saja). Pemilik meminta seluruh Fase 12 dikerjakan selagi ia pergi.
+- **Dikerjakan:** modul `messages` di layanan stats (ADR 0017): `POST /api/messages` (JSON atau form biasa → 303), endpoint pemilik ber-token `MESSAGES_ADMIN_TOKEN` (pending, approve, reject, approved, published, count); `messages.sqlite` terpisah tanpa backup, *rollback journal* + `secure_delete`; purge saat mulai dan tiap 6 jam (pending 90 hari, approved tanpa PR 30 hari); validasi bersama di `src/lib/messages/`; Caddy `/api/messages*` (no-store, 8 KiB); compose, `.env.example`, docs/02, 07, 10 §3.2.
+- **Dari review:** teks yang dihapus sempat tersisa di file WAL (diganti rollback journal, diuji dengan membaca file); purge tadinya hanya berjalan saat ada kiriman; aturan kontak salah menolak `ASP.NET`, tanggal, dan nominal Rupiah, tetapi meloloskan nomor bertitik/berkurung (aturan baru menghitung digit); body rusak kini 400 `malformed`; batas body dinaikkan ke 8 KiB agar form tanpa JS dengan aksen/emoji tidak terpotong Caddy; honeypot dicatat sebagai `spam`. `/security-review`: tanpa temuan.
+- **Diuji:** 61 tes unit pesan/stats; stack Docker lokal (170 tes e2e termasuk rute baru lewat Caddy).
+- **Langkah berikutnya:** T12.2 (halaman formulir `/messages/`, halaman terkirim/belum terkirim).
 
 ### 2026-10-09 · Claude Code (Opus) · T11.7 penutupan Fase 11 (ringkasan fase)
 - **Yang dibangun (Fase 11):** chatbot "Tanya Harry" di sudut setiap halaman. Komponennya: pengetahuan dari isi publik situs saat build (tanpa nomor HP, tanpa vector DB); layanan `services/assistant` (Bun, 128 MB, tanpa penyimpanan, batas per pengunjung dan harian, kill switch); widget dialog non-modal EN/ID yang dimuat saat diklik, lembar bawah di HP, pemberitahuan privasi di balik tautan "Privacy"; eval manual dengan model sungguhan (30/30); statistik jumlah pertanyaan tanpa teks. Tambahan di luar rencana: key AI per fitur, draf AI per proyek multi-repo (ADR 0016), pesan error penyedia yang menyebut jenis kuota.

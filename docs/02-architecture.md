@@ -143,7 +143,8 @@ Aturan:
 │   │   └── og-template.astro    # templat gambar pratinjau (dipotret saat build)
 │   ├── styles/                  # tokens.css, global.css
 │   └── data/generated/          # output script build (di-gitignore)
-├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server
+├── services/stats/              # service statistik (Bun + bun:sqlite): store, handler, server; juga antrean kesan & pesan
+│                                #   (messages, messages-store: messages.sqlite terpisah, token, ADR 0017)
 ├── services/assistant/          # chatbot "Tanya Harry" (Bun, tanpa penyimpanan): handler (POST /api/ask, health),
 │                                #   routes (penyedia + pengetahuan, dipakai juga uji), server
 ├── scripts/                     # fetch-github, generate-pdf, generate-og, generate-sitemap, generate-knowledge, generate-csp, precompress,

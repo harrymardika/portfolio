@@ -22,8 +22,8 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 | File | Isi |
 |---|---|
 | `docker/Dockerfile` | Multi-stage: `build` (Node 22 + Bun + Chromium → GitHub sync, Astro, PDF, pengetahuan chatbot, CSP, kompresi `.br`/`.gz`, bundle stats dan assistant) → `web` (Caddy + `dist/`), `stats` (Bun + 1 file `server.js`), dan `assistant` (Bun + `server.js` + `knowledge.json`/`knowledge-compact.json` build itu; ADR 0014) |
-| `docker/Caddyfile` | File statis terkompresi (`precompressed br gzip`), `/api/health`, proxy `/api/stats/*` dan `/api/ask*` (chatbot: `no-store`, body maks. 8 KB), header keamanan, CSP hasil build, cache header, halaman 404 |
-| `docker/compose.yml` | Produksi: `web` (port `127.0.0.1:8080`, 96 MB, `GOMEMLIMIT=48MiB`) + `stats` (128 MB, volume `stats-data`) + `assistant` (128 MB, tanpa volume, mati sampai `ASSISTANT_ENABLED=true`, key `ASSISTANT_*` dari `.env`); semua *read-only*, tanpa capability, `no-new-privileges` |
+| `docker/Caddyfile` | File statis terkompresi (`precompressed br gzip`), `/api/health`, proxy `/api/stats/*`, `/api/messages*` (kesan & pesan: `no-store`, body maks. 8 KiB) dan `/api/ask*` (chatbot: `no-store`, body maks. 8 KB), header keamanan, CSP hasil build, cache header, halaman 404 |
+| `docker/compose.yml` | Produksi: `web` (port `127.0.0.1:8080`, 96 MB, `GOMEMLIMIT=48MiB`) + `stats` (128 MB, volume `stats-data`; juga antrean kesan & pesan, tertutup sampai `MESSAGES_ADMIN_TOKEN` diisi) + `assistant` (128 MB, tanpa volume, mati sampai `ASSISTANT_ENABLED=true`, key `ASSISTANT_*` dari `.env`); semua *read-only*, tanpa capability, `no-new-privileges` |
 | `docker/deploy/update.sh` | `pull` → `up -d --wait` → hapus image lama (> 7 hari) → jika image `web` berubah, hapus cache Cloudflare untuk situs ini (ADR 0012; dites di `tests/unit/deploy-update.test.ts`) |
 | `docker/deploy/portfolio-update.{service,timer}` | systemd: jalankan `update.sh` tiap 10 menit |
 | `docker/deploy/backup-stats.sh` | Backup SQLite konsisten (`VACUUM INTO`), simpan 14 terakhir |
@@ -89,7 +89,7 @@ systemctl list-timers portfolio-update.timer
 - Aset ber-hash (`/_astro/*`): `public, max-age=31536000, immutable`.
 - PDF (`/downloads/*`): `public, max-age=3600`.
 - Gambar pratinjau sosial (`/og/*`): `public, max-age=86400`.
-- `/api/health`, `/api/stats/private`, `/api/ask*`: `no-store`. `/api/stats/summary`: 5 menit. Semua `/api/` dikecualikan dari Cache Rule Cloudflare.
+- `/api/health`, `/api/stats/private`, `/api/messages*`, `/api/ask*`: `no-store`. `/api/stats/summary`: 5 menit. Semua `/api/` dikecualikan dari Cache Rule Cloudflare.
 - **Kompresi saat build, bukan saat request.** `scripts/precompress.ts` menulis salinan `.br` (Brotli 11) dan `.gz` untuk file teks ≥ 1 KB (±1,2 MB → ±0,25 MB). Caddy menyajikannya apa adanya, jadi CPU Celeron tidak mengompresi apa pun. Dulu `encode zstd gzip` membuat Caddy memakai ±74 MB RAM setelah satu putaran e2e; kini ±22 MB.
 
 **Hasil ukur (2026-10-05, setelah seluruh e2e):** web 22 MiB / 96, stats 17 MiB / 128. Image: web ±100 MB, stats ±260 MB (sebagian besar runtime Bun).

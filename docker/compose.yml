@@ -36,6 +36,9 @@ services:
     environment:
       STATS_SITE_HOST: ${STATS_SITE_HOST:-harry.mardika.my.id}
       STATS_ADMIN_TOKEN: ${STATS_ADMIN_TOKEN:-}
+      # "Kind words" moderation queue (ADR 0017); empty keeps the form closed. Its SQLite file sits in the
+      # same volume (/data/messages.sqlite) and is deliberately left out of backup-stats.sh.
+      MESSAGES_ADMIN_TOKEN: ${MESSAGES_ADMIN_TOKEN:-}
     volumes:
       - stats-data:/data
     mem_limit: 128m

@@ -45,6 +45,7 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | `ASSISTANT_GEMINI_API_KEY`, `ASSISTANT_GROQ_API_KEY` | `/opt/portfolio/.env` di server **dan** secret repo GitHub (untuk workflow eval) | Chatbot (Gemini Flash Lite utama, Groq cadangan; ADR 0015); **berbeda** dari key draf AI | Seperti key draf AI, tetapi di project AI Studio dan key Groq tersendiri → perbarui `.env` → `docker compose up -d assistant`, lalu perbarui juga secret GitHub dengan nama yang sama |
 | `ASSISTANT_ENABLED` | `/opt/portfolio/.env` di server | Kill switch chatbot (`true`/`false`; kosong = mati) | Ubah nilainya → `docker compose up -d assistant` (tanpa build) |
 | `PUBLIC_ASSISTANT_ENABLED` (variabel, bukan secret) | GitHub → repo → *Settings → Secrets and variables → Actions → Variables* | Ikut-tidaknya widget chatbot di-build (§3.1 langkah 6) | Ubah nilainya → jalankan Deploy |
+| `MESSAGES_ADMIN_TOKEN` | `/opt/portfolio/.env` di server **dan** secret repo GitHub | Membuka antrean kesan & pesan untuk halaman tinjau dan workflow (§3.2); kosong = formulir tertutup | `openssl rand -hex 32` → tulis di `.env` server dan secret GitHub dengan nama sama → `docker compose up -d stats` |
 | `STATS_ADMIN_TOKEN` | `/opt/portfolio/.env` di server **dan** `.env` di laptop | Membuka laporan link pelacak (`bun run stats:report`) | `openssl rand -hex 32` → tulis di kedua `.env` → di server `docker compose up -d` |
 | `CF_API_TOKEN`, `CF_ZONE_ID` | `/opt/portfolio/.env` di server | Menghapus cache Cloudflare setelah deploy (ADR 0012) | Cloudflare → *My Profile → API Tokens* → token `portfolio-cache-purge` → *Roll* → perbarui `.env` |
 | Token Cloudflare Tunnel | Konfigurasi `cloudflared` di server | Menghubungkan server ke Cloudflare | Cloudflare → *Zero Trust → Networks → Tunnels* |
@@ -98,6 +99,21 @@ Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai
 **Kuota dan batas:** per pengunjung 10 pertanyaan/jam dan 30/hari, seluruh situs 300/hari, maksimal 3 sekaligus. Hitungannya di memori, jadi **direset tengah malam UTC dan setiap kali container dibuat ulang**: setiap deploy (±4×/hari karena jadwal 6 jam) dan setiap kill switch diubah. Dalam praktik "300/hari" berarti 300 per periode antar-deploy; batas biaya yang sebenarnya adalah kuota gratis project AI Studio tanpa billing (langkah 2). Pemakaian kuota terlihat di AI Studio (*Usage*) dan console.groq.com (*Usage*). Gemini 3.5 Flash Lite (tier gratis, dicek 2026-10-09): 15 permintaan/menit, 500/hari. Groq hanya cadangan: ±35 jawaban/hari (8 ribu token/menit, 200 ribu/hari). Lihat ADR 0015.
 
 **Log:** `docker compose logs --tail 50 assistant` berisi status, penyedia, dan alasan gagal, **tanpa teks pertanyaan**. Contoh: `"status":503,"failures":["Gemini: Gemini responded with HTTP 429 (RESOURCE_EXHAUSTED, GenerateRequestsPerDayPerProjectPerModel-FreeTier)",…]` berarti kuota harian habis (`…PerMinute…` = batas per menit, biasanya pulih sendiri).
+
+### 3.2 Kesan & pesan dari formulir (Fase 12, ADR 0017)
+
+Pengunjung bisa meninggalkan pesan untuk Anda. **Tidak ada yang tampil sebelum Anda setujui.** Pesan disimpan di server (`messages.sqlite` di volume stats, tidak ikut backup) hanya sampai Anda memutuskan: yang ditolak langsung dihapus, yang disetujui dihapus setelah PR-nya dibuka (paling lambat 30 hari bila PR tidak pernah terbuka), dan yang tidak ditinjau dihapus otomatis setelah 90 hari. Tidak ada IP maupun email penulis yang disimpan.
+
+**Memasang (sekali):**
+1. `openssl rand -hex 32` → simpan di password manager.
+2. Di server: salin `docker/compose.yml` terbaru ke `/opt/portfolio/` (`update.sh` tidak memperbaruinya), tambahkan `MESSAGES_ADMIN_TOKEN=<token>` ke `/opt/portfolio/.env`, lalu `cd /opt/portfolio && docker compose up -d stats`. Log stats menulis `kind words form open`.
+3. GitHub → repo → *Settings → Secrets and variables → Actions* → secret `MESSAGES_ADMIN_TOKEN` dengan nilai yang sama (untuk workflow PR dan notifikasi, T12.4).
+
+**Menutup formulir sementara:** kosongkan `MESSAGES_ADMIN_TOKEN` di `.env` server → `docker compose up -d stats`. Kiriman baru ditolak dengan sopan, dan antrean yang ada tetap tersimpan.
+
+**Penulis minta pesannya dihapus:** sebelum diputuskan, tolak di halaman tinjau. Bila sudah disetujui, tutup PR-nya tanpa merge (salinan di server terhapus begitu PR dibuka) dan hapus branch-nya. Bila sudah tayang, hapus dari `content/messages.yaml` (CMS atau PR).
+
+Halaman tinjau (T12.3) serta PR otomatis dan notifikasi harian (T12.4) menyusul.
 
 ## 4. Perawatan berkala
 

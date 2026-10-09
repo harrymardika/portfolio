@@ -18,5 +18,6 @@
 | 0014 | [Chatbot "Tanya Harry": layanan terpisah, pengetahuan dari konten, tanpa penyimpanan](0014-ask-harry-assistant.md) | Accepted (model Gemini dan kuota diganti ADR 0015) |
 | 0015 | [Key chatbot dan draf AI terpisah dengan nama sendiri; chatbot memakai Gemini Flash Lite](0015-separate-ai-keys-flash-lite.md) | Accepted |
 | 0016 | [Draf studi kasus AI per proyek, bukan per repo](0016-group-aware-drafts.md) | Accepted |
+| 0017 | [Formulir kesan & pesan: antrean privat di layanan stats, terbit lewat Pull Request](0017-kind-words-form.md) | Accepted |
 
 Template: [0000-template.md](0000-template.md)

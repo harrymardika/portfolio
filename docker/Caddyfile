@@ -47,6 +47,24 @@
 		}
 	}
 
+	# "Kind words" form and its private moderation queue (ADR 0017), served by the stats service. Never
+	# cached; bodies over 8 KiB are refused at the edge (a full message with accents or emoji sent as a
+	# URL-encoded form still fits).
+	@messages path /api/messages /api/messages/*
+	handle @messages {
+		header {
+			Cache-Control "no-store"
+			defer
+		}
+		request_body {
+			max_size 8KiB
+		}
+		reverse_proxy stats:8787 {
+			# Keep the visitor's address for the daily per-visitor limit (never stored).
+			header_up X-Forwarded-For {client_ip}
+		}
+	}
+
 	handle /api/stats/* {
 		reverse_proxy stats:8787 {
 			# Keep the visitor's address for the daily hash (never stored).
