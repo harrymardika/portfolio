@@ -34,7 +34,7 @@ Build di GitHub, bukan di server: ADR 0005. Timer, bukan Watchtower: ADR 0010.
 
 ## 3. Pemasangan pertama di server (sekali saja)
 
-> **Package GHCR harus publik** (sudah diatur 2026-10-06 untuk `portfolio-web` dan `portfolio-stats`; `portfolio-assistant` dibuat oleh deploy pertama setelah T11.3 dan **harus dijadikan publik sebelum** `compose.yml` baru disalin ke server, karena `update.sh` berhenti jika satu image gagal ditarik, docs/10 §3.1). Package GHCR baru biasanya privat; jika suatu saat dibuat ulang: github.com/harrymardika → *Packages* → package → *Package settings* → *Change visibility* → **Public**. Tanpa ini server perlu `docker login ghcr.io`.
+> **Package GHCR harus publik** (sudah diatur 2026-10-06 untuk `portfolio-web` dan `portfolio-stats`; `portfolio-assistant` dijadikan publik 2026-10-09 sebelum `compose.yml` baru disalin ke server, karena `update.sh` berhenti jika satu image gagal ditarik, docs/10 §3.1). Package GHCR baru biasanya privat; jika suatu saat dibuat ulang: github.com/harrymardika → *Packages* → package → *Package settings* → *Change visibility* → **Public**. Tanpa ini server perlu `docker login ghcr.io`.
 
 Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, Debian 13 (trixie), Docker 29 + Compose 5 (terpasang 2026-10-06). Pasang Docker dari repo resmi Docker untuk Debian, bukan paket `docker.io`. Karena RAM kecil: **jangan pernah build di server**; batas memori container sudah diset.
 

@@ -2,7 +2,7 @@
 
 > Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D17 sudah diambil pemilik** (2026-10-07 dan 2026-10-08); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–13).
 >
-> **Status (2026-10-08):** Fase 9 dan 10 selesai (rilis 1.1.0 dan 1.2.0); Fase 11–13 belum dimulai.
+> **Status (2026-10-09):** Fase 9, 10, dan 11 selesai (rilis 1.1.0, 1.2.0, 1.3.0); chatbot tayang 2026-10-09. Berikutnya Fase 12.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -12,7 +12,7 @@
 |---|---|---|---|
 | 9 ✅ | **Personal branding & konten**: positioning, baris peran, skill lebih lengkap, terjemahan studi kasus, kesan & pesan (tampilan), format angka | Pondasi untuk fase lain; kebanyakan isi, sedikit kode | Kecil–sedang |
 | 10 ✅ | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
-| 11 | **Chatbot "Tanya Harry"** di sudut setiap halaman | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM secara langsung | Besar (layanan baru, ADR) |
+| 11 ✅ | **Chatbot "Tanya Harry"** di sudut setiap halaman | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM secara langsung | Besar (layanan baru, ADR) |
 | 12 | **Formulir kesan & pesan** dengan moderasi | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
 | 13 | **3D tambahan** di halaman selain beranda | Lebih banyak 3D sesuai tema tanpa memberatkan beranda | Sedang |
 
@@ -86,6 +86,8 @@ Ringkasan, peran, dan angka sudah dwibahasa; isi Problem/Approach/Result hanya b
 ## E. Chatbot "Tanya Harry" di sudut (Fase 11, D13, D14)
 
 **Keputusan (2026-10-08):** chatbot mengambang di sudut kanan bawah setiap halaman (D13); Gemini utama, Groq cadangan, teks pertanyaan tidak disimpan (D14). Pratinjau: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a.
+
+**Hasil (2026-10-09, ✅):** tayang dengan `gemini-3.5-flash-lite` (kuota gratis 500/hari; `gemini-3.5-flash` hanya 20/hari) dan key `ASSISTANT_*` tersendiri (ADR 0015); eval 30/30 (`docs/assistant-eval.md`); pemberitahuan privasi dilipat di balik tautan "Privacy". Rencana di bawah dipertahankan sebagai catatan desain.
 
 **Tujuannya.** Pengunjung (terutama recruiter) bertanya dalam bahasa sehari-hari: "Pernah pakai YOLO di produksi?", "Apa peran Harry di Decklify?". Jawaban singkat dari isi situs, dengan tautan ke halaman terkait.
 

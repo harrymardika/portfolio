@@ -3,7 +3,7 @@
 Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Decklify), dwibahasa, dengan CV dan Portfolio PDF yang dibuat otomatis, di-host sendiri di server rumah.
 
 - **Live:** https://harry.mardika.my.id (Indonesia: https://harry.mardika.my.id/id/)
-- **Status:** online sejak 2026-10-06. Fase 0–10 selesai; rencana Fase 11–13 (chatbot, formulir kesan & pesan, 3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
+- **Status:** online sejak 2026-10-06. Fase 0–11 selesai (chatbot "Tanya Harry" tayang 2026-10-09); rencana Fase 12–13 (formulir kesan & pesan, 3D tambahan) di [`docs/11-roadmap.md`](docs/11-roadmap.md). Detail di [`PROGRESS.md`](PROGRESS.md).
 - **Dokumentasi:** [`docs/`](docs/README.md). Untuk pemilik, mulai dari **[panduan operasional](docs/10-operations.md)**.
 
 ## Fitur
@@ -17,7 +17,8 @@ Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Deckli
 | 3D | Kartu foto 3D di hero dan jalur karier 3D (Three.js). Kartu statis untuk perangkat tanpa GPU, hemat data, atau *reduced motion*. |
 | Edit dari browser | [Pages CMS](https://app.pagescms.org): setiap simpan menjadi commit dan tayang otomatis ([ADR 0011](docs/adr/0011-pages-cms.md)) |
 | Proyek dari GitHub | Repo yang dipilih di `content/github.yaml` atau ber-topic `portfolio` tampil otomatis, diperbarui tiap 6 jam |
-| Draf studi kasus oleh AI | Repo ber-topic `portfolio` tanpa studi kasus → Gemini (cadangan Groq) menulis draf dari README → Pull Request; **merge = tayang** ([ADR 0013](docs/adr/0013-ai-case-study-drafts.md)) |
+| Chatbot "Tanya Harry" | Tombol di sudut setiap halaman: pengunjung bertanya tentang Harry, jawaban singkat dari isi situs dengan tautan ke halaman terkait (Gemini Flash Lite, cadangan Groq). Teks pertanyaan tidak disimpan, batas per pengunjung, bisa dimatikan tanpa build ([ADR 0014](docs/adr/0014-ask-harry-assistant.md), [ADR 0015](docs/adr/0015-separate-ai-keys-flash-lite.md)) |
+| Draf studi kasus oleh AI | Repo ber-topic `portfolio` tanpa studi kasus → Gemini (cadangan Groq) menulis draf dari README → Pull Request; proyek multi-repo (grup di `content/github.yaml`) = satu draf dari semua README; **merge = tayang** ([ADR 0013](docs/adr/0013-ai-case-study-drafts.md), [ADR 0016](docs/adr/0016-group-aware-drafts.md)) |
 | Statistik bawaan | Pengunjung, unduhan CV/Portfolio, sumber trafik, ditampilkan di `/stats/` (tautan di footer); tanpa cookie, tanpa layanan pihak ketiga ([ADR 0009](docs/adr/0009-built-in-stats.md)) |
 | Tetap tersaji saat server mati | Cloudflare menyimpan halaman 7 hari; cache dihapus otomatis setiap deploy ([ADR 0012](docs/adr/0012-edge-cache-purge-on-deploy.md)) |
 | Kualitas | Lighthouse ≥ 90 (performa) dan ≥ 95 (a11y, best practices, SEO) dijaga CI; header keamanan **A+** (Mozilla Observatory); SEO: sitemap, gambar pratinjau, JSON-LD |

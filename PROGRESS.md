@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.7 (penutupan Fase 11)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.1 (formulir kesan & pesan bermoderasi)
 
 ## Ringkasan
 
@@ -20,11 +20,11 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 Chatbot tayang 2026-10-09 (T11.1–T11.6); berikutnya T11.7 (penutupan fase) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Berikutnya |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
-Progres keseluruhan: **Fase 0–10 selesai; situs online sejak 2026-10-06. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
 
 ---
 
@@ -144,7 +144,7 @@ Progres keseluruhan: **Fase 0–10 selesai; situs online sejak 2026-10-06. Renca
 - [x] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
-## Fase 11: Chatbot "Tanya Harry" di sudut (`docs/11-roadmap.md` §E, D13, D14)
+## Fase 11: Chatbot "Tanya Harry" di sudut (`docs/11-roadmap.md` §E, D13, D14) ✅
 
 Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinjau yang dipilih pemilik: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a (bagian 3).
 
@@ -164,7 +164,7 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
   - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
 - [x] **T11.6b** Draf AI sadar-grup (independen, permintaan pemilik 2026-10-09)
   - Kriteria: grup di `content/github.yaml` = satu kandidat draf (bila salah satu anggota bertopic `portfolio`); anggota grup tidak didraf sendiri; grup tercakup bila repo anggota mana pun ditautkan; branch draf lama anggota memblokir grup; draf membaca README semua anggota (total ≤ 12.000 karakter); judul/slug dari judul grup, `links.repo` = repo pertama; ADR 0016; docs/04, docs/10; tes unit.
-- [ ] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
+- [x] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: sesuai checklist §2a.
 
 ## Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15)
@@ -228,6 +228,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-09 · Claude Code (Opus) · T11.7 penutupan Fase 11 (ringkasan fase)
+- **Yang dibangun (Fase 11):** chatbot "Tanya Harry" di sudut setiap halaman. Komponennya: pengetahuan dari isi publik situs saat build (tanpa nomor HP, tanpa vector DB); layanan `services/assistant` (Bun, 128 MB, tanpa penyimpanan, batas per pengunjung dan harian, kill switch); widget dialog non-modal EN/ID yang dimuat saat diklik, lembar bawah di HP, pemberitahuan privasi di balik tautan "Privacy"; eval manual dengan model sungguhan (30/30); statistik jumlah pertanyaan tanpa teks. Tambahan di luar rencana: key AI per fitur, draf AI per proyek multi-repo (ADR 0016), pesan error penyedia yang menyebut jenis kuota.
+- **Keputusan pemilik:** D13 (chatbot di sudut), D14 (Gemini utama, Groq cadangan, tanpa penyimpanan teks); 2026-10-09: nama key `ASSISTANT_*`/`DRAFT_*`, chatbot memakai `gemini-3.5-flash-lite` setelah membandingkan limit (ADR 0015), privasi dilipat, draf per proyek (ADR 0016), `DRAFT_*` disimpan di `.env` server sebagai arsip.
+- **Rapikan:** tidak ada dependency baru di fase ini, kunci teks UI semuanya terpakai, tidak ada `TODO` tersisa, tes yang di-skip semuanya beralasan (browser/viewport/stack deploy), branch fase ini sudah dihapus (sisa: `drafts/case-study-rocm-test` milik PR #2 yang masih terbuka).
+- **Sisa untuk pemilik:** review PR #2 (`rocm-test`) dan draf grup yang dibuat run terjadwal (Netflix, Chatbot RAG Gunadarma); setelah 1–2 minggu cek jumlah pertanyaan di statistik privat dan pemakaian AI Studio/Groq (bila mendekati batas: cache jawaban untuk 3 contoh pertanyaan).
+- **Fase berikutnya:** Fase 12, T12.1 (formulir kesan & pesan bermoderasi, D15).
+
 ### 2026-10-09 · Claude Code (Opus) · T11.6b draf AI per proyek
 - **Pertanyaan pemilik:** proyek yang sama di beberapa repo dibuatkan berapa draf? Sebelumnya satu per repo (yang bertopic), dari satu README saja. **Keputusan pemilik:** satu grup di `content/github.yaml`, satu draf (ADR 0016).
 - **Dikerjakan:** `selectCandidates` mengembalikan proyek (`DraftCandidate`); grup menjadi kandidat bila salah satu anggota bertopic, tercakup bila repo anggota mana pun ditautkan, dan menunggu bila ada branch draf grup atau anggota; prompt membaca README semua anggota (12.000 karakter dibagi rata); judul/slug dari judul grup, `links.repo` = repo pertama; PR menyebut semua repo. Tes unit baru (24 tes draf).
@@ -249,38 +256,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Review:** subagent `reviewer` (tanpa blocker; temuan diperbaiki), `/security-review` seluruh Fase 11 (tanpa temuan). `bun run verify` lulus.
 - **Untuk pemilik (T11.6):** (1) `DRAFT_*` tidak dipakai di server; sebaiknya dihapus dari `/opt/portfolio/.env`. (2) Server belum menjalankan chatbot dan `compose.yml` di sana masih versi lama: ikuti docs/10 §3.1 (package GHCR `portfolio-assistant` publik → salin `compose.yml` dan `update.sh` → `./update.sh` → health). (3) Cek `trusted_proxies` Caddy di belakang cloudflared (catatan security review).
 - **Langkah berikutnya:** T11.6.
-
-### 2026-10-08 · Claude Code (Opus) · T11.5 uji chatbot (disiapkan, menunggu run pemilik)
-- **Sudah:** workflow manual `.github/workflows/assistant-eval.yml` (build → pertanyaan uji → laporan di *Summary* run + artifact; secret chatbot bila ada, kalau tidak secret draf AI), `scripts/assistant-eval.ts` (memakai rute produksi yang sama, kini di `services/assistant/routes.ts`), 30 kasus di `tests/eval/assistant-cases.yaml` (15 fakta EN/ID termasuk format angka ID, 4 di luar topik, 4 data pribadi, 5 *prompt injection*, 2 markup/tautan luar), penilai murni `src/lib/assistant/eval.ts` + tes, `docs/assistant-eval.md`.
-- **Dari review + `/security-review` (tanpa temuan keamanan):** ekspektasi kasus diperbaiki (jawaban benar yang tadinya gagal, jawaban buruk yang tadinya lulus), cek bahasa otomatis per kasus, subset Groq kini 9 kasus pilihan yang mewakili semua kategori, jeda Groq ≥ 62 detik dihitung dari mulainya permintaan, semua action dipin ke commit, run tanpa hasil dianggap gagal, tes untuk rute produksi, catatan kuota di docs.
-- **Belum (butuh pemilik):** menjalankan *Actions → Assistant eval → Run workflow* dan mengirimkan tabel *Summary*-nya; laptop ini tidak punya `gh` maupun key, jadi agent tidak bisa memicu atau membaca run. Setelah itu agent memperbaiki prompt sampai lulus, mencatat hasil di `docs/assistant-eval.md`, dan menjalankan `/security-review` seluruh fase.
-- **Langkah berikutnya:** run uji oleh pemilik → perbaikan → T11.6.
-
-### 2026-10-08 · Claude Code (Opus) · T11.4 widget chat di sudut
-- **Dikerjakan:** `src/components/assistant/AskWidget.astro` di setiap `PageLayout` (bukan halaman cetak): tombol pil di kanan bawah (di HP bulat berisi ikon), tersembunyi tanpa JS dan **hanya muncul jika `/api/ask/health` menyatakan fitur menyala** (dicek sekali per tab setelah halaman dimuat), sehingga kill switch juga menyembunyikan tombolnya dan pengunjung tidak melihat fitur sebelum diluncurkan. Panel (`ask-panel.ts`) dimuat saat tombol diklik: dialog non-modal (Esc/tutup mengembalikan fokus), contoh pertanyaan, hapus obrolan, pemberitahuan privasi, obrolan bertahan antar-halaman lewat `sessionStorage`, jawaban dimasukkan sebagai teks dengan tautan hanya ke path situs, fallback CV + email saat layanan mati/gagal dan pesan khusus saat batas habis, lembar bawah di HP, `body` diberi ruang bawah agar tombol tidak menutupi footer. Semua teks dari kamus UI (EN/ID). Logika murni di `src/lib/assistant/chat.ts`.
-- **Flag build `PUBLIC_ASSISTANT_ENABLED`** (bawaan mati; di produksi dari variabel repo GitHub, docs/10 §3.1 langkah 6): sebelum layanan terpasang, pengecekan health akan 404/502 dan memunculkan error konsol di setiap halaman (juga menurunkan Lighthouse *Best Practices*), jadi widget baru ikut di-build setelah peluncuran. Build e2e menyalakannya dengan API tiruan; server Lighthouse (`scripts/serve-build.ts`) menjawab `/api/ask*` dengan handler sungguhan tanpa penyedia, sehingga Lighthouse mengukur halaman dengan tombol chatbot.
-- **Dari review (tanpa temuan keamanan DOM):** ring fokus keyboard kini `forest-ink` (dulu putih di atas putih pada tema terang, WCAG 2.4.7); tombol hapus obrolan ≥ 44px; di HP fokus awal ke log agar keyboard tidak menutupi lembar bawah (`dvh`); health check yang gagal tidak di-cache; batas di sisi browser dikunci sama dengan layanan lewat tes; docs/07 §6 (build Docker lokal dengan widget) dan catatan implementasi di ADR 0014 (kill switch menyembunyikan tombol). Catatan terpisah: tombol hijau di 404, About, dan studi kasus memakai ring `currentColor` yang sama; layak diperiksa di penutupan fase.
-- **Statistik:** event `ask` (`answered`/`unavailable`/`limit`, tanpa teks) lewat beacon yang sudah ada (menghormati DNT/GPC); jumlahnya tampil di laporan privat `bun run stats:report` (memenuhi bagian statistik T11.6).
-- **Tes:** 23 e2e widget (API tiruan, axe terang/gelap, HP, cetak), unit `chat.ts` dan laporan `ask`. Dicek visual desktop 1280 dan HP (Pixel 7), terang dan gelap; tombol diberi cincin `surface` agar terlihat di atas hero hijau.
-- **Langkah berikutnya:** T11.5 (uji ±30 pertanyaan lewat workflow manual).
-
-### 2026-10-08 · Claude Code (Opus) · T11.3 infrastruktur chatbot
-- **Dikerjakan:** target `assistant` di `docker/Dockerfile` (Bun + `server.js` + pengetahuan build itu, healthcheck), matrix deploy `[web, stats, assistant]`, service `assistant` di `docker/compose.yml` (hardening yang sama, 128 MB, tanpa volume, `ASSISTANT_ENABLED` bawaan `false`, key `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` terpisah dari draf AI), Caddy `/api/ask*` (`no-store`, body maks. 8 KB, alamat pengunjung diteruskan), handler kini menolak situs lain/bot (403) sebelum kill switch. `.env.example`, docs/07, docs/10 §2, §3.1 (urutan pemasangan, kill switch, kuota, log), §6.4.
-- **Diuji terhadap container (`test:e2e:docker`):** 157 lulus, termasuk health `/api/ask/health` dan penolakan origin lain (403) serta body > 8 KB (413). Memori: assistant ±20 MiB / 128, web ±21 / 96, stats ±17 / 128. Tes kesan & pesan kini bertanda `@fixture` (dulu gagal di uji Docker karena `messages.yaml` asli kosong).
-- **Dari review + `/security-review` (tanpa temuan keamanan):** `update.sh` kini tetap menghapus cache Cloudflare untuk image web yang berubah walau layanan lain gagal *health check* (tidak jika web sendiri tidak sehat), dan tetap melaporkan kegagalan (2 tes baru); deploy memakai `fail-fast: false` agar image chatbot yang gagal tidak membatalkan image situs; batas harian chatbot ternyata direset setiap deploy, dicatat di docs/10 §3.1 dan ADR 0014 bersama syarat project AI Studio tanpa billing; `web` tidak lagi bergantung pada `assistant`.
-- **Penting untuk pemilik (T11.6):** package GHCR `portfolio-assistant` dibuat privat oleh deploy pertama; **jadikan publik sebelum menyalin `compose.yml` dan `update.sh` baru ke server**, kalau tidak `update.sh` berhenti untuk semua image (docs/10 §3.1).
-- **Langkah berikutnya:** T11.4 (widget chat di sudut).
-
-### 2026-10-08 · Claude Code (Opus) · T11.2 layanan `services/assistant`
-- Pemilik meminta Fase 11 dikerjakan sampai akhir fase.
-- **Dikerjakan:** penyedia Gemini/Groq dipindah ke `src/lib/ai/` (skema JSON, retry, timeout jadi opsi; draf AI tetap sama, 19 tesnya lulus tanpa diubah). `src/lib/assistant/ask.ts` (validasi permintaan 1–500 karakter, riwayat ≤ 6; prompt dengan pengetahuan sebagai instruksi dan obrolan sebagai data; pemeriksa jawaban: skema, tanpa HTML/URL/Markdown, tanpa nomor HP, tautan hanya path pengetahuan dan diarahkan ke `/id/` sesuai bahasa halaman) dan `limits.ts` (10/jam, 30/hari per pengunjung, 300/hari total, ≤ 3 bersamaan). `services/assistant/` (`POST /api/ask`, `GET /api/ask/health`): Origin wajib dari situs, bot ditolak, hash harian tanpa IP dengan salt di memori, Gemini (12 s, pengetahuan lengkap) → Groq (8 s, ringkas, JSON schema ketat) → 503 `unavailable`; kill switch `ASSISTANT_ENABLED` (bawaan mati); log tanpa teks. 37 tes baru dengan penyedia tiruan.
-- **Dari review + `/security-review` (tanpa temuan keamanan):** body > 8 KB ditolak sebelum dibaca (`maxRequestBodySize`); Groq hanya menerima 2 pesan terakhir, *reasoning effort* rendah, dan batas 1.024 token jawaban agar muat dalam 8 ribu token/menit; obrolan dikirim sebagai satu nilai JSON sehingga pembatas tidak bisa dipalsukan; pemeriksa teks tidak lagi menolak "< 100 ms" atau "R&D"; kelebihan tautan dipotong; hash pengunjung hanya dari alamat (ganti User-Agent tidak membuka batas baru). Dicatat untuk T11.5: coba skema JSON untuk Gemini bila jawabannya sering salah bentuk.
-- **Dicek lokal:** tanpa key layanan menyatakan dirinya mati (`{"error":"disabled"}`), memori ±85 MB (batas container nanti 128 MB). Belum diuji dengan model sungguhan (T11.5).
-- **Langkah berikutnya:** T11.3 (Dockerfile, compose, Caddy `/api/ask*`, `.env.example`, docs/07 dan docs/10) + `/security-review`.
-
-### 2026-10-08 · Claude Code (Opus) · T11.1 ADR 0014 + pengetahuan chatbot
-- **Keputusan pemilik:** chatbot boleh mengetahui **semua isi publik web** (termasuk email publik dan kartu repo GitHub; tanpa nomor HP, draf, item tersembunyi).
-- **Dikerjakan:** `docs/adr/0014-ask-harry-assistant.md` (layanan terpisah, Gemini → Groq → pesan cadangan, tanpa penyimpanan, batas pemakaian, tanpa vector DB, widget sudut, kill switch; kuota Groq dicek: `gpt-oss-120b` 8 ribu token/menit, 1.000 permintaan dan 200 ribu token/hari; kuota Gemini hanya terlihat di AI Studio). `src/lib/assistant/` (skema, penyusun bagian, anggaran) + endpoint build `src/pages/assistant-knowledge.json.ts` yang memakai query halaman, dan langkah build `scripts/generate-knowledge.ts` → `build-meta/knowledge.json` (±15.900 token, batas 25 ribu) dan `knowledge-compact.json` (±4.100, batas 5 ribu); build gagal jika tautan mati, pola nomor HP, atau melewati anggaran; endpoint dihapus dari situs. 23 tes unit baru.
-- **Catatan ukuran:** versi ringkas awalnya ±5.700 token; poin pengalaman ke-3 dan seterusnya, tag, tautan, dan isi studi kasus dipindah ke `detail` (hanya versi lengkap) agar ada ruang untuk ±9 studi kasus dari draf AI.
-- **Dari review:** tes e2e `assistant-knowledge.spec.ts` membuktikan pengetahuan hanya berisi studi kasus yang terbit (tanpa draf), tanpa pola nomor HP, path valid, dan endpoint tidak tersaji (404); build e2e kini menulis ke `build-meta-e2e/` agar tidak menimpa pengetahuan asli; judul studi kasus menjadi label ("Problem:") dan tautan Markdown dibuang; file hasil divalidasi skemanya; peringatan di atas 90% anggaran; kesan & pesan jadi bagian sendiri (2 pertama di versi ringkas); PDF varian CV boleh ditautkan; panduan error di docs/10 §5.8 dan docs/04.
-- **Langkah berikutnya:** T11.2 (layanan `services/assistant`, refaktor penyedia ke `src/lib/ai/`).

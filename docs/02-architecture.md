@@ -109,7 +109,7 @@ Aturan:
 │   │   ├── stats/               # events (skema payload), privacy, beacon, summary (format laporan)
 │   │   ├── security/            # csp.ts: hash script inline → header CSP
 │   │   ├── seo/                 # og (nama gambar pratinjau), sitemap/robots, json-ld, html (baca HTML build) (murni); person.ts (khusus Astro)
-│   │   ├── ai/                  # penyedia model bersama (Gemini, Groq): dipakai draf AI dan chatbot (ADR 0013, 0014)
+│   │   ├── ai/                  # penyedia model bersama (Gemini, Groq): dipakai draf AI dan chatbot (ADR 0013, 0014, 0015)
 │   │   ├── drafts/              # draf studi kasus AI: candidates, prompt, schema (pengaman), markdown, providers, run
 │   │   └── assistant/           # chatbot (ADR 0014): knowledge (skema), sections + project-sections + text (konten → teks),
 │   │                            #   budget (token, versi ringkas, cek path, PHONE_PATTERN), ask (permintaan, prompt,
