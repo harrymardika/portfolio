@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.6 (peluncuran, butuh langkah pemilik di server)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.7 (penutupan Fase 11)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.5b selesai (eval 30/30); berikutnya T11.6 (peluncuran) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 Chatbot tayang 2026-10-09 (T11.1–T11.6); berikutnya T11.7 (penutupan fase) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -160,7 +160,7 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
   - Kriteria: ±30 pertanyaan uji (fakta EN/ID, di luar topik, data pribadi, prompt injection, tautan luar/HTML) dijalankan lewat workflow manual `assistant-eval.yml` (secret repo, tanpa laptop); hasil di `docs/assistant-eval.md`; prompt diperbaiki sampai lulus; `/security-review` seluruh fase.
 - [x] **T11.5b** Key AI terpisah dan model chatbot Gemini Flash Lite
   - Kriteria: chatbot hanya memakai `ASSISTANT_GEMINI_API_KEY` → `ASSISTANT_GROQ_API_KEY`, draf AI hanya `DRAFT_GEMINI_API_KEY` → `DRAFT_GROQ_API_KEY` (nama sama di GitHub, server, compose, dan kode; diganti pemilik 2026-10-09); chatbot memakai `gemini-3.5-flash-lite` (500/hari), draf tetap `gemini-3.5-flash`; eval dibagi dua (15 Gemini, 15 Groq); pesan error penyedia menyebut jenis kuota; ADR 0015 (menggantikan sebagian ADR 0013 dan 0014); docs/10; tes unit.
-- [ ] **T11.6** Peluncuran dan pemantauan
+- [x] **T11.6** Peluncuran dan pemantauan
   - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
 - [ ] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: sesuai checklist §2a.
@@ -225,6 +225,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T11.6 chatbot tayang
+- **Server** (persetujuan pemilik): `compose.yml` dan `update.sh` lama dicadangkan di `/opt/portfolio/backups/` (`*.20261009-1049`), versi baru disalin, `./update.sh` → ketiga container *healthy*, layanan memuat Gemini dan Groq. `ASSISTANT_ENABLED=true` ditambahkan ke `.env` (cadangan `.env` di `backups/`, mode 600); satu pertanyaan uji dijawab Gemini (±5 detik). `DRAFT_*` tetap ada di `.env` server sebagai arsip (pilihan pemilik; tidak dibaca layanan mana pun).
+- **Situs:** package GHCR `portfolio-assistant` dijadikan publik oleh pemilik; variabel repo `PUBLIC_ASSISTANT_ENABLED=true` dibuat, Deploy dijalankan, `update.sh` menarik image web baru dan menghapus cache Cloudflare.
+- **Dicek live (Playwright):** tombol "Ask about Harry"/"Tanya tentang Harry" muncul setelah health check; desktop EN (pertanyaan YOLO, 3 tautan studi kasus) dan HP ID (lembar bawah, "IPK 3,99") berfungsi; konsol tanpa error. Statistik privat: `asks.answered = 2`. Halaman utama EN/ID, `/cv/`, PDF: 200.
+- **Catatan security review (alamat pengunjung):** aman; layanan membaca `CF-Connecting-IP` yang selalu diisi Cloudflare, sama seperti statistik.
+- **Langkah berikutnya:** T11.7 (penutupan Fase 11, rilis bertanggal).
 
 ### 2026-10-09 · Claude Code (Opus) · T11.5 uji chatbot selesai + T11.5b key terpisah dan Gemini Flash Lite
 - **Eval:** 4 run lewat `gh` (dipasang pemilik). Run 1–2 memakai key draf dan `gemini-3.5-flash`: kuota hariannya hanya 20 permintaan per project, habis di tengah run 1, sehingga run 2 gagal total di Gemini. Pesan error penyedia kini menyebut jenis kuota (`…PerDayPerProjectPerModel-FreeTier`) tanpa teks bebas. Run 3 (key chatbot, Flash Lite, `split`): 27/30. Run 4: **30/30**. Rincian di `docs/assistant-eval.md`.

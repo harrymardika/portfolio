@@ -9,6 +9,7 @@ build-meta-e2e/
 coverage/
 playwright-report/
 test-results/
+/.playwright-mcp/
 
 # Generated at build time (see docs/09-pdf-generation.md and docs/02-architecture.md)
 public/downloads/
