@@ -21,3 +21,16 @@ items:
     message:
       en: This is automated test message 1 for the kind words workflow. Please ignore it.
     approved: 2026-10
+  - id: workflow-test-3
+    name: Workflow Test 3
+    relationship:
+      en: Automated system test, please ignore
+      id: Uji sistem otomatis, mohon abaikan
+    message:
+      en: |-
+        This is the third automated test message for the feedback and message flow.
+        Please ignore this message.
+      id: |-
+        Ini pesan uji otomatis ketiga untuk alur kesan dan pesan.
+        Mohon abaikan pesan ini.
+    approved: 2026-10
