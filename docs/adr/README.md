@@ -14,8 +14,9 @@
 | 0010 | [systemd timer, bukan Watchtower, untuk menarik image baru](0010-update-timer-instead-of-watchtower.md) | Accepted |
 | 0011 | [Pages CMS untuk mengedit `content/` dari browser](0011-pages-cms.md) | Accepted |
 | 0012 | [HTML di-cache Cloudflare, dihapus otomatis saat deploy](0012-edge-cache-purge-on-deploy.md) | Accepted |
-| 0013 | [Draf studi kasus oleh AI sebagai Pull Request](0013-ai-case-study-drafts.md) | Accepted (nama secret diganti ADR 0015) |
+| 0013 | [Draf studi kasus oleh AI sebagai Pull Request](0013-ai-case-study-drafts.md) | Accepted (nama secret diganti ADR 0015, kandidat per proyek ADR 0016) |
 | 0014 | [Chatbot "Tanya Harry": layanan terpisah, pengetahuan dari konten, tanpa penyimpanan](0014-ask-harry-assistant.md) | Accepted (model Gemini dan kuota diganti ADR 0015) |
 | 0015 | [Key chatbot dan draf AI terpisah dengan nama sendiri; chatbot memakai Gemini Flash Lite](0015-separate-ai-keys-flash-lite.md) | Accepted |
+| 0016 | [Draf studi kasus AI per proyek, bukan per repo](0016-group-aware-drafts.md) | Accepted |
 
 Template: [0000-template.md](0000-template.md)

@@ -226,13 +226,15 @@ categories:
 - **Link yang sudah terfilter** bisa dikirim ke recruiter, mis. `https://harry.mardika.my.id/projects/?filter=computer-vision` atau dengan pencarian `?filter=nlp-genai&q=bert`. Versi Indonesia: `/id/projects/?filter=…`.
 - Tanpa JavaScript, semua proyek tetap tampil.
 
-### Draf studi kasus otomatis oleh AI (T8.2, ADR 0013)
+### Draf studi kasus otomatis oleh AI (T8.2, ADR 0013, 0016)
 
 Beri topic **`portfolio`** pada repo GitHub yang belum punya studi kasus (About → ⚙️ → Topics). Dua kali sehari, pukul 09:41 dan 21:41 WIB (atau saat dijalankan manual dari tab *Actions* → *Case study drafts* → *Run workflow*), Gemini (cadangan: Groq) menulis draf dari README repo itu dan membuka **Pull Request** berlabel `ai-draft`:
 
 1. Buka PR-nya → tab **Files changed**, baca file `content/projects/<slug>.md` (ringkasan EN/ID, peran, Problem/Approach/Result) dan terjemahannya `content/projects/id/<slug>.md`. AI hanya membaca README: cek peran Anda, angka, dan hasil.
 2. Perbaiki yang kurang tepat langsung di PR (⋯ → **Edit file**).
 3. **Merge = tayang**: ±20 menit kemudian studi kasus muncul di situs, menggantikan kartu GitHub repo itu. Belum siap? Biarkan PR terbuka. Tidak perlu? **Tutup** PR-nya.
+
+**Proyek multi-repo** (grup `title` + `repos` di `content/github.yaml`) dibuatkan **satu** draf untuk seluruh proyek: cukup beri topic pada salah satu repo anggotanya. AI membaca README semua anggota (total ±12.000 karakter, dibagi rata), judul dan nama file mengikuti judul grup (mis. `chatbot-rag-universitas-gunadarma.md`), dan studi kasusnya menautkan repo pertama di daftar grup. Repo anggota grup tidak pernah dibuatkan draf sendiri.
 
 README yang lebih lengkap menghasilkan draf yang lebih baik. Repo tanpa README (atau README sangat pendek) dilewati. Angka di bagian *Angka utama* hanya dipertahankan jika tertulis persis di README; angka di kalimat tetap perlu Anda cek.
 

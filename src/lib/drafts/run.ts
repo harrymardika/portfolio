@@ -1,12 +1,12 @@
 /**
- * One run of the case study drafter (T8.2): pick candidates, draft each from its README, and hand
+ * One run of the case study drafter (T8.2, T11.6b): pick projects, draft each from its READMEs, and hand
  * every finished file to `publish` (a pull request in CI, stdout in a dry run). All I/O is injected.
  */
 import type { ApiRepo, GithubConfig } from '@/lib/github/schemas';
 
-import { repoSlug, selectCandidates, type ExistingProject } from './candidates';
+import { selectCandidates, type DraftCandidate, type ExistingProject } from './candidates';
 import { renderCaseStudy, renderCaseStudyId } from './markdown';
-import { buildPrompt, README_LIMIT } from './prompt';
+import { buildPrompt, type Readme } from './prompt';
 import { generateDraft, type Provider } from './providers';
 import { groundMetrics } from './schema';
 
@@ -24,7 +24,10 @@ export interface RunIO {
 
 export interface PublishedDraft {
   readonly slug: string;
-  readonly repo: ApiRepo;
+  /** The group title, or the repo name. */
+  readonly name: string;
+  /** Every repository of the project; the first is the one the case study links. */
+  readonly repos: readonly ApiRepo[];
   readonly markdown: string;
   /** The Indonesian body for content/projects/id/<slug>.md. */
   readonly markdownId: string;
@@ -52,39 +55,57 @@ export async function runDrafts(
   const [repos, existing, branches] = await Promise.all([io.listRepos(), io.existing(), io.draftBranches()]);
   const candidates = selectCandidates(repos, config, existing, branches);
   io.log(
-    `drafts: ${candidates.length} repo(s) need a case study${candidates.length ? `: ${candidates.map((r) => r.name).join(', ')}` : ''}`,
+    `drafts: ${candidates.length} project(s) need a case study${candidates.length ? `: ${candidates.map((c) => c.name).join(', ')}` : ''}`,
   );
 
-  for (const repo of candidates) {
+  for (const candidate of candidates) {
     try {
-      const outcome = await draftOne(repo, providers, io);
-      if (outcome === true) summary.drafted.push(repoSlug(repo.name));
-      else summary.skipped.push({ repo: repo.name, reason: outcome });
+      const outcome = await draftOne(candidate, providers, io);
+      if (outcome === true) summary.drafted.push(candidate.slug);
+      else summary.skipped.push({ repo: candidate.name, reason: outcome });
     } catch (error) {
-      // One repo's failure (GitHub outage, invalid frontmatter, push rejected) never stops the others.
-      summary.skipped.push({ repo: repo.name, reason: (error as Error).message });
+      // One project's failure (GitHub outage, invalid frontmatter, push rejected) never stops the others.
+      summary.skipped.push({ repo: candidate.name, reason: (error as Error).message });
     }
   }
   for (const { repo, reason } of summary.skipped) io.warn(`drafts: skipped ${repo}: ${reason}`);
   return summary;
 }
 
-/** Draft and publish one repository; returns true, or the reason it was skipped. */
-async function draftOne(repo: ApiRepo, providers: readonly Provider[], io: RunIO): Promise<true | string> {
-  const readme = await io.readme(repo);
-  if (!readme || readme.trim().length < 200) return 'README missing or too short to describe the project';
-  const prompt = buildPrompt(repo, readme);
+/**
+ * Every README of the project (null: the repo has none). A fetch that fails skips the whole project for
+ * this run, so the next run retries with complete input: an open draft branch would otherwise keep a
+ * weaker draft written without that README.
+ */
+async function fetchReadmes(candidate: DraftCandidate, io: RunIO): Promise<Readme[]> {
+  const texts = await Promise.all(candidate.repos.map((repo) => io.readme(repo)));
+  return candidate.repos.flatMap((repo, index) => {
+    const text = texts[index];
+    return text ? [{ repo, text }] : [];
+  });
+}
+
+/** Draft and publish one project; returns true, or the reason it was skipped. */
+async function draftOne(
+  candidate: DraftCandidate,
+  providers: readonly Provider[],
+  io: RunIO,
+): Promise<true | string> {
+  const readmes = await fetchReadmes(candidate, io);
+  if (readmes.map((readme) => readme.text.trim()).join('').length < 200)
+    return 'README missing or too short to describe the project';
+  const { prompt, read } = buildPrompt(candidate, readmes);
   const result = await generateDraft(providers, prompt);
-  for (const failure of result.failures) io.warn(`drafts: ${repo.name}: ${failure}`);
+  for (const failure of result.failures) io.warn(`drafts: ${candidate.name}: ${failure}`);
   if (!result.ok) return 'every provider failed';
-  // Ground numbers in the part of the README the model actually read.
-  const draft = groundMetrics(result.draft, readme.slice(0, README_LIMIT));
-  const markdown = renderCaseStudy(draft, repo);
+  // Ground numbers in the part of the READMEs the model actually read.
+  const draft = groundMetrics(result.draft, read);
   await io.publish({
-    slug: repoSlug(repo.name),
-    repo,
-    markdown,
-    markdownId: renderCaseStudyId(draft),
+    slug: candidate.slug,
+    name: candidate.name,
+    repos: candidate.repos,
+    markdown: renderCaseStudy(draft, candidate),
+    markdownId: renderCaseStudyId(draft, candidate),
     provider: result.provider,
     model: result.model,
     date: io.today(),

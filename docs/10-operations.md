@@ -166,9 +166,9 @@ Urutannya: Actions *Deploy* (±10–15 menit) → timer server (≤ 10 menit) �
 Buka run *Case study drafts* terakhir; repo yang gagal dibuatkan draf (README terlalu pendek, semua model gagal, key tidak ada) muncul sebagai peringatan kuning (anotasi). Repo yang memang tidak memenuhi syarat di bawah tidak diberi peringatan; log hanya menulis jumlah repo yang perlu studi kasus. Daftar periksa:
 - [ ] Repo **publik**, punya topic `portfolio`, tidak ada di `exclude` di `content/github.yaml`.
 - [ ] Repo punya README yang menjelaskan proyeknya (kosong atau di bawah ±200 karakter dilewati).
-- [ ] Belum ada studi kasus untuk repo itu (`links.repo` sama, atau nama file sama dengan nama repo dalam huruf kecil dan tanda hubung, mis. `My_Repo` → `my-repo.md`).
-- [ ] Tidak ada branch lama `drafts/case-study-<nama>` (PR yang ditutup tanpa menghapus branch).
-- [ ] Sudah lewat jadwal 09:41 atau 21:41 WIB dan run-nya benar-benar ada di tab *Actions* (GitHub kadang melewatkan jadwal), atau jalankan manual. Maksimal 2 repo per run.
+- [ ] Belum ada studi kasus untuk repo itu (`links.repo` sama, atau nama file sama dengan nama repo dalam huruf kecil dan tanda hubung, mis. `My_Repo` → `my-repo.md`). Untuk grup di `content/github.yaml`: studi kasus yang menautkan repo anggota **mana pun** menutup seluruh grup, dan nama filenya mengikuti judul grup (ADR 0016).
+- [ ] Tidak ada branch lama `drafts/case-study-<nama>` (PR yang ditutup tanpa menghapus branch). Untuk grup, nama branch-nya `drafts/case-study-<slug judul grup>`; branch lama milik salah satu anggota (dibuat sebelum ADR 0016) juga menahan grup itu.
+- [ ] Sudah lewat jadwal 09:41 atau 21:41 WIB dan run-nya benar-benar ada di tab *Actions* (GitHub kadang melewatkan jadwal), atau jalankan manual. Maksimal 2 proyek per run.
 - [ ] Secret `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` ada, dan izin *Allow GitHub Actions to create and approve pull requests* aktif.
 
 **Draf tanpa angka metrik:** angka hanya dipakai jika tertulis di README (pengaman terhadap angka karangan AI). Tulis hasil terukur di README repo, atau tambahkan metrik di PR/CMS.

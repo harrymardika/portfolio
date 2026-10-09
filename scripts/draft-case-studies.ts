@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
- * Draft case studies for new portfolio repositories with AI and open one pull request each
- * (T8.2, ADR 0013). Runs in .github/workflows/case-study-drafts.yml.
+ * Draft case studies for new portfolio projects (a repository, or a group of repositories) with AI and
+ * open one pull request each (T8.2, ADR 0013, 0016). Runs in .github/workflows/case-study-drafts.yml.
  *   bun run drafts --dry-run     print the drafts, push nothing
  * Env: DRAFT_GEMINI_API_KEY (first choice), DRAFT_GROQ_API_KEY (fallback; ADR 0015), GITHUB_TOKEN (API rate limit; in CI
  *      also used by git and `gh` to push the branch and open the pull request).
@@ -56,7 +56,12 @@ function prBody(draft: PublishedDraft): string {
   const dropped = draft.droppedMetrics
     ? `\n> ${draft.droppedMetrics} angka dari jawaban AI dibuang karena tidak tertulis di README.\n`
     : '';
-  return `Draf studi kasus otomatis untuk **[${draft.repo.name}](${draft.repo.html_url})**, ditulis oleh ${draft.provider} (\`${draft.model}\`) pada ${draft.date} dari README repo. File: \`content/projects/${draft.slug}.md\` dan terjemahannya \`content/projects/id/${draft.slug}.md\`.
+  const links = draft.repos.map((repo) => `[${repo.name}](${repo.html_url})`).join(', ');
+  const source =
+    draft.repos.length > 1
+      ? `proyek **${draft.name}**, ditulis oleh ${draft.provider} (\`${draft.model}\`) pada ${draft.date} dari README ${draft.repos.length} repo: ${links}`
+      : `**${links}**, ditulis oleh ${draft.provider} (\`${draft.model}\`) pada ${draft.date} dari README repo`;
+  return `Draf studi kasus otomatis untuk ${source}. File: \`content/projects/${draft.slug}.md\` dan terjemahannya \`content/projects/id/${draft.slug}.md\`.
 ${dropped}
 **Merge PR ini = studi kasus langsung tayang** di situs (±20 menit setelah merge). Sebelum merge:
 
@@ -92,7 +97,7 @@ async function publish(draft: PublishedDraft): Promise<void> {
       'commit',
       '--quiet',
       '-m',
-      `content(projects): add an AI draft case study for ${draft.repo.name}`,
+      `content(projects): add an AI draft case study for ${draft.name}`,
     ]);
     sh(['git', 'push', '--quiet', 'origin', branch]);
     let url: string;
@@ -109,7 +114,7 @@ async function publish(draft: PublishedDraft): Promise<void> {
           '--label',
           'ai-draft',
           '--title',
-          `AI draft: case study for ${draft.repo.name}`,
+          `AI draft: case study for ${draft.name}`,
           '--body-file',
           '-',
         ],

@@ -162,6 +162,8 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
   - Kriteria: chatbot hanya memakai `ASSISTANT_GEMINI_API_KEY` → `ASSISTANT_GROQ_API_KEY`, draf AI hanya `DRAFT_GEMINI_API_KEY` → `DRAFT_GROQ_API_KEY` (nama sama di GitHub, server, compose, dan kode; diganti pemilik 2026-10-09); chatbot memakai `gemini-3.5-flash-lite` (500/hari), draf tetap `gemini-3.5-flash`; eval dibagi dua (15 Gemini, 15 Groq); pesan error penyedia menyebut jenis kuota; ADR 0015 (menggantikan sebagian ADR 0013 dan 0014); docs/10; tes unit.
 - [x] **T11.6** Peluncuran dan pemantauan
   - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
+- [x] **T11.6b** Draf AI sadar-grup (independen, permintaan pemilik 2026-10-09)
+  - Kriteria: grup di `content/github.yaml` = satu kandidat draf (bila salah satu anggota bertopic `portfolio`); anggota grup tidak didraf sendiri; grup tercakup bila repo anggota mana pun ditautkan; branch draf lama anggota memblokir grup; draf membaca README semua anggota (total ≤ 12.000 karakter); judul/slug dari judul grup, `links.repo` = repo pertama; ADR 0016; docs/04, docs/10; tes unit.
 - [ ] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: sesuai checklist §2a.
 
@@ -225,6 +227,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T11.6b draf AI per proyek
+- **Pertanyaan pemilik:** proyek yang sama di beberapa repo dibuatkan berapa draf? Sebelumnya satu per repo (yang bertopic), dari satu README saja. **Keputusan pemilik:** satu grup di `content/github.yaml`, satu draf (ADR 0016).
+- **Dikerjakan:** `selectCandidates` mengembalikan proyek (`DraftCandidate`); grup menjadi kandidat bila salah satu anggota bertopic, tercakup bila repo anggota mana pun ditautkan, dan menunggu bila ada branch draf grup atau anggota; prompt membaca README semua anggota (12.000 karakter dibagi rata); judul/slug dari judul grup, `links.repo` = repo pertama; PR menyebut semua repo. Tes unit baru (24 tes draf).
+- **Dicek dengan data GitHub sungguhan (tanpa AI):** grup Netflix tertahan oleh branch PR #3 lama; grup Gunadarma (4 repo) dan Leukemia (2 repo) masing-masing satu kandidat; run berikutnya mendraf Chatbot RAG Gunadarma dan `pengolahan-citra`.
+- **Langkah berikutnya:** tutup PR #3 (Netflix, satu README) dan hapus branch-nya agar grup Netflix didraf ulang dari 3 README; T11.7.
 
 ### 2026-10-09 · Claude Code (Opus) · T11.6 chatbot tayang
 - **Server** (persetujuan pemilik): `compose.yml` dan `update.sh` lama dicadangkan di `/opt/portfolio/backups/` (`*.20261009-1049`), versi baru disalin, `./update.sh` → ketiga container *healthy*, layanan memuat Gemini dan Groq. `ASSISTANT_ENABLED=true` ditambahkan ke `.env` (cadangan `.env` di `backups/`, mode 600); satu pertanyaan uji dijawab Gemini (±5 detik). `DRAFT_*` tetap ada di `.env` server sebagai arsip (pilihan pemilik; tidak dibaca layanan mana pun).

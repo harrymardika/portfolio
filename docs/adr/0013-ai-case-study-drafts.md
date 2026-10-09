@@ -1,6 +1,6 @@
 # 0013 · Draf studi kasus oleh AI sebagai Pull Request
 
-- **Status:** Accepted · nama secret diganti [ADR 0015](0015-separate-ai-keys-flash-lite.md) (2026-10-09)
+- **Status:** Accepted · nama secret diganti [ADR 0015](0015-separate-ai-keys-flash-lite.md), pemilihan kandidat per proyek diganti [ADR 0016](0016-group-aware-drafts.md) (2026-10-09)
 - **Tanggal:** 2026-10-07
 - **Tugas:** T8.2
 
