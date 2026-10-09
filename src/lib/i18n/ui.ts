@@ -139,10 +139,10 @@ const en = {
   'messages.review.approve': 'Approve',
   'messages.review.reject': 'Reject',
   'messages.review.confirmApprove':
-    'Approve the message from {writer}? A pull request adding it to the site opens within an hour.',
+    'Approve the message from {writer}? Within an hour it is added to a pull request on GitHub, where anyone can read it; merging that pull request publishes it on the site.',
   'messages.review.confirmReject': 'Reject and delete the message from {writer}? This cannot be undone.',
   'messages.review.approved':
-    'Approved. The pull request opens within an hour; merging it publishes the message.',
+    'Approved. Within an hour it joins the pull request on GitHub; merging that pull request publishes it.',
   'messages.review.rejected': 'Rejected and deleted.',
   'messages.review.actionFailed': 'That did not work. Reload the queue and try again.',
   'messages.review.gone': 'That message was already handled or has expired, so it was removed from the list.',
@@ -341,9 +341,10 @@ const id: Record<UiKey, string> = {
   'messages.review.approve': 'Setujui',
   'messages.review.reject': 'Tolak',
   'messages.review.confirmApprove':
-    'Setujui pesan dari {writer}? PR untuk menambahkannya ke situs dibuat dalam satu jam.',
+    'Setujui pesan dari {writer}? Dalam satu jam pesan ini masuk ke PR di GitHub dan bisa dibaca siapa pun; merge PR itu untuk menayangkannya di situs.',
   'messages.review.confirmReject': 'Tolak dan hapus pesan dari {writer}? Tidak bisa dibatalkan.',
-  'messages.review.approved': 'Disetujui. PR dibuat dalam satu jam; merge PR itu untuk menayangkan pesannya.',
+  'messages.review.approved':
+    'Disetujui. Dalam satu jam pesan ini masuk ke PR di GitHub; merge PR itu untuk menayangkannya.',
   'messages.review.rejected': 'Ditolak dan dihapus.',
   'messages.review.actionFailed': 'Gagal. Muat ulang antrean lalu coba lagi.',
   'messages.review.gone': 'Pesan itu sudah diproses atau kedaluwarsa, jadi dihapus dari daftar.',

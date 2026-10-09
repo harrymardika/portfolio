@@ -54,7 +54,7 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 
 Catatan:
 - Nama key sama di setiap tempat (ADR 0015): `ASSISTANT_*` hanya dipakai chatbot, `DRAFT_*` hanya dipakai draf AI. Key dipisah agar kuota dan kebocoran satu fitur tidak mengganggu fitur lain. `DRAFT_*` hanya dibutuhkan di GitHub; di `/opt/portfolio/.env` server key itu tidak dipakai, jadi lebih aman dihapus dari sana (bila server bocor, key draf tidak ikut terbuka). Saat merotasi key, perbarui setiap tempat yang menyimpannya.
-- Pengaturan GitHub yang wajib tetap aktif: *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* (untuk PR draf AI).
+- Pengaturan GitHub yang wajib tetap aktif: *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* (untuk PR draf AI dan PR kesan & pesan).
 - Halaman Cloudflare yang dipakai: Cache Rule `portfolio-html-cache`, *Browser Cache TTL: Respect Existing Headers*, *Always Online* (docs/07 §4).
 
 ## 3. Pekerjaan rutin
@@ -120,7 +120,11 @@ Pengunjung bisa meninggalkan pesan untuk Anda. **Tidak ada yang tampil sebelum A
 
 Alamat halaman ini tercantum di `robots.txt` (agar tidak dirayapi), jadi siapa pun bisa tahu halamannya ada, tetapi tanpa token isinya kosong dan API menolak semua permintaan.
 
-PR otomatis dan notifikasi harian menyusul di T12.4.
+**Setelah disetujui (workflow *Kind words*, tiap jam):** pesan diterjemahkan AI (key `DRAFT_*`) ke bahasa lainnya, ditambahkan ke `content/messages.yaml`, dicek tes konten, lalu masuk ke **satu PR antrean "Kind words from the site form"** (branch `kind-words/queue`, label `kind-words`). Pesan yang disetujui berikutnya ditambahkan ke PR yang sama selama masih terbuka, jadi tidak ada PR yang saling konflik. Begitu pesan ada di PR, salinannya di server dihapus. **Repo ini publik: sejak saat itu isinya terbaca siapa pun di PR, juga bila PR ditutup tanpa merge.** Merge PR = semua pesan di dalamnya tayang; untuk tidak menayangkan satu pesan, hapus entrinya di PR sebelum merge. Bila terjemahan gagal, pesan berbahasa Inggris tetap masuk (halaman Indonesia menampilkan versi Inggris), sedangkan pesan berbahasa Indonesia dicoba lagi jam berikutnya; pesan yang terus gagal dihapus dari server setelah 30 hari. Mau lebih cepat? *Actions → Kind words → Run workflow* (`publish`).
+
+**Notifikasi harian (08.07 WIB):** bila ada pesan menunggu, workflow membuka satu issue **"N kesan & pesan menunggu tinjauan"** berlabel `kind-words-pending` (hanya jumlah, tanpa isi), dan GitHub mengirim email ke Anda. Jumlahnya berubah → komentar baru (email lagi). Semua sudah ditinjau → issue ditutup otomatis. Pastikan email notifikasi aktif: github.com → *Settings → Notifications* (centang *Email* untuk *Watching*), dan repo ini berstatus *Watching* (tombol *Watch* di halaman repo).
+
+**Bila workflow gagal:** lihat run *Kind words* terakhir (anotasi kuning menyebut id pesan dan alasannya, bukan isinya). Penyebab umum: secret `MESSAGES_ADMIN_TOKEN` berbeda dengan server (HTTP 401), server mati, atau kedua key AI gagal (dicoba lagi otomatis).
 
 ## 4. Perawatan berkala
 

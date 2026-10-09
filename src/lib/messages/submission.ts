@@ -3,6 +3,9 @@
  * the form page. Nothing here is shown on the site until the owner approves it (D15). Pure.
  */
 import { LOCALES, type Locale } from '@/lib/i18n/locales';
+import { hasContactDetails } from '@/lib/security/contact';
+
+export { hasContactDetails } from '@/lib/security/contact';
 
 export const MESSAGE_LIMITS = {
   name: { min: 2, max: 80 },
@@ -35,26 +38,19 @@ export type SubmissionCheck =
       readonly problems: Partial<Record<MessageField, FieldProblem>>;
     };
 
-/**
- * Contact details and web addresses belong nowhere in the text: no phone, e-mail, or URL. Phone numbers
- * count digits only, so dates ("08-10-2024") and amounts ("Rp 62 000 000") pass while "0812.3456.7890",
- * "(0812) 3456-7890", and "+1 415 555 0100" do not. Domain endings are matched in lower case only, so
- * names such as ASP.NET or Socket.IO are not taken for addresses. The owner still reads every message.
- */
-const PHONE_PATTERN = /(?:\+?\b62|\b0)8(?:[\s.\-()]*\d){7,}|\+\d(?:[\s.\-()]*\d){7,}/;
-const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
-const URL_PATTERN = /https?:\/\/|www\.|\b[A-Za-z0-9-]+\.(?:com|net|org|io|id|co|me|app|dev|xyz)\b/;
 /** Chat links are contact details too, even over https. */
 const CHAT_HOSTS = /(^|\.)(wa\.me|whatsapp\.com|t\.me|telegram\.me|line\.me)$/i;
 
+/** Markdown bold markers would show as stray asterisks on the site, so they are dropped. */
+const noBold = (value: string): string => value.replaceAll('**', '');
+
 const text = (value: unknown): string =>
-  typeof value === 'string' ? value.normalize('NFC').replace(/\s+/g, ' ').trim() : '';
+  typeof value === 'string' ? noBold(value.normalize('NFC')).replace(/\s+/g, ' ').trim() : '';
 
 /** The message keeps its line breaks (at most one blank line in a row). */
 const paragraph = (value: unknown): string =>
   typeof value === 'string'
-    ? value
-        .normalize('NFC')
+    ? noBold(value.normalize('NFC'))
         .replace(/\r\n?/g, '\n')
         .split('\n')
         .map((line) => line.replace(/[ \t]+/g, ' ').trim())
@@ -105,11 +101,7 @@ export function checkSubmission(input: Readonly<Record<string, unknown>>): Submi
   }
   for (const field of ['name', 'role', 'relationship', 'message'] as const) {
     const value = fields[field];
-    if (
-      !problems[field] &&
-      (PHONE_PATTERN.test(value) || EMAIL_PATTERN.test(value) || URL_PATTERN.test(value))
-    )
-      problems[field] = 'contact';
+    if (!problems[field] && hasContactDetails(value)) problems[field] = 'contact';
   }
   const link = problems.link ?? linkProblem(fields.link);
   if (link) problems.link = link;

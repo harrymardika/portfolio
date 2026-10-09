@@ -1,0 +1,60 @@
+# "Kind words" from the site's form (T12.4, ADR 0017), two jobs in one workflow:
+#   publish (hourly)            messages the owner approved on the private review page → translated by AI
+#                               → added to the one open pull request, branch kind-words/queue (merging
+#                               publishes them) → deleted from the server
+#   notify (daily, 08:07 WIB)   the number of messages waiting → one issue, so GitHub e-mails the owner
+# The repository is public: logs and issues carry ids and counts only, never a message. Needs repository
+# secrets MESSAGES_ADMIN_TOKEN and DRAFT_GEMINI_API_KEY and/or DRAFT_GROQ_API_KEY, and Settings → Actions →
+# General → "Allow GitHub Actions to create and approve pull requests". Scheduled and manual
+# runs only: never triggered by pull requests, so forks cannot reach the secrets.
+name: Kind words
+
+on:
+  schedule:
+    - cron: '23 * * * *' # publish
+    # Off the hour: GitHub drops scheduled runs most often at its busiest time, the top of the hour.
+    - cron: '7 1 * * *' # notify, 08:07 WIB
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'publish: pull requests for approved messages; notify: the waiting-count issue'
+        type: choice
+        options: [publish, notify]
+        default: publish
+
+permissions: {}
+
+concurrency:
+  group: kind-words
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      # Pinned to commits: this job can push branches. Always read main, even on a manual run elsewhere.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.3.9
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Kind words
+        # The mode goes through an environment variable, never straight into the shell line.
+        run: bun scripts/kind-words.ts "$MODE"
+        env:
+          MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (github.event.schedule == '7 1 * * *' && 'notify' || 'publish') }}
+          MESSAGES_ADMIN_TOKEN: ${{ secrets.MESSAGES_ADMIN_TOKEN }}
+          DRAFT_GEMINI_API_KEY: ${{ secrets.DRAFT_GEMINI_API_KEY }}
+          DRAFT_GROQ_API_KEY: ${{ secrets.DRAFT_GROQ_API_KEY }}
+          GH_TOKEN: ${{ github.token }}

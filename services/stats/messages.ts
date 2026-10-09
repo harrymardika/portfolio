@@ -15,7 +15,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { localizePath } from '../../src/lib/i18n/routing';
-import { checkSubmission, type FieldProblem, type MessageField } from '../../src/lib/messages';
+import { checkSubmission, type FieldProblem, type MessageField } from '../../src/lib/messages/submission';
 import { clientAddress, isBot, visitorHash } from '../../src/lib/stats/privacy';
 
 import { MESSAGE_ID, type MessagesStore } from './messages-store';

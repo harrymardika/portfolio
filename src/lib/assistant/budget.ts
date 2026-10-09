@@ -2,6 +2,7 @@
  * Size budgets and checks for the assistant's knowledge (T11.1, ADR 0014). Pure; used by
  * scripts/generate-knowledge.ts at build time and by the assistant service when it builds a prompt.
  */
+import { PHONE_PATTERN } from '@/lib/security/contact';
 import { localizePath } from '@/lib/i18n/routing';
 
 import type { Knowledge, KnowledgeSection, KnowledgeSource } from './knowledge';
@@ -12,10 +13,10 @@ export const FULL_MAX_TOKENS = 25_000;
 export const COMPACT_MAX_TOKENS = 5_000;
 
 /**
- * Indonesian mobile (08…) or international (+62…) phone numbers, as in the content integrity test.
- * The assistant service checks its answers with the same pattern (T11.2).
+ * Phone numbers: the one rule shared with the content integrity test and the kind-words form
+ * (src/lib/security/contact.ts). The assistant service checks its answers with it (T11.2).
  */
-export const PHONE_PATTERN = /(\+?62|\b08)[\d\s-]{8,}/;
+export { PHONE_PATTERN };
 
 /** Share of a budget at which the build warns that the knowledge is close to its limit. */
 export const BUDGET_WARNING_RATIO = 0.9;

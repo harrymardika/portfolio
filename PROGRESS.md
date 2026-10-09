@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.4 (workflow PR otomatis + notifikasi)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 12 · **Tugas berikutnya:** T12.5 (penutupan Fase 12)
 
 ## Ringkasan
 
@@ -21,7 +21,7 @@
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
-| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.3 selesai; berikutnya T12.4 |
+| 12 | Formulir kesan & pesan bermoderasi (§F) | 🔄 T12.1–T12.4 selesai; berikutnya T12.5 (penutupan) |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
 Progres keseluruhan: **Fase 0–11 selesai; situs online sejak 2026-10-06, chatbot sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
@@ -177,7 +177,7 @@ Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di hal
   - Kriteria: formulir dengan validasi per field, terkirim tanpa JS (303 ke halaman terima kasih / belum terkirim), pemberitahuan privasi, tautan dari bagian Kesan & pesan di beranda (tetap tampil walau kosong) dan footer; e2e + axe; Lighthouse ≥ 90/95.
 - [x] **T12.3** Halaman tinjau privat
   - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
-- [ ] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
+- [x] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
   - Kriteria: tiap jam pesan yang disetujui diterjemahkan AI (key `DRAFT_*`, teks dianggap tak tepercaya, diperiksa), ditambahkan ke `content/messages.yaml`, dicek tes konten, dibuka sebagai PR `kind-words` (merge = tayang), lalu dihapus dari server; tiap hari 08.00 WIB issue berisi jumlah pesan menunggu (tanpa isi); `/security-review`.
 - [ ] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
@@ -235,6 +235,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T12.4 workflow kesan & pesan
+- **Dikerjakan:** `kind-words.yml` (tiap jam `publish`, 08.07 WIB `notify`, manual) + `scripts/kind-words.ts` + `src/lib/messages/publish.ts`. Pesan yang disetujui → terjemahan AI (key `DRAFT_*`, teks pengunjung sebagai data, hasil dicek: skema, jabatan konsisten, tanpa kontak/markup) → entri divalidasi skema konten → **satu PR antrean** `kind-words/queue` (setiap pesan satu commit bertrailer `Kind-words-id`, sehingga tidak pernah dobel) → dihapus dari server setelah ada di PR terbuka. Pesan bahasa Inggris tetap masuk walau terjemahan gagal; pesan bahasa Indonesia dicoba lagi tiap jam. `notify`: satu issue berisi jumlah saja (email GitHub), komentar bila jumlah berubah, ditutup bila nol.
+- **Dari review:** *blocker*: tes konten memakai aturan nomor HP lama dan menolak `**`, sehingga pesan wajar ("08-10-2024", "Rp 62 000 000") gagal terus → **satu aturan kontak** di `src/lib/security/contact.ts` untuk formulir, terjemahan, tes konten, dan chatbot; `**` dibuang di formulir dan terjemahan. Banyak PR per pesan akan saling konflik → satu PR antrean; branch tanpa PR dianggap belum selesai; cron harian digeser dari awal jam; teks persetujuan dan docs menyebut bahwa isi pesan terbaca publik di GitHub begitu masuk PR. `/security-review`: tanpa temuan.
+- **Diuji:** 496 tes unit (termasuk entri yang dibuat selalu lolos tes konten); uji live menyusul setelah merge (workflow harus ada di `main`).
+- **Langkah berikutnya:** uji live ujung ke ujung, lalu T12.5 (penutupan Fase 12, rilis 1.4.0).
 
 ### 2026-10-09 · Claude Code (Opus) · T12.3 halaman tinjau privat + token di server
 - **Server (atas izin pemilik mengerjakan seluruh Fase 12):** `compose.yml` baru disalin (cadangan di `backups/`), `MESSAGES_ADMIN_TOKEN` dibuat di `/opt/portfolio/.env` (tidak pernah dicetak; ambil dari sana untuk password manager) dan disalin ke secret repo GitHub; `docker compose up -d stats` → log `kind words form open`, `/api/messages/count` = 0, tanpa token 401.

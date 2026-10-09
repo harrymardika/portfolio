@@ -3,6 +3,7 @@
  * Astro cannot express (unique ids, journey references). Runs in milliseconds, so
  * content mistakes are caught by `bun test` before a full build.
  */
+import { PHONE_PATTERN } from '@/lib/security/contact';
 import { describe, expect, it } from 'bun:test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -191,8 +192,8 @@ describe('content files', () => {
       ...LIST_FILES.map(({ file }) => file),
       ...projectFiles.map((name) => `projects/${name}`),
     ];
-    const phonePattern = /(\+?62|\b08)[\d\s-]{8,}/;
-    expect(files.filter((file) => phonePattern.test(read(file)))).toEqual([]);
+    // The same rule as the kind-words form and its translations (src/lib/security/contact.ts).
+    expect(files.filter((file) => PHONE_PATTERN.test(read(file)))).toEqual([]);
   });
 });
 

@@ -84,6 +84,11 @@ describe('checkSubmission', () => {
     expect(problems({ link: 'javascript:alert(1)' })).toEqual({ link: 'link' });
   });
 
+  it('drops Markdown bold markers, which would show as stray asterisks', () => {
+    const result = checkSubmission({ ...valid, message: `**Great** mentor. ${valid.message}` });
+    expect(result.ok && result.submission.message).toBe(`Great mentor. ${valid.message}`);
+  });
+
   it('passes ordinary text that only looks like contact details', () => {
     for (const message of [
       'He rebuilt our ASP.NET backend and added Socket.IO events, a joy to work with.',
@@ -102,6 +107,7 @@ describe('checkSubmission', () => {
       'Great mentor, reach me on (0812) 3456-7890 if you need a reference.',
       'Great mentor, my number is +62 812 3456 7890 for any questions.',
       'Great mentor, call me at +1 415 555 0100 for a reference.',
+      'Great mentor, my number is 62 812 3456 7890 for any questions.',
     ]) {
       const result = checkSubmission({ ...valid, message });
       expect(result.ok || result.spam ? null : result.problems).toEqual({ message: 'contact' });

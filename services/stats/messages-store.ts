@@ -9,7 +9,7 @@ import { randomBytes } from 'node:crypto';
 
 import { Database } from 'bun:sqlite';
 
-import type { Submission } from '../../src/lib/messages';
+import type { Submission } from '../../src/lib/messages/submission';
 
 export const RETENTION_DAYS = 90;
 /** An approved message whose pull request never opened (a broken workflow) does not stay forever. */

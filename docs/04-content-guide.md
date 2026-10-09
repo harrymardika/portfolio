@@ -134,7 +134,7 @@ Pesan yang ditinggalkan orang lain untuk Anda (atasan, rekan, peserta bootcamp, 
 - Tulis pesan apa adanya; memendekkan dengan "…" hanya dengan persetujuan penulis. `message.id` boleh menyusul (tampil bahasa Inggris dengan `lang="en"`).
 - `role` opsional (teman atau peserta tidak perlu jabatan); jika diisi, `en` wajib. `link` hanya profil publik dengan `https://` (mis. LinkedIn); email, nomor HP, dan WhatsApp ditolak skema.
 - Selama daftar kosong, build menulis peringatan `No items found in content/messages.yaml`. Itu normal, bukan error.
-- Sumber yang cocok: rekomendasi LinkedIn, pesan dari peserta/mentor, dan **formulir di `/messages/`** (Fase 12, ADR 0017). Pesan dari formulir tidak pernah tampil sendiri: Anda meninjaunya di halaman privat, dan yang disetujui masuk file ini lewat Pull Request (docs/10 §3.2).
+- Sumber yang cocok: rekomendasi LinkedIn, pesan dari peserta/mentor, dan **formulir di `/messages/`** (Fase 12, ADR 0017). Pesan dari formulir tidak pernah tampil sendiri: Anda meninjaunya di halaman privat, dan yang disetujui masuk file ini lewat satu Pull Request antrean **"Kind words from the site form"** (terjemahan bahasa lainnya ditulis AI; periksa dan sunting di PR sebelum merge; merge = tayang). docs/10 §3.2.
 
 ### `projects/<slug>.md`
 Frontmatter:
