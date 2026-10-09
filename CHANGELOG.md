@@ -14,6 +14,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 - Knowledge for the "Ask Harry" chatbot, built with every deploy from the public site content only (no drafts, hidden items, or phone numbers): a full English and Indonesian version for Gemini and a compact English one for Groq, with link, phone-number, and size checks that stop the build (T11.1, ADR 0014).
 
 ### Changed
+- The chat's privacy notice now sits behind a small "Privacy" toggle under the question box (still one tap away, no JavaScript needed), so the panel is less crowded (T11.6).
 - AI keys renamed per feature, the same everywhere (GitHub, server, compose, code): `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` for the chatbot and `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` for the case study drafts; the chatbot now uses Gemini 3.5 Flash Lite (500 free requests a day instead of 20), the drafts keep Gemini 3.5 Flash; provider errors name the exhausted quota (T11.5b, ADR 0015).
 - The Gemini and Groq clients moved to a shared module (`src/lib/ai`) used by the AI case study drafts and the assistant; the drafts behave as before (T11.2).
 

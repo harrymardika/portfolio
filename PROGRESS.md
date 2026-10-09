@@ -231,6 +231,7 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Situs:** package GHCR `portfolio-assistant` dijadikan publik oleh pemilik; variabel repo `PUBLIC_ASSISTANT_ENABLED=true` dibuat, Deploy dijalankan, `update.sh` menarik image web baru dan menghapus cache Cloudflare.
 - **Dicek live (Playwright):** tombol "Ask about Harry"/"Tanya tentang Harry" muncul setelah health check; desktop EN (pertanyaan YOLO, 3 tautan studi kasus) dan HP ID (lembar bawah, "IPK 3,99") berfungsi; konsol tanpa error. Statistik privat: `asks.answered = 2`. Halaman utama EN/ID, `/cv/`, PDF: 200.
 - **Catatan security review (alamat pengunjung):** aman; layanan membaca `CF-Connecting-IP` yang selalu diisi Cloudflare, sama seperti statistik.
+- **Tindak lanjut (permintaan pemilik):** pemberitahuan privasi di bawah kotak tanya kini dilipat di balik tautan kecil "Privacy"/"Privasi" (elemen `<details>`, tanpa JS; isi D14 tetap, satu klik). Cache jawaban belum dibuat (D14: teks pertanyaan tidak disimpan); bila kuota mulai terasa, opsi yang aman privasi adalah jawaban tersimpan untuk 3 contoh pertanyaan. Cek jumlah pertanyaan di statistik privat dan pemakaian AI Studio setelah 1–2 minggu.
 - **Langkah berikutnya:** T11.7 (penutupan Fase 11, rilis bertanggal).
 
 ### 2026-10-09 · Claude Code (Opus) · T11.5 uji chatbot selesai + T11.5b key terpisah dan Gemini Flash Lite

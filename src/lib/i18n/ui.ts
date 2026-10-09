@@ -114,6 +114,7 @@ const en = {
   'ask.placeholder': 'Type a question (up to 500 characters)',
   'ask.send': 'Send',
   'ask.clear': 'Clear chat',
+  'ask.privacyLabel': 'Privacy',
   'ask.privacy':
     'Questions are answered by Google Gemini (or Groq) and are not stored on this site. Please do not share personal data.',
   'ask.you': 'You',
@@ -245,6 +246,7 @@ const id: Record<UiKey, string> = {
   'ask.placeholder': 'Tulis pertanyaan (maksimal 500 karakter)',
   'ask.send': 'Kirim',
   'ask.clear': 'Hapus obrolan',
+  'ask.privacyLabel': 'Privasi',
   'ask.privacy':
     'Pertanyaan dijawab oleh Google Gemini (atau Groq) dan tidak disimpan di situs ini. Jangan membagikan data pribadi.',
   'ask.you': 'Anda',

@@ -90,6 +90,15 @@ test('an example question is sent with one click', async ({ page }) => {
   await expect(page.getByRole('button', { name: UI.en['ask.example1'] })).toBeHidden();
 });
 
+test('keeps the privacy notice behind a small Privacy toggle', async ({ page }) => {
+  await mockAssistant(page);
+  await openChat(page, '/id/', 'id');
+  const notice = panel(page, 'id').getByText(UI.id['ask.privacy']);
+  await expect(notice).toBeHidden();
+  await panel(page, 'id').locator('summary', { hasText: UI.id['ask.privacyLabel'] }).click();
+  await expect(notice).toBeVisible();
+});
+
 test('offers the CV and email when the assistant cannot answer, and explains the limit', async ({ page }) => {
   await mockAssistant(page, [
     { status: 503, body: { error: 'unavailable' } },
