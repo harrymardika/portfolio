@@ -3,7 +3,7 @@
  * Draft case studies for new portfolio repositories with AI and open one pull request each
  * (T8.2, ADR 0013). Runs in .github/workflows/case-study-drafts.yml.
  *   bun run drafts --dry-run     print the drafts, push nothing
- * Env: GEMINI_API_KEY (first choice), GROQ_API_KEY (fallback), GITHUB_TOKEN (API rate limit; in CI
+ * Env: DRAFT_GEMINI_API_KEY (first choice), DRAFT_GROQ_API_KEY (fallback; ADR 0015), GITHUB_TOKEN (API rate limit; in CI
  *      also used by git and `gh` to push the branch and open the pull request).
  */
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -47,8 +47,8 @@ const config = githubConfigSchema.parse(
 );
 const token = env('GITHUB_TOKEN');
 const providers: Provider[] = [];
-const geminiKey = env('GEMINI_API_KEY');
-const groqKey = env('GROQ_API_KEY');
+const geminiKey = env('DRAFT_GEMINI_API_KEY');
+const groqKey = env('DRAFT_GROQ_API_KEY');
 if (geminiKey) providers.push(gemini(geminiKey));
 if (groqKey) providers.push(groq(groqKey));
 
@@ -174,6 +174,8 @@ const summary = await runDrafts(config, providers, {
   today: () => new Date().toISOString().slice(0, 10),
 });
 if (providers.length === 0) {
-  console.log('::warning::drafts: set GEMINI_API_KEY and/or GROQ_API_KEY as repository secrets (ADR 0013)');
+  console.log(
+    '::warning::drafts: set DRAFT_GEMINI_API_KEY and/or DRAFT_GROQ_API_KEY as repository secrets (ADR 0015)',
+  );
 }
 console.log(`drafts: ${summary.drafted.length} drafted, ${summary.skipped.length} skipped`);

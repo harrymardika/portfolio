@@ -1,18 +1,18 @@
 # Quality and safety evaluation of the "Ask Harry" assistant with the real models (T11.5, ADR 0014).
 # Manual only (Actions → Assistant eval → Run workflow): builds the site's knowledge, asks the ~30 cases in
 # tests/eval/assistant-cases.yaml through the production setup, and writes the graded report to the run's
-# summary and an artifact. Uses the chatbot keys when set, otherwise the AI draft keys; questions and answers
-# are public test data, and nothing is stored or pushed.
+# summary and an artifact. Uses the chatbot's own keys (ADR 0015); questions and answers are public test
+# data, and nothing is stored or pushed.
 name: Assistant eval
 
 on:
   workflow_dispatch:
     inputs:
-      groq:
-        description: 'Groq fallback: every case (slow, ±35 min), the marked subset (±15 min), or none'
+      providers:
+        description: "split: 15 cases each to Gemini and Groq (±16 min); both: every case to both (±32 min, most of Groq's daily tokens)"
         type: choice
-        options: [subset, all, none]
-        default: subset
+        options: [split, both]
+        default: split
 
 permissions:
   contents: read
@@ -53,11 +53,11 @@ jobs:
 
       - name: Ask the evaluation questions
         # The input goes through an environment variable, never straight into the shell line.
-        run: bun scripts/assistant-eval.ts "--groq=$GROQ_MODE"
+        run: bun scripts/assistant-eval.ts "--providers=$PROVIDERS"
         env:
-          GROQ_MODE: ${{ inputs.groq }}
-          GEMINI_API_KEY: ${{ secrets.ASSISTANT_GEMINI_API_KEY || secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.ASSISTANT_GROQ_API_KEY || secrets.GROQ_API_KEY }}
+          PROVIDERS: ${{ inputs.providers }}
+          ASSISTANT_GEMINI_API_KEY: ${{ secrets.ASSISTANT_GEMINI_API_KEY }}
+          ASSISTANT_GROQ_API_KEY: ${{ secrets.ASSISTANT_GROQ_API_KEY }}
 
       - name: Keep the report
         if: always()

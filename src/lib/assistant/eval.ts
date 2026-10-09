@@ -37,7 +37,7 @@ export const evalCaseSchema = z.strictObject({
   links: z.array(z.string().startsWith('/')).default([]),
   /** For attacks: the service refusing the answer (the visitor sees the fallback) also passes. */
   guardMayReject: z.boolean().default(false),
-  /** Also asked to Groq in the default `subset` run (Groq allows about one question a minute). */
+  /** In the default `split` run Groq answers this case and Gemini the others; `both` asks both. */
   groq: z.boolean().default(false),
 });
 export type EvalCase = z.infer<typeof evalCaseSchema>;
@@ -59,7 +59,7 @@ export type EvalOutcome =
  */
 const LANGUAGE_HINT: Readonly<Record<Locale, RegExp>> = {
   en: /\b(the|and|is|are|of|to|in|can|has|was|for|with)\b/iu,
-  id: /\b(adalah|merupakan|yang|dan|sebagai|di|dengan|untuk|dari|tidak|bisa|ini|itu|saat)\b/iu,
+  id: /\b(adalah|merupakan|yang|dan|sebagai|di|dengan|untuk|dari|tidak|bisa|ini|itu|saat|saya|maaf|hanya|dapat|tentang|telah|serta|pada|hingga|juga|anda)\b/iu,
 };
 const LANGUAGE_NAME: Readonly<Record<Locale, string>> = { en: 'English', id: 'Indonesian' };
 

@@ -1,6 +1,7 @@
 # Draft case studies for new repositories tagged `portfolio` with AI (T8.2, ADR 0013).
 # Opens one pull request per repository with `draft: false`: merging it publishes the case study, so the
-# pull request is the review step. Needs repository secrets GEMINI_API_KEY and/or GROQ_API_KEY, and
+# pull request is the review step. Needs repository secrets DRAFT_GEMINI_API_KEY and/or DRAFT_GROQ_API_KEY
+# (ADR 0015; never the chatbot's ASSISTANT_* keys), and
 # Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".
 # Only scheduled and manual runs: never triggered by pull requests, so forks cannot reach the secrets.
 name: Case study drafts
@@ -42,7 +43,7 @@ jobs:
       - name: Draft case studies
         run: bun run drafts
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DRAFT_GEMINI_API_KEY: ${{ secrets.DRAFT_GEMINI_API_KEY }}
+          DRAFT_GROQ_API_KEY: ${{ secrets.DRAFT_GROQ_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}

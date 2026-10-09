@@ -362,7 +362,7 @@ describe('runDrafts', () => {
       today: () => '',
     };
     expect((await runDrafts(config, [], io)).drafted).toEqual([]);
-    expect(logs[0]).toContain('no GEMINI_API_KEY or GROQ_API_KEY');
+    expect(logs[0]).toContain('no DRAFT_GEMINI_API_KEY or DRAFT_GROQ_API_KEY');
   });
 });
 

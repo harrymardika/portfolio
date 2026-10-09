@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-08 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.5 (uji ±30 pertanyaan lewat workflow manual)
+**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 11 · **Tugas berikutnya:** T11.6 (peluncuran, butuh langkah pemilik di server)
 
 ## Ringkasan
 
@@ -20,7 +20,7 @@
 | 8 | Otomasi lanjutan: CMS, draf konten oleh AI | ✅ Selesai |
 | 9 | Personal branding & konten: positioning, skill, terjemahan studi kasus, kesan & pesan (`docs/11-roadmap.md` §A, C, D, F) | ✅ Selesai 2026-10-08 (rilis 1.1.0) |
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
-| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.4 selesai; berikutnya T11.5 (uji kualitas dan keamanan) |
+| 11 | Chatbot "Tanya Harry" di sudut (§E) | 🔄 T11.1–T11.5b selesai (eval 30/30); berikutnya T11.6 (peluncuran) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ⏳ Setelah Fase 11 |
 | 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Setelah Fase 11 dan 12 |
 
@@ -156,8 +156,10 @@ Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinj
   - Kriteria: target `assistant` di Dockerfile + matrix deploy; service `assistant` di compose (hardening, 128 MB, tanpa volume); Caddy `/api/ask*` (no-store); CSP tetap; `.env.example`, docs/07 dan docs/10 (key terpisah, mematikan fitur, kuota); `test:e2e:docker` mencakup health.
 - [x] **T11.4** Widget chat di sudut
   - Kriteria: tombol kecil di semua halaman `PageLayout` (bukan halaman cetak), tersembunyi tanpa JS; panel dimuat saat diklik; dialog non-modal yang ramah keyboard dan pembaca layar; contoh pertanyaan, hapus percakapan, pemberitahuan privasi; percakapan bertahan antar-halaman dalam satu tab (`sessionStorage`); fallback CV + email saat server mati/batas habis; lembar bawah di HP tanpa menutupi footer; EN/ID; event statistik `ask` tanpa teks; e2e dengan API tiruan + axe; Lighthouse tetap ≥ 90/95.
-- [~] **T11.5** Uji kualitas dan keamanan · *Claude Code*
+- [x] **T11.5** Uji kualitas dan keamanan
   - Kriteria: ±30 pertanyaan uji (fakta EN/ID, di luar topik, data pribadi, prompt injection, tautan luar/HTML) dijalankan lewat workflow manual `assistant-eval.yml` (secret repo, tanpa laptop); hasil di `docs/assistant-eval.md`; prompt diperbaiki sampai lulus; `/security-review` seluruh fase.
+- [x] **T11.5b** Key AI terpisah dan model chatbot Gemini Flash Lite
+  - Kriteria: chatbot hanya memakai `ASSISTANT_GEMINI_API_KEY` → `ASSISTANT_GROQ_API_KEY`, draf AI hanya `DRAFT_GEMINI_API_KEY` → `DRAFT_GROQ_API_KEY` (nama sama di GitHub, server, compose, dan kode; diganti pemilik 2026-10-09); chatbot memakai `gemini-3.5-flash-lite` (500/hari), draf tetap `gemini-3.5-flash`; eval dibagi dua (15 Gemini, 15 Groq); pesan error penyedia menyebut jenis kuota; ADR 0015 (menggantikan sebagian ADR 0013 dan 0014); docs/10; tes unit.
 - [ ] **T11.6** Peluncuran dan pemantauan
   - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
 - [ ] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
@@ -208,7 +210,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
 | D17 | 3D tambahan | **Keempatnya** (peta proyek, 404, rasi skill, globe pengunjung), di halaman selain beranda, **setelah Fase 11 dan 12**, urutan Proyek → 404 → Skill → Globe (2026-10-08) |
 | D13 | Asisten AI: lanjut dan letaknya | **Lanjut, sebagai chatbot mengambang di sudut kanan bawah setiap halaman** (bukan halaman cetak), dipilih setelah membandingkan pratinjau dengan versi About + tombol hero (2026-10-08) |
-| D14 | Asisten AI: penyedia & penyimpanan | **Gemini utama, Groq cadangan** (batas tier gratis Groq dicek di ADR T11.1), dengan pemberitahuan privasi singkat di bawah kotak tanya; **teks pertanyaan tidak disimpan**, hanya jumlahnya di statistik privat (2026-10-08) |
+| D14 | Asisten AI: penyedia & penyimpanan | **Gemini utama, Groq cadangan** (batas tier gratis Groq dicek di ADR T11.1), dengan pemberitahuan privasi singkat di bawah kotak tanya; **teks pertanyaan tidak disimpan**, hanya jumlahnya di statistik privat (2026-10-08). Model chatbot diganti `gemini-3.5-flash-lite` karena kuota (ADR 0015, 2026-10-09) |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
 
 **Belum diputuskan:** tidak ada (D8–D17 sudah diputuskan pemilik). Keputusan baru ditambahkan di sini dengan rekomendasinya.
@@ -223,6 +225,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-09 · Claude Code (Opus) · T11.5 uji chatbot selesai + T11.5b key terpisah dan Gemini Flash Lite
+- **Eval:** 4 run lewat `gh` (dipasang pemilik). Run 1–2 memakai key draf dan `gemini-3.5-flash`: kuota hariannya hanya 20 permintaan per project, habis di tengah run 1, sehingga run 2 gagal total di Gemini. Pesan error penyedia kini menyebut jenis kuota (`…PerDayPerProjectPerModel-FreeTier`) tanpa teks bebas. Run 3 (key chatbot, Flash Lite, `split`): 27/30. Run 4: **30/30**. Rincian di `docs/assistant-eval.md`.
+- **Perbaikan prompt:** angka mengikuti bahasa jawaban ("3.99" EN, "3,99" ID); jawaban selalu JSON, juga saat menolak. Penilai eval mengenali lebih banyak kata Indonesia (dua jawaban benar sempat dinilai salah).
+- **Keputusan pemilik (2026-10-09, ADR 0015):** nama key per fitur, sama di GitHub, server, compose, dan kode: `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` (chatbot) dan `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` (draf; workflow draf ikut diubah karena secret lama sudah dihapus). Rencana key backup dan "Groq dulu" dibatalkan setelah pemilik membandingkan limit di AI Studio dan console Groq: chatbot memakai `gemini-3.5-flash-lite` (500/hari, 15/menit) lalu Groq; draf tetap `gemini-3.5-flash` lalu Groq. Eval dibagi dua: 15 kasus Gemini, 15 Groq.
+- **Review:** subagent `reviewer` (tanpa blocker; temuan diperbaiki), `/security-review` seluruh Fase 11 (tanpa temuan). `bun run verify` lulus.
+- **Untuk pemilik (T11.6):** (1) `DRAFT_*` tidak dipakai di server; sebaiknya dihapus dari `/opt/portfolio/.env`. (2) Server belum menjalankan chatbot dan `compose.yml` di sana masih versi lama: ikuti docs/10 §3.1 (package GHCR `portfolio-assistant` publik → salin `compose.yml` dan `update.sh` → `./update.sh` → health). (3) Cek `trusted_proxies` Caddy di belakang cloudflared (catatan security review).
+- **Langkah berikutnya:** T11.6.
 
 ### 2026-10-08 · Claude Code (Opus) · T11.5 uji chatbot (disiapkan, menunggu run pemilik)
 - **Sudah:** workflow manual `.github/workflows/assistant-eval.yml` (build → pertanyaan uji → laporan di *Summary* run + artifact; secret chatbot bila ada, kalau tidak secret draf AI), `scripts/assistant-eval.ts` (memakai rute produksi yang sama, kini di `services/assistant/routes.ts`), 30 kasus di `tests/eval/assistant-cases.yaml` (15 fakta EN/ID termasuk format angka ID, 4 di luar topik, 4 data pribadi, 5 *prompt injection*, 2 markup/tautan luar), penilai murni `src/lib/assistant/eval.ts` + tes, `docs/assistant-eval.md`.
@@ -258,27 +268,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Catatan ukuran:** versi ringkas awalnya ±5.700 token; poin pengalaman ke-3 dan seterusnya, tag, tautan, dan isi studi kasus dipindah ke `detail` (hanya versi lengkap) agar ada ruang untuk ±9 studi kasus dari draf AI.
 - **Dari review:** tes e2e `assistant-knowledge.spec.ts` membuktikan pengetahuan hanya berisi studi kasus yang terbit (tanpa draf), tanpa pola nomor HP, path valid, dan endpoint tidak tersaji (404); build e2e kini menulis ke `build-meta-e2e/` agar tidak menimpa pengetahuan asli; judul studi kasus menjadi label ("Problem:") dan tautan Markdown dibuang; file hasil divalidasi skemanya; peringatan di atas 90% anggaran; kesan & pesan jadi bagian sendiri (2 pertama di versi ringkas); PDF varian CV boleh ditautkan; panduan error di docs/10 §5.8 dan docs/04.
 - **Langkah berikutnya:** T11.2 (layanan `services/assistant`, refaktor penyedia ke `src/lib/ai/`).
-
-### 2026-10-08 · Claude Code (Opus) · T10.4 penutupan Fase 10 (ringkasan fase)
-- **Dibangun di Fase 10:** model varian `content/cv-variants.yaml` dengan label fokus pada `highlights` (T10.1); PDF per varian EN/ID saat deploy di `/downloads/cv/`, masing-masing ≤ 2 halaman, ATS-friendly, tanpa nomor HP, dites per varian (T10.2); 6 varian (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) di halaman `/cv/` (noindex) yang ditautkan di footer "Resumes" (T10.3).
-- **Keputusan pemilik:** D10 (6 varian, Product dan Project dipisah, tanpa CV per perusahaan, tautan footer); 12 PDF varian disetujui 2026-10-08.
-- **Penutupan:** tidak ada kode, kunci teks UI, dependency, aset, atau branch yang tersisa (dicek ulang setelah T9.6); `docs/02` dan `docs/09` sudah memuat varian. Dari review: `docs/04` (tabel file kini memuat `cv-variants.yaml` dan `messages.yaml`, menu CMS *Varian CV*, dan default `skills` varian yang benar: grup CV umum, bukan semua grup), SRS (FR-08a, route cetak varian), dan label "CV utama" di `/cv/` yang kini mengambil baris peran dari `profile.yaml` (sebelumnya tertulis di kamus UI). README dan `docs/11` diperbarui statusnya. CHANGELOG rilis **1.2.0 (2026-10-08)** berisi Fase 10 dan jadwal draf dua kali sehari; `package.json` 1.2.0.
-- **Cek situs live (2026-10-08, build dari `88035b0`):** beranda EN/ID, `/cv/` dan `/id/cv/`, `/stats/`, PDF utama dan varian, `/api/stats/summary` menjawab 200; label "Main CV (AI Product Manager)" / "CV utama (AI Product Manager)" kini dari `profile.yaml`. Tag `v1.2.0` di-push atas izin pemilik (berlaku juga untuk rilis penutupan fase berikutnya).
-- **Sisa untuk pemilik:** tidak ada untuk Fase 10. Bila ingin varian baru atau mengubah isi varian: CMS → *Varian CV* (docs/04).
-- **Fase berikutnya:** Fase 11, mulai T11.1 (ADR 0014 + `knowledge.json`).
-
-### 2026-10-08 · Claude Code (Opus) · Tindak lanjut T9.6: T10.3, tag rilis, jadwal draf AI
-- **T10.3 disetujui pemilik** (12 PDF varian "sudah bagus"); tinggal penutupan Fase 10 (T10.4).
-- Tag git `v1.0.0` (commit `0918c4e`, akhir 2026-10-07) dan `v1.1.0` (`aacf06e`, penutupan Fase 9) di-push atas izin pemilik.
-- **Jadwal draf AI:** run terjadwal pertama (2026-10-08 02:41 UTC) tidak pernah dibuat GitHub (API: 0 run `schedule`); jadwal `Deploy` juga terlambat atau terlewat beberapa kali. Penyebab di sisi GitHub (jadwal *best-effort*). Pilihan pemilik: dua jadwal per hari (`41 2,14 * * *`), dicatat di docs/10 §3 dan §5.5.
-- Ada 9 repo bertopic `portfolio` tanpa studi kasus; pemilik setuju semuanya dibuatkan draf (±2 PR per run sampai habis). Semua sudah ada di `include` `content/github.yaml`, jadi menghapus topic hanya menghentikan draf, kartunya tetap tampil.
-- Pemilik bertanya cara mengisi kesan & pesan; dijelaskan (CMS → *Kesan & pesan*, hanya dengan izin penulis). Belum ada isi.
-- **Langkah berikutnya:** cek run draf berikutnya (21:41 WIB) membuka PR dua bahasa; T10.4; T11.1.
-
-### 2026-10-08 · Claude Code (Opus) · T9.6 penutupan Fase 9 (ringkasan fase)
-- **Dibangun di Fase 9:** positioning **AI Product Manager** di hero, About, CV umum, Portfolio, JSON-LD (T9.1); `skills.yaml` 8 grup dengan `show_on_cv` agar CV umum tetap 2 halaman (T9.2); 11 studi kasus bahasa Indonesia di `content/projects/id/` dengan fallback dan tes kesamaan struktur (T9.3); bagian "Kind words / Kesan & pesan" dari `content/messages.yaml`, tersembunyi selama kosong (T9.4); format angka per bahasa lewat `localizeNumber` + tes (T9.5). Tambahan di luar tugas: profil Medium, judul "Finalist", template prompt sesi.
-- **Keputusan pemilik:** D8, D9, D11, D12, D15, D16 (dan rencana D13, D14, D17 untuk Fase 11 dan 13).
-- **Penutupan:** satu kunci teks UI tak terpakai (`portfolio.page`) dan `src/lib/seo/.gitkeep` dihapus; tidak ada dependency, komponen, atau aset yang tak terpakai; tidak ada `TODO`; semua `test.skip` beralasan. README, `docs/02` (struktur folder kini sesuai kode), `docs/11` (Fase 9–13, tabel keputusan D8–D17), `docs/README.md`, dan tabel `AGENTS.md` §1 diperbarui. CHANGELOG punya rilis **1.0.0 (2026-10-07, Fase 0–8)** dan **1.1.0 (2026-10-08, Fase 9)**; `package.json` ikut 1.1.0. Branch lokal `feat/T9.2-skills` dihapus setelah perbaikan `docs/06` di dalamnya (commit `911d2d2`, belum ada di `main`, berbeda dari catatan serah terima) dibawa ke `main`; branch remote `drafts/case-study-camera-genai` dihapus.
-- **Sisa untuk pemilik:** headline LinkedIn "AI Product Manager"; meninjau 12 PDF varian di `/cv/` (T10.3); mengisi `content/messages.yaml` bila sudah ada pesan yang diizinkan; memastikan run draf AI dua bahasa pertama (tab *Actions* → *Case study drafts*).
-- **Cek situs live (2026-10-08, build 06:20 UTC, ±17 menit setelah push):** beranda, About, Projects, studi kasus, `/stats/` EN/ID, `/cv/` (12 PDF varian), 4 PDF utama, `/api/health`, dan `/api/stats/summary` menjawab 200; baris peran "AI Product Manager" dan angka gaya Indonesia (`92,5%`) tampil benar.
-- **Fase berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten); T10.4 setelah tinjauan T10.3.

@@ -46,7 +46,7 @@ export async function runDrafts(
 ): Promise<RunSummary> {
   const summary: RunSummary = { drafted: [], skipped: [] };
   if (providers.length === 0) {
-    io.log('drafts: no GEMINI_API_KEY or GROQ_API_KEY; nothing to do');
+    io.log('drafts: no DRAFT_GEMINI_API_KEY or DRAFT_GROQ_API_KEY; nothing to do');
     return summary;
   }
   const [repos, existing, branches] = await Promise.all([io.listRepos(), io.existing(), io.draftBranches()]);

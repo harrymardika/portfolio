@@ -41,10 +41,42 @@ export interface ProviderOptions {
 }
 
 export const GEMINI_MODEL = 'gemini-3.5-flash';
+/**
+ * The chatbot's Gemini model (ADR 0015): its free tier allows 500 requests a day and 15 a minute, against
+ * 20 and 5 for GEMINI_MODEL, which stays with the case study drafts (a few long answers a day).
+ */
+export const ASSISTANT_GEMINI_MODEL = 'gemini-3.5-flash-lite';
 export const GROQ_MODEL = 'openai/gpt-oss-120b';
 const TIMEOUT_MS = 60_000;
 const RETRY_DELAY_MS = 5_000;
 const busy = (status: number): boolean => status === 429 || status >= 500;
+
+/** Only identifiers (status, code, quota id) leave an error body: never free text, which may echo a prompt. */
+const IDENTIFIER = /^[\w.-]{1,64}$/;
+
+/**
+ * The machine-readable cause in an error body, e.g. "RESOURCE_EXHAUSTED, GenerateRequestsPerMinute…" from
+ * Gemini or "json_validate_failed" from Groq, so a log tells a per-minute limit from a daily one.
+ */
+async function errorCause(response: Response): Promise<string> {
+  try {
+    const { error } = (await response.json()) as {
+      error?: {
+        status?: unknown;
+        code?: unknown;
+        details?: { violations?: { quotaId?: unknown }[] }[];
+      };
+    };
+    const ids = [
+      error?.status,
+      error?.code,
+      ...(error?.details ?? []).flatMap((detail) => (detail.violations ?? []).map((v) => v.quotaId)),
+    ].filter((id): id is string => typeof id === 'string' && IDENTIFIER.test(id));
+    return ids.length > 0 ? ` (${[...new Set(ids)].join(', ')})` : '';
+  } catch {
+    return '';
+  }
+}
 
 /** POST JSON; a busy or rate-limited answer (429, 5xx) is retried `retries` times after a short wait. */
 async function post(
@@ -70,7 +102,7 @@ async function post(
     });
     if (response.ok) return response.json();
     if (attempt >= retries || !busy(response.status))
-      throw new Error(`${name} responded with HTTP ${response.status}`);
+      throw new Error(`${name} responded with HTTP ${response.status}${await errorCause(response)}`);
     await sleep(retryDelayMs);
   }
 }

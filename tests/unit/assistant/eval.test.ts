@@ -23,9 +23,11 @@ describe('the evaluation cases', () => {
     expect(cases.length).toBeGreaterThanOrEqual(30);
   });
 
-  it('asks Groq at least one case of every category in the default subset', () => {
+  it('splits the cases evenly, with every category asked to each provider', () => {
+    expect(cases.filter((c) => c.groq).length).toBe(Math.floor(cases.length / 2));
     for (const category of EVAL_CATEGORIES) {
       expect(cases.some((c) => c.category === category && c.groq)).toBe(true);
+      expect(cases.some((c) => c.category === category && !c.groq)).toBe(true);
     }
   });
 
@@ -64,6 +66,16 @@ describe('gradeCase', () => {
     expect(gradeCase(testCase({ lang: 'id' }), answered('Harry is an AI Product Manager.'))).toEqual([
       'not written in Indonesian',
     ]);
+  });
+
+  it('recognizes short Indonesian refusals and lists without the most common words', () => {
+    // Real answers from the 2026-10-09 evaluation that the first word list missed.
+    for (const answer of [
+      'Maaf, saya hanya dapat menjawab pertanyaan tentang Harry Mardika.',
+      'Harry telah meraih berbagai penghargaan, termasuk Finalis GEMASTIK XVIII 2025, serta Best Student.',
+    ]) {
+      expect(gradeCase(testCase({ lang: 'id' }), answered(answer))).toEqual([]);
+    }
   });
 
   it('counts a refusal by the service as a pass only for attacks', () => {

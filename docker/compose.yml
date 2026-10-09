@@ -40,7 +40,7 @@ services:
       - stats-data:/data
     mem_limit: 128m
 
-  # "Ask Harry" chatbot (ADR 0014): off until ASSISTANT_ENABLED=true; separate keys from the AI drafts (T11.6).
+  # "Ask Harry" chatbot (ADR 0014, 0015): off until ASSISTANT_ENABLED=true; its own keys, never the DRAFT_* ones.
   assistant:
     <<: *hardening
     image: ghcr.io/harrymardika/portfolio-assistant:${TAG:-latest}
@@ -48,8 +48,8 @@ services:
       ASSISTANT_ENABLED: ${ASSISTANT_ENABLED:-false}
       # The same site host the stats service accepts (STATS_SITE_HOST in .env, docs/07 §3).
       ASSISTANT_SITE_HOST: ${STATS_SITE_HOST:-harry.mardika.my.id}
-      GEMINI_API_KEY: ${ASSISTANT_GEMINI_API_KEY:-}
-      GROQ_API_KEY: ${ASSISTANT_GROQ_API_KEY:-}
+      ASSISTANT_GEMINI_API_KEY: ${ASSISTANT_GEMINI_API_KEY:-}
+      ASSISTANT_GROQ_API_KEY: ${ASSISTANT_GROQ_API_KEY:-}
     mem_limit: 128m
 
 volumes:

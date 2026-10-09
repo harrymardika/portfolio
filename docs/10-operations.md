@@ -40,9 +40,9 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | Nama | Disimpan di | Fungsi | Cara mengganti |
 |---|---|---|---|
 | `GITHUB_TOKEN` | Otomatis di GitHub Actions | Push image ke GHCR, membaca API GitHub, membuat PR draf | Tidak perlu; dibuat ulang tiap run |
-| `GEMINI_API_KEY` | GitHub → repo → *Settings → Secrets and variables → Actions* | Draf AI (pilihan pertama) | aistudio.google.com → *API keys* → buat baru, hapus yang lama → perbarui secret |
-| `GROQ_API_KEY` | Sama dengan di atas | Draf AI (cadangan) | console.groq.com → *API Keys* → buat baru, hapus yang lama → perbarui secret |
-| `ASSISTANT_GEMINI_API_KEY`, `ASSISTANT_GROQ_API_KEY` | `/opt/portfolio/.env` di server | Chatbot (Gemini utama, Groq cadangan); **berbeda** dari key draf AI | Seperti key draf AI, tetapi di project Google AI Studio dan key Groq tersendiri → perbarui `.env` → `docker compose up -d assistant` |
+| `DRAFT_GEMINI_API_KEY` | GitHub → repo → *Settings → Secrets and variables → Actions* | Draf AI (pilihan pertama) | aistudio.google.com → *API keys* → buat baru, hapus yang lama → perbarui secret |
+| `DRAFT_GROQ_API_KEY` | Sama dengan di atas | Draf AI (cadangan) | console.groq.com → *API Keys* → buat baru, hapus yang lama → perbarui secret |
+| `ASSISTANT_GEMINI_API_KEY`, `ASSISTANT_GROQ_API_KEY` | `/opt/portfolio/.env` di server **dan** secret repo GitHub (untuk workflow eval) | Chatbot (Gemini Flash Lite utama, Groq cadangan; ADR 0015); **berbeda** dari key draf AI | Seperti key draf AI, tetapi di project AI Studio dan key Groq tersendiri → perbarui `.env` → `docker compose up -d assistant`, lalu perbarui juga secret GitHub dengan nama yang sama |
 | `ASSISTANT_ENABLED` | `/opt/portfolio/.env` di server | Kill switch chatbot (`true`/`false`; kosong = mati) | Ubah nilainya → `docker compose up -d assistant` (tanpa build) |
 | `PUBLIC_ASSISTANT_ENABLED` (variabel, bukan secret) | GitHub → repo → *Settings → Secrets and variables → Actions → Variables* | Ikut-tidaknya widget chatbot di-build (§3.1 langkah 6) | Ubah nilainya → jalankan Deploy |
 | `STATS_ADMIN_TOKEN` | `/opt/portfolio/.env` di server **dan** `.env` di laptop | Membuka laporan link pelacak (`bun run stats:report`) | `openssl rand -hex 32` → tulis di kedua `.env` → di server `docker compose up -d` |
@@ -52,7 +52,7 @@ Simpan semua nilai di password manager. Bila satu bocor: §6.4.
 | Rekaman TXT verifikasi Google | DNS zona `mardika.my.id` | Bukti kepemilikan untuk Search Console | **Jangan dihapus**; verifikasi akan hilang |
 
 Catatan:
-- `GEMINI_API_KEY`/`GROQ_API_KEY` (draf AI) hanya dibutuhkan di GitHub. Jika juga ada di `/opt/portfolio/.env` server, hapus saja: server memakai `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY`. Key dipisah agar kuota dan kebocoran satu fitur tidak mengganggu fitur lain.
+- Nama key sama di setiap tempat (ADR 0015): `ASSISTANT_*` hanya dipakai chatbot, `DRAFT_*` hanya dipakai draf AI. Key dipisah agar kuota dan kebocoran satu fitur tidak mengganggu fitur lain. `DRAFT_*` hanya dibutuhkan di GitHub; di `/opt/portfolio/.env` server key itu tidak dipakai, jadi lebih aman dihapus dari sana (bila server bocor, key draf tidak ikut terbuka). Saat merotasi key, perbarui setiap tempat yang menyimpannya.
 - Pengaturan GitHub yang wajib tetap aktif: *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* (untuk PR draf AI).
 - Halaman Cloudflare yang dipakai: Cache Rule `portfolio-html-cache`, *Browser Cache TTL: Respect Existing Headers*, *Always Online* (docs/07 §4).
 
@@ -82,8 +82,8 @@ Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai
 
 **Memasang pertama kali (urutan penting):**
 1. Tunggu deploy yang membawa layanan ini selesai, lalu github.com/harrymardika → *Packages* → `portfolio-assistant` → *Package settings* → *Change visibility* → **Public**. Jika langkah ini dilewati, `update.sh` gagal menarik image dan **seluruh update situs berhenti**.
-2. Buat key baru khusus chatbot: project baru di aistudio.google.com (*API keys*) dan key baru di console.groq.com. Jangan memakai key draf AI. **Pastikan project AI Studio itu tanpa billing** (tier gratis): kuota gratis Gemini adalah batas keras biaya, karena batas harian chatbot ikut direset setiap deploy (lihat *Kuota* di bawah).
-3. Di server: salin `docker/compose.yml` dan `docker/deploy/update.sh` terbaru ke `/opt/portfolio/`, lalu tambahkan ke `/opt/portfolio/.env`:
+2. Buat key baru khusus chatbot: project baru di aistudio.google.com (*API keys*) dan key baru di console.groq.com. Jangan memakai key draf AI. Simpan juga keduanya sebagai secret repo GitHub dengan nama yang sama (untuk workflow eval). **Pastikan project AI Studio itu tanpa billing** (tier gratis): kuota gratis Gemini adalah batas keras biaya, karena batas harian chatbot ikut direset setiap deploy (lihat *Kuota* di bawah).
+3. Di server: salin `docker/compose.yml` dan `docker/deploy/update.sh` terbaru ke `/opt/portfolio/` (`update.sh` tidak memperbarui compose; compose versi T11.3 masih memakai pemetaan key lama sehingga chatbot tidak mendapat key), lalu pastikan `/opt/portfolio/.env` berisi:
    ```
    ASSISTANT_ENABLED=false
    ASSISTANT_GEMINI_API_KEY=<key Google AI Studio>
@@ -95,9 +95,9 @@ Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai
 
 **Mematikan cepat (kill switch):** ubah `ASSISTANT_ENABLED=false` di `/opt/portfolio/.env` → `cd /opt/portfolio && docker compose up -d assistant`. Tidak perlu build: tombol chatbot tidak muncul lagi untuk pengunjung baru (yang sudah membuka panel di tab yang sama mendapat tautan CV dan email). Menghapus fitur sepenuhnya dari situs: ubah variabel repo `PUBLIC_ASSISTANT_ENABLED` menjadi `false` dan jalankan Deploy.
 
-**Kuota dan batas:** per pengunjung 10 pertanyaan/jam dan 30/hari, seluruh situs 300/hari, maksimal 3 sekaligus. Hitungannya di memori, jadi **direset tengah malam UTC dan setiap kali container dibuat ulang**: setiap deploy (±4×/hari karena jadwal 6 jam) dan setiap kill switch diubah. Dalam praktik "300/hari" berarti 300 per periode antar-deploy; batas biaya yang sebenarnya adalah kuota gratis project AI Studio tanpa billing (langkah 2). Pemakaian kuota terlihat di AI Studio (*Usage*) dan console.groq.com (*Usage*). Groq hanya cadangan: ±35 jawaban/hari (8 ribu token/menit, 200 ribu/hari).
+**Kuota dan batas:** per pengunjung 10 pertanyaan/jam dan 30/hari, seluruh situs 300/hari, maksimal 3 sekaligus. Hitungannya di memori, jadi **direset tengah malam UTC dan setiap kali container dibuat ulang**: setiap deploy (±4×/hari karena jadwal 6 jam) dan setiap kill switch diubah. Dalam praktik "300/hari" berarti 300 per periode antar-deploy; batas biaya yang sebenarnya adalah kuota gratis project AI Studio tanpa billing (langkah 2). Pemakaian kuota terlihat di AI Studio (*Usage*) dan console.groq.com (*Usage*). Gemini 3.5 Flash Lite (tier gratis, dicek 2026-10-09): 15 permintaan/menit, 500/hari. Groq hanya cadangan: ±35 jawaban/hari (8 ribu token/menit, 200 ribu/hari). Lihat ADR 0015.
 
-**Log:** `docker compose logs --tail 50 assistant` berisi status, penyedia, dan alasan gagal, **tanpa teks pertanyaan**. Contoh: `"status":503,"failures":["Gemini: Gemini responded with HTTP 429",…]` berarti kuota habis.
+**Log:** `docker compose logs --tail 50 assistant` berisi status, penyedia, dan alasan gagal, **tanpa teks pertanyaan**. Contoh: `"status":503,"failures":["Gemini: Gemini responded with HTTP 429 (RESOURCE_EXHAUSTED, GenerateRequestsPerDayPerProjectPerModel-FreeTier)",…]` berarti kuota harian habis (`…PerMinute…` = batas per menit, biasanya pulih sendiri).
 
 ## 4. Perawatan berkala
 
@@ -117,7 +117,7 @@ Layanan `assistant` menjawab pertanyaan pengunjung dari isi situs. **Mati sampai
 **Per kuartal (±1 jam, di laptop, satu branch)**
 - [ ] Dependency: `bun outdated`, lalu `bun update` → `bun run verify`. Major version (Astro, Three.js, Tailwind) dikerjakan sebagai tugas tersendiri; baca catatan rilisnya.
 - [ ] Versi image di `docker/Dockerfile` (`BUN_VERSION`, `NODE_VERSION`, `CADDY_VERSION`) dan `bun-version` di `.github/workflows/ci.yml` + `case-study-drafts.yml` (naikkan bersamaan), serta action di `.github/workflows/` (yang di-pin ke SHA di `case-study-drafts.yml`).
-- [ ] Model AI masih tersedia: `GEMINI_MODEL`/`GROQ_MODEL` di `src/lib/drafts/providers.ts` (ADR 0013). Cek log run *Case study drafts* terakhir.
+- [ ] Model AI masih tersedia: `GEMINI_MODEL`/`ASSISTANT_GEMINI_MODEL`/`GROQ_MODEL` di `src/lib/ai/providers.ts` (ADR 0013, 0015). Cek log run *Case study drafts* terakhir.
 - [ ] Kesehatan baterai/daya laptop server (situs pernah mati karena daya terputus atau hang; penyebab pasti tidak diketahui).
 
 **Tanggal penting**
@@ -169,7 +169,7 @@ Buka run *Case study drafts* terakhir; repo yang gagal dibuatkan draf (README te
 - [ ] Belum ada studi kasus untuk repo itu (`links.repo` sama, atau nama file sama dengan nama repo dalam huruf kecil dan tanda hubung, mis. `My_Repo` → `my-repo.md`).
 - [ ] Tidak ada branch lama `drafts/case-study-<nama>` (PR yang ditutup tanpa menghapus branch).
 - [ ] Sudah lewat jadwal 09:41 atau 21:41 WIB dan run-nya benar-benar ada di tab *Actions* (GitHub kadang melewatkan jadwal), atau jalankan manual. Maksimal 2 repo per run.
-- [ ] Secret `GEMINI_API_KEY`/`GROQ_API_KEY` ada, dan izin *Allow GitHub Actions to create and approve pull requests* aktif.
+- [ ] Secret `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` ada, dan izin *Allow GitHub Actions to create and approve pull requests* aktif.
 
 **Draf tanpa angka metrik:** angka hanya dipakai jika tertulis di README (pengaman terhadap angka karangan AI). Tulis hasil terukur di README repo, atau tambahkan metrik di PR/CMS.
 

@@ -23,11 +23,13 @@ function recorder(): { fetch: typeof fetch; bodies: Record<string, unknown>[] } 
 }
 
 describe('createRoutes', () => {
-  it('asks Gemini with the full knowledge first, then Groq with the compact one and two earlier messages', () => {
+  it('asks Gemini Flash Lite with the full knowledge first, then Groq with the compact one and two earlier messages', () => {
     const routes = createRoutes({ geminiKey: 'g', groqKey: 'q' }, both);
-    expect(routes.map((r) => [r.provider.name, r.knowledge.sections[0]?.key, r.maxHistory])).toEqual([
-      ['Gemini', 'full', undefined],
-      ['Groq', 'compact', 2],
+    expect(
+      routes.map((r) => [r.provider.name, r.provider.model, r.knowledge.sections[0]?.key, r.maxHistory]),
+    ).toEqual([
+      ['Gemini', 'gemini-3.5-flash-lite', 'full', undefined],
+      ['Groq', 'openai/gpt-oss-120b', 'compact', 2],
     ]);
   });
 

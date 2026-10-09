@@ -2,12 +2,12 @@
 /**
  * "Ask Harry" assistant entry point (T11.2, ADR 0014). Configuration through environment variables:
  *   ASSISTANT_ENABLED        "true" turns the feature on (default off: the kill switch)
- *   GEMINI_API_KEY           primary provider, with the full knowledge
- *   GROQ_API_KEY             fallback provider, with the compact knowledge
+ *   ASSISTANT_GEMINI_API_KEY primary provider (Gemini Flash Lite), with the full knowledge (ADR 0015)
+ *   ASSISTANT_GROQ_API_KEY   fallback provider, with the compact knowledge
  *   ASSISTANT_KNOWLEDGE_DIR  folder with knowledge.json and knowledge-compact.json (default build-meta)
  *   ASSISTANT_PORT           port (default 8788)
  *   ASSISTANT_SITE_HOST      public site host allowed as Origin (default harry.mardika.my.id)
- * Keys are separate from the case study draft keys (T11.6) and never logged.
+ * Keys are separate from the case study draft keys (DRAFT_*) and never logged.
  */
 import { createHandler, MAX_BODY_BYTES } from './handler';
 import { createRoutes, loadKnowledge } from './routes';
@@ -15,7 +15,10 @@ import { createRoutes, loadKnowledge } from './routes';
 const env = (name: string): string | undefined => process.env[name]?.trim() || undefined;
 
 const knowledge = loadKnowledge(env('ASSISTANT_KNOWLEDGE_DIR') ?? 'build-meta');
-const routes = createRoutes({ geminiKey: env('GEMINI_API_KEY'), groqKey: env('GROQ_API_KEY') }, knowledge);
+const routes = createRoutes(
+  { geminiKey: env('ASSISTANT_GEMINI_API_KEY'), groqKey: env('ASSISTANT_GROQ_API_KEY') },
+  knowledge,
+);
 
 const enabled = env('ASSISTANT_ENABLED') === 'true' && routes.length > 0;
 const handler = createHandler({

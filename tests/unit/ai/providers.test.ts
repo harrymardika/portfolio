@@ -57,6 +57,35 @@ describe('retries', () => {
     );
     expect(calls).toHaveLength(1);
   });
+
+  it('names the cause from the error body, but never its free text', async () => {
+    const quota = json(
+      {
+        error: {
+          code: 429,
+          status: 'RESOURCE_EXHAUSTED',
+          message: 'You exceeded your quota for the prompt "secret question"',
+          details: [{ violations: [{ quotaId: 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier' }] }],
+        },
+      },
+      429,
+    );
+    const invalid = json(
+      { error: { code: 'json_validate_failed', message: 'x', failed_generation: 'secret answer' } },
+      400,
+    );
+    const { impl } = fakeFetch([quota, invalid, new Response('not json', { status: 500 })]);
+    const prompt = { system: 's', user: 'u' };
+    const geminiError = gemini('k', { fetch: impl, retries: 0 }).complete(prompt);
+    await expect(geminiError).rejects.toThrow(
+      'Gemini responded with HTTP 429 (RESOURCE_EXHAUSTED, GenerateRequestsPerMinutePerProjectPerModel-FreeTier)',
+    );
+    const groqError = groq('k', { fetch: impl, retries: 0 }).complete(prompt);
+    await expect(groqError).rejects.toThrow(/^Groq responded with HTTP 400 \(json_validate_failed\)$/);
+    await expect(groq('k', { fetch: impl, retries: 0 }).complete(prompt)).rejects.toThrow(
+      /^Groq responded with HTTP 500$/,
+    );
+  });
 });
 
 describe('parseJson and failureReason', () => {

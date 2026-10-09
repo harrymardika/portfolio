@@ -6,12 +6,14 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ## [Unreleased]
 
 ### Added
+- Manual quality and safety evaluation of the assistant with the real models (`assistant-eval.yml`, 30 graded cases: facts in English and Indonesian, off-topic, personal data, prompt injection, markup); 30/30 passed on 2026-10-09 after prompt fixes (answers always JSON, numbers in the answer's language) (T11.5).
 - "Ask Harry" corner chat on every page (not print pages): appears only when the assistant service is on, loads on the first click, keeps the conversation for the tab, answers as plain text with links to site pages, offers the CV and email when it cannot answer, and works as a bottom sheet on phones; the private stats report counts questions by outcome, never their text (T11.4).
 - Docker image `portfolio-assistant` (built and published with every deploy), its compose service (128 MB, read-only, no volume, off until `ASSISTANT_ENABLED=true`, its own `ASSISTANT_*` keys), and the Caddy route `/api/ask*` (never cached, bodies over 8 KB refused); deployment tests cover its health check (T11.3).
 - "Ask Harry" assistant service (`services/assistant`, not deployed yet): answers questions from the site's knowledge with Gemini, or Groq as a fallback; plain-text answers whose links must exist on the site, no phone numbers, per-visitor and daily limits, a kill switch that is off by default, and nothing stored (T11.2, ADR 0014).
 - Knowledge for the "Ask Harry" chatbot, built with every deploy from the public site content only (no drafts, hidden items, or phone numbers): a full English and Indonesian version for Gemini and a compact English one for Groq, with link, phone-number, and size checks that stop the build (T11.1, ADR 0014).
 
 ### Changed
+- AI keys renamed per feature, the same everywhere (GitHub, server, compose, code): `ASSISTANT_GEMINI_API_KEY`/`ASSISTANT_GROQ_API_KEY` for the chatbot and `DRAFT_GEMINI_API_KEY`/`DRAFT_GROQ_API_KEY` for the case study drafts; the chatbot now uses Gemini 3.5 Flash Lite (500 free requests a day instead of 20), the drafts keep Gemini 3.5 Flash; provider errors name the exhausted quota (T11.5b, ADR 0015).
 - The Gemini and Groq clients moved to a shared module (`src/lib/ai`) used by the AI case study drafts and the assistant; the drafts behave as before (T11.2).
 
 ## [1.2.0] - 2026-10-08

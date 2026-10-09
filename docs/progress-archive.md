@@ -2,6 +2,30 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-08 · Claude Code (Opus) · T10.4 penutupan Fase 10 (ringkasan fase)
+- **Dibangun di Fase 10:** model varian `content/cv-variants.yaml` dengan label fokus pada `highlights` (T10.1); PDF per varian EN/ID saat deploy di `/downloads/cv/`, masing-masing ≤ 2 halaman, ATS-friendly, tanpa nomor HP, dites per varian (T10.2); 6 varian (AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee) di halaman `/cv/` (noindex) yang ditautkan di footer "Resumes" (T10.3).
+- **Keputusan pemilik:** D10 (6 varian, Product dan Project dipisah, tanpa CV per perusahaan, tautan footer); 12 PDF varian disetujui 2026-10-08.
+- **Penutupan:** tidak ada kode, kunci teks UI, dependency, aset, atau branch yang tersisa (dicek ulang setelah T9.6); `docs/02` dan `docs/09` sudah memuat varian. Dari review: `docs/04` (tabel file kini memuat `cv-variants.yaml` dan `messages.yaml`, menu CMS *Varian CV*, dan default `skills` varian yang benar: grup CV umum, bukan semua grup), SRS (FR-08a, route cetak varian), dan label "CV utama" di `/cv/` yang kini mengambil baris peran dari `profile.yaml` (sebelumnya tertulis di kamus UI). README dan `docs/11` diperbarui statusnya. CHANGELOG rilis **1.2.0 (2026-10-08)** berisi Fase 10 dan jadwal draf dua kali sehari; `package.json` 1.2.0.
+- **Cek situs live (2026-10-08, build dari `88035b0`):** beranda EN/ID, `/cv/` dan `/id/cv/`, `/stats/`, PDF utama dan varian, `/api/stats/summary` menjawab 200; label "Main CV (AI Product Manager)" / "CV utama (AI Product Manager)" kini dari `profile.yaml`. Tag `v1.2.0` di-push atas izin pemilik (berlaku juga untuk rilis penutupan fase berikutnya).
+- **Sisa untuk pemilik:** tidak ada untuk Fase 10. Bila ingin varian baru atau mengubah isi varian: CMS → *Varian CV* (docs/04).
+- **Fase berikutnya:** Fase 11, mulai T11.1 (ADR 0014 + `knowledge.json`).
+
+### 2026-10-08 · Claude Code (Opus) · Tindak lanjut T9.6: T10.3, tag rilis, jadwal draf AI
+- **T10.3 disetujui pemilik** (12 PDF varian "sudah bagus"); tinggal penutupan Fase 10 (T10.4).
+- Tag git `v1.0.0` (commit `0918c4e`, akhir 2026-10-07) dan `v1.1.0` (`aacf06e`, penutupan Fase 9) di-push atas izin pemilik.
+- **Jadwal draf AI:** run terjadwal pertama (2026-10-08 02:41 UTC) tidak pernah dibuat GitHub (API: 0 run `schedule`); jadwal `Deploy` juga terlambat atau terlewat beberapa kali. Penyebab di sisi GitHub (jadwal *best-effort*). Pilihan pemilik: dua jadwal per hari (`41 2,14 * * *`), dicatat di docs/10 §3 dan §5.5.
+- Ada 9 repo bertopic `portfolio` tanpa studi kasus; pemilik setuju semuanya dibuatkan draf (±2 PR per run sampai habis). Semua sudah ada di `include` `content/github.yaml`, jadi menghapus topic hanya menghentikan draf, kartunya tetap tampil.
+- Pemilik bertanya cara mengisi kesan & pesan; dijelaskan (CMS → *Kesan & pesan*, hanya dengan izin penulis). Belum ada isi.
+- **Langkah berikutnya:** cek run draf berikutnya (21:41 WIB) membuka PR dua bahasa; T10.4; T11.1.
+
+### 2026-10-08 · Claude Code (Opus) · T9.6 penutupan Fase 9 (ringkasan fase)
+- **Dibangun di Fase 9:** positioning **AI Product Manager** di hero, About, CV umum, Portfolio, JSON-LD (T9.1); `skills.yaml` 8 grup dengan `show_on_cv` agar CV umum tetap 2 halaman (T9.2); 11 studi kasus bahasa Indonesia di `content/projects/id/` dengan fallback dan tes kesamaan struktur (T9.3); bagian "Kind words / Kesan & pesan" dari `content/messages.yaml`, tersembunyi selama kosong (T9.4); format angka per bahasa lewat `localizeNumber` + tes (T9.5). Tambahan di luar tugas: profil Medium, judul "Finalist", template prompt sesi.
+- **Keputusan pemilik:** D8, D9, D11, D12, D15, D16 (dan rencana D13, D14, D17 untuk Fase 11 dan 13).
+- **Penutupan:** satu kunci teks UI tak terpakai (`portfolio.page`) dan `src/lib/seo/.gitkeep` dihapus; tidak ada dependency, komponen, atau aset yang tak terpakai; tidak ada `TODO`; semua `test.skip` beralasan. README, `docs/02` (struktur folder kini sesuai kode), `docs/11` (Fase 9–13, tabel keputusan D8–D17), `docs/README.md`, dan tabel `AGENTS.md` §1 diperbarui. CHANGELOG punya rilis **1.0.0 (2026-10-07, Fase 0–8)** dan **1.1.0 (2026-10-08, Fase 9)**; `package.json` ikut 1.1.0. Branch lokal `feat/T9.2-skills` dihapus setelah perbaikan `docs/06` di dalamnya (commit `911d2d2`, belum ada di `main`, berbeda dari catatan serah terima) dibawa ke `main`; branch remote `drafts/case-study-camera-genai` dihapus.
+- **Sisa untuk pemilik:** headline LinkedIn "AI Product Manager"; meninjau 12 PDF varian di `/cv/` (T10.3); mengisi `content/messages.yaml` bila sudah ada pesan yang diizinkan; memastikan run draf AI dua bahasa pertama (tab *Actions* → *Case study drafts*).
+- **Cek situs live (2026-10-08, build 06:20 UTC, ±17 menit setelah push):** beranda, About, Projects, studi kasus, `/stats/` EN/ID, `/cv/` (12 PDF varian), 4 PDF utama, `/api/health`, dan `/api/stats/summary` menjawab 200; baris peran "AI Product Manager" dan angka gaya Indonesia (`92,5%`) tampil benar.
+- **Fase berikutnya:** T11.1 (ADR 0014 + pengetahuan dari konten); T10.4 setelah tinjauan T10.3.
+
 ### 2026-10-08 · Claude Code (Opus) · Akhir sesi: ringkasan dan serah terima
 - **Sudah (sesi ini):** T9.1 positioning, T9.2 skill (8 grup, CV umum tetap 2 halaman), T9.3 studi kasus ID, T9.4 kesan & pesan, T9.5 format angka; Fase 10 T10.1–T10.2 dan isi T10.3 (6 varian di `/cv/`, tautan footer "Resumes"); Medium dan judul "Finalist"; aturan penutupan fase (`AGENTS.md` §2a); rencana Fase 11 (chatbot di sudut, D13/D14) dan Fase 13 (empat 3D, D17). Semua sudah di-push kecuali commit penutup ini.
 - **Belum:** T9.6 penutupan Fase 9; T10.3 tinjauan pemilik atas 12 PDF varian lalu T10.4; seluruh Fase 11–13. Uji draf AI dua bahasa belum terjadi (run terjadwal 2026-10-08 02:41 UTC belum muncul sampai 05:44 UTC; GitHub bisa menunda atau melewatkan jadwal): cek tab *Actions*, atau jalankan *Case study drafts* manual.
