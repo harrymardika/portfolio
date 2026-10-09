@@ -50,12 +50,43 @@ describe('checkTranslation', () => {
     expect(checkTranslation(translation, approved())).toEqual({ ok: true, translation });
   });
 
+  it('accepts a message without a role (the bug the first live run found)', () => {
+    const roleless = approved({ role: null });
+    const plain = { role: null, relationship: translation.relationship, message: translation.message };
+    expect(checkTranslation(plain, roleless)).toEqual({ ok: true, translation: plain });
+    expect(checkTranslation({ ...plain, message: '**' }, roleless)).toEqual({
+      ok: false,
+      reason: 'translation is empty after cleaning',
+    });
+  });
+
+  it('accepts the harmless variations models produce: a wrapped answer, an empty role, extra keys', () => {
+    const roleless = approved({ role: null });
+    const plain = { relationship: translation.relationship, message: translation.message };
+    for (const raw of [
+      { translation: { ...plain, role: null } },
+      { ...plain, role: '' },
+      { ...plain, notes: 'x' },
+    ]) {
+      expect(checkTranslation(raw, roleless)).toEqual({ ok: true, translation: { ...plain, role: null } });
+    }
+    // A wrapped answer still goes through every check.
+    expect(
+      checkTranslation({ translation: { ...plain, role: '  ', message: 'Mail a@b.com.' } }, roleless),
+    ).toEqual({
+      ok: false,
+      reason: 'translation contains contact details',
+    });
+  });
+
   it('refuses a wrong shape, a changed role, contact details, markup, and runaway length', () => {
     const reason = (raw: unknown, message = approved()) => {
       const result = checkTranslation(raw, message);
       return result.ok ? null : result.reason;
     };
-    expect(reason({ message: 'x' })).toBe('translation does not match the schema');
+    expect(reason({ message: 'x' })).toBe(
+      'translation does not match the schema (relationship: invalid_type)',
+    );
     expect(reason({ ...translation, role: null })).toBe('translation adds or drops the role');
     expect(reason(translation, approved({ role: null }))).toBe('translation adds or drops the role');
     expect(reason({ ...translation, message: 'Call 0812 3456 7890 for more.' })).toBe(
@@ -68,7 +99,7 @@ describe('checkTranslation', () => {
       'translation contains markup',
     );
     expect(reason({ ...translation, message: 'x'.repeat(901) })).toBe(
-      'translation does not match the schema',
+      'translation does not match the schema (message: too_big)',
     );
   });
 });

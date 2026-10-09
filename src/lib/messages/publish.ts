@@ -68,14 +68,39 @@ export function translationPrompt(message: ApprovedMessage): Prompt {
 
 /** A translation may run somewhat longer than the original, but not without bound. */
 const longer = (max: number): number => Math.ceil(max * 1.5);
-const translationSchema = z.strictObject({
-  role: z.string().trim().min(1).max(longer(MESSAGE_LIMITS.role.max)).nullable(),
+const translationSchema = z.object({
+  // An empty or missing role means none; extra keys are ignored.
+  role: z.preprocess(
+    (value) => (value === undefined || (typeof value === 'string' && value.trim() === '') ? null : value),
+    z.string().trim().min(1).max(longer(MESSAGE_LIMITS.role.max)).nullable(),
+  ),
   relationship: z.string().trim().min(1).max(longer(MESSAGE_LIMITS.relationship.max)),
   message: z.string().trim().min(1).max(longer(MESSAGE_LIMITS.message.max)),
 });
 
 /** Markup or a link the model may have slipped in; the site escapes text, but the entry stays plain. */
 const MARKUP = /<\/?[a-z][^>]*>|\]\(|&#?\w+;/i;
+
+/** Field names and problem codes only, never the text: these reasons go to public workflow logs. */
+const issues = (error: z.ZodError): string =>
+  error.issues
+    .slice(0, 3)
+    .map((issue) => `${issue.path.join('.') || 'answer'}: ${issue.code}`)
+    .join(', ');
+
+/** Some models wrap the answer in one object ({"translation": {...}}); the fields are what matter. */
+function unwrap(raw: unknown): unknown {
+  if (
+    raw &&
+    typeof raw === 'object' &&
+    !Array.isArray(raw) &&
+    typeof (raw as { message?: unknown }).message !== 'string'
+  ) {
+    const values = Object.values(raw);
+    if (values.length === 1 && values[0] && typeof values[0] === 'object') return values[0];
+  }
+  return raw;
+}
 
 export type TranslationCheck =
   { readonly ok: true; readonly translation: Translation } | { readonly ok: false; readonly reason: string };
@@ -85,8 +110,9 @@ export type TranslationCheck =
  * none ("a<b" written by the visitor may stay), and Markdown bold markers are dropped, as on the form.
  */
 export function checkTranslation(raw: unknown, message: ApprovedMessage): TranslationCheck {
-  const parsed = translationSchema.safeParse(raw);
-  if (!parsed.success) return { ok: false, reason: 'translation does not match the schema' };
+  const parsed = translationSchema.safeParse(unwrap(raw));
+  if (!parsed.success)
+    return { ok: false, reason: `translation does not match the schema (${issues(parsed.error)})` };
   const plain = (value: string): string => value.replaceAll('**', '').trim();
   const translation: Translation = {
     role: parsed.data.role === null ? null : plain(parsed.data.role),
@@ -101,8 +127,12 @@ export function checkTranslation(raw: unknown, message: ApprovedMessage): Transl
   const original = [message.role ?? '', message.relationship, message.message].join('\n');
   if (!MARKUP.test(original) && texts.some((text) => MARKUP.test(text)))
     return { ok: false, reason: 'translation contains markup' };
-  if (texts.some((text) => text === ''))
-    return { ok: false, reason: 'translation does not match the schema' };
+  // A missing role is null, not empty text; only the texts that exist must keep some words after cleaning.
+  const present = [translation.role, translation.relationship, translation.message].filter(
+    (text) => text !== null,
+  );
+  if (present.some((text) => text === ''))
+    return { ok: false, reason: 'translation is empty after cleaning' };
   return { ok: true, translation };
 }
 
