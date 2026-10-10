@@ -5,6 +5,13 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-10
+
+Phase 13: the "Giok → Nila" look and the one-room 3D home page.
+
+### Fixed
+- The hero's photo caption and "Play again" button get a solid background while the 3D runs, since the journey thread passes behind them (T13.7).
+
 ### Added
 - The "one room" 3D core: a single fixed canvas behind the page whose objects are anchored to the page's HTML, cast shadows on the page, re-color with the theme, render only when something changes, and turn off on devices that should not run 3D (T13.3, ADR 0019).
 - Feature inventory end-to-end test: every feature the site had before the Phase 13 redesign (downloads, language and theme switches, chatbot, journey stories, kind words, contact, project search and filters, CVs by role, statistics, message form, 404, PDFs) is checked in English and Indonesian, on desktop and phone (T13.0).

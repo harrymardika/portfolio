@@ -83,12 +83,12 @@ const padding = photoPrintPadding();
     </div>
   </div>
   <figcaption class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right text-sm text-ink-muted">
-    <span>{t['hero.caption']}</span>
+    <span class="caption-text rounded-full px-3 py-1">{t['hero.caption']}</span>
     <button
       type="button"
       data-replay
       hidden
-      class="min-h-11 rounded-full border border-ink/40 px-4 font-semibold text-ink hover:bg-surface"
+      class="min-h-11 rounded-full border border-ink/40 bg-surface px-4 font-semibold text-ink hover:border-ink"
     >
       {t['hero.replay']}
     </button>
@@ -96,6 +96,11 @@ const padding = photoPrintPadding();
 </figure>
 
 <style>
+  /* The journey thread starts under the sheet and may pass behind the caption: keep it readable. */
+  .hero-prints[data-room-ready] .caption-text {
+    background-color: var(--surface);
+  }
+
   .print {
     transform: rotate(var(--turn));
     transition: opacity 0.5s ease;

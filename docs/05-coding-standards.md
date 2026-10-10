@@ -6,7 +6,7 @@ Tujuan: kode yang **mudah dibaca, mudah dites, dan aman diubah** oleh siapa pun,
 
 | Prinsip | Artinya di proyek ini |
 |---|---|
-| **Modular** | Satu folder = satu fitur (`components/journey/`, `scenes/journey-path/`). Satu file = satu tanggung jawab. |
+| **Modular** | Satu folder = satu fitur (`components/journey/`, `scenes/room/parts/journey.ts`). Satu file = satu tanggung jawab. |
 | **Single Responsibility** | Komponen hanya menampilkan. Logika (format tanggal, filter sertifikat, merge data GitHub) ada di `src/lib/`. |
 | **Separation of concerns** | Data (`content/`) ↔ logika (`lib/`) ↔ tampilan (`components/`) ↔ efek imperatif (`scenes/`). Arah dependensi: lihat `02-architecture.md` §3. |
 | **Pure functions first** | Fungsi di `lib/` sebisa mungkin murni: input → output, tanpa I/O atau state global. I/O dipisah ke file `client.ts`/`io.ts` yang tipis. |

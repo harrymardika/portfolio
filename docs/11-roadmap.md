@@ -178,12 +178,12 @@ Halaman lain (Fase 14) adalah sudut lain dari ruangan yang sama: **Projects** ko
 ### Desain teknis
 
 - **Satu renderer per halaman** (`src/scenes/room/`, ADR 0019) menggantikan dua scene terpisah di beranda. Dimuat lewat dynamic import setelah LCP; kontrak `SceneHandle` dan keputusan `decide3D` tetap (ADR 0007 tetap berlaku).
-- **Jalur kamera** dihitung dari posisi bagian-bagian HTML (titik jangkar), jadi tata letak tetap ditentukan HTML. Fungsi interpolasinya murni dan dites.
+- ~~**Jalur kamera** dihitung dari posisi bagian-bagian HTML (titik jangkar).~~ Diganti ADR 0019 (T13.3): kamera diam, **benda 3D ditambatkan ke elemen HTML** dan ikut bergeser bersama scroll, jadi tata letak tetap ditentukan HTML. Pemetaan halaman ↔ dunia murni dan dites.
 - **Tingkatan perangkat:**
   - Penuh: bayangan real-time.
   - Sedang: bayangan statis.
   - `off` (tanpa WebGL, renderer CPU, ≤ 2 core, Save-Data): HTML dengan foto dan gambar lembar aksara berbayangan CSS.
-  - `still` (reduced motion): kamera berpindah tanpa terbang, tanpa animasi otomatis.
+  - `still` (reduced motion): satu frame per perubahan, tanpa animasi otomatis.
 - **Performa:** menggambar ulang hanya saat ada perubahan (scroll, pointer, animasi yang sedang berjalan); ruangan dibuat saat didekati; DPR maksimal 2 dan bayangan diturunkan di HP. Anggaran ≤ 180 KB gzip JS 3D per halaman (three.js sekarang ±136 KB); Lighthouse ≥ 90/95; LCP < 2,5 s di HP.
 - **Aksara:** gambar lembar dan koordinat kotaknya dibuat sekali oleh `scripts/generate-aksara.ts` dan di-commit, jadi browser tidak memuat font aksara Jawa. Label kelas hanya nama kelas; skor asli opsional bila pemilik menjalankan modelnya pada gambar itu.
 - **Teks di dalam 3D** (label deteksi, nama wadah, keterangan) diambil dari kamus UI dan ikut bahasa halaman.
