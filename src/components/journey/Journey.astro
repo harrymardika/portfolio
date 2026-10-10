@@ -5,14 +5,7 @@
  * The stage has a fixed height in both modes, so switching causes no layout shift.
  */
 import MilestoneDetail from './MilestoneDetail.astro';
-import {
-  journeySpan,
-  localize,
-  splitEmphasis,
-  type Milestone,
-  type MilestoneSource,
-  type Profile,
-} from '@/lib/content';
+import { localize, stripEmphasis, type Milestone, type MilestoneSource, type Profile } from '@/lib/content';
 import { type Locale, UI } from '@/lib/i18n';
 
 interface Props {
@@ -23,21 +16,14 @@ interface Props {
 
 const { locale, copy, entries } = Astro.props;
 const t = UI[locale];
-const span = journeySpan(entries.map((entry) => entry.milestone));
-const title = splitEmphasis(localize(copy.title, locale));
+const title = stripEmphasis(localize(copy.title, locale));
 ---
 
 <section id="journey" aria-labelledby="journey-title" class="scroll-mt-20">
   <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.8fr_1.2fr] lg:py-24">
     <div class="grid min-w-0 gap-4">
-      <p class="font-mono text-eyebrow text-amber-deep uppercase">
-        {t['journey.eyebrow']}
-        {span && ` · ${span.from} → ${span.to}`}
-      </p>
       <h2 id="journey-title" class="text-h2">
-        {title.map((segment) =>
-          segment.emphasis ? <span class="text-amber-deep">{segment.text}</span> : segment.text,
-        )}
+        {title}
       </h2>
       <p class="max-w-[42ch] text-ink-muted">{localize(copy.intro, locale)}</p>
     </div>
@@ -53,7 +39,7 @@ const title = splitEmphasis(localize(copy.title, locale));
           const popoverId = `milestone-${milestone.id}`;
           const label = (
             <>
-              <span class="block font-mono text-[11px] font-medium text-amber-deep">{milestone.year}</span>
+              <span class="block text-xs font-semibold text-amber-deep tabular-nums">{milestone.year}</span>
               <span class="block font-semibold text-ink">{localize(milestone.title, locale)}</span>
               <span class="subtitle block text-xs text-ink-muted">
                 {localize(milestone.subtitle, locale)}

@@ -51,14 +51,11 @@ const details = (item: Message): LocalizedText[] =>
                 ) : (
                   <span class="font-semibold text-ink">{item.name}</span>
                 )}
-                <span class="text-ink-muted">
-                  {details(item).map((text, index) => (
-                    <>
-                      {index > 0 && ' · '}
-                      <span lang={isFallback(text, locale) ? 'en' : undefined}>{localize(text, locale)}</span>
-                    </>
-                  ))}
-                </span>
+                {details(item).map((text) => (
+                  <span class="text-ink-muted" lang={isFallback(text, locale) ? 'en' : undefined}>
+                    {localize(text, locale)}
+                  </span>
+                ))}
               </figcaption>
             </figure>
           </li>

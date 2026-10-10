@@ -50,7 +50,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
 >
   <div class="mx-auto grid max-w-[760px] gap-12 px-[clamp(16px,4vw,40px)] py-16">
     <header class="grid gap-4">
-      <p class="font-mono text-eyebrow text-amber-deep uppercase">{localize(profile.role, locale)}</p>
+      <p class="text-ink-muted">{localize(profile.role, locale)}</p>
       <h1 class="text-h2">{t['about.title']}</h1>
       <p class="text-lg text-ink-muted">
         <RichText text={localize(profile.summary, locale)} />
@@ -143,7 +143,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
         {awards.map((award) => (
           <li class="grid gap-0.5 rounded-lg border border-line bg-surface px-4 py-3">
             <span class="font-semibold">{localize(award.title, locale)}</span>
-            <span class="font-mono text-xs text-amber-deep">
+            <span class="text-xs font-semibold text-amber-deep tabular-nums">
               {localize(award.issuer, locale)} · {formatDate(award.date)}
             </span>
           </li>
@@ -158,7 +158,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
             <li class="grid content-start gap-1 rounded-lg border border-line bg-surface px-4 py-3">
               <span class="font-semibold">{cert.name}</span>
               <span class="text-sm text-ink-muted">{cert.issuer}</span>
-              <span class="font-mono text-xs text-amber-deep">
+              <span class="text-xs font-semibold text-amber-deep tabular-nums">
                 {t['about.issued']} {formatYearMonth(cert.issued, locale)}
                 {cert.expires && ` · ${t['about.expires']} ${formatYearMonth(cert.expires, locale)}`}
               </span>

@@ -33,10 +33,3 @@ export function resolveMilestoneSource(
   if (award) return { kind: 'award', item: award };
   return null;
 }
-
-/** First and last milestone year, e.g. `{ from: 2022, to: 2026 }`; null for an empty journey. */
-export function journeySpan(milestones: readonly Pick<Milestone, 'year'>[]): { from: number; to: number } | null {
-  if (milestones.length === 0) return null;
-  const years = milestones.map((m) => m.year);
-  return { from: Math.min(...years), to: Math.max(...years) };
-}

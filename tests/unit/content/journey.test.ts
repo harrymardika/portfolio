@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { journeySpan, resolveMilestoneSource, type JourneySources } from '@/lib/content';
+import { resolveMilestoneSource, type JourneySources } from '@/lib/content';
 
 const sources: JourneySources = {
   experience: [
@@ -47,15 +47,5 @@ describe('resolveMilestoneSource', () => {
   it('returns null without a ref or for an unknown ref', () => {
     expect(resolveMilestoneSource({ ref: undefined }, sources)).toBeNull();
     expect(resolveMilestoneSource({ ref: 'missing' }, sources)).toBeNull();
-  });
-});
-
-describe('journeySpan', () => {
-  it('returns the first and last year', () => {
-    expect(journeySpan([{ year: 2024 }, { year: 2022 }, { year: 2026 }])).toEqual({ from: 2022, to: 2026 });
-  });
-
-  it('returns null for an empty journey', () => {
-    expect(journeySpan([])).toBeNull();
   });
 });

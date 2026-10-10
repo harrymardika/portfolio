@@ -68,11 +68,11 @@ const jsonLd = [
       <p class="text-lg text-ink-muted">{summary}</p>
       <dl class="flex flex-wrap gap-x-8 gap-y-2 text-sm">
         <div>
-          <dt class="font-mono text-eyebrow text-amber-deep uppercase">{t['projects.role']}</dt>
+          <dt class="text-sm text-ink-muted">{t['projects.role']}</dt>
           <dd>{localize(project.role, locale)}</dd>
         </div>
         <div>
-          <dt class="font-mono text-eyebrow text-amber-deep uppercase">{t['projects.year']}</dt>
+          <dt class="text-sm text-ink-muted">{t['projects.year']}</dt>
           <dd>{project.year}</dd>
         </div>
       </dl>
@@ -80,7 +80,7 @@ const jsonLd = [
         <ul class="grid gap-4 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
           {project.metrics.map((metric) => (
             <li class="grid">
-              <span class="font-mono text-2xl font-medium text-forest-ink">
+              <span class="text-2xl font-semibold text-amber-deep tabular-nums">
                 {localizeNumber(metric.value, locale)}
               </span>
               <span class="text-xs text-ink-muted">{localize(metric.label, locale)}</span>

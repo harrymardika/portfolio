@@ -1,14 +1,15 @@
 ---
 /**
- * Home hero (docs/03-design-system.md §5): headline, tagline, actions, stats, and the photo card.
+ * Home hero (docs/03-design-system.md §5): the owner's name as H1 (D19), role and city, headline and
+ * tagline, the two PDF downloads, the highlights with their context, and the photo card.
  * Content comes from profile.yaml; the 3D card loads after the page is interactive.
  */
 import PhotoCard from './PhotoCard.astro';
 import DownloadIcon from '@/components/ui/DownloadIcon.astro';
-import { localize, localizeNumber, splitEmphasis, type Profile } from '@/lib/content';
+import { localize, localizeNumber, stripEmphasis, type Profile } from '@/lib/content';
 import { contentImage } from '@/lib/content/media';
 import { downloadPath } from '@/lib/downloads';
-import { type Locale, UI } from '@/lib/i18n';
+import { fill, type Locale, UI } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
@@ -18,23 +19,20 @@ interface Props {
 const { locale, profile } = Astro.props;
 const t = UI[locale];
 const role = localize(profile.role, locale);
-const headline = splitEmphasis(localize(profile.headline, locale));
+const headline = stripEmphasis(localize(profile.headline, locale));
+const city = profile.location.split(',')[0] ?? profile.location;
+const roleLine = fill(t['hero.roleIn'], { role, city });
 ---
 
 <section aria-labelledby="hero-title">
   <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-14 lg:grid-cols-[1.05fr_1fr] lg:py-20">
     <div class="grid min-w-0 gap-6">
-      <p class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 font-mono text-xs">
-        <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
-        {role}
-      </p>
-      <h1 id="hero-title" class="text-hero">
-        <span class="sr-only">{profile.name}: </span>
-        {headline.map((segment) =>
-          segment.emphasis ? <span class="text-amber-deep">{segment.text}</span> : segment.text,
-        )}
+      <p class="text-ink-muted">{roleLine}</p>
+      <h1 id="hero-title" class="text-name">
+        {profile.name}
       </h1>
-      <p class="max-w-[42ch] text-base text-ink-muted sm:text-lg">{localize(profile.tagline, locale)}</p>
+      <p class="max-w-[30ch] font-display text-h3 text-forest-ink">{headline}</p>
+      <p class="max-w-[42ch] text-base text-ink sm:text-lg">{localize(profile.tagline, locale)}</p>
       <div class="flex flex-wrap gap-3">
         <a
           href={downloadPath(profile.name, 'cv', locale)}
@@ -55,13 +53,13 @@ const headline = splitEmphasis(localize(profile.headline, locale));
           {t['download.portfolio']}
         </a>
       </div>
-      <dl class="flex flex-wrap gap-x-8 gap-y-4" aria-label={t['hero.statsLabel']}>
+      <dl class="grid max-w-[46ch] border-t border-line" aria-label={t['hero.statsLabel']}>
         {profile.stats.map((stat) => (
-          <div class="grid">
-            <dd class="order-1 font-mono text-xl font-medium text-amber-deep">
+          <div class="grid grid-cols-[5rem_minmax(0,1fr)] items-baseline gap-3 border-b border-line py-2 text-sm">
+            <dt class="text-base font-semibold text-amber-deep tabular-nums">
               {localizeNumber(stat.value, locale)}
-            </dd>
-            <dt class="order-2 text-xs text-ink-muted">{localize(stat.label, locale)}</dt>
+            </dt>
+            <dd class="text-ink-muted">{localize(stat.label, locale)}</dd>
           </div>
         ))}
       </dl>
@@ -71,7 +69,7 @@ const headline = splitEmphasis(localize(profile.headline, locale));
       alt={`${t['hero.photoAlt']} ${profile.name}`}
       name={profile.name}
       role={role}
-      location={profile.location.split(',')[0] ?? profile.location}
+      location={city}
       detectionLabel={t['hero.detectionLabel']}
     />
   </div>

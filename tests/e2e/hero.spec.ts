@@ -3,13 +3,16 @@ import { expect, test } from '@playwright/test';
 
 const stage = '[data-photo-card]';
 
-test('the hero shows the headline, tagline, actions, and three stats from profile.yaml', async ({ page }) => {
+test('the hero shows the name, role, headline, tagline, actions, and three stats from profile.yaml', async ({
+  page,
+}) => {
   await page.goto('/');
   const hero = page.locator('section[aria-labelledby="hero-title"]');
 
-  await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
-    /Harry Mardika: Let's build something useful\./,
-  );
+  // D19: the owner's name is the H1; the headline follows as plain text (no accent color).
+  await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Harry Mardika');
+  await expect(hero.getByText('AI Product Manager in Jakarta')).toBeVisible();
+  await expect(hero.getByText("Let's build something useful.", { exact: true })).toBeVisible();
   await expect(hero.getByRole('link', { name: 'Download CV' })).toHaveAttribute(
     'href',
     '/downloads/Harry-Mardika-CV-EN.pdf',
@@ -19,14 +22,15 @@ test('the hero shows the headline, tagline, actions, and three stats from profil
     '/downloads/Harry-Mardika-Portfolio-EN.pdf',
   );
   await expect(hero.locator('dl dd')).toHaveCount(3);
+  await expect(hero.locator('dl dd').first()).toHaveText('months from idea to commercial launch at Decklify');
   await expect(hero.getByRole('img', { name: 'Photo of Harry Mardika' })).toBeVisible();
 });
 
 test('the hero is translated on /id/', async ({ page }) => {
   await page.goto('/id/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Mari membangun sesuatu yang bermanfaat.',
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Harry Mardika');
+  await expect(page.getByText('AI Product Manager di Jakarta')).toBeVisible();
+  await expect(page.getByText('Mari membangun sesuatu yang bermanfaat.', { exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Unduh CV' })).toHaveAttribute(
     'href',
     '/downloads/Harry-Mardika-CV-ID.pdf',

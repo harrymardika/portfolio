@@ -104,11 +104,11 @@ contact:
     en: Open to conversations about computer vision, applied AI, and building products. Email is the fastest way to reach me.
     id: Terbuka untuk berdiskusi tentang computer vision, penerapan AI, dan membangun produk. Email adalah cara tercepat menghubungi saya.
 
-# Exactly three, shown under the hero buttons.
+# Exactly three, shown under the hero buttons. Labels give the context of each number (approved by the owner 2026-10-10).
 stats:
   - value: "3"
-    label: { en: months from idea to launch, id: bulan dari ide ke peluncuran }
+    label: { en: months from idea to commercial launch at Decklify, id: bulan dari ide hingga peluncuran komersial Decklify }
   - value: "+45"
-    label: { en: NPS in the first 2 weeks, id: NPS di 2 minggu pertama }
+    label: { en: NPS in Decklify's first two weeks, id: NPS di dua minggu pertama Decklify }
   - value: "92.5%"
-    label: { en: AI model accuracy, id: akurasi model AI }
+    label: { en: accuracy in grant-funded crisis-detection research, id: akurasi dalam riset deteksi krisis yang didanai hibah }

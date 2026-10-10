@@ -144,7 +144,7 @@ Pemilik merasa situs terlihat seperti buatan AI, datar, dan warnanya kurang hidu
 
 | Yang ada sekarang | Kenapa terasa "AI" atau datar | Gantinya |
 |---|---|---|
-| Kata terakhir judul diwarnai amber ("useful.", "founder.", "talk.") | Pola paling umum di halaman buatan generator | Judul satu warna; amber hanya untuk yang bisa diklik dan kotak deteksi |
+| Kata terakhir judul diwarnai amber ("useful.", "founder.", "talk.") | Pola paling umum di halaman buatan generator | Judul satu warna; amber untuk tombol dan kotak deteksi, `amber-deep` hanya untuk angka dan tahun |
 | Badge pil peran, label mono huruf kapital ("JOURNEY · 2022 → 2026", "CONTACT") | Hiasan template yang muncul di mana saja | Dihapus; font mono hanya untuk keluaran mesin |
 | Tiga angka besar tanpa konteks; kartu proyek juga dibuka angka besar | Pola "statistik besar" bawaan | Angka dengan konteks dalam satu baris |
 | Bola dan cincin dekoratif di sekitar kartu foto | 3D yang tidak bercerita | 3D dari pekerjaan pemilik: deteksi, aksara, konveyor, homelab |

@@ -3,11 +3,11 @@
 Referensi visual: pratinjau "satu ruang" yang disetujui pemilik (2026-10-10, privat): https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb, tombol **Giok → Nila**. Prototipe lama `docs/design/theme-prototypes.html` hanya arsip.
 Keputusan: warna `docs/adr/0018-giok-nila-room.md` (menggantikan palet Hijau `docs/adr/0006-visual-theme.md`).
 
-> **Akan diganti di Fase 13 (D18–D21, 2026-10-10):** warna Giok → Nila, H1 = nama, tanpa kata beraksen dan label mono huruf kapital, 3D "satu ruang". Rencananya di `docs/11-roadmap.md` §H. Warna (§2) sudah diganti di T13.1. Sampai tugas lainnya selesai (T13.2 tipografi, T13.3–T13.6 3D), bagian lain dokumen ini tetap menggambarkan kode yang berjalan.
+> **Akan diganti di Fase 13 (D18–D21, 2026-10-10):** warna Giok → Nila, H1 = nama, tanpa kata beraksen dan label mono huruf kapital, 3D "satu ruang". Rencananya di `docs/11-roadmap.md` §H. Warna (§2, T13.1) dan tipografi/komponen tanpa 3D (§3, §5, T13.2) sudah diganti. Sampai T13.3–T13.6 selesai, bagian 3D dokumen ini tetap menggambarkan kode yang berjalan.
 
 ## 1. Konsep
 
-**"Kartu personal + perjalanan."** Bagian atas memperkenalkan *siapa* (foto sebagai kartu 3D, kalimat ajakan). Bagian berikutnya menceritakan *perjalanan* (jalur karier 3D). Kesan umum dan hangat, dengan detail teknis yang halus: kotak deteksi wajah ala computer vision dan angka berfont monospace.
+**"Kartu personal + perjalanan."** Bagian atas memperkenalkan *siapa* (foto sebagai kartu 3D, kalimat ajakan). Bagian berikutnya menceritakan *perjalanan* (jalur karier 3D). Kesan umum dan hangat, dengan detail teknis yang halus: kotak deteksi ala computer vision dengan label kelas bergaya keluaran model.
 
 Nada: tenang, dewasa, ramah. Tidak "neon", tidak gelap pekat.
 
@@ -51,7 +51,7 @@ Mode gelap: dinding giok dan nila yang tua dengan teks terang. Default mengikuti
 |---|---|---|
 | Display | **Young Serif** 400 | H1–H2, nama di kartu |
 | Body | **Plus Jakarta Sans** 400/500/600/700 | Paragraf, navigasi, tombol |
-| Data | **IBM Plex Mono** 400/500 | Angka statistik, label teknis, eyebrow, tahun di journey |
+| Data | **IBM Plex Mono** 400/500 | Hanya keluaran mesin: label deteksi, nama kelas, nama file dataset, kode 404. Angka dan tahun memakai Plus Jakarta Sans tebal + `tabular-nums` (T13.2). Sisa mono di kartu proyek dan statistik situs diganti di T14.1/T14.3 |
 
 Self-host via Fontsource (tanpa request ke Google Fonts, demi privasi dan CSP), subset Latin saja, diimpor di `src/styles/global.css`. Kelas: `font-display`, `font-sans` (default body), `font-mono`. Selalu `font-display: swap` dengan fallback `Georgia, serif` / `system-ui, sans-serif` / `ui-monospace, monospace`.
 
@@ -59,14 +59,14 @@ Skala (fluid, `clamp`):
 
 | Token | Ukuran |
 |---|---|
-| `--text-hero` | `clamp(2.125rem, 5vw, 4rem)` / line-height 1.02 |
+| `--text-name` | `clamp(3rem, 7.4vw, 5.75rem)` / line-height 0.95, letter-spacing −0.01em (nama pemilik, H1 beranda) |
 | `--text-h2` | `clamp(1.75rem, 3.8vw, 2.875rem)` / 1.05 |
 | `--text-h3` | `1.25rem` / 1.3 |
 | `--text-body` | `1rem`–`1.0625rem` / 1.6 |
 | `--text-small` | `0.8125rem` |
-| `--text-eyebrow` | `0.75rem` mono, uppercase, letter-spacing `0.08em` |
+| `--text-eyebrow` | `0.75rem`, letter-spacing `0.08em` (label kecil sentence case; jangan dipakai sebagai label huruf kapital di atas judul) |
 
-Kelas Tailwind: `text-hero`, `text-h2`, `text-h3`, `text-eyebrow` (line-height dan letter-spacing ikut).
+Kelas Tailwind: `text-name`, `text-h2`, `text-h3`, `text-eyebrow` (line-height dan letter-spacing ikut).
 
 Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 
@@ -81,12 +81,14 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 
 | Komponen | Spesifikasi |
 |---|---|
-| **Hero** (`src/components/hero/`) | Latar: ruangan (§2). Kiri: badge peran (mono), H1 = headline (kata `*bertanda*` berwarna `amber`, nama disisipkan `sr-only` untuk SEO), paragraf, tombol utama (amber) + outline, 3 statistik mono dari `profile.yaml → stats`. Kanan: kartu foto. Tombol: "Download CV" (amber, solid) + "Portfolio PDF" (outline), ikon unduh, atribut `download` dan `data-download` (untuk statistik T5.3); URL dari `downloadPath()`. |
+| **Hero** (`src/components/hero/`) | Latar: ruangan (§2). Kiri: baris "peran di kota" (`hero.roleIn`), H1 = nama pemilik (`text-name`, D19), `headline` sebagai kalimat Young Serif tanpa warna aksen, tagline, tombol utama (amber) + outline, lalu 3 angka dari `profile.yaml → stats` sebagai daftar bergaris (angka `amber-deep` + konteks). Kanan: kartu foto. Tombol: "Download CV" (amber, solid) + "Portfolio PDF" (outline), ikon unduh, atribut `download` dan `data-download` (untuk statistik T5.3); URL dari `downloadPath()`. |
 | **Kartu foto** | `PhotoCard.astro` = kartu HTML statis (gambar LCP, fallback tanpa JS/WebGL) sekaligus panggung 3D. `src/scenes/photo-card/` = versi 3D: tekstur kanvas (foto, nama Young Serif, peran, chip lokasi `amber`), lapisan deteksi terpisah (4 sudut + label `hero.detectionLabel`) yang "mengunci" tiap 4 s lewat skala/opacity tanpa menggambar ulang, miring mengikuti pointer (maks ±0.45 rad), dekorasi bola amber/putih/`mint` + cincin orbit. Posisi kotak wajah: `FACE_BOX` di `config.ts` (dipakai HTML dan 3D). Kanvas muncul (cross-fade) hanya setelah tekstur siap (`data-scene-ready`). |
-| **Journey** (`src/components/journey/`, `src/scenes/journey-path/`) | Latar: ruangan (§2). Kiri: eyebrow mono "Journey · 2022 → 2026" (dihitung dari data), H2 + paragraf dari `profile.yaml → journey`. Kanan: panggung tinggi tetap (480/560 px) berisi tabung `forest`, titik `amber` bercincin `forest`, bola amber yang mengikuti scroll (`sectionProgress`; selalu penuh di dasar halaman). Label = item `<ol>` yang sama dengan fallback, diposisikan di kanan titik lewat `--x/--y`; label belum tercapai bergaya putus-putus (bukan opacity, demi kontras). Klik label membuka popover detail (Popover API, berfungsi tanpa JS). |
+| **Journey** (`src/components/journey/`, `src/scenes/journey-path/`) | Latar: ruangan (§2). Kiri: H2 (tanpa warna aksen) + paragraf dari `profile.yaml → journey`. Kanan: panggung tinggi tetap (480/560 px) berisi tabung `forest`, titik `amber` bercincin `forest`, bola amber yang mengikuti scroll (`sectionProgress`; selalu penuh di dasar halaman). Label = item `<ol>` yang sama dengan fallback, diposisikan di kanan titik lewat `--x/--y`; label belum tercapai bergaya putus-putus (bukan opacity, demi kontras). Klik label membuka popover detail (Popover API, berfungsi tanpa JS). |
 | **Fallback Journey** | `<ol>` yang sama ditampilkan sebagai timeline vertikal (garis + titik) tanpa JS/WebGL atau saat 3D `off`. Popover detail tetap berfungsi. |
 | **Button** | Varian `primary` (amber di forest / forest di terang), `outline`. Tinggi min 44px. Fokus: outline 2px `currentColor`, offset 2px. |
-| **Stat** | Angka mono 500 + label kecil. |
+| **Stat** | Baris: angka tebal `amber-deep` (tabular) + konteks `ink-muted`, dipisah garis tipis. |
+| **Indeks proyek** (`ProjectIndex.astro`, `ProjectRow.astro`) | Baris, bukan kartu (D20): tahun, judul (Young Serif, tautan membentang ke seluruh baris) + ringkasan, peran, angka utama (rata kanan). Di HP menjadi dua kolom. Dipakai di beranda; halaman Projects menyusul di T14.1. |
+| **Kontak** (`src/components/contact/`) | H2 + intro, alamat email besar (Young Serif, `mailto:`) + tombol "Copy" (hanya dengan JS), lalu media sosial sebagai tautan teks. Tanpa nomor HP. |
 | **Chatbot "Tanya Harry"** (`src/components/assistant/`) | Tombol pil `forest` di kanan bawah (cincin `surface` agar terlihat di atas hero), di HP hanya ikon (label tetap untuk pembaca layar). Muncul hanya jika JS aktif dan `/api/ask/health` menyatakan fitur menyala. Panel: dialog non-modal (`surface`, radius 12px), di HP menjadi lembar bawah selebar layar. Gelembung pengunjung `forest`/`on-forest`, jawaban `sage`/`ink`. `body` diberi ruang bawah 4,5rem saat tombol tampil agar tidak menutupi akhir halaman. |
 
 ## 6. Aturan 3D

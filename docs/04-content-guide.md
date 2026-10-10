@@ -65,8 +65,8 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | Field | Tipe | Wajib | Keterangan |
 |---|---|---|---|
 | `name` | string | ✔ | |
-| `role` | LocalizedText | ✔ | Ditampilkan di badge hero & kartu |
-| `headline` | LocalizedText | ✔ | H1 hero; kata dalam `*bintang*` diberi warna aksen |
+| `role` | LocalizedText | ✔ | Baris peran di hero ("… in Jakarta") dan kartu foto |
+| `headline` | LocalizedText | ✔ | Kalimat di bawah nama di hero (H1 = `name`, D19). `*bintang*` masih diterima: diberi warna aksen hanya di Portfolio PDF, di web tampil polos |
 | `tagline` | LocalizedText | ✔ | Paragraf di bawah H1 |
 | `summary` | LocalizedText | ✔ | Ringkasan untuk About dan CV |
 | `location` | string | ✔ | |
@@ -74,7 +74,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | `photo` | path | ✔ | Relatif ke `content/` |
 | `status_badge` | LocalizedText | | Kosongkan agar tidak tampil |
 | `socials[]` | `{ platform, url, handle? }` | ✔ | `platform`: `linkedin` · `instagram` · `github` · `medium` · `email` |
-| `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero |
+| `stats[]` | `{ value, label: LocalizedText }` | ✔ | Tepat 3 item untuk hero; label memberi konteks lengkap (mis. `months from idea to commercial launch at Decklify`) |
 | `journey` | `{ title, intro }` (LocalizedText) | ✔ | Judul (boleh `*penekanan*`) dan paragraf bagian Journey |
 | `projects` | `{ intro }` (LocalizedText) | ✔ | Paragraf pembuka halaman Projects dan bagian proyek pilihan di beranda |
 | `contact` | `{ title, intro }` (LocalizedText) | ✔ | Bagian Contact di beranda (judul boleh `*penekanan*`). Kanal kontak diambil dari `socials` |
@@ -261,5 +261,5 @@ Tips: `summary` proyek idealnya 1–2 kalimat (± 160 karakter); di gambar prati
 - Gunakan angka nyata dan bisa dipertanggungjawabkan; jangan dibulatkan ke atas.
 - **Format angka mengikuti bahasanya (D16):** teks `en` memakai titik desimal dan koma ribuan (`92.5%`, `3.99/4.00`, `12,000+`); teks `id` memakai koma desimal dan titik ribuan sesuai PUEBI (`92,5%`, `3,99/4,00`, `12.000+`, `Rp5,85 juta`). Nilai yang ditulis sekali untuk kedua bahasa (`value` di `stats`/`metrics`, `gpa`) **ditulis gaya Inggris**; halaman dan PDF Indonesia mengubahnya otomatis (`92.5%` → `92,5%`). Satuan dan kata masuk ke `label`, bukan `value` (`value: "3"`, label `months …`/`bulan …`), karena `value` tidak diterjemahkan. Nomor versi bukan desimal: tulis di dalam backtick (`` `Python 3.10` ``) atau menempel pada huruf (`YOLOv8.1`), sama di kedua bahasa. Tes `tests/unit/content/number-format.test.ts` menolak desimal yang tertukar.
 - Satu `highlight` = satu kalimat, diawali kata kerja aktif ("Built", "Led", "Reduced").
-- **Menebalkan frasa penting:** tulis `**frasa**` di `summary` (profile dan varian CV) dan `highlights` (experience, education, trainings), mis. `reducing overhead by **45%**`. Tampil tebal di CV, Portfolio PDF, halaman About, dan dialog Journey di beranda. Di field lain (tagline, judul, dll.) tanda ini ditolak tes karena akan tampil sebagai bintang. Cukup 1–2 frasa per poin (angka hasil, prestasi); kalau semua tebal, tidak ada yang menonjol. Tanda yang tidak berpasangan menggagalkan tes. Jika teks **diawali** `**`, beri tanda kutip: `en: "**Graduated with Distinction** (94.5/100)."`. Ini berbeda dengan `*bintang tunggal*` di `headline`/judul bagian, yang memberi warna aksen.
+- **Menebalkan frasa penting:** tulis `**frasa**` di `summary` (profile dan varian CV) dan `highlights` (experience, education, trainings), mis. `reducing overhead by **45%**`. Tampil tebal di CV, Portfolio PDF, halaman About, dan dialog Journey di beranda. Di field lain (tagline, judul, dll.) tanda ini ditolak tes karena akan tampil sebagai bintang. Cukup 1–2 frasa per poin (angka hasil, prestasi); kalau semua tebal, tidak ada yang menonjol. Tanda yang tidak berpasangan menggagalkan tes. Jika teks **diawali** `**`, beri tanda kutip: `en: "**Graduated with Distinction** (94.5/100)."`. Ini berbeda dengan `*bintang tunggal*` di `headline`/judul bagian, yang sejak T13.2 hanya memberi warna aksen di Portfolio PDF (di web tampil polos).
 - Sumber kebenaran data CV: `CV/CV_Harry Mardika.pdf` (lokal, di-gitignore) dengan koreksi yang tercatat di `docs/progress-archive.md` (log 2026-10-05).

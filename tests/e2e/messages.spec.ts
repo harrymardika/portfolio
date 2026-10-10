@@ -14,12 +14,16 @@ test('the home page shows the messages in file order, with the writer and contex
   const section = page.getByRole('region', { name: UI.en['messages.title'] });
   await expect(section.locator('blockquote')).toHaveCount(2);
   await expect(section.locator('blockquote').first()).toContainText('shipping a product in 3 months');
-  await expect(section.locator('figcaption').first()).toContainText(
-    'Head of Testing, Example Corp · Manager at Example Corp',
-  );
-  // A message without a role shows only the relationship.
-  await expect(section.locator('figcaption').nth(1)).toContainText('Test Learner');
-  await expect(section.locator('figcaption').nth(1)).not.toContainText('·');
+  // Role, then relationship, each on its own line (T13.2: no middle-dot joins).
+  await expect(section.locator('figcaption').first().locator('> span')).toHaveText([
+    'Head of Testing, Example Corp',
+    'Manager at Example Corp',
+  ]);
+  // A message without a role shows only the relationship (after the writer's name).
+  await expect(section.locator('figcaption').nth(1).locator('> span')).toHaveText([
+    'Test Learner',
+    'Bootcamp participant',
+  ]);
   await expect(section.getByRole('link', { name: 'Profile of Test Manager' })).toHaveAttribute(
     'href',
     'https://example.com/test-manager',

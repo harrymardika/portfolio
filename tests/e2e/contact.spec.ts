@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-test('the contact section lists email first, then the social profiles', async ({ page }) => {
+test('the contact section shows the email address first, then the social profiles', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('#contact');
   await expect(section.getByRole('heading', { level: 2 })).toHaveText("Let's talk.");
-  const links = section.locator('li a');
-  await expect(links).toHaveText(['Email', 'LinkedIn', 'Instagram', 'GitHub', 'Medium']);
+  const links = section.getByRole('link');
+  await expect(links).toHaveText(['harrymardika48@gmail.com', 'LinkedIn', 'Instagram', 'GitHub', 'Medium']);
   await expect(links.first()).toHaveAttribute('href', 'mailto:harrymardika48@gmail.com');
   await expect(section.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
     'href',
@@ -36,6 +36,8 @@ test.describe('without JavaScript', () => {
   test('hides the copy button but keeps the email link', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('[data-copy]')).toBeHidden();
-    await expect(page.locator('#contact').getByRole('link', { name: 'Email' })).toBeVisible();
+    await expect(
+      page.locator('#contact').getByRole('link', { name: 'harrymardika48@gmail.com' }),
+    ).toBeVisible();
   });
 });

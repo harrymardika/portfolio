@@ -1,0 +1,129 @@
+---
+/**
+ * One row of the project index (D20, docs/03-design-system.md §5): year, title and summary, role, and
+ * the headline metric. A local case study links to its page, a GitHub repository without one links to
+ * GitHub. The whole row is clickable through the stretched title link.
+ * Compared with ProjectCard it leaves out the GitHub star count and the tag chips, and shows the role
+ * rather than the field: T14.1 decides what the /projects/ index needs before it replaces the grid.
+ */
+import {
+  itemCategoryIds,
+  itemTags,
+  itemYear,
+  localize,
+  localizeNumber,
+  type ProjectCategory,
+  type ProjectItem,
+} from '@/lib/content';
+import { localizePath, type Locale, UI } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  item: ProjectItem;
+  /** Heading level inside the page outline. */
+  headingLevel?: 2 | 3;
+  /** Filter categories (Projects page only); the row records which ones it belongs to. */
+  categories?: ProjectCategory[];
+}
+
+const { locale, item, headingLevel = 3, categories = [] } = Astro.props;
+const t = UI[locale];
+const Heading = `h${headingLevel}` as const;
+const tags = itemTags(item);
+const isGithub = item.kind === 'github';
+const href = item.kind === 'local' ? localizePath(`/projects/${item.slug}/`, locale) : item.repo.url;
+const title = item.kind === 'local' ? item.project.title : (item.repo.title ?? item.repo.name);
+// GitHub entries prefer the owner's description from github.yaml over the repo's own description.
+const summary =
+  item.kind === 'local'
+    ? localize(item.project.summary, locale)
+    : item.repo.summary
+      ? localize(item.repo.summary, locale)
+      : (item.repo.description ?? t['projects.noDescription']);
+const metric = item.kind === 'local' ? item.project.metrics[0] : undefined;
+const role = item.kind === 'local' ? localize(item.project.role, locale) : item.repo.language;
+const repoCount = item.kind === 'github' ? item.repo.members.length : 0;
+const categoryIds = itemCategoryIds(tags, categories);
+// What the search box looks through, in the page's language.
+const searchText = [
+  title,
+  summary,
+  ...tags,
+  ...categories.filter((c) => categoryIds.includes(c.id)).map((c) => localize(c.label, locale)),
+].join(' ');
+---
+
+<article
+  class="project-row relative grid gap-x-6 gap-y-1 py-5"
+  data-project
+  data-project-kind={item.kind}
+  data-categories={categories.length > 0 ? categoryIds.join(' ') : undefined}
+  data-search={categories.length > 0 ? searchText : undefined}
+>
+  <p class="year text-sm text-ink-muted tabular-nums">{itemYear(item)}</p>
+  <div class="main grid min-w-0 gap-1">
+    <Heading class="text-h3 break-words">
+      <a
+        href={href}
+        rel={isGithub ? 'noopener' : undefined}
+        class="after:absolute after:inset-0 focus-visible:outline-none"
+      >
+        {title}
+        {isGithub && <span class="text-sm text-ink-muted"> ({t['projects.githubBadge']})</span>}
+      </a>
+    </Heading>
+    <p class="text-sm text-ink-muted">{summary}</p>
+  </div>
+  <p class="role text-sm text-ink-muted">
+    {role}
+    {repoCount > 1 && (
+      <>
+        <br />
+        {repoCount} {t['projects.repositories']}
+      </>
+    )}
+  </p>
+  {metric && (
+    <p class="metric text-sm text-ink-muted tabular-nums">
+      <span class="block text-base font-semibold text-amber-deep">
+        {localizeNumber(metric.value, locale)}
+      </span>
+      {localize(metric.label, locale)}
+    </p>
+  )}
+</article>
+
+<style>
+  .project-row {
+    grid-template-columns: 3.5rem minmax(0, 1fr) 10rem 10rem;
+    align-items: baseline;
+  }
+
+  .metric {
+    text-align: right;
+  }
+
+  @media (max-width: 767px) {
+    .project-row {
+      grid-template-columns: 3rem minmax(0, 1fr);
+    }
+
+    .role,
+    .metric {
+      grid-column: 2;
+      text-align: left;
+    }
+  }
+
+  /* The whole row is clickable via the stretched title link; show focus on the row. */
+  .project-row:has(a:focus-visible) {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .project-row:hover h2 a,
+  .project-row:hover h3 a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

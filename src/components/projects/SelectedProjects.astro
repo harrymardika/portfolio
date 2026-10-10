@@ -1,6 +1,6 @@
 ---
-/** Home page section with featured projects and a link to the full list. */
-import ProjectGrid from './ProjectGrid.astro';
+/** Home page section with featured projects as index rows (D20) and a link to the full list. */
+import ProjectIndex from './ProjectIndex.astro';
 import { localize, type Profile, type ProjectItem } from '@/lib/content';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
 
@@ -26,12 +26,12 @@ const t = UI[locale];
         </div>
         <a
           href={localizePath('/projects/', locale)}
-          class="font-semibold text-forest-ink underline-offset-4 hover:underline"
+          class="font-semibold text-forest-ink underline decoration-line underline-offset-4 hover:decoration-current"
         >
-          {t['projects.viewAll']} →
+          {t['projects.viewAll']}
         </a>
       </div>
-      <ProjectGrid locale={locale} items={items} />
+      <ProjectIndex locale={locale} items={items} />
     </div>
   </section>
 )}

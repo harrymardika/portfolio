@@ -1,0 +1,24 @@
+---
+/** The project index (D20): rows instead of cards. Same data attributes as the grid, so filters work. */
+import ProjectRow from './ProjectRow.astro';
+
+import type { ProjectCategory, ProjectItem } from '@/lib/content';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  items: ProjectItem[];
+  headingLevel?: 2 | 3;
+  categories?: ProjectCategory[];
+}
+
+const { locale, items, headingLevel = 3, categories = [] } = Astro.props;
+---
+
+<ul class="divide-y divide-line border-y border-line" data-project-grid>
+  {items.map((item) => (
+    <li>
+      <ProjectRow locale={locale} item={item} headingLevel={headingLevel} categories={categories} />
+    </li>
+  ))}
+</ul>

@@ -120,7 +120,8 @@ Aturan:
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
 │   │   ├── hero/                # Hero.astro (+ island 3D), PhotoCard.astro (kartu statis)
 │   │   ├── journey/             # Journey.astro (timeline HTML + island 3D), MilestoneDetail (dialog)
-│   │   ├── projects/            # ProjectCard, ProjectGrid, ProjectFilter (cari + bidang), SelectedProjects
+│   │   ├── projects/            # ProjectRow + ProjectIndex (baris indeks, beranda), ProjectCard + ProjectGrid (kartu, /projects/ sampai T14.1),
+│   │   │                        #   ProjectFilter (cari + bidang), SelectedProjects
 │   │   ├── about/               # AboutSection, TimelineItem
 │   │   ├── messages/            # Messages (kesan & pesan di beranda + ajakan, T9.4), MessageForm (formulir, T12.2),
 │   │   │                        #   MessageReview (antrean privat pemilik, T12.3)
