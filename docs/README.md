@@ -14,7 +14,7 @@
 | 08 | [Statistik](08-analytics.md) | Statistik bawaan di situs, event, privasi, link pelacak lamaran |
 | 09 | [PDF generation](09-pdf-generation.md) | CV & Portfolio otomatis |
 | 10 | [Operasional](10-operations.md) | Untuk pemilik: akun & secret, pekerjaan rutin, perawatan, mengatasi masalah, pemulihan |
-| 11 | [Rencana lanjutan](11-roadmap.md) | Fase 9–13: personal branding, CV per posisi, chatbot, kesan & pesan, 3D tambahan; keputusan D8–D17 |
+| 11 | [Rencana lanjutan](11-roadmap.md) | Fase 9–14: personal branding, CV per posisi, chatbot, kesan & pesan, tampilan baru Giok → Nila dan "satu ruang" 3D, daftar fitur yang wajib tetap ada; keputusan D8–D21 |
 | — | [Arsip log sesi](progress-archive.md) | Log sesi lama dari `PROGRESS.md`; dibaca hanya bila butuh riwayat |
 | — | [ADR](adr/) | Catatan keputusan arsitektur |
 | — | [Prototipe tema](design/theme-prototypes.html) | Buka di browser. Tema terpilih: bagian **F + E**, warna **Hijau** |

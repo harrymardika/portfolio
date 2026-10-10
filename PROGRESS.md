@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-09 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.1 (peta proyek 3D di halaman Projects)
+**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.0 (pagar pengaman fitur lama)
 
 ## Ringkasan
 
@@ -22,9 +22,10 @@
 | 10 | CV per posisi (§B) | ✅ Selesai 2026-10-08 (rilis 1.2.0) |
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ✅ Selesai 2026-10-09 (rilis 1.4.0; formulir tayang) |
-| 13 | 3D tambahan di halaman selain beranda (§H) | ⏳ Berikutnya |
+| 13 | Tampilan baru Giok → Nila dan beranda "satu ruang" 3D (§H, §I) | ⏳ Berikutnya |
+| 14 | Halaman lain (Projects, About, Statistik, 404) dalam ruang 3D yang sama (§H) | Direncanakan |
 
-Progres keseluruhan: **Fase 0–12 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09. Rencana lanjutan Fase 11–13: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–12 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09. Rencana lanjutan Fase 11–14: `docs/11-roadmap.md`**
 
 ---
 
@@ -182,22 +183,55 @@ Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di hal
 - [x] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
 
-## Fase 13: 3D tambahan (`docs/11-roadmap.md` §H, D17)
+## Fase 13: Tampilan baru Giok → Nila dan beranda "satu ruang" 3D (`docs/11-roadmap.md` §H, §I; D18–D21)
 
-Pratinjau yang disetujui pemilik: https://claude.ai/artifact/4FEfd4Ce4LKWzeaYZB9gfw (privat). Aturan 3D di `docs/03-design-system.md` §6 berlaku untuk semua: HTML setara sebagai fallback, mati otomatis di perangkat lemah, satu frame diam untuk reduced motion, berhenti saat tidak terlihat, ≤ 180 KB JS 3D per halaman, Lighthouse ≥ 90/95.
+Rencana disetujui pemilik 2026-10-10. Pratinjau (privat): [satu ruang 3D, warna Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb) dan [diagnosis "pola AI", hero foto + aksara, konveyor](https://claude.ai/artifact/ERboSgCo7gpAGg1LZoNe1t). Pratinjau lama Fase 13 (peta embedding dkk.) tidak berlaku lagi (D21).
 
-- [ ] **T13.1** Peta proyek di halaman Projects + komponen bersama
-  - Kriteria: studi kasus sebagai titik di ruang 3D per bidang (kategori dari `profile.projects.categories`), hover/ketuk menampilkan judul, klik membuka studi kasus, filter bidang yang ada ikut menyorot; putar/hover/label menjadi modul bersama di `src/scenes/core/`; tanpa 3D tetap grid kartu; e2e + axe; Lighthouse `/projects/` ≥ 90.
-- [ ] **T13.2** 404 ala computer vision
-  - Kriteria: halaman melayang dan kotak deteksi (dari kartu foto) memindai lalu mengunci "page · not found 0.99"; teks 404 dan tautan tetap HTML; label dari kamus UI (EN/ID).
-- [ ] **T13.3** Rasi skill di halaman About
-  - Kriteria: grup skill dari `skills.yaml` sebagai rasi, sorot per grup; tanpa 3D tetap daftar chip; hanya grup `show_on_web`.
-- [ ] **T13.4** Globe pengunjung di halaman Statistik
-  - Kriteria: titik negara dari statistik publik yang sudah ada (tanpa data baru yang disimpan); tabel koordinat negara statis; tanpa 3D atau saat API mati tetap daftar negara.
+Aturan untuk semua tugas Fase 13 dan 14:
+- **Fitur lama tidak boleh hilang.** Daftar wajibnya di `docs/11-roadmap.md` §I, dijaga oleh `tests/e2e/feature-inventory.spec.ts` (T13.0). Tes lama boleh disesuaikan dengan tampilan baru hanya bila yang dicek tetap setara; tes tidak boleh dihapus atau dilemahkan (AGENTS.md §3).
+- **Aturan 3D tetap** (`docs/03-design-system.md` §6, ADR 0007): isi selalu HTML dan lengkap tanpa JS/WebGL, mati otomatis di perangkat lemah, satu frame diam untuk reduced motion, berhenti saat tidak terlihat, ≤ 180 KB gzip JS 3D per halaman (sekarang ±136 KB), Lighthouse ≥ 90/95 (CI mengukur tanpa GPU, jadi yang diukur adalah fallback).
+- **Halaman cetak dan PDF tidak berubah** (ATS, selalu terang).
+- Tugas yang mengubah tampilan dicek di desktop dan HP, tema terang dan gelap; T13.1, T13.4, dan T13.6 dipratinjaukan ke pemilik sebelum merge.
+
+- [ ] **T13.0** Pagar pengaman fitur lama (sebelum tampilan diubah)
+  - Kriteria: `tests/e2e/feature-inventory.spec.ts` memeriksa setiap butir §I di EN dan ID, desktop dan HP (selector berdasarkan peran dan teks, bukan kelas CSS, agar tetap berlaku setelah tampilan berubah); semua lulus pada tampilan sekarang; angka Lighthouse ketujuh halaman saat ini dicatat di log sesi sebagai pembanding; screenshot acuan (desktop/HP × terang/gelap) dibuat sebagai artefak lokal untuk perbandingan, tidak di-commit.
+- [ ] **T13.1** Warna Giok → Nila, terang dan gelap (ADR 0018 menggantikan ADR 0006)
+  - Kriteria: token baru di `src/styles/tokens.css` untuk tiga titik ruangan (giok, tengah, nila) × tema terang (muda) dan gelap (tua), amber tetap; latar halaman berupa gradasi CSS panjang dari giok ke nila sehingga perubahan warna tetap ada tanpa JS; sorot cahaya dan tekstur butiran halus; halaman selain beranda memakai satu titik tetap (About giok, Projects tengah, Statistik dan 404 nila, lainnya tengah); `tests/unit/tokens-contrast.test.ts` mencakup semua pasangan teks di kedua tema, termasuk titik antara gradasi (sampel tiap 10%); `bun run lint:tokens` lulus; tombol tema tetap bekerja tanpa kedip; `docs/03-design-system.md` §2 ditulis ulang. Belum ada perubahan tata letak; pratinjau ke pemilik.
+- [ ] **T13.2** Rapikan "pola AI" di seluruh situs (tanpa 3D)
+  - Kriteria: H1 beranda = nama pemilik (D19), `headline` tampil sebagai kalimat di bawahnya tanpa warna aksen; `*aksen*` tidak lagi diwarnai di web (format tetap diterima di `content/`, PDF tidak berubah); badge pil peran dan label mono huruf kapital dihapus (font mono hanya untuk keluaran mesin: label deteksi, nama kelas); tiga angka hero menjadi daftar dengan konteks (label di `profile.yaml` diperpanjang EN/ID, ditinjau pemilik); proyek pilihan di beranda menjadi baris, bukan kartu; Kontak menjadi email besar + tombol salin + tautan media sosial (semuanya tetap ada); judul halaman, meta, dan JSON-LD tidak berubah; `docs/03` dan `docs/04` diperbarui; `feature-inventory` lulus.
+- [ ] **T13.3** Inti "satu ruang" 3D (`src/scenes/room/`, ADR 0019)
+  - Kriteria: satu kanvas `position: fixed` per halaman di belakang isi, dibuat setelah LCP lewat dynamic import; jalur kamera dihitung dari posisi bagian-bagian halaman (fungsi murni dengan tes: titik jangkar, interpolasi, offset tampilan desktop/HP); dinding dan lantai penangkap bayangan; satu cahaya utama mengikuti kamera; warna dari token sesuai tema dan posisi scroll, ikut berubah saat tema diganti; tingkatan perangkat: penuh (bayangan real-time), sedang (bayangan statis), `off` (HTML saja), memakai `decide3D` yang ada; reduced motion = kamera berpindah tanpa terbang dan tanpa animasi otomatis; hanya menggambar ulang saat ada perubahan; ruangan dibuat saat didekati; kontrak `SceneHandle` tetap; kanvas `aria-hidden` dan tidak menghalangi klik, fokus, atau seleksi teks; `docs/02-architecture.md` §6 diperbarui.
+- [ ] **T13.4** Beranda, ruang 1: foto cetak dan lembar aksara Jawa
+  - Kriteria: foto dan lembar aksara bertuliskan "Harry Mardika" melayang dengan bayangan (bayangan foto jatuh ke lembar); urutan deteksi sekali saat halaman dibuka (wajah → `person` → nama; lalu kotak ha, ra, ma, da, ka → transliterasi), tombol "putar ulang"; gambar lembar dan koordinat kotaknya dibuat sekali oleh `scripts/generate-aksara.ts` dan hasilnya di-commit ke `content/media/` (font Noto Sans Javanese hanya dipakai skrip itu, alasan dependency ditulis di commit), sehingga browser tidak memuat font aksara; fallback HTML = foto + gambar lembar dengan bayangan CSS, gambar LCP tetap foto; semua label dan keterangan dari kamus UI EN/ID; tombol Download CV dan Portfolio PDF tetap (beserta statistik unduhan); scene `photo-card` lama dihapus setelah diganti; LCP < 2,5 s di HP; pratinjau ke pemilik.
+- [ ] **T13.5** Beranda, ruang 2: benang journey
+  - Kriteria: benang dari bawah lembar aksara melewati titik-titik `journey.yaml` (4–6 item) sampai ke lantai proyek; bola mengikuti scroll; titik yang sudah dilewati menyala dan daftar HTML ikut menandainya; klik titik 3D membuka popover detail yang sama dengan daftar (popover tetap jalan tanpa JS); scene `journey-path` lama dihapus setelah diganti; tes journey lama tetap lulus atau disesuaikan setara.
+- [ ] **T13.6** Beranda, ruang 3–5: konveyor, Kind words, laptop homelab
+  - Kriteria: konveyor membawa 3 proyek pilihan di depan dan proyek lain dari data, wadah dari `profile.projects.categories`; hover/ketuk menampilkan judul, klik membuka studi kasus; Kind words: pesan dari `messages.yaml` sebagai kertas yang ditempel (teks tetap HTML) + tombol "Leave a message"; Kontak: laptop homelab yang layarnya menampilkan beranda; tanpa 3D semuanya tetap HTML; pratinjau ke pemilik.
 
 ---
-- [ ] **T13.5** Penutupan Fase 13: rapikan dan dokumentasikan (AGENTS.md §2a)
-  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
+- [ ] **T13.7** Penutupan Fase 13: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.5.0
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus (termasuk scene lama dan token hijau lama); README, docs/02, docs/03, docs/04 sesuai kode; ADR 0018 dan 0019 tercatat di `docs/adr/README.md`; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus, `feature-inventory` lulus, Lighthouse ketujuh halaman ≥ 90/95 dan dibandingkan dengan angka T13.0; situs live dicek di desktop dan HP sungguhan; laporan ke pemilik.
+
+## Fase 14: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21)
+
+Dikerjakan setelah Fase 13 selesai. Setiap halaman adalah sudut lain dari ruangan yang sama, memakai inti dari T13.3.
+
+- [ ] **T14.1** Projects: jalur sortir penuh dan daftar indeks (D20)
+  - Kriteria: semua proyek (studi kasus dan repo GitHub) di konveyor dari data, wadah per kategori (aturan sama dengan filter: kategori < 2 proyek disembunyikan); filter dan tautan `?filter=` menyorot wadah dan proyeknya; pencarian tetap; daftar indeks (tahun, judul, deskripsi, bidang, angka utama) menggantikan grid kartu; klik kartu di konveyor membuka studi kasus; e2e memakai helper `publishedCaseStudies` (tanpa daftar proyek di kode tes); Lighthouse `/projects/` ≥ 90.
+- [ ] **T14.2** About: dinding penghargaan
+  - Kriteria: penghargaan dan sertifikat aktif sebagai cetakan berbingkai dari `awards.yaml` dan `certifications.yaml` (sertifikat kedaluwarsa tetap hilang otomatis); hover/klik menyorot item yang sama di daftar HTML; semua bagian About tetap (ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skill).
+- [ ] **T14.3** Statistik: laptop homelab
+  - Kriteria: layar laptop menampilkan status server dan kunjungan dari API statistik publik yang sudah ada (tidak ada data baru yang disimpan); saat API mati layar menampilkan "offline" dan isi HTML `/stats/` tetap; semua isi halaman Statistik tetap.
+- [ ] **T14.4** 404 ala computer vision
+  - Kriteria: kotak deteksi memindai dinding kosong lalu mengunci "page · not found 0.99"; teks 404 dan tautan tetap HTML; label dari kamus UI (EN/ID).
+- [ ] **T14.5** Halaman tanpa 3D mengikuti tampilan baru
+  - Kriteria: studi kasus, `/cv/`, `/messages/` (beserta halaman terkirim, belum terkirim, dan tinjau), panel chatbot, menu HP, dan footer memakai warna dan tipografi baru; gambar OG dibuat ulang dengan warna baru; halaman cetak dan PDF tidak berubah; axe tanpa pelanggaran di kedua tema.
+- [ ] **T14.6** (opsional, diputuskan pemilik setelah T14.5) Transisi antarhalaman
+  - Kriteria: kanvas tetap hidup saat pindah halaman (Astro View Transitions) dan kamera terbang ke sudut halaman baru, hanya bila chatbot, statistik, formulir, dan skrip halaman tetap benar; bila tidak, dibatalkan dan alasannya dicatat.
+
+---
+- [ ] **T14.7** Penutupan Fase 14: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.6.0
+  - Kriteria: seperti T13.7; `feature-inventory` lulus; laporan ke pemilik.
 
 ## Keputusan pemilik
 
@@ -218,12 +252,19 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D11 | Skill tambahan | Dikonfirmasi satu per satu (2026-10-08): SQL, Pandas/NumPy, scikit-learn, Apache Airflow, Apache Spark/PySpark, Vertex AI, BigQuery, Cloud Run, LangChain, Power BI, Tableau, Looker/Looker Studio, Figma, Jira, Notion, Scrum/Agile, Git, Linux |
 | D12 | Studi kasus bahasa Indonesia | **Terjemahkan semua** studi kasus; **istilah teknis/asing tidak diterjemahkan** (mis. *false negative*, *edge deployment*, *pipeline*) (2026-10-07) |
 | D15 | Kesan & pesan (dulu "testimoni") | **Langsung dengan formulir bermoderasi**: tidak ada yang tampil sebelum disetujui pemilik (2026-10-07). Fase 12 tidak lagi opsional |
-| D17 | 3D tambahan | **Keempatnya** (peta proyek, 404, rasi skill, globe pengunjung), di halaman selain beranda, **setelah Fase 11 dan 12**, urutan Proyek → 404 → Skill → Globe (2026-10-08) |
+| D17 | 3D tambahan | ~~Keempatnya (peta proyek, 404, rasi skill, globe pengunjung)~~ (2026-10-08). **Diganti D21** (2026-10-10): hanya 404 yang tetap |
 | D13 | Asisten AI: lanjut dan letaknya | **Lanjut, sebagai chatbot mengambang di sudut kanan bawah setiap halaman** (bukan halaman cetak), dipilih setelah membandingkan pratinjau dengan versi About + tombol hero (2026-10-08) |
 | D14 | Asisten AI: penyedia & penyimpanan | **Gemini utama, Groq cadangan** (batas tier gratis Groq dicek di ADR T11.1), dengan pemberitahuan privasi singkat di bawah kotak tanya; **teks pertanyaan tidak disimpan**, hanya jumlahnya di statistik privat (2026-10-08). Model chatbot diganti `gemini-3.5-flash-lite` karena kuota (ADR 0015, 2026-10-09) |
 | D16 | Format angka | **Ikuti aturan baku tiap bahasa**: EN `92.5%`/`12,000`, ID `92,5%`/`12.000` (2026-10-08; menggantikan usulan "titik untuk semua") |
+| D18 | Warna situs | **Giok → Nila**: ruangan berubah pelan dari hijau giok di atas ke biru nila di bawah saat scroll; tema terang memakai warna yang sama tetapi muda, tema gelap yang tua; amber tetap untuk tombol dan kotak deteksi. Menggantikan palet Hijau (ADR 0006 → ADR 0018, T13.1). Dipilih setelah membandingkan Giok, Nila, Studio, Sogan, dan tiga campuran di pratinjau (2026-10-10) |
+| D19 | Judul hero | **Nama pemilik** ("Harry Mardika") sebagai H1; kalimat `headline` tampil di bawahnya tanpa kata berwarna (2026-10-10) |
+| D20 | Halaman Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) |
+| D21 | Arah 3D | **"Satu ruang"**: satu kanvas 3D di belakang setiap halaman, isi tetap HTML. Beranda: foto + lembar aksara Jawa, benang journey, konveyor proyek, Kind words, laptop homelab. Projects: konveyor penuh. About: dinding penghargaan. Statistik: laptop homelab. 404: kotak deteksi. Menggantikan D17 (peta embedding, rasi skill, dan globe batal) (2026-10-10) |
 
-**Belum diputuskan:** tidak ada (D8–D17 sudah diputuskan pemilik). Keputusan baru ditambahkan di sini dengan rekomendasinya.
+**Belum diputuskan** (dijawab saat tugasnya tiba):
+- Label tiga angka hero yang lebih panjang (T13.2): draf disiapkan agent, pemilik memilih kata-katanya.
+- Transisi antarhalaman (T14.6, opsional): diputuskan setelah T14.5. Rekomendasi: kerjakan hanya bila chatbot, statistik, dan formulir tetap benar.
+- Skor kelas pada label aksara (T13.4, opsional): pemilik boleh menjalankan model skripsinya pada gambar lembar aksara untuk mendapat skor asli; tanpa itu label hanya berisi nama kelas, tanpa angka.
 
 ## Catatan data
 
@@ -235,6 +276,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-10 · Claude Code (Opus) · Rencana baru Fase 13–14 (tampilan Giok → Nila, "satu ruang" 3D)
+- **Permintaan pemilik:** tampilan lebih baik dan tidak terasa buatan AI, tidak datar, foto tetap ada, lebih banyak 3D, dan **fitur lama tidak boleh hilang**.
+- **Diagnosis** (dari situs yang berjalan): kata terakhir judul diwarnai amber, badge pil dan label mono huruf kapital, tiga angka besar tanpa konteks, bola dan cincin dekoratif di sekitar foto, semua isi berupa kartu identik, warna rata tanpa cahaya; rencana Fase 13 lama (peta embedding, rasi bintang, globe titik) memakai motif yang paling umum di portfolio AI.
+- **Pratinjau yang dibandingkan pemilik:** hero Aksara Jawa vs foto cetak, lalu gabungan keduanya; jalur sortir proyek (dari Reclaimyt); "full 3D" dua arti (dunia 3D penuh vs satu kanvas di belakang isi HTML; yang kedua dipilih karena tetap cepat, terbaca Google, dan sesuai ADR 0007); warna Giok, Nila, Studio, Sogan, dan tiga campuran giok-nila.
+- **Keputusan pemilik:** D18 (Giok → Nila, terang = versi muda), D19 (H1 = nama), D20 (daftar indeks di Projects), D21 ("satu ruang"; menggantikan D17).
+- **Dikerjakan:** Fase 13 ditulis ulang (T13.0–T13.7) dan Fase 14 baru (T14.1–T14.7) di file ini; `docs/11-roadmap.md` §H ditulis ulang dan §I baru (daftar fitur yang wajib tetap ada, dijaga e2e); README. Belum ada kode; ADR 0018/0019 ditulis di T13.1/T13.3.
+- **Langkah berikutnya:** T13.0 (`tests/e2e/feature-inventory.spec.ts` dan angka Lighthouse pembanding), lalu T13.1.
 
 ### 2026-10-09 · Claude Code (Opus) · T12.5 penutupan Fase 12 (ringkasan fase)
 - **Yang dibangun (Fase 12, ADR 0017):** formulir "Tinggalkan pesan" `/messages/` (EN/ID, tanpa JS tetap jalan, tanpa email penulis, persetujuan tayang wajib, honeypot, batas 3/hari); antrean privat di layanan stats (`messages.sqlite` terpisah tanpa backup, *rollback journal* + `secure_delete`, pending 90 hari, approved tanpa PR 30 hari, tanpa IP); halaman tinjau privat ber-token `/messages/review/`; workflow `kind-words.yml`: terjemahan AI → satu PR antrean `kind-words/queue` → hapus dari server, dan notifikasi harian berupa issue berisi jumlah saja. Satu aturan kontak (`src/lib/security/contact.ts`) untuk formulir, terjemahan, tes konten, dan chatbot.
@@ -263,10 +312,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Dari review (tanpa blocker):** kirim ganda saat halaman berpindah dicegah; fokus ke field teratas yang ditolak (urutan halaman); pesan "coba lagi nanti" terpisah dari "periksa kolom"; penghitung karakter tidak lagi dibacakan tiap ketikan; garis tepi field memakai `--ink-muted` (kontras ≥ 3:1, WCAG 1.4.11); teks privasi dan persetujuan menyebut bahwa pesan yang disetujui juga ada di kode sumber publik GitHub; angka batas dari `MESSAGE_LIMITS`; honeypot bernama `hp_field` (tidak diisi autofill); proxy dev `/api/messages`; `/messages/` masuk Lighthouse CI; docs/02.
 - **Diuji:** 30 e2e (desktop + HP: kirim JSON, error per field, urutan fokus, kirim ganda, ID, honeypot, tanpa JS, noindex, tautan beranda/footer, axe terang/gelap); dilihat langsung di desktop dan HP; Lighthouse lokal (HP) `/messages/` 100/100/100/100, ketujuh halaman lulus ambang.
 - **Langkah berikutnya:** T12.3 (halaman tinjau privat).
-
-### 2026-10-09 · Claude Code (Opus) · T12.1 API kesan & pesan
-- **Rencana Fase 12 disetujui pemilik** (formulir di halaman sendiri; tinjau di halaman privat ber-token; PR otomatis untuk pesan yang disetujui; tanpa email penulis; notifikasi harian lewat issue berisi jumlah saja). Pemilik meminta seluruh Fase 12 dikerjakan selagi ia pergi.
-- **Dikerjakan:** modul `messages` di layanan stats (ADR 0017): `POST /api/messages` (JSON atau form biasa → 303), endpoint pemilik ber-token `MESSAGES_ADMIN_TOKEN` (pending, approve, reject, approved, published, count); `messages.sqlite` terpisah tanpa backup, *rollback journal* + `secure_delete`; purge saat mulai dan tiap 6 jam (pending 90 hari, approved tanpa PR 30 hari); validasi bersama di `src/lib/messages/`; Caddy `/api/messages*` (no-store, 8 KiB); compose, `.env.example`, docs/02, 07, 10 §3.2.
-- **Dari review:** teks yang dihapus sempat tersisa di file WAL (diganti rollback journal, diuji dengan membaca file); purge tadinya hanya berjalan saat ada kiriman; aturan kontak salah menolak `ASP.NET`, tanggal, dan nominal Rupiah, tetapi meloloskan nomor bertitik/berkurung (aturan baru menghitung digit); body rusak kini 400 `malformed`; batas body dinaikkan ke 8 KiB agar form tanpa JS dengan aksen/emoji tidak terpotong Caddy; honeypot dicatat sebagai `spam`. `/security-review`: tanpa temuan.
-- **Diuji:** 61 tes unit pesan/stats; stack Docker lokal (170 tes e2e termasuk rute baru lewat Caddy).
-- **Langkah berikutnya:** T12.2 (halaman formulir `/messages/`, halaman terkirim/belum terkirim).

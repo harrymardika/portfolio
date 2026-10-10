@@ -3,6 +3,8 @@
 Referensi visual: buka `docs/design/theme-prototypes.html` di browser, bagian **F + E**, tombol warna **Hijau (E)**.
 Keputusan: `docs/adr/0006-visual-theme.md`.
 
+> **Akan diganti di Fase 13 (D18–D21, 2026-10-10):** warna Giok → Nila, H1 = nama, tanpa kata beraksen dan label mono huruf kapital, 3D "satu ruang". Rencananya di `docs/11-roadmap.md` §H. Sampai tugas terkait selesai (T13.1 warna, T13.2 tipografi, T13.3–T13.6 3D), dokumen ini tetap menggambarkan kode yang berjalan.
+
 ## 1. Konsep
 
 **"Kartu personal + perjalanan."** Bagian atas memperkenalkan *siapa* (foto sebagai kartu 3D, kalimat ajakan). Bagian berikutnya menceritakan *perjalanan* (jalur karier 3D). Kesan umum dan hangat, dengan detail teknis yang halus: kotak deteksi wajah ala computer vision dan angka berfont monospace.

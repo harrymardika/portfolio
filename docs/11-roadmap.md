@@ -1,8 +1,8 @@
-# 11 · Rencana lanjutan (Fase 9–13)
+# 11 · Rencana lanjutan (Fase 9–14)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D17 sudah diambil pemilik** (2026-10-07 dan 2026-10-08); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–13).
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D21 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–14).
 >
-> **Status (2026-10-09):** Fase 9–12 selesai (rilis 1.1.0–1.4.0); chatbot dan formulir kesan & pesan tayang 2026-10-09. Berikutnya Fase 13.
+> **Status (2026-10-10):** Fase 9–12 selesai (rilis 1.1.0–1.4.0); chatbot dan formulir kesan & pesan tayang 2026-10-09. Rencana Fase 13–14 ditulis ulang 2026-10-10 (§H, §I). Berikutnya Fase 13.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -14,9 +14,10 @@
 | 10 ✅ | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
 | 11 ✅ | **Chatbot "Tanya Harry"** di sudut setiap halaman | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM secara langsung | Besar (layanan baru, ADR) |
 | 12 ✅ | **Formulir kesan & pesan** dengan moderasi | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
-| 13 | **3D tambahan** di halaman selain beranda | Lebih banyak 3D sesuai tema tanpa memberatkan beranda | Sedang |
+| 13 | **Tampilan baru Giok → Nila** dan beranda "satu ruang" 3D | Situs terasa buatan AI dan datar; 3D yang bercerita tentang pekerjaan pemilik | Besar |
+| 14 | **Halaman lain** dalam ruang 3D yang sama (Projects, About, Statistik, 404) | Satu dunia yang utuh di seluruh situs | Sedang |
 
-Urutan: 9 → 10 → 11 → 12 → 13. Fase 10 dan 11 sama-sama memakai hasil Fase 9 (positioning dan skill), jadi jangan dibalik. Fase 12 tidak lagi opsional (D15). Fase 13 dikerjakan setelah Fase 11 dan 12 (D17). Setiap fase ditutup dengan tugas penutupan (`AGENTS.md` §2a).
+Urutan: 9 → 10 → 11 → 12 → 13. Fase 10 dan 11 sama-sama memakai hasil Fase 9 (positioning dan skill), jadi jangan dibalik. Fase 12 tidak lagi opsional (D15). Fase 13 dikerjakan setelah Fase 11 dan 12, lalu Fase 14 setelah Fase 13 (D21). Setiap fase ditutup dengan tugas penutupan (`AGENTS.md` §2a).
 
 ---
 
@@ -133,9 +134,88 @@ Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi,
 
 **Keputusan (D16, 2026-10-08): ikuti aturan baku tiap bahasa.** Usulan awal "titik untuk semua" ditarik karena menyimpang dari PUEBI. Teks ditulis per bahasa; nilai yang ditulis sekali (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman Indonesia. Dijaga tes (T9.5).
 
-## H. 3D tambahan (Fase 13, D17)
+## H. Tampilan baru dan "satu ruang" 3D (Fase 13–14, D18–D21)
 
-Pemilik ingin lebih banyak 3D yang sesuai tema. Agar beranda (sudah dua scene, skor performa mepet) tetap ringan, 3D baru ditaruh di halaman lain: **peta proyek** (Projects; studi kasus sebagai titik di "ruang embedding" per bidang), **404 ala computer vision** (kotak deteksi mengunci "page · not found"), **rasi skill** (About), dan **globe pengunjung** (Statistik). Pratinjau interaktif disetujui pemilik pada 2026-10-08; dikerjakan setelah Fase 11 dan 12. Komponen bersama (putar, hover, label) dibangun di T13.1 dan dipakai ulang.
+**Keputusan (2026-10-10):** warna **Giok → Nila** (D18), H1 beranda = **nama pemilik** (D19), Projects memakai **daftar indeks** (D20), dan arah 3D **"satu ruang"** (D21). D21 menggantikan D17: peta embedding, rasi skill, dan globe pengunjung batal; 404 ala computer vision tetap. Pratinjau (privat): [satu ruang 3D, Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb) dan [diagnosis, hero foto + aksara, konveyor](https://claude.ai/artifact/ERboSgCo7gpAGg1LZoNe1t). Daftar tugas: Fase 13 dan 14 di [`PROGRESS.md`](../PROGRESS.md).
+
+### Masalahnya
+
+Pemilik merasa situs terlihat seperti buatan AI, datar, dan warnanya kurang hidup. Penyebab yang ditemukan di situs yang berjalan:
+
+| Yang ada sekarang | Kenapa terasa "AI" atau datar | Gantinya |
+|---|---|---|
+| Kata terakhir judul diwarnai amber ("useful.", "founder.", "talk.") | Pola paling umum di halaman buatan generator | Judul satu warna; amber hanya untuk yang bisa diklik dan kotak deteksi |
+| Badge pil peran, label mono huruf kapital ("JOURNEY · 2022 → 2026", "CONTACT") | Hiasan template yang muncul di mana saja | Dihapus; font mono hanya untuk keluaran mesin |
+| Tiga angka besar tanpa konteks; kartu proyek juga dibuka angka besar | Pola "statistik besar" bawaan | Angka dengan konteks dalam satu baris |
+| Bola dan cincin dekoratif di sekitar kartu foto | 3D yang tidak bercerita | 3D dari pekerjaan pemilik: deteksi, aksara, konveyor, homelab |
+| Semua isi berupa kartu putih identik (20 proyek, 5 kontak) | Kit kartu SaaS | Daftar berbaris dan tipografi |
+| Warna rata, 3D terkurung di dalam kotak, tidak ada yang bertumpuk | Tidak ada cahaya dan kedalaman | Satu sumber cahaya, bayangan sungguhan di halaman, benda bertumpuk |
+| Rencana Fase 13 lama (titik bercahaya, rasi bintang, globe titik) | Motif paling umum di portfolio AI | Diganti (D21) |
+
+### Konsep: satu ruang yang dijelajahi kamera
+
+Satu kanvas 3D menempel di belakang seluruh halaman; **semua teks, tombol, tautan, dan formulir tetap HTML** di atasnya. Saat pengunjung scroll, kamera bergerak melewati "ruangan". Bahan visualnya satu: **kertas cetak** (foto, lembar aksara, kartu proyek, catatan pesan) di ruangan yang diterangi satu lampu, sehingga bayangan jatuh ke dinding dan lantai halaman.
+
+Beranda (Fase 13), mengikuti urutan bagian yang sudah ada:
+
+1. **Hero:** foto cetak di depan lembar aksara Jawa bertuliskan "Harry Mardika". Kotak deteksi mengenali wajah (`person` → nama), lalu model skripsi "membaca" aksara satu per satu (ha, ra, ma, da, ka) dan transliterasinya muncul. Diputar sekali saat halaman dibuka.
+2. **Journey:** benang turun dari bawah lembar aksara melewati titik-titik `journey.yaml`; bola mengikuti scroll, titik yang dilewati menyala, dan titiknya bisa diklik untuk membuka detail yang sama dengan daftar.
+3. **Proyek pilihan:** benang tiba di lantai, di jalur sortir (dari proyek Reclaimyt): kamera di atas konveyor mendeteksi bidang setiap proyek, lalu pendorong memasukkannya ke wadah bidangnya.
+4. **Kind words:** pesan sebagai kertas yang ditempel; teksnya tetap HTML, beserta tombol "Leave a message".
+5. **Kontak:** laptop homelab yang melayani situs ini, layarnya menampilkan beranda.
+
+Halaman lain (Fase 14) adalah sudut lain dari ruangan yang sama: **Projects** konveyor penuh, **About** dinding penghargaan dan sertifikat berbingkai, **Statistik** meja laptop homelab dengan status server, **404** kotak deteksi yang memindai dinding kosong. Halaman lain tetap tanpa 3D, tetapi memakai warna dan tipografi baru.
+
+### Warna: Giok → Nila
+
+- **Gelap:** dinding hijau giok tua di hero, berubah pelan menjadi biru-hijau tua di Journey, lalu biru nila tua di kontak, seperti siang menuju malam.
+- **Terang:** warna yang sama tetapi muda (giok pucat → nila pucat), dengan teks gelap. Tema terang tetap default bila sistem pengunjung terang, seperti sekarang.
+- **Amber** tetap untuk tombol utama dan kotak deteksi. Latar biru foto (D3) kini menyatu dengan ujung nila.
+- Perubahan warna dibuat dengan **gradasi CSS panjang** di latar halaman, jadi tetap terlihat tanpa JS. 3D hanya menambah cahaya dan bayangan.
+- Halaman lain memakai satu titik tetap di gradasi: About giok, Projects tengah, Statistik dan 404 nila, lainnya tengah.
+- Kontras dicek otomatis untuk semua pasangan teks di kedua tema, termasuk titik antara gradasi.
+
+### Desain teknis
+
+- **Satu renderer per halaman** (`src/scenes/room/`, ADR 0019) menggantikan dua scene terpisah di beranda. Dimuat lewat dynamic import setelah LCP; kontrak `SceneHandle` dan keputusan `decide3D` tetap (ADR 0007 tetap berlaku).
+- **Jalur kamera** dihitung dari posisi bagian-bagian HTML (titik jangkar), jadi tata letak tetap ditentukan HTML. Fungsi interpolasinya murni dan dites.
+- **Tingkatan perangkat:**
+  - Penuh: bayangan real-time.
+  - Sedang: bayangan statis.
+  - `off` (tanpa WebGL, renderer CPU, ≤ 2 core, Save-Data): HTML dengan foto dan gambar lembar aksara berbayangan CSS.
+  - `still` (reduced motion): kamera berpindah tanpa terbang, tanpa animasi otomatis.
+- **Performa:** menggambar ulang hanya saat ada perubahan (scroll, pointer, animasi yang sedang berjalan); ruangan dibuat saat didekati; DPR maksimal 2 dan bayangan diturunkan di HP. Anggaran ≤ 180 KB gzip JS 3D per halaman (three.js sekarang ±136 KB); Lighthouse ≥ 90/95; LCP < 2,5 s di HP.
+- **Aksara:** gambar lembar dan koordinat kotaknya dibuat sekali oleh `scripts/generate-aksara.ts` dan di-commit, jadi browser tidak memuat font aksara Jawa. Label kelas hanya nama kelas; skor asli opsional bila pemilik menjalankan modelnya pada gambar itu.
+- **Teks di dalam 3D** (label deteksi, nama wadah, keterangan) diambil dari kamus UI dan ikut bahasa halaman.
+- **Data 3D dari `content/`:** proyek, kategori, milestone, pesan, penghargaan; tidak ada daftar yang ditulis di kode scene.
+- **Yang tidak berubah:** halaman cetak dan PDF (ATS), CSP (tanpa skrip atau font pihak ketiga), statistik dan pelacak `?ref=`, chatbot, formulir pesan, sinkronisasi GitHub, CMS, workflow AI.
+
+### Risiko dan cara menjaganya
+
+| Risiko | Penjagaan |
+|---|---|
+| Fitur lama hilang saat tampilan dirombak | Daftar §I + `tests/e2e/feature-inventory.spec.ts` dibuat **sebelum** tampilan diubah (T13.0) dan harus lulus di setiap tugas |
+| HP lemah tersendat | Tingkatan perangkat, gambar ulang hanya saat perlu, pengujian di HP sungguhan sebelum rilis |
+| Teks sulit dibaca di atas 3D | Kolom teks dengan scrim (desktop) atau panel (HP); tes kontras gradasi |
+| Kamera dan scroll terasa berat | Kamera hanya mengikuti scroll, tanpa scroll-jacking; reduced motion dihormati |
+| Lighthouse turun | CI mengukur fallback (tanpa GPU); 3D dimuat setelah LCP; angka pembanding dicatat di T13.0 |
+
+## I. Fitur yang wajib tetap ada
+
+Daftar ini dijaga oleh `tests/e2e/feature-inventory.spec.ts` (T13.0), di EN dan ID, desktop dan HP. Butir baru ditambahkan bila fitur baru dibangun. Tes lain yang sudah ada tetap berlaku.
+
+| Area | Fitur |
+|---|---|
+| Semua halaman | Skip link; navigasi Projects/About; ganti bahasa EN/ID dengan `hreflang`; tombol tema terang/gelap tanpa kedip; menu HP; footer (Site statistics, Resumes, Leave a message, ikon LinkedIn/Instagram/GitHub/Medium/email); chatbot "Tanya Harry" di sudut saat layanannya menyala; beacon statistik dan pelacak `?ref=`; meta SEO, JSON-LD, gambar OG |
+| Beranda | Nama, peran, tagline; tombol **Download CV** dan **Portfolio PDF** (atribut `download` dan `data-download`); tiga angka pencapaian; Journey dengan detail milestone yang bisa dibuka (juga tanpa JS); tiga proyek pilihan + tautan semua proyek; Kind words + tautan "Leave a message"; Kontak: email + tombol salin + media sosial, tanpa nomor HP |
+| Projects | Pencarian; filter bidang dengan jumlah; tautan `?filter=`; semua studi kasus dan repo GitHub; tautan ke studi kasus |
+| Studi kasus | Isi EN/ID, angka utama, peran, tautan repo/demo, gambar |
+| About | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif (yang kedaluwarsa hilang otomatis), skill |
+| CV per posisi `/cv/` | Enam varian dengan PDF EN/ID; noindex |
+| Statistik `/stats/` | Statistik situs publik dan status server; tetap tampil saat API mati |
+| Kesan & pesan | Formulir `/messages/` (juga tanpa JS), halaman terkirim/belum terkirim, halaman tinjau privat `/messages/review/` |
+| 404 | Teks dan tautan kembali |
+| Di luar tampilan | Halaman cetak dan PDF (CV EN/ID, Portfolio EN/ID, enam varian); sitemap dan robots; CSP dan header keamanan; sinkronisasi GitHub; Pages CMS; draf studi kasus AI; workflow kind words |
 
 ## Keputusan
 
@@ -152,4 +232,8 @@ Semua sudah diputuskan pemilik. Rekomendasi awal dan alasannya ada di bagian mas
 | D14 | Asisten AI: penyedia dan penyimpanan | **Gemini utama, Groq cadangan**; teks pertanyaan tidak disimpan (2026-10-08) | T11.x |
 | D15 | Kesan & pesan: statis saja, atau juga formulir | **Langsung dengan formulir bermoderasi** (2026-10-07) | T9.4, Fase 12 |
 | D16 | Format angka | **Aturan baku tiap bahasa** (EN `92.5%`, ID `92,5%`) (2026-10-08) | T9.5 |
-| D17 | 3D tambahan | **Keempatnya**, setelah Fase 11 dan 12, urutan Proyek → 404 → Skill → Globe (2026-10-08) | Fase 13 |
+| D17 | 3D tambahan | ~~Keempatnya~~ (2026-10-08); **diganti D21** (2026-10-10), hanya 404 yang tetap | — |
+| D18 | Warna situs | **Giok → Nila**, terang = versi muda, amber tetap; menggantikan palet Hijau ADR 0006 (2026-10-10) | T13.1 |
+| D19 | Judul hero | **Nama pemilik** sebagai H1 (2026-10-10) | T13.2 |
+| D20 | Tampilan Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) | T14.1 |
+| D21 | Arah 3D | **"Satu ruang"**: satu kanvas di belakang setiap halaman, isi tetap HTML; beranda lima ruang, Projects konveyor, About dinding penghargaan, Statistik laptop homelab, 404 deteksi (2026-10-10) | Fase 13–14 |
