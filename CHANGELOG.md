@@ -5,6 +5,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Added
+- Feature inventory end-to-end test: every feature the site had before the Phase 13 redesign (downloads, language and theme switches, chatbot, journey stories, kind words, contact, project search and filters, CVs by role, statistics, message form, 404, PDFs) is checked in English and Indonesian, on desktop and phone (T13.0).
+
 ## [1.4.0] - 2026-10-09
 
 Phase 12: the moderated kind words form.

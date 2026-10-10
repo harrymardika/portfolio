@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.0 (pagar pengaman fitur lama)
+**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.1 (warna Giok → Nila)
 
 ## Ringkasan
 
@@ -193,7 +193,7 @@ Aturan untuk semua tugas Fase 13 dan 14:
 - **Halaman cetak dan PDF tidak berubah** (ATS, selalu terang).
 - Tugas yang mengubah tampilan dicek di desktop dan HP, tema terang dan gelap; T13.1, T13.4, dan T13.6 dipratinjaukan ke pemilik sebelum merge.
 
-- [ ] **T13.0** Pagar pengaman fitur lama (sebelum tampilan diubah)
+- [x] **T13.0** Pagar pengaman fitur lama (sebelum tampilan diubah)
   - Kriteria: `tests/e2e/feature-inventory.spec.ts` memeriksa setiap butir §I di EN dan ID, desktop dan HP (selector berdasarkan peran dan teks, bukan kelas CSS, agar tetap berlaku setelah tampilan berubah); semua lulus pada tampilan sekarang; angka Lighthouse ketujuh halaman saat ini dicatat di log sesi sebagai pembanding; screenshot acuan (desktop/HP × terang/gelap) dibuat sebagai artefak lokal untuk perbandingan, tidak di-commit.
 - [ ] **T13.1** Warna Giok → Nila, terang dan gelap (ADR 0018 menggantikan ADR 0006)
   - Kriteria: token baru di `src/styles/tokens.css` untuk tiga titik ruangan (giok, tengah, nila) × tema terang (muda) dan gelap (tua), amber tetap; latar halaman berupa gradasi CSS panjang dari giok ke nila sehingga perubahan warna tetap ada tanpa JS; sorot cahaya dan tekstur butiran halus; halaman selain beranda memakai satu titik tetap (About giok, Projects tengah, Statistik dan 404 nila, lainnya tengah); `tests/unit/tokens-contrast.test.ts` mencakup semua pasangan teks di kedua tema, termasuk titik antara gradasi (sampel tiap 10%); `bun run lint:tokens` lulus; tombol tema tetap bekerja tanpa kedip; `docs/03-design-system.md` §2 ditulis ulang. Belum ada perubahan tata letak; pratinjau ke pemilik.
@@ -261,8 +261,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D20 | Halaman Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) |
 | D21 | Arah 3D | **"Satu ruang"**: satu kanvas 3D di belakang setiap halaman, isi tetap HTML. Beranda: foto + lembar aksara Jawa, benang journey, konveyor proyek, Kind words, laptop homelab. Projects: konveyor penuh. About: dinding penghargaan. Statistik: laptop homelab. 404: kotak deteksi. Menggantikan D17 (peta embedding, rasi skill, dan globe batal) (2026-10-10) |
 
+**Dijawab pemilik 2026-10-10 sebelum pergi** (Fase 13 dikerjakan tanpa pemilik):
+- **Deploy:** semua tugas Fase 13 dikumpulkan di branch `phase/13` (di-push sebagai cadangan) dan baru di-merge ke `main` di T13.7 setelah semua tes dan Lighthouse lulus, agar situs live tidak pernah tampil setengah jadi.
+- **Pratinjau** T13.1, T13.4, T13.6: agent memakai penilaian sendiri mengikuti pratinjau yang disetujui; screenshot desktop/HP × terang/gelap disiapkan untuk ditinjau pemilik setelah kembali.
+- **Label angka hero (T13.2):** "from idea to commercial launch at Decklify", "NPS in Decklify's first two weeks", "accuracy in grant-funded crisis-detection research" (versi ID diterjemahkan).
+- **Ejaan aksara:** ꦲꦂꦫꦶ ꦩꦂꦢꦶꦏ (har-ri mar-di-ka) sudah benar.
+
 **Belum diputuskan** (dijawab saat tugasnya tiba):
-- Label tiga angka hero yang lebih panjang (T13.2): draf disiapkan agent, pemilik memilih kata-katanya.
 - Transisi antarhalaman (T14.6, opsional): diputuskan setelah T14.5. Rekomendasi: kerjakan hanya bila chatbot, statistik, dan formulir tetap benar.
 - Skor kelas pada label aksara (T13.4, opsional): pemilik boleh menjalankan model skripsinya pada gambar lembar aksara untuk mendapat skor asli; tanpa itu label hanya berisi nama kelas, tanpa angka.
 
@@ -276,6 +281,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-10 · Claude Code (Opus) · T13.0 pagar pengaman fitur lama
+- **Dikerjakan:** `tests/e2e/feature-inventory.spec.ts` (60 tes: EN/ID × desktop/HP, plus tanpa JS dan file PDF): layout bersama di enam halaman (skip link, ganti bahasa, tombol tema, chatbot, footer Statistik/Resumes/Leave a message + lima tautan sosial, hreflang, og:image, navigasi termasuk menu HP), hero (nama di H1, Download CV + Portfolio PDF dengan `download`/`data-download`, tiga angka), Journey (semua milestone + cerita), proyek pilihan, Kind words + tautan formulir, Kontak (email, empat media sosial, tombol salin), Projects (pencarian, filter, `?filter=`, semua studi kasus), studi kasus, About, `/cv/` (dua PDF per varian), Statistik, formulir pesan, 404. Pemilih memakai peran, kamus UI, `content/`, dan id bagian (`#journey`, `#projects`, `#messages`, `#contact`) yang wajib dipertahankan oleh redesain.
+- **Lighthouse pembanding (HP, median 3 run, build e2e):** `/` 99/100/100/100 · `/id/` 98 · `/about/` 100 · `/projects/` 100 · `/projects/decklify/` 100 · `/stats/` 99 · `/messages/` 100 (performa; a11y, best practices, SEO semuanya 100). `bun run lighthouse` butuh akses jaringan untuk `bunx` (di sandbox agent gagal tanpa itu).
+- **Screenshot acuan** tampilan lama (beranda, Projects, About × desktop/HP × terang/gelap) dibuat di scratchpad agent untuk perbandingan, tidak di-commit.
+- **Langkah berikutnya:** T13.1 (warna Giok → Nila, ADR 0018).
 
 ### 2026-10-10 · Claude Code (Opus) · Rencana baru Fase 13–14 (tampilan Giok → Nila, "satu ruang" 3D)
 - **Permintaan pemilik:** tampilan lebih baik dan tidak terasa buatan AI, tidak datar, foto tetap ada, lebih banyak 3D, dan **fitur lama tidak boleh hilang**.
@@ -306,9 +317,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Diuji:** 12 e2e (teks aman dari XSS, tautan `javascript:` tetap teks, konfirmasi, token dikirim, token salah, privat/robots/tanpa statistik, axe terang/gelap, tombol ≥ 44 px); dilihat langsung di desktop dan HP (gaya tombol kartu sempat hilang karena dibuat skrip, diperbaiki dengan `:global`).
 - **Dari review (tanpa blocker):** setelah Setujui/Tolak kartu dihapus dan jumlah diperbarui di tempat (tadinya memuat ulang seluruh antrean, bisa balapan dan menimpa status sukses); tombol "Muat ulang antrean"; 404 = sudah diproses di tempat lain (kartu hilang, pesan jelas); fokus pindah ke kartu berikutnya / ringkasan / kolom token; tombol menyebut nama penulis (`aria-describedby`); placeholder diisi dengan fungsi (pola `$&` di nama tidak berlaku); tanggal sesuai bahasa halaman; tautan profil menampilkan alamat hasil parse (domain mirip terlihat); `autocomplete=current-password`. `/security-review`: tanpa temuan. 18 e2e.
 - **Langkah berikutnya:** T12.4 (workflow PR otomatis + notifikasi harian).
-
-### 2026-10-09 · Claude Code (Opus) · T12.2 halaman formulir
-- **Dikerjakan:** `/messages/` dan `/id/messages/` (`MessageForm.astro`): field nama, jabatan (opsional), hubungan, pesan (penghitung karakter), tautan profil (opsional), centang persetujuan, honeypot tersembunyi dari orang dan pembaca layar, kotak "Apa yang terjadi pada pesan Anda" (nama dan email pemilik dari `content/profile.yaml`). Dengan JS: kirim JSON, field yang ditolak diberi `aria-invalid` + pesan yang terhubung, fokus ke field pertama. Tanpa JS: form biasa → 303 ke `/messages/sent/` atau `/messages/not-sent/` (keduanya `noindex`). Bagian Kesan & pesan di beranda kini selalu menampilkan ajakan + tombol ke formulir; footer menautkannya.
-- **Dari review (tanpa blocker):** kirim ganda saat halaman berpindah dicegah; fokus ke field teratas yang ditolak (urutan halaman); pesan "coba lagi nanti" terpisah dari "periksa kolom"; penghitung karakter tidak lagi dibacakan tiap ketikan; garis tepi field memakai `--ink-muted` (kontras ≥ 3:1, WCAG 1.4.11); teks privasi dan persetujuan menyebut bahwa pesan yang disetujui juga ada di kode sumber publik GitHub; angka batas dari `MESSAGE_LIMITS`; honeypot bernama `hp_field` (tidak diisi autofill); proxy dev `/api/messages`; `/messages/` masuk Lighthouse CI; docs/02.
-- **Diuji:** 30 e2e (desktop + HP: kirim JSON, error per field, urutan fokus, kirim ganda, ID, honeypot, tanpa JS, noindex, tautan beranda/footer, axe terang/gelap); dilihat langsung di desktop dan HP; Lighthouse lokal (HP) `/messages/` 100/100/100/100, ketujuh halaman lulus ambang.
-- **Langkah berikutnya:** T12.3 (halaman tinjau privat).
