@@ -12,6 +12,8 @@ export interface DeviceCapabilities {
   readonly reducedMotion: boolean;
   readonly saveData: boolean;
   readonly hardwareConcurrency: number;
+  /** The main pointer is a finger (phones, tablets): lighter 3D (no real-time shadows). */
+  readonly coarsePointer?: boolean;
   /** Debugging and tests: `localStorage['3d:mode']` overrides the decision. */
   readonly forced?: Mode3D | null;
 }
@@ -48,15 +50,19 @@ export function decide3D(caps: DeviceCapabilities): Decision3D {
   return { mode: 'animated' };
 }
 
-/** Devices with more logical cores than this draw real-time shadows (ADR 0019); others get soft blobs. */
-export const MIN_CORES_FOR_SHADOWS = 4;
+/** Devices with at least this many logical cores, and a precise pointer, draw real-time shadows (ADR 0019). */
+export const MIN_CORES_FOR_SHADOWS = 6;
 
 /**
- * Whether the room renders real-time shadows. Unknown core counts (0) count as capable, like
- * `decide3D`. Save-Data never gets here: it turns the 3D off.
+ * Whether the room renders real-time shadows. Phones report as many cores as laptops, so a coarse
+ * (touch) pointer also means soft blob shadows instead. Unknown core counts (0) count as capable,
+ * like `decide3D`. Save-Data never gets here: it turns the 3D off.
  */
-export function realtimeShadows(caps: Pick<DeviceCapabilities, 'hardwareConcurrency'>): boolean {
-  return caps.hardwareConcurrency === 0 || caps.hardwareConcurrency > MIN_CORES_FOR_SHADOWS;
+export function realtimeShadows(
+  caps: Pick<DeviceCapabilities, 'hardwareConcurrency' | 'coarsePointer'>,
+): boolean {
+  if (caps.coarsePointer) return false;
+  return caps.hardwareConcurrency === 0 || caps.hardwareConcurrency >= MIN_CORES_FOR_SHADOWS;
 }
 
 /** CPU implementations of WebGL: SwiftShader (Chrome without a GPU), llvmpipe/softpipe (Linux), WARP (Windows). */
@@ -107,5 +113,6 @@ export function detectCapabilities(win: Window = window): DeviceCapabilities {
     reducedMotion: win.matchMedia('(prefers-reduced-motion: reduce)').matches,
     saveData: connection?.saveData === true,
     hardwareConcurrency: win.navigator.hardwareConcurrency ?? 0,
+    coarsePointer: win.matchMedia('(pointer: coarse)').matches,
   };
 }

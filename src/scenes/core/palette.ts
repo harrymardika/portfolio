@@ -14,6 +14,9 @@ export const PALETTE_TOKENS = [
   'line',
   'mint',
   'room-shadow',
+  'room-sky',
+  'room-ground',
+  'room-sun',
 ] as const;
 export type PaletteToken = (typeof PALETTE_TOKENS)[number];
 export type ScenePalette = Readonly<Record<PaletteToken, number>>;

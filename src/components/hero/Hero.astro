@@ -1,13 +1,12 @@
 ---
 /**
  * Home hero (docs/03-design-system.md §5): the owner's name as H1 (D19), role and city, headline and
- * tagline, the two PDF downloads, the highlights with their context, and the photo card.
- * Content comes from profile.yaml; the 3D card loads after the page is interactive.
+ * tagline, the two PDF downloads, the highlights with their context, and the two prints (photo and
+ * aksara sheet). Content comes from profile.yaml; the 3D prints belong to the room (HomeRoom.astro).
  */
-import PhotoCard from './PhotoCard.astro';
+import HeroPrints from './HeroPrints.astro';
 import DownloadIcon from '@/components/ui/DownloadIcon.astro';
 import { localize, localizeNumber, stripEmphasis, type Profile } from '@/lib/content';
-import { contentImage } from '@/lib/content/media';
 import { downloadPath } from '@/lib/downloads';
 import { fill, type Locale, UI } from '@/lib/i18n';
 
@@ -64,46 +63,6 @@ const roleLine = fill(t['hero.roleIn'], { role, city });
         ))}
       </dl>
     </div>
-    <PhotoCard
-      photo={contentImage(profile.photo)}
-      alt={`${t['hero.photoAlt']} ${profile.name}`}
-      name={profile.name}
-      role={role}
-      location={city}
-      detectionLabel={t['hero.detectionLabel']}
-    />
+    <HeroPrints locale={locale} name={profile.name} photo={profile.photo} />
   </div>
 </section>
-
-<script>
-  import { decide3D, detectCapabilities } from '@/scenes/core/capabilities';
-
-  // Decide before downloading three.js so low-power and reduced-data visitors never fetch it.
-  async function start(): Promise<void> {
-    const decision = decide3D(detectCapabilities());
-    const stages = document.querySelectorAll<HTMLElement>('[data-photo-card]');
-    if (decision.mode === 'off' || stages.length === 0) {
-      stages.forEach((stage) => (stage.dataset['scene'] = 'off'));
-      return;
-    }
-    const [{ mountScene }, { createPhotoCard }] = await Promise.all([
-      import('@/scenes/core/mount'),
-      import('@/scenes/photo-card'),
-    ]);
-    for (const stage of stages) {
-      const canvas = stage.querySelector('canvas');
-      const { photoUrl, name, role, location, detectionLabel } = stage.dataset;
-      if (!canvas || !photoUrl || !name || !role || !location || !detectionLabel) continue;
-      mountScene({
-        stage,
-        canvas,
-        decision,
-        create: (setup) => createPhotoCard(setup, { photoUrl, name, role, location, detectionLabel }),
-      });
-    }
-  }
-
-  // Wait until the page has loaded so the 3D never competes with the LCP image.
-  if (document.readyState === 'complete') void start();
-  else window.addEventListener('load', () => void start(), { once: true });
-</script>

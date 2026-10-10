@@ -118,7 +118,7 @@ Aturan:
 │   ├── components/
 │   │   ├── layout/              # Header, Footer, LangSwitch, ThemeToggle, MobileMenu, SkipLink, StatsBeacon
 │   │   ├── ui/                  # Icon, DownloadIcon, RichText (generik, tanpa domain)
-│   │   ├── hero/                # Hero.astro (+ island 3D), PhotoCard.astro (kartu statis)
+│   │   ├── hero/                # Hero.astro, HeroPrints.astro (foto + lembar aksara; slot ruang)
 │   │   ├── journey/             # Journey.astro (timeline HTML + island 3D), MilestoneDetail (dialog)
 │   │   ├── projects/            # ProjectRow + ProjectIndex (baris indeks, beranda), ProjectCard + ProjectGrid (kartu, /projects/ sampai T14.1),
 │   │   │                        #   ProjectFilter (cari + bidang), SelectedProjects
@@ -127,14 +127,14 @@ Aturan:
 │   │   │                        #   MessageReview (antrean privat pemilik, T12.3)
 │   │   ├── assistant/           # AskWidget (chatbot di sudut, T11.4) + ask-panel.ts (dimuat saat diklik)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
-│   │   ├── room/                # RoomStage (kanvas tetap "satu ruang", ADR 0019)
+│   │   ├── room/                # RoomStage (kanvas tetap "satu ruang", ADR 0019), HomeRoom (stage + skrip beranda)
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
 │   │   └── print/               # CvDocument, CvEntry, PortfolioDocument
 │   ├── scenes/
 │   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
 │   │   │                        #   palette, pointer, types (kontrak SceneModule)
-│   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom)
-│   │   ├── photo-card/          # kartu foto 3D + kotak deteksi (diganti ruang di T13.4)
+│   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom),
+│   │   │                        #   paper (label, kotak deteksi, bayangan lembut), parts/hero (+ hero-config)
 │   │   └── journey-path/        # jalur karier 3D (diganti ruang di T13.5)
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   │                            #   · PrintLayout (halaman cetak PDF)
@@ -206,10 +206,10 @@ Semua scene memakai `src/scenes/core/` (T2.1). Scene konkret hanya membangun obj
 
 ```ts
 // src/scenes/core/mount.ts: dipanggil dari <script> komponen island
-const handle = mountScene({ stage, canvas, create: createPhotoCard }); // SceneHandle | null
+const handle = mountScene({ stage, canvas, create: createJourneyPath }); // SceneHandle | null
 handle?.destroy(); // aman dipanggil dua kali
 
-// Scene konkret (mis. src/scenes/photo-card/index.ts) mengembalikan SceneModule:
+// Scene konkret (mis. src/scenes/journey-path/index.ts) mengembalikan SceneModule:
 interface SceneModule {
   scene: Scene; camera: Camera;
   update(frame: { dt; elapsed; pointer: { x; y } }): void; // dt sudah dijepit [0, 0.05]
@@ -246,9 +246,11 @@ interface RoomPart {
 ```
 
 - **Halaman ↔ dunia** (`layout.ts`, murni dan dites): kamera berjarak `CAMERA.distance` dari bidang halaman (z = 0) dengan fov `CAMERA.fov`; `worldPerPixel` mengubah piksel CSS ke unit dunia. Bagian ditambatkan ke posisi dokumen slot di dalam grup `page`, dan scroll hanya menggeser grup itu (`pageOffset`), jadi 3D selalu sejajar dengan teksnya.
-- **Dinding bayangan**: `ShadowMaterial` di z = −`WALL_DEPTH`, warnanya `--room-shadow`. Satu `DirectionalLight` tetap. Peta bayangan hanya bila `realtimeShadows` (> 4 core).
+- **Dinding bayangan**: `ShadowMaterial` di z = −`WALL_DEPTH`, warnanya `--room-shadow`; hanya digambar bila ada peta bayangan. Satu `DirectionalLight` tetap dan `HemisphereLight`, warnanya dari `--room-sun/-sky/-ground`. Peta bayangan hanya bila `realtimeShadows` (≥ 6 core dan bukan layar sentuh); tanpa itu bagian menggambar bayangan lembut (`paper.ts`).
+- **Stage**: `RoomStage.astro` setinggi `100lvh` (toolbar HP tidak mengubah skala) dan tidak boleh berada di dalam elemen ber-`transform`/`filter`/`contain`/`isolation`.
+- **Bagian**: dibangun saat slotnya dekat, lalu shader-nya dikompilasi async (`compileAsync`) sebelum ditambahkan; bagian yang selesai setelah `destroy()` dibuang. `layout` dipanggil saat resize dan saat ukuran `body` berubah.
 - **Render sesuai kebutuhan**: `needsRender()` true bila scroll, pointer (paralaks kecil), tema, atau `update()` sebuah bagian berubah.
-- **Klik**: klik di luar elemen interaktif HTML di-raycast ke `targets()`; `html.room-hover` memberi kursor tangan.
+- **Klik**: klik di luar elemen interaktif HTML di-raycast ke `targets()`, kecuali bila pointer bergeser > 5 px atau ada teks terpilih; `html.room-hover` memberi kursor tangan (mouse saja).
 - **Tema**: `MutationObserver` pada `data-theme` dan `prefers-color-scheme` membaca ulang palet dan memanggil `recolor`.
 
 ## 7. i18n

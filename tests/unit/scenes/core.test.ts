@@ -211,10 +211,15 @@ describe('createLoop', () => {
 });
 
 describe('realtimeShadows', () => {
-  it('draws real-time shadows on devices with more than four cores, or when the count is unknown', () => {
+  it('draws real-time shadows on devices with six or more cores, or when the count is unknown', () => {
     expect(realtimeShadows({ hardwareConcurrency: 8 })).toBe(true);
+    expect(realtimeShadows({ hardwareConcurrency: 6 })).toBe(true);
     expect(realtimeShadows({ hardwareConcurrency: 0 })).toBe(true);
     expect(realtimeShadows({ hardwareConcurrency: 4 })).toBe(false);
-    expect(realtimeShadows({ hardwareConcurrency: 3 })).toBe(false);
+  });
+
+  it('never on touch devices, which report as many cores as laptops', () => {
+    expect(realtimeShadows({ hardwareConcurrency: 8, coarsePointer: true })).toBe(false);
+    expect(realtimeShadows({ hardwareConcurrency: 8, coarsePointer: false })).toBe(true);
   });
 });

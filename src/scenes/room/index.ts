@@ -9,7 +9,7 @@ import {
   Group,
   HemisphereLight,
   Mesh,
-  PCFSoftShadowMap,
+  PCFShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
   Raycaster,
@@ -20,7 +20,8 @@ import {
   type WebGLRenderer,
 } from 'three';
 
-import { detectCapabilities, realtimeShadows } from '../core/capabilities';
+import { decide3D, detectCapabilities, realtimeShadows } from '../core/capabilities';
+import { disposeObject3D } from '../core/dispose';
 import { damp } from '../core/math';
 import { mountScene } from '../core/mount';
 import { readPalette, type ScenePalette } from '../core/palette';
@@ -31,11 +32,13 @@ import type { FrameContext, SceneHandle, SceneModule, SceneSetup } from '../core
 /** Camera: distance from the page plane and vertical field of view (degrees). */
 export const CAMERA = { distance: 12, fov: 30 } as const;
 /** The wall that catches shadows sits this far behind the page plane (world units). */
-export const WALL_DEPTH = 2.2;
+export const WALL_DEPTH = 0.7;
 /** Parts are built when their slot is this close to the viewport (CSS px). */
 export const BUILD_MARGIN = 900;
 /** Strongest pointer parallax, in world units of camera travel. */
 const PARALLAX = { x: 0.35, y: 0.2 } as const;
+/** A press that moves farther than this (CSS px) is a drag or a text selection, not a click. */
+const CLICK_SLOP = 5;
 
 export interface RoomContext {
   /** World units per CSS pixel on the page plane. */
@@ -51,6 +54,10 @@ export interface RoomContext {
   readonly invalidate: () => void;
 }
 
+/**
+ * Per-frame input for parts. `pointer` is the room's own pointer over the whole window (-1..1),
+ * damped; the stage itself never receives pointer events. The object is reused between frames.
+ */
 export interface RoomFrame extends FrameContext {
   readonly room: RoomContext;
   /** Current scroll position (CSS px). */
@@ -60,10 +67,13 @@ export interface RoomFrame extends FrameContext {
 export interface RoomTarget {
   readonly object: Object3D;
   /** What a click on the object does; it must have an HTML equivalent (ADR 0019). */
-  readonly onClick?: () => void;
+  readonly onClick?: (event: MouseEvent) => void;
 }
 
-/** One piece of the room, anchored to an HTML element. */
+/**
+ * One piece of the room, anchored to an HTML element. `layout` runs on resize and whenever the
+ * document body changes size; a slot that moves without that (transforms, sticky) is not followed.
+ */
 export interface RoomPart {
   /** Element the part follows; also where its HTML fallback lives. */
   readonly slot: HTMLElement;
@@ -75,9 +85,12 @@ export interface RoomPart {
   update?(frame: RoomFrame): boolean;
   /** The theme changed: apply the new token colors. */
   recolor?(palette: ScenePalette): void;
-  /** Objects the pointer can click. */
+  /** Objects the pointer can click. Read again after every build. */
   targets?(): readonly RoomTarget[];
-  /** Free what `disposeObject3D` cannot reach (canvas textures are reached; timers, listeners are not). */
+  /**
+   * Free what `disposeObject3D` cannot reach (listeners, timers, DOM state). Called on destroy for
+   * every part, built or not.
+   */
   dispose?(): void;
 }
 
@@ -87,26 +100,42 @@ interface Entry {
   building: boolean;
 }
 
-/** Document rectangle of an element. */
+/**
+ * Document rectangle of an element, vertically. Horizontal page scroll is not tracked (the site
+ * never scrolls sideways), so `left` stays in viewport coordinates, like the camera.
+ */
 export function pageRect(element: Element): PageRect {
   const box = element.getBoundingClientRect();
-  return {
-    left: box.left + window.scrollX,
-    top: box.top + window.scrollY,
-    width: box.width,
-    height: box.height,
-  };
+  return { left: box.left, top: box.top + window.scrollY, width: box.width, height: box.height };
 }
 
 /** Elements whose clicks belong to the HTML, never to the room behind it. */
-const INTERACTIVE = 'a, button, input, textarea, select, label, summary, [role="dialog"], [popover]';
+const INTERACTIVE = [
+  'a',
+  'button',
+  'input',
+  'textarea',
+  'select',
+  'label',
+  'summary',
+  'details',
+  'dialog',
+  'iframe',
+  'video',
+  '[role="dialog"]',
+  '[role="button"]',
+  '[role="link"]',
+  '[popover]',
+  '[contenteditable]',
+  '[tabindex]',
+].join(', ');
 
 /** `create` for `mountScene`. */
 export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
   return (setup: SceneSetup): SceneModule => {
     const { renderer } = setup;
     renderer.shadowMap.enabled = shadows;
-    renderer.shadowMap.type = PCFSoftShadowMap;
+    renderer.shadowMap.type = PCFShadowMap;
 
     const scene = new Scene();
     const camera = new PerspectiveCamera(CAMERA.fov, 1, 0.1, 200);
@@ -116,30 +145,35 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     const page = new Group();
     scene.add(page);
 
-    const sky = new HemisphereLight(0xffffff, 0x8899aa, 0.5);
-    const sun = new DirectionalLight(0xfff4e0, 1.15);
-    sun.position.set(-6, 7, 9);
+    let palette = setup.palette;
+    const sky = new HemisphereLight(palette['room-sky'], palette['room-ground'], 2.3);
+    const sun = new DirectionalLight(palette['room-sun'], 1.8);
+    sun.position.set(-4, 5, 10);
     sun.castShadow = shadows;
     const mapSize = window.innerWidth < 768 ? 1024 : 2048;
     sun.shadow.mapSize.set(mapSize, mapSize);
+    sun.shadow.radius = 3;
     sun.shadow.bias = -0.0004;
     sun.shadow.normalBias = 0.02;
     scene.add(sky, sun, sun.target);
 
-    const wallMaterial = new ShadowMaterial({ opacity: 0.38 });
+    // Without a shadow map the wall would only cost fill rate, so it is drawn only with shadows.
+    const wallMaterial = new ShadowMaterial({ opacity: 0.3 });
     const wall = new Mesh(new PlaneGeometry(1, 1), wallMaterial);
     wall.receiveShadow = true;
+    wall.visible = shadows;
     wall.position.z = -WALL_DEPTH;
     scene.add(wall);
 
-    let palette = setup.palette;
     let view = { width: window.innerWidth, height: window.innerHeight };
     let wpp = worldPerPixel(view.height, CAMERA.distance, CAMERA.fov);
     let scrollY = window.scrollY;
     let dirty = true;
     let animating = false;
-    let pointerMoved = false;
+    let hoverPending = false;
     let readySignalled = false;
+    let disposed = false;
+    let targets: RoomTarget[] = [];
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
     const pointerPx = new Vector2(-1, -1);
     const entries: Entry[] = parts.map((part) => ({ part, root: null, building: false }));
@@ -148,7 +182,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       dirty = true;
       setup.invalidate();
     };
-    const context = (): RoomContext => ({
+    const makeContext = (): RoomContext => ({
       wpp,
       viewWidth: view.width,
       viewHeight: view.height,
@@ -158,9 +192,24 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       renderer,
       invalidate: request,
     });
+    // Rebuilt only when its inputs change (resize, theme), not every frame.
+    let room = makeContext();
+    const frame = { dt: 0, elapsed: 0, pointer: { x: 0, y: 0 }, room, scrollY };
+
+    const applyLights = (): void => {
+      sky.color.setHex(palette['room-sky']);
+      sky.groundColor.setHex(palette['room-ground']);
+      sun.color.setHex(palette['room-sun']);
+      wallMaterial.color.setHex(palette['room-shadow']);
+    };
+    applyLights();
 
     const layout = (entry: Entry): void => {
-      if (entry.root) entry.part.layout(context(), pageRect(entry.part.slot));
+      if (entry.root) entry.part.layout(room, pageRect(entry.part.slot));
+    };
+
+    const collectTargets = (): void => {
+      targets = entries.flatMap((entry) => (entry.root ? [...(entry.part.targets?.() ?? [])] : []));
     };
 
     const buildNear = (): void => {
@@ -169,12 +218,23 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         if (!isNear(pageRect(entry.part.slot), scrollY, view.height, BUILD_MARGIN)) continue;
         entry.building = true;
         void Promise.resolve()
-          .then(() => entry.part.build(context()))
-          .then((root) => {
-            entry.root = root;
-            page.add(root);
+          .then(() => entry.part.build(room))
+          .then(async (root) => {
+            if (disposed) {
+              disposeObject3D(root);
+              return;
+            }
             entry.part.recolor?.(palette);
+            entry.root = root;
             layout(entry);
+            // Compile the part's shaders without blocking the page, before its first frame.
+            await renderer.compileAsync(root, camera, scene).catch(() => undefined);
+            if (disposed) {
+              disposeObject3D(root);
+              return;
+            }
+            page.add(root);
+            collectTargets();
             if (!readySignalled) {
               readySignalled = true;
               setup.ready();
@@ -202,27 +262,12 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       sun.shadow.camera.updateProjectionMatrix();
     };
 
-    const onScroll = (): void => {
-      scrollY = window.scrollY;
-      buildNear();
-      request();
-    };
-    const onPointer = (event: PointerEvent): void => {
-      pointer.tx = (event.clientX / view.width) * 2 - 1;
-      pointer.ty = (event.clientY / view.height) * 2 - 1;
-      pointerPx.set(event.clientX, event.clientY);
-      pointerMoved = true;
-      if (setup.mode === 'animated') request();
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('pointermove', onPointer, { passive: true });
-
-    // Clicks on room objects that have an HTML twin (journey dots, project cards).
+    // Clicks and hover on room objects that have an HTML twin (journey dots, project cards).
     const raycaster = new Raycaster();
     const ndc = new Vector2();
     const targetAt = (clientX: number, clientY: number): RoomTarget | null => {
-      const targets = entries.flatMap((entry) => (entry.root ? (entry.part.targets?.() ?? []) : []));
       if (targets.length === 0) return null;
+      scene.updateMatrixWorld();
       ndc.set((clientX / view.width) * 2 - 1, -(clientY / view.height) * 2 + 1);
       raycaster.setFromCamera(ndc, camera);
       const hit = raycaster.intersectObjects(
@@ -239,16 +284,51 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         }) ?? null
       );
     };
-    const onClick = (event: MouseEvent): void => {
-      if (event.target instanceof Element && event.target.closest(INTERACTIVE)) return;
-      targetAt(event.clientX, event.clientY)?.onClick?.();
+    const updateHover = (): void => {
+      document.documentElement.classList.toggle('room-hover', targetAt(pointerPx.x, pointerPx.y) !== null);
     };
+
+    const onScroll = (): void => {
+      scrollY = window.scrollY;
+      buildNear();
+      if (pointerPx.x >= 0) hoverPending = true;
+      request();
+    };
+    const onPointer = (event: PointerEvent): void => {
+      pointer.tx = (event.clientX / view.width) * 2 - 1;
+      pointer.ty = (event.clientY / view.height) * 2 - 1;
+      // Hover only means something for a mouse; touch taps would leave the cursor class stuck.
+      if (event.pointerType !== 'mouse') return;
+      pointerPx.set(event.clientX, event.clientY);
+      if (setup.mode === 'animated') {
+        hoverPending = true;
+        request();
+      } else {
+        updateHover();
+      }
+    };
+    let press: { x: number; y: number } | null = null;
+    const onPointerDown = (event: PointerEvent): void => {
+      press = { x: event.clientX, y: event.clientY };
+    };
+    const onClick = (event: MouseEvent): void => {
+      if (event.defaultPrevented) return;
+      if (event.target instanceof Element && event.target.closest(INTERACTIVE)) return;
+      // A drag, or a click that ends a text selection, is not meant for the room.
+      if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > CLICK_SLOP) return;
+      if (!(window.getSelection()?.isCollapsed ?? true)) return;
+      targetAt(event.clientX, event.clientY)?.onClick?.(event);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
     window.addEventListener('click', onClick);
 
     // Theme changes: re-read the token colors (explicit choice or OS setting).
     const recolor = (): void => {
       palette = readPalette();
-      wallMaterial.color.setHex(palette['room-shadow']);
+      room = makeContext();
+      applyLights();
       for (const entry of entries) if (entry.root) entry.part.recolor?.(palette);
       request();
     };
@@ -256,7 +336,6 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
     darkQuery.addEventListener('change', recolor);
-    wallMaterial.color.setHex(palette['room-shadow']);
 
     // Layout changes (fonts, images, text wrapping): re-anchor every part.
     const relayout = new ResizeObserver(() => {
@@ -271,25 +350,24 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     return {
       scene,
       camera,
-      update(frame) {
-        const room = context();
+      update(input) {
         page.position.y = pageOffset(scrollY, view.height, wpp);
         if (setup.mode === 'animated') {
-          pointer.x = damp(pointer.x, pointer.tx, 4, frame.dt);
-          pointer.y = damp(pointer.y, pointer.ty, 4, frame.dt);
+          pointer.x = damp(pointer.x, pointer.tx, 4, input.dt);
+          pointer.y = damp(pointer.y, pointer.ty, 4, input.dt);
         }
         camera.position.set(pointer.x * PARALLAX.x, -pointer.y * PARALLAX.y, CAMERA.distance);
         camera.lookAt(0, 0, 0);
         animating = Math.abs(pointer.tx - pointer.x) > 0.002 || Math.abs(pointer.ty - pointer.y) > 0.002;
+        Object.assign(frame, { dt: input.dt, elapsed: input.elapsed, room, scrollY });
+        frame.pointer.x = pointer.x;
+        frame.pointer.y = pointer.y;
         for (const entry of entries) {
-          if (entry.root && entry.part.update?.({ ...frame, room, scrollY })) animating = true;
+          if (entry.root && entry.part.update?.(frame)) animating = true;
         }
-        if (pointerMoved) {
-          pointerMoved = false;
-          document.documentElement.classList.toggle(
-            'room-hover',
-            targetAt(pointerPx.x, pointerPx.y) !== null,
-          );
+        if (hoverPending) {
+          hoverPending = false;
+          updateHover();
         }
       },
       needsRender() {
@@ -302,14 +380,17 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         wpp = worldPerPixel(height, CAMERA.distance, CAMERA.fov);
+        room = makeContext();
         fitWall();
         for (const entry of entries) layout(entry);
         buildNear();
         dirty = true;
       },
       dispose() {
+        disposed = true;
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('pointermove', onPointer);
+        window.removeEventListener('pointerdown', onPointerDown);
         window.removeEventListener('click', onClick);
         themeObserver.disconnect();
         darkQuery.removeEventListener('change', recolor);
@@ -323,12 +404,18 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
 
 /**
  * Mount the room on its fixed stage (RoomStage.astro). Returns null when the 3D stays off; every
- * part's HTML fallback then simply stays visible.
+ * part's HTML fallback then simply stays visible. Probes the device once.
  */
 export function mountRoom(stage: HTMLElement, parts: readonly RoomPart[]): SceneHandle | null {
   const canvas = stage.querySelector('canvas');
   if (!canvas || parts.length === 0) return null;
-  return mountScene({ stage, canvas, create: createRoom(parts, realtimeShadows(detectCapabilities())) });
+  const caps = detectCapabilities();
+  return mountScene({
+    stage,
+    canvas,
+    decision: decide3D(caps),
+    create: createRoom(parts, realtimeShadows(caps)),
+  });
 }
 
 export type { PageRect } from './layout';

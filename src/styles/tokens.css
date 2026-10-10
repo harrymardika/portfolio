@@ -17,8 +17,11 @@
   --room-mid: #d5e9ea;
   --room-bottom: #dfe4f4;
   --room-glow: #ffffff;
-  /* Shadows cast by 3D objects onto the room (Phase 13 "one room"). */
+  /* The room's 3D lighting (ADR 0019): shadows on the walls, sky and ground light, and the lamp. */
   --room-shadow: #0f2a33;
+  --room-sky: #ffffff;
+  --room-ground: #8899aa;
+  --room-sun: #fff4e0;
 
   --forest: #173d32;
   --forest-ink: #0e2b35;
@@ -46,6 +49,9 @@
     --room-bottom: #172a66;
     --room-glow: #1a5645;
     --room-shadow: #020b10;
+    --room-sky: #d0dbef;
+    --room-ground: #142233;
+    --room-sun: #fff0d8;
     --forest-ink: #f1f6f4;
     --amber-deep: #f7c95f;
     --sage: #0f2a31;
@@ -63,6 +69,9 @@
   --room-bottom: #172a66;
   --room-glow: #1a5645;
   --room-shadow: #020b10;
+  --room-sky: #d0dbef;
+  --room-ground: #142233;
+  --room-sun: #fff0d8;
   --forest-ink: #f1f6f4;
   --amber-deep: #f7c95f;
   --sage: #0f2a31;

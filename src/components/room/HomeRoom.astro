@@ -1,0 +1,36 @@
+---
+/**
+ * The home page's room (ADR 0019): the fixed stage plus the script that mounts it with the home
+ * parts. Decides before downloading three.js, so devices that should not run 3D never fetch it, and
+ * waits for the load event so the 3D never competes with the LCP image.
+ */
+import RoomStage from './RoomStage.astro';
+---
+
+<RoomStage />
+
+<script>
+  import { decide3D, detectCapabilities } from '@/scenes/core/capabilities';
+
+  import type { RoomPart } from '@/scenes/room';
+
+  async function start(): Promise<void> {
+    const stage = document.querySelector<HTMLElement>('[data-room-stage]');
+    if (!stage) return;
+    if (decide3D(detectCapabilities()).mode === 'off') {
+      stage.dataset['scene'] = 'off';
+      return;
+    }
+    const [{ mountRoom }, { createHeroPart }] = await Promise.all([
+      import('@/scenes/room'),
+      import('@/scenes/room/parts/hero'),
+    ]);
+    const parts = [createHeroPart(document.querySelector<HTMLElement>('[data-room-slot="hero"]'))].filter(
+      (part): part is RoomPart => part !== null,
+    );
+    mountRoom(stage, parts);
+  }
+
+  if (document.readyState === 'complete') void start();
+  else window.addEventListener('load', () => void start(), { once: true });
+</script>

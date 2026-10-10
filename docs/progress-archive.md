@@ -2,6 +2,14 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-10 · Claude Code (Opus) · Rencana baru Fase 13–14 (tampilan Giok → Nila, "satu ruang" 3D)
+- **Permintaan pemilik:** tampilan lebih baik dan tidak terasa buatan AI, tidak datar, foto tetap ada, lebih banyak 3D, dan **fitur lama tidak boleh hilang**.
+- **Diagnosis** (dari situs yang berjalan): kata terakhir judul diwarnai amber, badge pil dan label mono huruf kapital, tiga angka besar tanpa konteks, bola dan cincin dekoratif di sekitar foto, semua isi berupa kartu identik, warna rata tanpa cahaya; rencana Fase 13 lama (peta embedding, rasi bintang, globe titik) memakai motif yang paling umum di portfolio AI.
+- **Pratinjau yang dibandingkan pemilik:** hero Aksara Jawa vs foto cetak, lalu gabungan keduanya; jalur sortir proyek (dari Reclaimyt); "full 3D" dua arti (dunia 3D penuh vs satu kanvas di belakang isi HTML; yang kedua dipilih karena tetap cepat, terbaca Google, dan sesuai ADR 0007); warna Giok, Nila, Studio, Sogan, dan tiga campuran giok-nila.
+- **Keputusan pemilik:** D18 (Giok → Nila, terang = versi muda), D19 (H1 = nama), D20 (daftar indeks di Projects), D21 ("satu ruang"; menggantikan D17).
+- **Dikerjakan:** Fase 13 ditulis ulang (T13.0–T13.7) dan Fase 14 baru (T14.1–T14.7) di file ini; `docs/11-roadmap.md` §H ditulis ulang dan §I baru (daftar fitur yang wajib tetap ada, dijaga e2e); README. Belum ada kode; ADR 0018/0019 ditulis di T13.1/T13.3.
+- **Langkah berikutnya:** T13.0 (`tests/e2e/feature-inventory.spec.ts` dan angka Lighthouse pembanding), lalu T13.1.
+
 ### 2026-10-09 · Claude Code (Opus) · T12.5 penutupan Fase 12 (ringkasan fase)
 - **Yang dibangun (Fase 12, ADR 0017):** formulir "Tinggalkan pesan" `/messages/` (EN/ID, tanpa JS tetap jalan, tanpa email penulis, persetujuan tayang wajib, honeypot, batas 3/hari); antrean privat di layanan stats (`messages.sqlite` terpisah tanpa backup, *rollback journal* + `secure_delete`, pending 90 hari, approved tanpa PR 30 hari, tanpa IP); halaman tinjau privat ber-token `/messages/review/`; workflow `kind-words.yml`: terjemahan AI → satu PR antrean `kind-words/queue` → hapus dari server, dan notifikasi harian berupa issue berisi jumlah saja. Satu aturan kontak (`src/lib/security/contact.ts`) untuk formulir, terjemahan, tes konten, dan chatbot.
 - **Keputusan pemilik:** formulir di halaman sendiri; tinjau di halaman privat; PR otomatis; tanpa email; notifikasi lewat issue GitHub; seluruh fase dikerjakan selagi pemilik pergi (token dipasang di server dan GitHub atas izin itu).

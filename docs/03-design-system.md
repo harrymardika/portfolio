@@ -82,7 +82,7 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 | Komponen | Spesifikasi |
 |---|---|
 | **Hero** (`src/components/hero/`) | Latar: ruangan (§2). Kiri: baris "peran di kota" (`hero.roleIn`), H1 = nama pemilik (`text-name`, D19), `headline` sebagai kalimat Young Serif tanpa warna aksen, tagline, tombol utama (amber) + outline, lalu 3 angka dari `profile.yaml → stats` sebagai daftar bergaris (angka `amber-deep` + konteks). Kanan: kartu foto. Tombol: "Download CV" (amber, solid) + "Portfolio PDF" (outline), ikon unduh, atribut `download` dan `data-download` (untuk statistik T5.3); URL dari `downloadPath()`. |
-| **Kartu foto** | `PhotoCard.astro` = kartu HTML statis (gambar LCP, fallback tanpa JS/WebGL) sekaligus panggung 3D. `src/scenes/photo-card/` = versi 3D: tekstur kanvas (foto, nama Young Serif, peran, chip lokasi `amber`), lapisan deteksi terpisah (4 sudut + label `hero.detectionLabel`) yang "mengunci" tiap 4 s lewat skala/opacity tanpa menggambar ulang, miring mengikuti pointer (maks ±0.45 rad), dekorasi bola amber/putih/`mint` + cincin orbit. Posisi kotak wajah: `FACE_BOX` di `config.ts` (dipakai HTML dan 3D). Kanvas muncul (cross-fade) hanya setelah tekstur siap (`data-scene-ready`). |
+| **Cetakan hero** (`HeroPrints.astro`, `src/scenes/room/parts/hero.ts`) | Foto cetak (kertas putih, tepi bawah lebih lebar) di depan lembar aksara Jawa bergaris (`content/media/aksara-sheet.png`, dibuat `scripts/generate-aksara.ts`), masing-masing sedikit diputar. Kotak deteksi: wajah (`FACE_BOX`) berlabel nama; lima suku kata berlabel kelas (`ha`, `ra`, …, mono) dan transliterasi. Versi HTML = gambar LCP dan fallback lengkap; versi 3D (ruang, ADR 0019) mengambil posisi dari HTML (`hero-config.ts`), melayang dengan bayangan, dan memutar urutan deteksi sekali ("Play again" untuk mengulang). |
 | **Journey** (`src/components/journey/`, `src/scenes/journey-path/`) | Latar: ruangan (§2). Kiri: H2 (tanpa warna aksen) + paragraf dari `profile.yaml → journey`. Kanan: panggung tinggi tetap (480/560 px) berisi tabung `forest`, titik `amber` bercincin `forest`, bola amber yang mengikuti scroll (`sectionProgress`; selalu penuh di dasar halaman). Label = item `<ol>` yang sama dengan fallback, diposisikan di kanan titik lewat `--x/--y`; label belum tercapai bergaya putus-putus (bukan opacity, demi kontras). Klik label membuka popover detail (Popover API, berfungsi tanpa JS). |
 | **Fallback Journey** | `<ol>` yang sama ditampilkan sebagai timeline vertikal (garis + titik) tanpa JS/WebGL atau saat 3D `off`. Popover detail tetap berfungsi. |
 | **Button** | Varian `primary` (amber di forest / forest di terang), `outline`. Tinggi min 44px. Fokus: outline 2px `currentColor`, offset 2px. |
@@ -93,11 +93,11 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 
 ## 6. Aturan 3D
 
-1. **Progressive enhancement.** HTML statis yang setara selalu ada. 3D dimuat dengan `client:visible`/dynamic import setelah LCP.
+1. **Progressive enhancement.** HTML statis yang setara selalu ada. 3D dimuat dengan dynamic import setelah LCP (`load`). Beranda memakai "satu ruang" (ADR 0019): satu kanvas tetap, benda 3D ditambatkan ke HTML-nya.
 2. **Matikan otomatis** (kartu statis) jika: tidak ada WebGL, WebGL berjalan di CPU (SwiftShader, llvmpipe, WARP: tanpa GPU, satu frame saja memblokir halaman), `navigator.hardwareConcurrency <= 2`, atau `saveData`. **Satu frame diam** (`still`) jika `prefers-reduced-motion: reduce`. Untuk debug: `localStorage.setItem('3d:mode', 'animated' | 'still' | 'off')`; tes memakai `localStorage['3d:gpu'] = '1'` agar renderer CPU dianggap GPU.
 3. **Anggaran:** JS 3D ≤ 180 KB gzip per halaman; ≤ 60 fps; pause saat di luar layar; DPR maksimal 2.
    Scene di bawah layar pertama (journey) baru dibuat saat pengunjung menggulir mendekatinya; shader dikompilasi lebih dulu dengan `renderer.compileAsync` agar frame pertama tidak menjadi long task (T7.2).
-4. **Warna** dibaca dari token CSS saat mount (`getComputedStyle`), bukan ditulis di kode scene.
+4. **Warna** dibaca dari token CSS saat mount (`getComputedStyle`), termasuk cahaya ruang (`--room-sky/-ground/-sun/-shadow`), dan dibaca ulang saat tema berganti; bukan ditulis di kode scene.
 5. **Interaksi tidak wajib.** Semua informasi juga ada dalam teks; 3D tidak boleh menjadi satu-satunya cara mengakses konten.
 6. **Label HTML** di atas kanvas (milestone) harus tetap berupa teks yang bisa dibaca screen reader, atau duplikat dari fallback.
 
