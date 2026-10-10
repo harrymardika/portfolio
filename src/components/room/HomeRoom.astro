@@ -2,7 +2,8 @@
 /**
  * The home page's room (ADR 0019): the fixed stage plus the script that mounts it with the home
  * parts. Decides before downloading three.js, so devices that should not run 3D never fetch it, and
- * waits for the load event so the 3D never competes with the LCP image.
+ * waits for the load event so the 3D never competes with the LCP image. Marks the root with
+ * `data-room-3d` while the room runs, so bands that only hold 3D (global.css) take space.
  */
 import RoomStage from './RoomStage.astro';
 ---
@@ -21,10 +22,23 @@ import RoomStage from './RoomStage.astro';
       stage.dataset['scene'] = 'off';
       return;
     }
-    const [{ mountRoom }, { createHeroPart }, { createJourneyPart }] = await Promise.all([
+    // Reserve the 3D-only bands now: they sit far below the first screen, and scroll anchoring keeps
+    // the view steady if the page was already scrolled.
+    document.documentElement.setAttribute('data-room-3d', '');
+    const [
+      { mountRoom },
+      { createHeroPart },
+      { createJourneyPart },
+      { createSortingPart },
+      { createNotesPart },
+      { createLaptopPart },
+    ] = await Promise.all([
       import('@/scenes/room'),
       import('@/scenes/room/parts/hero'),
       import('@/scenes/room/parts/journey'),
+      import('@/scenes/room/parts/sorting'),
+      import('@/scenes/room/parts/notes'),
+      import('@/scenes/room/parts/laptop'),
     ]);
     const find = (selector: string) => document.querySelector<HTMLElement>(selector);
     const parts = [
@@ -34,10 +48,22 @@ import RoomStage from './RoomStage.astro';
         to: find('#projects'),
         avoid: find('[data-journey-intro]'),
       }),
+      createSortingPart(find('[data-room-slot="sorting"]')),
+      createNotesPart(find('[data-room-slot="notes"]')),
+      createLaptopPart(find('[data-room-slot="laptop"]')),
     ].filter((part): part is RoomPart => part !== null);
-    mountRoom(stage, parts);
+    if (!mountRoom(stage, parts)) document.documentElement.removeAttribute('data-room-3d');
   }
 
-  if (document.readyState === 'complete') void start();
-  else window.addEventListener('load', () => void start(), { once: true });
+  // A chunk that fails to load (flaky network, or a deploy replacing it while the tab is open) must
+  // not leave the 3D-only bands reserved and empty.
+  function run(): void {
+    start().catch((error: unknown) => {
+      document.documentElement.removeAttribute('data-room-3d');
+      console.warn('3D: the room failed to load', error);
+    });
+  }
+
+  if (document.readyState === 'complete') run();
+  else window.addEventListener('load', run, { once: true });
 </script>

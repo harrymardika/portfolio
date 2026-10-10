@@ -16,6 +16,7 @@ import {
   Scene,
   ShadowMaterial,
   Vector2,
+  Vector3,
   type Object3D,
   type WebGLRenderer,
 } from 'three';
@@ -50,6 +51,8 @@ export interface RoomContext {
   readonly renderer: WebGLRenderer;
   /** Ask for another frame (still mode, async textures). */
   readonly invalidate: () => void;
+  /** Viewport position (CSS px) of a world point, as currently drawn. */
+  readonly toScreen: (world: Vector3) => { x: number; y: number };
 }
 
 /**
@@ -64,8 +67,13 @@ export interface RoomFrame extends FrameContext {
 
 export interface RoomTarget {
   readonly object: Object3D;
-  /** What a click on the object does; it must have an HTML equivalent (ADR 0019). */
-  readonly onClick?: (event: MouseEvent) => void;
+  /**
+   * What a click on the object does; it must have an HTML equivalent (ADR 0019). `pointerType` is
+   * that of the press ('mouse', 'touch', 'pen'), so a tap can preview before it navigates.
+   */
+  readonly onClick?: (event: MouseEvent, pointerType: string) => void;
+  /** The mouse moved onto (true) or off (false) the object. */
+  readonly onHover?: (hovered: boolean) => void;
 }
 
 /**
@@ -85,7 +93,10 @@ export interface RoomPart {
   shown?(): void;
   /** The theme changed: apply the new token colors. */
   recolor?(palette: ScenePalette): void;
-  /** Objects the pointer can click. Read again after every build. */
+  /**
+   * Objects the pointer can click. Read again after every build, layout, and recolor, so a part may
+   * replace its objects in either.
+   */
   targets?(): readonly RoomTarget[];
   /**
    * Free what `disposeObject3D` cannot reach (listeners, timers, DOM state). Called on destroy for
@@ -173,6 +184,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     let readySignalled = false;
     let disposed = false;
     let targets: RoomTarget[] = [];
+    let hovered: RoomTarget | null = null;
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
     const pointerPx = new Vector2(-1, -1);
     const entries: Entry[] = parts.map((part) => ({ part, root: null, building: false }));
@@ -180,6 +192,12 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     const request = (): void => {
       dirty = true;
       setup.invalidate();
+    };
+    const projected = new Vector3();
+    const toScreen = (world: Vector3): { x: number; y: number } => {
+      scene.updateMatrixWorld();
+      projected.copy(world).project(camera);
+      return { x: ((projected.x + 1) / 2) * view.width, y: ((1 - projected.y) / 2) * view.height };
     };
     const makeContext = (): RoomContext => ({
       wpp,
@@ -190,6 +208,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       shadows,
       renderer,
       invalidate: request,
+      toScreen,
     });
     // Rebuilt only when its inputs change (resize, theme), not every frame.
     let room = makeContext();
@@ -209,6 +228,10 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
 
     const collectTargets = (): void => {
       targets = entries.flatMap((entry) => (entry.root ? [...(entry.part.targets?.() ?? [])] : []));
+      if (hovered && !targets.includes(hovered)) {
+        hovered.onHover?.(false);
+        hovered = null;
+      }
     };
 
     const buildNear = (): void => {
@@ -287,7 +310,12 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       );
     };
     const updateHover = (): void => {
-      document.documentElement.classList.toggle('room-hover', targetAt(pointerPx.x, pointerPx.y) !== null);
+      const next = targetAt(pointerPx.x, pointerPx.y);
+      document.documentElement.classList.toggle('room-hover', next !== null);
+      if (next === hovered) return;
+      hovered?.onHover?.(false);
+      next?.onHover?.(true);
+      hovered = next;
     };
 
     const onScroll = (): void => {
@@ -309,9 +337,9 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         updateHover();
       }
     };
-    let press: { x: number; y: number } | null = null;
+    let press: { x: number; y: number; type: string } | null = null;
     const onPointerDown = (event: PointerEvent): void => {
-      press = { x: event.clientX, y: event.clientY };
+      press = { x: event.clientX, y: event.clientY, type: event.pointerType };
     };
     const onClick = (event: MouseEvent): void => {
       if (event.defaultPrevented) return;
@@ -319,7 +347,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       // A drag, or a click that ends a text selection, is not meant for the room.
       if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > CLICK_SLOP) return;
       if (!(window.getSelection()?.isCollapsed ?? true)) return;
-      targetAt(event.clientX, event.clientY)?.onClick?.(event);
+      targetAt(event.clientX, event.clientY)?.onClick?.(event, press?.type ?? 'mouse');
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('pointermove', onPointer, { passive: true });
@@ -332,6 +360,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       room = makeContext();
       applyLights();
       for (const entry of entries) if (entry.root) entry.part.recolor?.(palette);
+      collectTargets();
       request();
     };
     const themeObserver = new MutationObserver(recolor);
@@ -342,6 +371,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     // Layout changes (fonts, images, text wrapping): re-anchor every part.
     const relayout = new ResizeObserver(() => {
       for (const entry of entries) layout(entry);
+      collectTargets();
       buildNear();
       request();
     });
@@ -364,9 +394,13 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         Object.assign(frame, { dt: input.dt, elapsed: input.elapsed, room, scrollY });
         frame.pointer.x = pointer.x;
         frame.pointer.y = pointer.y;
+        let moving = false;
         for (const entry of entries) {
-          if (entry.root && entry.part.update?.(frame)) animating = true;
+          if (entry.root && entry.part.update?.(frame)) moving = true;
         }
+        if (moving) animating = true;
+        // Objects that move by themselves (the sorting line) can slide under or away from a still mouse.
+        if (moving && pointerPx.x >= 0) hoverPending = true;
         if (hoverPending) {
           hoverPending = false;
           updateHover();
@@ -385,6 +419,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         room = makeContext();
         fitWall();
         for (const entry of entries) layout(entry);
+        collectTargets();
         buildNear();
         dirty = true;
       },

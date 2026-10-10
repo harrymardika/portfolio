@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.6 (konveyor, Kind words, laptop)
+**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.7 (penutupan Fase 13, rilis 1.5.0)
 
 ## Ringkasan
 
@@ -205,7 +205,7 @@ Aturan untuk semua tugas Fase 13 dan 14:
   - Kriteria: foto dan lembar aksara bertuliskan "Harry Mardika" melayang dengan bayangan (bayangan foto jatuh ke lembar); urutan deteksi sekali saat halaman dibuka (wajah → `person` → nama; lalu kotak ha, ra, ma, da, ka → transliterasi), tombol "putar ulang"; gambar lembar dan koordinat kotaknya dibuat sekali oleh `scripts/generate-aksara.ts` dan hasilnya di-commit ke `content/media/` (font Noto Sans Javanese hanya dipakai skrip itu, alasan dependency ditulis di commit), sehingga browser tidak memuat font aksara; fallback HTML = foto + gambar lembar dengan bayangan CSS, elemen LCP adalah foto atau lembar aksara (keduanya `eager` + `fetchpriority=high`; di desktop lembar yang terbesar, diubah atas persetujuan pemilik 2026-10-10); semua label dan keterangan dari kamus UI EN/ID; tombol Download CV dan Portfolio PDF tetap (beserta statistik unduhan); scene `photo-card` lama dihapus setelah diganti; LCP < 2,5 s di HP; pratinjau ke pemilik.
 - [x] **T13.5** Beranda, ruang 2: benang journey
   - Kriteria: benang dari bawah lembar aksara melewati titik-titik `journey.yaml` (4–6 item) sampai ke lantai proyek; bola mengikuti scroll; titik yang sudah dilewati menyala dan daftar HTML ikut menandainya; klik titik 3D membuka popover detail yang sama dengan daftar (popover tetap jalan tanpa JS); scene `journey-path` lama dihapus setelah diganti; tes journey lama tetap lulus atau disesuaikan setara.
-- [ ] **T13.6** Beranda, ruang 3–5: konveyor, Kind words, laptop homelab
+- [x] **T13.6** Beranda, ruang 3–5: konveyor, Kind words, laptop homelab
   - Kriteria: konveyor membawa 3 proyek pilihan di depan dan proyek lain dari data, wadah dari `profile.projects.categories`; hover/ketuk menampilkan judul, klik membuka studi kasus; Kind words: pesan dari `messages.yaml` sebagai kertas yang ditempel (teks tetap HTML) + tombol "Leave a message"; Kontak: laptop homelab yang layarnya menampilkan beranda; tanpa 3D semuanya tetap HTML; pratinjau ke pemilik.
 
 ---
@@ -282,6 +282,13 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-10 · Claude Code (Opus) · T13.6 konveyor, Kind words, laptop homelab
+- **Dikerjakan:** tiga bagian ruang baru. `parts/sorting.ts` + `sorting-plan.ts` (linimasa murni): pita di antara judul Proyek pilihan dan barisnya; kartu = 3 proyek pilihan lalu studi kasus lain yang punya bidang (maks. 8, dipilih `sortingLine()` dari `content/`), wadah = bidang `profile.projects.categories` yang menerima kartu; kamera mendeteksi kartu (kotak + label bidang), pendorong memasukkannya ke wadah; hover/ketuk pertama = judul, klik/ketuk kedua = studi kasus; hanya bergerak selama terlihat; reduced motion = satu frame dengan kartu pertama terdeteksi. `parts/notes.ts`: kertas `surface` tanpa pencahayaan tepat di belakang setiap pesan (kontras teks sama dengan kartu HTML), selotip amber, bayangan lembut; kartu HTML melepas latar dan garisnya saat 3D tergambar. `parts/laptop.ts`: laptop homelab di samping (desktop) atau di bawah (HP) Kontak, layar digambar canvas (bilah alamat dari `Astro.site` + sketsa beranda, pilihan pemilik), keterangan baru `contact.homelab` (EN/ID). Inti ruang: `RoomTarget.onHover`, `onClick(event, pointerType)`, `RoomContext.toScreen`; pita khusus 3D (`data-room-band`) hanya memakan ruang saat `html[data-room-3d]`. Font label dipindah ke `paper.ts`.
+- **Tes:** `home-room.spec.ts` (tanpa WebGL/GPU/JS: pita tidak ada, isi tetap HTML; dengan 3D: kartu terdeteksi = salah satu proyek pilihan dan klik membuka studi kasusnya, ketuk dua kali di HP, kertas dan laptop tergambar, axe terang/gelap, konveyor berjalan tanpa error, label laptop ID); unit `room-sorting.test.ts`, `sortingLine` di `categories.test.ts`. JS 3D beranda ±152 KB gzip (batas 180).
+- **Review (subagent `reviewer`):** blocker diperbaiki: setelah tema diganti atau lebar berubah, kartu lama yang sudah dibuang masih bisa diklik di titik layar yang tetap (membuka studi kasus dari mana saja); kini inti membaca ulang `targets()` setelah layout/resize/recolor (+ tes e2e yang gagal tanpa perbaikan). Juga: pita dicabut bila chunk 3D gagal dimuat dan disembunyikan sampai bagiannya tergambar; keterangan laptop berlatar `surface` (bayangan laptop menurunkan kontrasnya ke 3,45:1); hover diperiksa ulang saat kartu bergerak; kebocoran tekstur `alphaMap`; label wadah tidak lagi terpotong dindingnya.
+- **Screenshot** desktop/HP × terang/gelap untuk pemilik: lihat laporan akhir sesi.
+- **Langkah berikutnya:** T13.7.
 
 ### 2026-10-10 · Claude Code (Opus) · T13.5 selesai: verifikasi, perbaikan review, dokumen
 - **Dikerjakan:** perbaikan review T13.4 yang belum diverifikasi kini lulus `bun run verify` (satu galat tipe: variabel `paper` tertimpa di `hero.ts`); `bun.lock` mencatat font aksara `5.3.0` persis. Di HP benang journey menembus judul "From student to founder." dan keluar layar saat berayun: kini memutar di sisi judul yang lebih lapang (`detour`, teks diukur dari baris aslinya lewat `Range`) dan ayunan berhenti 12 px dari tepi kiri. Warna bola dan bayangan lembutnya ikut tema. ADR 0019 diberi catatan bertanggal (ambang bayangan ≥ 6 core dan bukan layar sentuh; kamera tanpa paralaks). Dokumen basi diperbarui: `docs/01` (isi beranda), `docs/03` (hero), `docs/04` (`role`, file `aksara-sheet.*` dibuat skrip), `docs/05`, README; kriteria T13.4 soal LCP diubah atas persetujuan pemilik (foto **atau** lembar aksara).

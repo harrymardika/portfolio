@@ -134,7 +134,8 @@ Aturan:
 │   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
 │   │   │                        #   palette, pointer, types (kontrak SceneModule)
 │   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom),
-│   │   │                        #   paper (label, kotak deteksi, bayangan lembut), parts/hero (+ hero-config), parts/journey
+│   │   │                        #   paper (label, kotak deteksi, bayangan lembut, font label), parts/hero (+ hero-config),
+│   │   │                        #   parts/journey, parts/sorting (+ sorting-plan, murni), parts/notes, parts/laptop
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   │                            #   · PrintLayout (halaman cetak PDF)
 │   ├── pages/
@@ -239,7 +240,8 @@ interface RoomPart {
   layout(room, rect: PageRect): void;        // posisi dari rect slot (koordinat dokumen)
   update?(frame): boolean;                   // true selama masih bergerak
   recolor?(palette): void;                   // tema berganti
-  targets?(): RoomTarget[];                  // objek yang bisa diklik (wajib punya padanan HTML)
+  shown?(): void;                            // root sudah di scene; tergambar mulai frame berikutnya
+  targets?(): RoomTarget[];                  // objek yang bisa diklik/di-hover (wajib punya padanan HTML)
   dispose?(): void;
 }
 ```
@@ -248,8 +250,11 @@ interface RoomPart {
 - **Dinding bayangan**: `ShadowMaterial` di z = −`WALL_DEPTH`, warnanya `--room-shadow`; hanya digambar bila ada peta bayangan. Satu `DirectionalLight` tetap dan `HemisphereLight`, warnanya dari `--room-sun/-sky/-ground`. Peta bayangan hanya bila `realtimeShadows` (≥ 6 core dan bukan layar sentuh); tanpa itu bagian menggambar bayangan lembut (`paper.ts`).
 - **Stage**: `RoomStage.astro` setinggi `100lvh` (toolbar HP tidak mengubah skala) dan tidak boleh berada di dalam elemen ber-`transform`/`filter`/`contain`/`isolation`.
 - **Bagian**: dibangun saat slotnya dekat, lalu shader-nya dikompilasi async (`compileAsync`) sebelum ditambahkan; bagian yang selesai setelah `destroy()` dibuang. `layout` dipanggil saat resize dan saat ukuran `body` berubah.
-- **Render sesuai kebutuhan**: `needsRender()` true bila scroll, pointer (paralaks kecil), tema, atau `update()` sebuah bagian berubah.
-- **Klik**: klik di luar elemen interaktif HTML di-raycast ke `targets()`, kecuali bila pointer bergeser > 5 px atau ada teks terpilih; `html.room-hover` memberi kursor tangan (mouse saja).
+- **Render sesuai kebutuhan**: `needsRender()` true bila scroll, pointer, tema, atau `update()` sebuah bagian berubah. Kamera tidak pernah bergerak (benda tetap tepat di atas kembaran HTML-nya); bagian yang ingin terasa hidup memiringkan bendanya sendiri. Bagian yang beranimasi terus (konveyor) hanya maju selama slotnya terlihat.
+- **Klik dan hover**: klik di luar elemen interaktif HTML di-raycast ke `targets()`, kecuali bila pointer bergeser > 5 px atau ada teks terpilih; `onClick(event, pointerType)` menerima jenis pointer saat ditekan (konveyor: ketuk pertama di layar sentuh menampilkan judul, ketuk kedua membuka studi kasus). `onHover(true/false)` saat mouse masuk/keluar objek; `html.room-hover` memberi kursor tangan (mouse saja). `RoomContext.toScreen` memberi posisi layar sebuah titik dunia.
+- **Pita khusus 3D** (`data-room-band`: konveyor di Proyek pilihan, laptop di Kontak): `display: none` kecuali `html[data-room-3d]`, yang dipasang `HomeRoom.astro` begitu 3D diputuskan jalan (dan dicabut bila `mountRoom` gagal atau chunk 3D gagal dimuat). Sebelum bagiannya tergambar (`data-room-ready`), pita tetap memakan ruang tetapi tidak terlihat. Tanpa 3D atau JS, pita itu tidak memakan ruang.
+- **Target diperbarui**: `targets()` dibaca ulang setelah build, layout, resize, dan recolor, karena bagian boleh mengganti objeknya (konveyor membangun ulang kartu untuk lebar dan tema baru). Hover diperiksa ulang setiap frame selama ada bagian yang bergerak sendiri.
+- **Bagian beranda** (urutan halaman): `hero` (cetakan foto + aksara), `journey` (benang; memutar di sisi judul bila judul menghalangi, `detour`), `sorting` (konveyor: kartu dan wadah dari atribut data `SelectedProjects.astro`, yang memilihnya dengan `sortingLine()` dari `content/`; linimasa murni di `sorting-plan.ts`), `notes` (kertas Kind words tepat di belakang setiap pesan HTML, warna `--surface` tanpa pencahayaan agar kontras teks sama; kartu HTML melepas latar dan garisnya saat `data-room-ready`), `laptop` (layar digambar dengan canvas: bilah alamat dari `Astro.site` + sketsa beranda).
 - **Tema**: `MutationObserver` pada `data-theme` dan `prefers-color-scheme` membaca ulang palet dan memanggil `recolor`.
 
 ## 7. i18n

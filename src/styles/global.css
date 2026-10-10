@@ -110,6 +110,23 @@
     cursor: pointer;
   }
 
+  /*
+   * Bands that only hold 3D (sorting line, homelab laptop, T13.6) take space only when the room
+   * runs (HomeRoom sets data-room-3d); without 3D or JavaScript they do not exist for the layout.
+   */
+  [data-room-band] {
+    display: none;
+  }
+
+  :root[data-room-3d] [data-room-band] {
+    display: block;
+  }
+
+  /* Until its part is drawn (or if it never is), a band keeps its space but shows nothing. */
+  :root[data-room-3d] [data-room-band]:not([data-room-ready]) {
+    visibility: hidden;
+  }
+
   /* Print pages are plain paper. */
   :root[data-print] body {
     background: var(--surface);

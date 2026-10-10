@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { itemCategoryIds, matchesSearch, normalizeSearch, usefulCategories } from '@/lib/content';
+import { itemCategoryIds, matchesSearch, normalizeSearch, sortingLine, usefulCategories } from '@/lib/content';
 import { profileSchema } from '@/lib/content/schemas';
 
 const categories = [
@@ -15,6 +15,33 @@ describe('itemCategoryIds', () => {
     expect(itemCategoryIds(['NEXT.JS'], categories)).toEqual(['web']);
     expect(itemCategoryIds(['Rust'], categories)).toEqual([]);
     expect(itemCategoryIds([], categories)).toEqual([]);
+  });
+});
+
+describe('sortingLine', () => {
+  const projects = [
+    { name: 'a', tags: ['Go'] },
+    { name: 'b', tags: ['Rust'] },
+    { name: 'c', tags: ['YOLO', 'Go'] },
+    { name: 'd', tags: ['Next.js'] },
+  ];
+
+  it('keeps the order, skips projects without a category, and sends each to its first category', () => {
+    const { cards, bins } = sortingLine(projects, categories, 10);
+    expect(cards.map((card) => [card.project.name, card.bin])).toEqual([
+      ['a', 'web'],
+      ['c', 'computer-vision'],
+      ['d', 'web'],
+    ]);
+    // Bins in the categories' order, only those that receive a card.
+    expect(bins.map((bin) => bin.id)).toEqual(['computer-vision', 'web']);
+  });
+
+  it('stops at the limit, and bins follow the cards that made it', () => {
+    const { cards, bins } = sortingLine(projects, categories, 1);
+    expect(cards.map((card) => card.project.name)).toEqual(['a']);
+    expect(bins.map((bin) => bin.id)).toEqual(['web']);
+    expect(sortingLine(projects, categories, 0).cards).toEqual([]);
   });
 });
 

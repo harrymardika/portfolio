@@ -223,6 +223,7 @@ categories:
 
 - Cocok tanpa membedakan huruf besar/kecil dan tanda baca (`Next.js` = `next-js`). Satu proyek boleh masuk beberapa bidang.
 - Bidang dengan kurang dari 2 proyek tidak ditampilkan; urutan tombol = urutan di file.
+- Bidang yang sama menjadi **wadah konveyor** di beranda (T13.6): studi kasus masuk ke wadah bidang pertamanya; studi kasus tanpa bidang tidak ikut di konveyor (tetap ada di daftar). Agar **proyek pilihan** (`featured: true`) tampil lebih dulu di konveyor, beri ia setidaknya satu tag yang masuk bidang.
 - **Link yang sudah terfilter** bisa dikirim ke recruiter, mis. `https://harry.mardika.my.id/projects/?filter=computer-vision` atau dengan pencarian `?filter=nlp-genai&q=bert`. Versi Indonesia: `/id/projects/?filter=…`.
 - Tanpa JavaScript, semua proyek tetap tampil.
 

@@ -28,7 +28,7 @@ const details = (item: Message): LocalizedText[] =>
       {t['messages.title']}
     </h2>
     {items.length > 0 && (
-      <ul class="grid gap-5 md:grid-cols-2">
+      <ul class="notes grid gap-5 md:grid-cols-2" data-room-slot="notes">
         {items.map((item) => (
           <li>
             <figure class="grid h-full content-between gap-5 rounded-xl border border-line bg-surface p-6">
@@ -73,3 +73,11 @@ const details = (item: Message): LocalizedText[] =>
     </p>
   </div>
 </section>
+
+<style>
+  /* With the room drawn, each message sits on its own 3D paper note (T13.6): the card steps aside. */
+  .notes[data-room-ready] figure {
+    border-color: transparent;
+    background-color: transparent;
+  }
+</style>

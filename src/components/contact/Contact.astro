@@ -2,6 +2,8 @@
 /**
  * Contact section (FR-02): the e-mail address large, with a copy button (JavaScript only), then the
  * social profiles as plain links. No phone number. All channels come from profile.yaml socials.
+ * Beside it, a band for the room's homelab laptop (T13.6) with its caption; it only takes space when
+ * the 3D runs.
  */
 import { localize, stripEmphasis, type Profile } from '@/lib/content';
 import { type Locale, UI } from '@/lib/i18n';
@@ -17,50 +19,85 @@ const t = UI[locale];
 const title = stripEmphasis(localize(profile.contact.title, locale));
 const email = profile.socials.find((social) => social.platform === 'email');
 const profiles = profile.socials.filter((social) => social.platform !== 'email');
+const host = Astro.site?.host ?? '';
 ---
 
 <section id="contact" aria-labelledby="contact-title" class="scroll-mt-20">
-  <div class="mx-auto grid max-w-[1120px] gap-6 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
-    <h2 id="contact-title" class="text-h2">
-      {title}
-    </h2>
-    <p class="max-w-[48ch] text-ink-muted">{localize(profile.contact.intro, locale)}</p>
-    {email && (
-      <p class="flex flex-wrap items-center gap-x-5 gap-y-3">
-        <a
-          href={email.url}
-          data-outbound="email"
-          class="font-display text-[clamp(1.35rem,3.2vw,2.25rem)] leading-tight break-all text-forest-ink underline decoration-line decoration-1 underline-offset-[6px] hover:decoration-current"
-        >
-          {profile.email}
-        </a>
-        <button
-          type="button"
-          data-copy={profile.email}
-          data-label-copied={t['contact.copied']}
-          aria-label={t['contact.copyEmail']}
-          class="hidden min-h-11 rounded-full border border-ink/40 px-4 text-sm font-semibold text-ink hover:bg-surface [.js_&]:inline-flex [.js_&]:items-center"
-        >
-          <span data-copy-label>{t['contact.copy']}</span>
-        </button>
-      </p>
-    )}
-    <ul class="flex flex-wrap gap-x-6 gap-y-2 font-semibold">
-      {profiles.map((social) => (
-        <li>
+  <div class="contact-grid mx-auto grid max-w-[1120px] gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
+    <div class="grid min-w-0 content-start gap-6">
+      <h2 id="contact-title" class="text-h2">
+        {title}
+      </h2>
+      <p class="max-w-[48ch] text-ink-muted">{localize(profile.contact.intro, locale)}</p>
+      {email && (
+        <p class="flex flex-wrap items-center gap-x-5 gap-y-3">
           <a
-            href={social.url}
-            rel="me noopener"
-            data-outbound={social.platform}
-            class="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-4 hover:decoration-current"
+            href={email.url}
+            data-outbound="email"
+            class="font-display text-[clamp(1.35rem,3.2vw,2.25rem)] leading-tight break-all text-forest-ink underline decoration-line decoration-1 underline-offset-[6px] hover:decoration-current"
           >
-            {SOCIAL_LABELS[social.platform]}
+            {profile.email}
           </a>
-        </li>
-      ))}
-    </ul>
+          <button
+            type="button"
+            data-copy={profile.email}
+            data-label-copied={t['contact.copied']}
+            aria-label={t['contact.copyEmail']}
+            class="hidden min-h-11 rounded-full border border-ink/40 px-4 text-sm font-semibold text-ink hover:bg-surface [.js_&]:inline-flex [.js_&]:items-center"
+          >
+            <span data-copy-label>{t['contact.copy']}</span>
+          </button>
+        </p>
+      )}
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 font-semibold">
+        {profiles.map((social) => (
+          <li>
+            <a
+              href={social.url}
+              rel="me noopener"
+              data-outbound={social.platform}
+              class="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-4 hover:decoration-current"
+            >
+              {SOCIAL_LABELS[social.platform]}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <figure class="laptop-band" data-room-band data-room-slot="laptop" data-host={host}>
+      <figcaption class="laptop-caption text-sm text-ink-muted">
+        <!-- A surface pill keeps the contrast where the laptop's shadow falls. -->
+        <span class="inline-block rounded-full bg-surface px-3 py-1">{t['contact.homelab']}</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
+
+<style>
+  .laptop-band {
+    position: relative;
+    height: 260px;
+  }
+
+  .laptop-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+  }
+
+  @media (min-width: 1024px) {
+    :root[data-room-3d] .contact-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+      align-items: center;
+    }
+
+    .laptop-band {
+      height: 300px;
+    }
+  }
+</style>
 
 <script>
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {

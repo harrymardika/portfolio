@@ -29,4 +29,5 @@ Satu renderer per halaman (`src/scenes/room/`) dengan kanvas `position: fixed` d
 
 - **2026-10-10 (T13.4, T13.5), penyesuaian tanpa mengubah keputusan:**
   - Ambang bayangan real-time menjadi **≥ 6 core dan bukan layar sentuh** (`realtimeShadows`, `coarsePointer`). HP melaporkan jumlah core setara laptop tetapi GPU-nya jauh lebih lemah; perangkat lain memakai bayangan lembut statis.
+  - **Padanan HTML kartu konveyor (T13.6):** kartu proyek pilihan berpadanan dengan barisnya di beranda; kartu studi kasus lain berpadanan dengan tautan "View all projects" dan barisnya di halaman Projects (konveyor penuh di sana menyusul di T14.1). Klik kartu hanya membuka halaman studi kasus yang juga bisa dicapai lewat HTML.
   - **Kamera tidak lagi bergeser mengikuti pointer.** Paralaks kamera membuat benda 3D bergeser beberapa piksel dari elemen HTML-nya sehingga klik ke titik journey meleset. Kesan hidup didapat dari benda yang sedikit miring sendiri mengikuti pointer (cetakan hero).

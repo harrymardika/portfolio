@@ -50,3 +50,30 @@ export function matchesSearch(text: string, query: string): boolean {
     .filter(Boolean)
     .every((word) => haystack.includes(word));
 }
+
+/** A project on the home page's sorting line (T13.6): what the 3D card shows and where it goes. */
+export interface SortingCard {
+  readonly title: string;
+  readonly href: string;
+  readonly year: string;
+  /** Category id: the bin the card is sorted into. */
+  readonly bin: string;
+}
+
+/**
+ * Cards and bins for the sorting line: projects that belong to a category, in the order given
+ * (featured first), at most `limit`; each goes to its first category. Bins are the categories that
+ * receive a card, in the categories' order. Projects without a category stay off the line.
+ */
+export function sortingLine<T extends { readonly tags: readonly string[] }>(
+  projects: readonly T[],
+  categories: readonly ProjectCategory[],
+  limit: number,
+): { cards: { project: T; bin: string }[]; bins: ProjectCategory[] } {
+  const cards = projects
+    .map((project) => ({ project, bin: itemCategoryIds(project.tags, categories)[0] }))
+    .filter((card): card is { project: T; bin: string } => card.bin !== undefined)
+    .slice(0, Math.max(0, limit));
+  const used = new Set(cards.map((card) => card.bin));
+  return { cards, bins: categories.filter((category) => used.has(category.id)) };
+}

@@ -16,7 +16,7 @@ import {
   type Texture,
 } from 'three';
 
-import { blobShadow, brackets, easeOut, label } from '../paper';
+import { blobShadow, brackets, easeOut, fontsReady, label, MONO, SANS } from '../paper';
 import { FACE_BOX, PHOTO_PRINT, PRINTS, SEQUENCE } from './hero-config';
 
 import type { ScenePalette } from '../../core/palette';
@@ -27,8 +27,6 @@ const DEPTH = { photo: 36, sheet: 0, curl: 16, boxes: 10 } as const;
 /** Pointer tilt of both prints, radians. */
 const TILT = { x: 0.1, y: 0.16 } as const;
 const LABEL_HEIGHT = 18;
-const MONO = '500 12px "IBM Plex Mono", ui-monospace, monospace';
-const SANS = '600 12px "Plus Jakarta Sans Variable", system-ui, sans-serif';
 
 export interface SheetBox {
   readonly cls: string;
@@ -101,11 +99,6 @@ function loadTexture(url: string): Promise<Texture> {
     map.anisotropy = 8;
     return map;
   });
-}
-
-async function fontsReady(): Promise<void> {
-  const load = Promise.all([document.fonts.load(MONO), document.fonts.load(SANS)]);
-  await Promise.race([load, new Promise((resolve) => setTimeout(resolve, 1500))]);
 }
 
 /** Null when the slot or its data is missing; the HTML prints then simply stay. */

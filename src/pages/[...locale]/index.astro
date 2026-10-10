@@ -48,7 +48,7 @@ const jsonLd = [
   <HomeRoom />
   <Hero locale={locale} profile={profile} />
   <Journey locale={locale} copy={profile.journey} entries={journey} />
-  <SelectedProjects locale={locale} copy={profile.projects} items={featured} />
+  <SelectedProjects locale={locale} copy={profile.projects} items={featured} all={items} />
   <Messages locale={locale} items={messages} ownerName={profile.name} />
   <Contact locale={locale} profile={profile} />
 </PageLayout>

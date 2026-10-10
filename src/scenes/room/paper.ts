@@ -11,6 +11,16 @@ import {
   SRGBColorSpace,
 } from 'three';
 
+/** Label fonts: monospace only for machine output (detection labels, class names), docs/03 §3. */
+export const MONO = '500 12px "IBM Plex Mono", ui-monospace, monospace';
+export const SANS = '600 12px "Plus Jakarta Sans Variable", system-ui, sans-serif';
+
+/** Wait (at most 1.5 s) for the label fonts, so canvas text is not drawn in a fallback font. */
+export async function fontsReady(): Promise<void> {
+  const load = Promise.all([document.fonts.load(MONO), document.fonts.load(SANS)]);
+  await Promise.race([load, new Promise((resolve) => setTimeout(resolve, 1500))]);
+}
+
 /** Canvas pixels per CSS pixel for crisp labels. */
 const RESOLUTION = 3;
 

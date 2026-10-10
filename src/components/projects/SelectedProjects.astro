@@ -1,17 +1,44 @@
 ---
-/** Home page section with featured projects as index rows (D20) and a link to the full list. */
+/**
+ * Home page section with featured projects as index rows (D20) and a link to the full list. Above the
+ * rows, a band for the room's sorting line (T13.6): its cards (featured first, then other case studies
+ * that belong to a field) and bins (the fields) come from content/ and are passed as data; the band
+ * only takes space when the 3D runs.
+ */
 import ProjectIndex from './ProjectIndex.astro';
-import { localize, type Profile, type ProjectItem } from '@/lib/content';
+import { itemYear, localize, sortingLine, type Profile, type ProjectItem } from '@/lib/content';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
   copy: Profile['projects'];
   items: ProjectItem[];
+  /** Every project item, for the sorting line. */
+  all?: ProjectItem[];
 }
 
-const { locale, copy, items } = Astro.props;
+/** Cards on the sorting line: enough to keep it busy, few enough to stay light. */
+const LINE_CARDS = 8;
+
+const { locale, copy, items, all = [] } = Astro.props;
 const t = UI[locale];
+const caseStudies = all.filter((item) => item.kind === 'local');
+const ordered = [
+  ...caseStudies.filter((item) => item.project.featured),
+  ...caseStudies.filter((item) => !item.project.featured),
+];
+const line = sortingLine(
+  ordered.map((item) => ({ item, tags: item.project.tags })),
+  copy.categories,
+  LINE_CARDS,
+);
+const cards = line.cards.map(({ project: { item }, bin }) => ({
+  title: item.project.title,
+  href: localizePath(`/projects/${item.slug}/`, locale),
+  year: String(itemYear(item)),
+  bin,
+}));
+const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, locale) }));
 ---
 
 {items.length > 0 && (
@@ -31,7 +58,23 @@ const t = UI[locale];
           {t['projects.viewAll']}
         </a>
       </div>
+      {cards.length > 0 && (
+        <div
+          class="sorting-band"
+          data-room-band
+          data-room-slot="sorting"
+          data-cards={JSON.stringify(cards)}
+          data-bins={JSON.stringify(bins)}
+          aria-hidden="true"
+        ></div>
+      )}
       <ProjectIndex locale={locale} items={items} />
     </div>
   </section>
 )}
+
+<style>
+  .sorting-band {
+    height: clamp(200px, 24vw, 290px);
+  }
+</style>
