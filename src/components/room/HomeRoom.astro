@@ -21,13 +21,20 @@ import RoomStage from './RoomStage.astro';
       stage.dataset['scene'] = 'off';
       return;
     }
-    const [{ mountRoom }, { createHeroPart }] = await Promise.all([
+    const [{ mountRoom }, { createHeroPart }, { createJourneyPart }] = await Promise.all([
       import('@/scenes/room'),
       import('@/scenes/room/parts/hero'),
+      import('@/scenes/room/parts/journey'),
     ]);
-    const parts = [createHeroPart(document.querySelector<HTMLElement>('[data-room-slot="hero"]'))].filter(
-      (part): part is RoomPart => part !== null,
-    );
+    const find = (selector: string) => document.querySelector<HTMLElement>(selector);
+    const parts = [
+      createHeroPart(find('[data-room-slot="hero"]')),
+      createJourneyPart(find('[data-journey-stage]'), {
+        from: find('[data-room-slot="hero"] [data-print="sheet"]'),
+        to: find('#projects'),
+        avoid: find('[data-journey-intro]'),
+      }),
+    ].filter((part): part is RoomPart => part !== null);
     mountRoom(stage, parts);
   }
 

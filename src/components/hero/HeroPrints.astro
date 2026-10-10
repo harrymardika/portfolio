@@ -10,7 +10,7 @@ import { Image, getImage } from 'astro:assets';
 import sheetData from '../../../content/media/aksara-sheet.json';
 import { contentImage } from '@/lib/content/media';
 import { fill, type Locale, UI } from '@/lib/i18n';
-import { FACE_BOX, PHOTO_PRINT, PRINTS } from '@/scenes/room/parts/hero-config';
+import { FACE_BOX, photoPrintPadding, PRINTS } from '@/scenes/room/parts/hero-config';
 
 interface Props {
   locale: Locale;
@@ -31,6 +31,7 @@ const place = (print: { left: number; top: number; width: number; rotate: number
 const box = (b: { x: number; y: number; w: number; h: number }) =>
   `left:${pct(b.x)};top:${pct(b.y)};width:${pct(b.w)};height:${pct(b.h)}`;
 const face = box({ x: FACE_BOX.x, y: FACE_BOX.y, w: FACE_BOX.width, h: FACE_BOX.height });
+const padding = photoPrintPadding();
 ---
 
 <figure
@@ -50,6 +51,7 @@ const face = box({ x: FACE_BOX.x, y: FACE_BOX.y, w: FACE_BOX.width, h: FACE_BOX.
         widths={[400, 700, 1000]}
         sizes="(min-width: 1024px) 360px, 60vw"
         loading="eager"
+        fetchpriority="high"
         class="block h-auto w-full"
       />
       {sheetData.boxes.map((b) => (
@@ -60,9 +62,9 @@ const face = box({ x: FACE_BOX.x, y: FACE_BOX.y, w: FACE_BOX.width, h: FACE_BOX.
       ))}
     </div>
     <div
-      class="print photo absolute bg-surface"
+      class="print photo absolute"
       data-print="photo"
-      style={`${place(PRINTS.photo)};padding:${pct(PHOTO_PRINT.border)} ${pct(PHOTO_PRINT.border)} ${pct(PHOTO_PRINT.bottom)}`}
+      style={`${place(PRINTS.photo)};padding:${pct(padding.side)} ${pct(padding.side)} ${pct(padding.bottom)}`}
     >
       <div class="relative">
         <Image

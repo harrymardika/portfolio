@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 
 import sheet from '../../../content/media/aksara-sheet.json';
-import { SEQUENCE } from '@/scenes/room/parts/hero-config';
+import { PHOTO_PRINT, photoPrintPadding, PRINTS, SEQUENCE } from '@/scenes/room/parts/hero-config';
 import { boxOnPrint, curl, sequenceAt } from '@/scenes/room/parts/hero';
 
 describe('boxOnPrint', () => {
@@ -63,5 +63,13 @@ describe('aksara sheet data', () => {
       expect(box.x + box.w).toBeLessThanOrEqual(1);
       expect(box.y + box.h).toBeLessThanOrEqual(1);
     }
+  });
+});
+
+describe('photoPrintPadding', () => {
+  it('turns the print-relative border into stage-relative CSS padding', () => {
+    const padding = photoPrintPadding();
+    expect(padding.side / PRINTS.photo.width).toBeCloseTo(PHOTO_PRINT.border, 9);
+    expect(padding.bottom / PRINTS.photo.width).toBeCloseTo(PHOTO_PRINT.bottom, 9);
   });
 });

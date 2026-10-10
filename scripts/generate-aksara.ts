@@ -4,7 +4,7 @@
  * ruled practice sheet, as the 3D texture and the no-WebGL fallback image, plus where each syllable
  * sits so the 3D detection boxes and the HTML fallback line up with the glyphs.
  *
- *   bun scripts/generate-aksara.ts
+ *   bun run aksara      (bun scripts/generate-aksara.ts)
  *
  * Output (committed, so neither the build nor the browser needs the Javanese font):
  *   content/media/aksara-sheet.png   1200×880
@@ -24,7 +24,7 @@ const fontFile =
 const fontData = readFileSync(fontFile).toString('base64');
 
 /** "Harry Mardika" = har-ri mar-di-ka: base character (YOLO class) + vowel/final marks, owner-confirmed. */
-export const SYLLABLES = [
+const SYLLABLES = [
   { glyphs: 'ꦲꦂ', cls: 'ha', latin: 'har', line: 0 },
   { glyphs: 'ꦫꦶ', cls: 'ra', latin: 'ri', line: 0 },
   { glyphs: 'ꦩꦂ', cls: 'ma', latin: 'mar', line: 1 },
@@ -44,6 +44,10 @@ const browser = await chromium.launch();
 const tab = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT } });
 await tab.setContent(page);
 await tab.evaluate(() => document.fonts.load('500 215px Jawa', 'ꦲ'));
+if (!(await tab.evaluate(() => document.fonts.check('500 215px Jawa', 'ꦲ')))) {
+  await browser.close();
+  throw new Error('The Javanese font did not load; the sheet would show fallback glyphs.');
+}
 
 const result = await tab.evaluate(
   ({ syllables, width, height }) => {

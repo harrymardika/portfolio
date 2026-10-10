@@ -17,6 +17,14 @@ export const PRINTS = {
   sheet: { left: 0.37, top: 0.33, width: 0.63, rotate: 2.5 },
 } as const;
 
+/**
+ * The photo print's padding as fractions of the hero stage's width: CSS percentage padding is
+ * measured against the containing block (the stage), not the print itself.
+ */
+export function photoPrintPadding(): { side: number; bottom: number } {
+  return { side: PHOTO_PRINT.border * PRINTS.photo.width, bottom: PHOTO_PRINT.bottom * PRINTS.photo.width };
+}
+
 /** Detection sequence, in seconds from the moment the prints are ready. */
 export const SEQUENCE = {
   faceIn: 0.6,

@@ -2,6 +2,12 @@
 
 > Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
 
+### 2026-10-10 · Claude Code (Opus) · T13.0 pagar pengaman fitur lama
+- **Dikerjakan:** `tests/e2e/feature-inventory.spec.ts` (60 tes: EN/ID × desktop/HP, plus tanpa JS dan file PDF): layout bersama di enam halaman (skip link, ganti bahasa, tombol tema, chatbot, footer Statistik/Resumes/Leave a message + lima tautan sosial, hreflang, og:image, navigasi termasuk menu HP), hero (nama di H1, Download CV + Portfolio PDF dengan `download`/`data-download`, tiga angka), Journey (semua milestone + cerita), proyek pilihan, Kind words + tautan formulir, Kontak (email, empat media sosial, tombol salin), Projects (pencarian, filter, `?filter=`, semua studi kasus), studi kasus, About, `/cv/` (dua PDF per varian), Statistik, formulir pesan, 404. Pemilih memakai peran, kamus UI, `content/`, dan id bagian (`#journey`, `#projects`, `#messages`, `#contact`) yang wajib dipertahankan oleh redesain.
+- **Lighthouse pembanding (HP, median 3 run, build e2e):** `/` 99/100/100/100 · `/id/` 98 · `/about/` 100 · `/projects/` 100 · `/projects/decklify/` 100 · `/stats/` 99 · `/messages/` 100 (performa; a11y, best practices, SEO semuanya 100). `bun run lighthouse` butuh akses jaringan untuk `bunx` (di sandbox agent gagal tanpa itu).
+- **Screenshot acuan** tampilan lama (beranda, Projects, About × desktop/HP × terang/gelap) dibuat di scratchpad agent untuk perbandingan, tidak di-commit.
+- **Langkah berikutnya:** T13.1 (warna Giok → Nila, ADR 0018).
+
 ### 2026-10-10 · Claude Code (Opus) · Rencana baru Fase 13–14 (tampilan Giok → Nila, "satu ruang" 3D)
 - **Permintaan pemilik:** tampilan lebih baik dan tidak terasa buatan AI, tidak datar, foto tetap ada, lebih banyak 3D, dan **fitur lama tidak boleh hilang**.
 - **Diagnosis** (dari situs yang berjalan): kata terakhir judul diwarnai amber, badge pil dan label mono huruf kapital, tiga angka besar tanpa konteks, bola dan cincin dekoratif di sekitar foto, semua isi berupa kartu identik, warna rata tanpa cahaya; rencana Fase 13 lama (peta embedding, rasi bintang, globe titik) memakai motif yang paling umum di portfolio AI.

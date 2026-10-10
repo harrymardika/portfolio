@@ -42,9 +42,9 @@ test('no page triggers a Content Security Policy violation, including the 3D sce
   await expect(page.locator('[data-room-stage]')).toHaveAttribute('data-scene-ready', 'true', {
     timeout: 30_000,
   });
-  // The journey scene starts only when scrolled near (Journey.astro).
+  // The journey thread is built only when scrolled near (src/scenes/room/parts/journey.ts).
   await page.locator('[data-journey-stage]').scrollIntoViewIfNeeded();
-  await expect(page.locator('[data-journey-stage]')).toHaveAttribute('data-scene-ready', 'true', {
+  await expect(page.locator('[data-journey-stage]')).toHaveAttribute('data-room-ready', 'true', {
     timeout: 30_000,
   });
   expect(violations).toEqual([]);

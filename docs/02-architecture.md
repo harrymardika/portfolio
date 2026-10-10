@@ -134,8 +134,7 @@ Aturan:
 │   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
 │   │   │                        #   palette, pointer, types (kontrak SceneModule)
 │   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom),
-│   │   │                        #   paper (label, kotak deteksi, bayangan lembut), parts/hero (+ hero-config)
-│   │   └── journey-path/        # jalur karier 3D (diganti ruang di T13.5)
+│   │   │                        #   paper (label, kotak deteksi, bayangan lembut), parts/hero (+ hero-config), parts/journey
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   │                            #   · PrintLayout (halaman cetak PDF)
 │   ├── pages/
@@ -206,10 +205,10 @@ Semua scene memakai `src/scenes/core/` (T2.1). Scene konkret hanya membangun obj
 
 ```ts
 // src/scenes/core/mount.ts: dipanggil dari <script> komponen island
-const handle = mountScene({ stage, canvas, create: createJourneyPath }); // SceneHandle | null
+const handle = mountScene({ stage, canvas, create: createRoom(parts, shadows) }); // SceneHandle | null
 handle?.destroy(); // aman dipanggil dua kali
 
-// Scene konkret (mis. src/scenes/journey-path/index.ts) mengembalikan SceneModule:
+// Scene konkret (sejak Fase 13 hanya ruang, src/scenes/room/index.ts) mengembalikan SceneModule:
 interface SceneModule {
   scene: Scene; camera: Camera;
   update(frame: { dt; elapsed; pointer: { x; y } }): void; // dt sudah dijepit [0, 0.05]

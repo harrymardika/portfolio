@@ -17,6 +17,7 @@
     "fetch:github": "bun scripts/fetch-github.ts",
     "pdf": "bun scripts/generate-pdf.ts",
     "og": "bun scripts/generate-og.ts",
+    "aksara": "bun scripts/generate-aksara.ts",
     "sitemap": "bun scripts/generate-sitemap.ts",
     "csp": "bun scripts/generate-csp.ts",
     "knowledge": "bun scripts/generate-knowledge.ts",

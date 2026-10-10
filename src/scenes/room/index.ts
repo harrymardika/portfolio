@@ -35,8 +35,6 @@ export const CAMERA = { distance: 12, fov: 30 } as const;
 export const WALL_DEPTH = 0.7;
 /** Parts are built when their slot is this close to the viewport (CSS px). */
 export const BUILD_MARGIN = 900;
-/** Strongest pointer parallax, in world units of camera travel. */
-const PARALLAX = { x: 0.35, y: 0.2 } as const;
 /** A press that moves farther than this (CSS px) is a drag or a text selection, not a click. */
 const CLICK_SLOP = 5;
 
@@ -83,6 +81,8 @@ export interface RoomPart {
   layout(room: RoomContext, rect: PageRect): void;
   /** Advance animations; return true while something still moves, so frames keep coming. */
   update?(frame: RoomFrame): boolean;
+  /** The root was added to the scene and will be drawn from the next frame on. */
+  shown?(): void;
   /** The theme changed: apply the new token colors. */
   recolor?(palette: ScenePalette): void;
   /** Objects the pointer can click. Read again after every build. */
@@ -118,7 +118,6 @@ const INTERACTIVE = [
   'select',
   'label',
   'summary',
-  'details',
   'dialog',
   'iframe',
   'video',
@@ -127,7 +126,7 @@ const INTERACTIVE = [
   '[role="link"]',
   '[popover]',
   '[contenteditable]',
-  '[tabindex]',
+  '[tabindex]:not([tabindex="-1"])',
 ].join(', ');
 
 /** `create` for `mountScene`. */
@@ -222,6 +221,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
           .then(async (root) => {
             if (disposed) {
               disposeObject3D(root);
+              entry.part.dispose?.();
               return;
             }
             entry.part.recolor?.(palette);
@@ -231,9 +231,11 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
             await renderer.compileAsync(root, camera, scene).catch(() => undefined);
             if (disposed) {
               disposeObject3D(root);
+              entry.part.dispose?.();
               return;
             }
             page.add(root);
+            entry.part.shown?.();
             collectTargets();
             if (!readySignalled) {
               readySignalled = true;
@@ -356,8 +358,8 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
           pointer.x = damp(pointer.x, pointer.tx, 4, input.dt);
           pointer.y = damp(pointer.y, pointer.ty, 4, input.dt);
         }
-        camera.position.set(pointer.x * PARALLAX.x, -pointer.y * PARALLAX.y, CAMERA.distance);
-        camera.lookAt(0, 0, 0);
+        // The camera never moves: objects on the page plane must stay exactly over their HTML twins
+        // (clicks, alignment). Parts tilt themselves with the pointer instead.
         animating = Math.abs(pointer.tx - pointer.x) > 0.002 || Math.abs(pointer.ty - pointer.y) > 0.002;
         Object.assign(frame, { dt: input.dt, elapsed: input.elapsed, room, scrollY });
         frame.pointer.x = pointer.x;

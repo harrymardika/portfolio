@@ -52,6 +52,7 @@ test('the 3D prints take over from the flat ones once ready, without console err
   await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
     timeout: SCENE_READY_TIMEOUT,
   });
+  await expect(page.locator(stage)).toHaveCSS('opacity', '1');
   await expect(page.locator(prints)).toHaveAttribute('data-room-ready', 'true');
   await expect(page.locator(`${prints} [data-print="photo"]`)).toHaveCSS('opacity', '0');
   await expect(page.locator(`${prints} [data-print="sheet"]`)).toHaveCSS('opacity', '0');
@@ -151,4 +152,37 @@ test('the hero download starts a real file download', async ({ page, isMobile })
     page.getByRole('link', { name: 'Download CV' }).click(),
   ]);
   expect(download.suggestedFilename()).toBe('Harry-Mardika-CV-EN.pdf');
+});
+
+test('on desktop the LCP element is one of the hero prints, loaded eagerly with high priority', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'On phones the text block above the prints is the largest element');
+  await page.goto('/');
+  // Read the LCP only once both prints have loaded and painted; earlier, the heading is the largest
+  // element painted so far and the result would depend on timing.
+  await page.waitForFunction(
+    (selector) =>
+      [...document.querySelectorAll<HTMLImageElement>(`${selector} img`)].every((img) => img.complete),
+    prints,
+  );
+  await page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+  );
+  const source = await page.evaluate(
+    () =>
+      new Promise<string>((resolve) => {
+        new PerformanceObserver((list) => {
+          const entries = list.getEntries() as (PerformanceEntry & { element?: Element | null })[];
+          const element = entries[entries.length - 1]?.element;
+          resolve(element instanceof HTMLImageElement ? element.currentSrc : (element?.tagName ?? ''));
+        }).observe({ type: 'largest-contentful-paint', buffered: true });
+      }),
+  );
+  expect(source).toMatch(/aksara-sheet|profile/);
+  for (const image of await page.locator(`${prints} img`).all()) {
+    await expect(image).toHaveAttribute('fetchpriority', 'high');
+    await expect(image).toHaveAttribute('loading', 'eager');
+  }
 });

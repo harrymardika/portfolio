@@ -37,7 +37,7 @@ Bisa juga langsung lewat web GitHub (tombol ✏️ di file), bahkan dari HP.
 | Proyek / case study | `content/projects/<slug>.md` (terjemahan body: `content/projects/id/<slug>.md`) |
 | CV per posisi (varian) | `content/cv-variants.yaml` |
 | Kesan & pesan | `content/messages.yaml` |
-| Foto | `content/media/` |
+| Foto | `content/media/` (kecuali `aksara-sheet.png` dan `aksara-sheet.json`: dibuat oleh `bun run aksara`, jangan diedit tangan) |
 
 ## 2. Tipe data bersama
 
@@ -65,7 +65,7 @@ Format `YYYY-MM` (mis. `2025-09`). Untuk yang masih berjalan, tulis `end: presen
 | Field | Tipe | Wajib | Keterangan |
 |---|---|---|---|
 | `name` | string | ✔ | |
-| `role` | LocalizedText | ✔ | Baris peran di hero ("… in Jakarta") dan kartu foto |
+| `role` | LocalizedText | ✔ | Baris peran di hero ("… in Jakarta") |
 | `headline` | LocalizedText | ✔ | Kalimat di bawah nama di hero (H1 = `name`, D19). `*bintang*` masih diterima: diberi warna aksen hanya di Portfolio PDF, di web tampil polos |
 | `tagline` | LocalizedText | ✔ | Paragraf di bawah H1 |
 | `summary` | LocalizedText | ✔ | Ringkasan untuk About dan CV |

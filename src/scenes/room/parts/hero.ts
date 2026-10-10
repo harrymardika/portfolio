@@ -26,8 +26,6 @@ import type { RoomContext, RoomFrame, RoomPart } from '../index';
 const DEPTH = { photo: 36, sheet: 0, curl: 16, boxes: 10 } as const;
 /** Pointer tilt of both prints, radians. */
 const TILT = { x: 0.1, y: 0.16 } as const;
-const PAPER = 0xfbfcfa;
-const SHEET_PAPER = 0xffffff;
 const LABEL_HEIGHT = 18;
 const MONO = '500 12px "IBM Plex Mono", ui-monospace, monospace';
 const SANS = '600 12px "Plus Jakarta Sans Variable", system-ui, sans-serif';
@@ -90,7 +88,7 @@ function measure(element: HTMLElement): PrintMeasure {
   const box = element.getBoundingClientRect();
   // offsetWidth/Height ignore the CSS rotation; the centre is the same either way.
   return {
-    cx: box.left + window.scrollX + box.width / 2,
+    cx: box.left + box.width / 2,
     cy: box.top + window.scrollY + box.height / 2,
     width: element.offsetWidth,
     height: element.offsetHeight,
@@ -133,6 +131,8 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   let shadows = true;
   let started = 0;
   let clock = 0;
+  /** The sequence starts on the first frame the prints are actually drawn. */
+  let startPending = false;
   let still = false;
   let invalidate: () => void = () => undefined;
 
@@ -162,6 +162,8 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   };
 
   const amber = (): number => palette?.amber ?? 0xf2b134;
+  // Prints are white paper in both themes, like the HTML twins (`--on-forest`).
+  const paper = (): number => palette?.['on-forest'] ?? 0xffffff;
   const ink = (): number => palette?.forest ?? 0x173d32;
 
   const assemble = (): void => {
@@ -172,11 +174,11 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
 
     // Photo print: white paper box, the photo inset with a deeper bottom margin.
     const { width: pw, height: ph } = size.photo;
-    const paper = new Mesh(
+    const print = new Mesh(
       new BoxGeometry(pw, ph, 3),
-      new MeshStandardMaterial({ color: PAPER, roughness: 0.85 }),
+      new MeshStandardMaterial({ color: paper(), roughness: 0.85 }),
     );
-    paper.castShadow = shadows;
+    print.castShadow = shadows;
     const side = pw * (1 - 2 * PHOTO_PRINT.border);
     const picture = new Mesh(
       new PlaneGeometry(side, side),
@@ -184,7 +186,7 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     );
     const pictureY = ph / 2 - pw * PHOTO_PRINT.border - side / 2;
     picture.position.set(0, pictureY, 1.6);
-    photo.add(paper, picture);
+    photo.add(print, picture);
     if (!shadows) {
       const blob = blobShadow(pw * 1.25, ph * 1.2, shadowColor, 0.4);
       blob.position.set(pw * 0.08, -ph * 0.08, -DEPTH.photo - 6);
@@ -215,7 +217,7 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     geometry.computeVertexNormals();
     const page = new Mesh(
       geometry,
-      new MeshStandardMaterial({ map: textures.sheet, color: SHEET_PAPER, roughness: 0.92 }),
+      new MeshStandardMaterial({ map: textures.sheet, color: paper(), roughness: 0.92 }),
     );
     page.castShadow = shadows;
     page.receiveShadow = shadows;
@@ -297,8 +299,6 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
         replay.hidden = false;
         replay.addEventListener('click', onReplay);
       }
-      slot.dataset['roomReady'] = 'true';
-      started = clock;
       return root;
     },
     layout(room: RoomContext) {
@@ -321,8 +321,17 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
       };
       if (changed) assemble();
     },
+    shown() {
+      // Only now is the 3D on screen: hide the flat prints and start the sequence.
+      slot.dataset['roomReady'] = 'true';
+      startPending = true;
+    },
     update(frame: RoomFrame) {
       clock = frame.elapsed;
+      if (startPending) {
+        startPending = false;
+        started = clock;
+      }
       pivot.rotation.set(frame.pointer.y * TILT.x, frame.pointer.x * TILT.y, 0);
       applySequence();
       return !still && !sequenceAt(clock - started, syllables.length).done;

@@ -1,8 +1,8 @@
 ---
 /**
- * Journey section (docs/03-design-system.md §5). The <ol> is both the accessible timeline
- * (no JS / no WebGL) and, once the 3D path is ready, the set of labels placed beside its nodes.
- * The stage has a fixed height in both modes, so switching causes no layout shift.
+ * Journey section (docs/03-design-system.md §5). The <ol> is the timeline in every mode; with the
+ * room (ADR 0019) a 3D thread runs through a bead beside each card (src/scenes/room/parts/journey.ts)
+ * and marks the cards it has reached. The stage height is fixed, so nothing shifts when it starts.
  */
 import MilestoneDetail from './MilestoneDetail.astro';
 import { localize, stripEmphasis, type Milestone, type MilestoneSource, type Profile } from '@/lib/content';
@@ -21,7 +21,7 @@ const title = stripEmphasis(localize(copy.title, locale));
 
 <section id="journey" aria-labelledby="journey-title" class="scroll-mt-20">
   <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.8fr_1.2fr] lg:py-24">
-    <div class="grid min-w-0 gap-4">
+    <div class="grid min-w-0 gap-4" data-journey-intro>
       <h2 id="journey-title" class="text-h2">
         {title}
       </h2>
@@ -33,7 +33,6 @@ const title = stripEmphasis(localize(copy.title, locale));
       data-journey-stage
       data-count={entries.length}
     >
-      <canvas class="absolute inset-0 size-full opacity-0" aria-hidden="true"></canvas>
       <ol class="journey-list relative grid h-full content-center gap-5">
         {entries.map(({ milestone, source }) => {
           const popoverId = `milestone-${milestone.id}`;
@@ -121,117 +120,18 @@ const title = stripEmphasis(localize(copy.title, locale));
     transform: translateY(-50%);
   }
 
-  .journey-stage canvas {
-    transition: opacity 400ms ease;
-  }
-
-  /* 3D layout: the same list items become labels positioned beside each node by the script. */
-  .journey-stage[data-scene-ready] canvas {
-    opacity: 1;
-  }
-
-  .journey-stage[data-scene-ready] .journey-list {
-    position: absolute;
-    inset: 0;
-    display: block;
-    padding: 0;
-  }
-
-  .journey-stage[data-scene-ready] .journey-list::before,
-  .journey-stage[data-scene-ready] .milestone::before {
+  /*
+   * With the room (ADR 0019) the 3D thread and its beads take the place of the line and the dots;
+   * the cards stay where they are. Not reached yet: lighter card, same text colors (keeps contrast).
+   */
+  .journey-stage[data-room-ready] .journey-list::before,
+  .journey-stage[data-room-ready] .milestone::before {
     display: none;
   }
 
-  .journey-stage[data-scene-ready] .milestone {
-    position: absolute;
-    top: 0;
-    left: 0;
-    max-width: calc(100% - var(--x, 0px) - 1.5rem);
-    transform: translate(calc(var(--x, 0px) + 1.4rem), calc(var(--y, 0px) - 50%));
-  }
-
-  /* Not reached yet: lighter card, same text colors (keeps WCAG contrast, unlike opacity). */
-  .journey-stage[data-scene-ready] .milestone[data-reached='false'] .label {
+  .journey-stage[data-room-ready] .milestone[data-reached='false'] .label {
     border-style: dashed;
     background: transparent;
     box-shadow: none;
   }
-
-  @media (max-width: 639px) {
-    .journey-stage[data-scene-ready] .subtitle {
-      display: none;
-    }
-  }
 </style>
-
-<script>
-  import { decide3D, detectCapabilities } from '@/scenes/core/capabilities';
-  import { sectionProgress } from '@/scenes/journey-path/layout';
-
-  async function start(): Promise<void> {
-    const stage = document.querySelector<HTMLElement>('[data-journey-stage]');
-    const section = stage?.closest('section');
-    const canvas = stage?.querySelector('canvas');
-    const items = stage ? [...stage.querySelectorAll<HTMLElement>('[data-milestone]')] : [];
-    if (!stage || !section || !canvas || items.length < 2) return;
-
-    const decision = decide3D(detectCapabilities());
-    if (decision.mode === 'off') {
-      stage.dataset['scene'] = 'off';
-      return;
-    }
-
-    let progress = 0;
-    const measure = (): void => {
-      const rect = section.getBoundingClientRect();
-      const atPageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
-      progress = sectionProgress(rect.top, rect.height, window.innerHeight, atPageEnd);
-    };
-    measure();
-    window.addEventListener('scroll', measure, { passive: true });
-    window.addEventListener('resize', measure, { passive: true });
-
-    const [{ mountScene }, { createJourneyPath }] = await Promise.all([
-      import('@/scenes/core/mount'),
-      import('@/scenes/journey-path'),
-    ]);
-    mountScene({
-      stage,
-      canvas,
-      decision,
-      create: (setup) =>
-        createJourneyPath(setup, {
-          count: items.length,
-          getProgress: () => progress,
-          onProject: (nodes) => {
-            nodes.forEach((node, index) => {
-              const item = items[index];
-              if (!item) return;
-              item.style.setProperty('--x', `${node.x.toFixed(1)}px`);
-              item.style.setProperty('--y', `${node.y.toFixed(1)}px`);
-              item.dataset['reached'] = String(node.reached);
-            });
-          },
-        }),
-    });
-  }
-
-  // The section is below the fold: build the scene only when the visitor scrolls near it, so its
-  // setup (WebGL context, shaders, first frame) never competes with the first screen.
-  function startWhenNear(): void {
-    const stage = document.querySelector<HTMLElement>('[data-journey-stage]');
-    if (!stage) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        observer.disconnect();
-        void start();
-      },
-      { rootMargin: '50% 0px' },
-    );
-    observer.observe(stage);
-  }
-
-  if (document.readyState === 'complete') startWhenNear();
-  else window.addEventListener('load', startWhenNear, { once: true });
-</script>

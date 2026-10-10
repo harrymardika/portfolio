@@ -4,6 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 const stage = '[data-journey-stage]';
 const milestones = `${stage} [data-milestone]`;
+const room = '[data-room-stage]';
 
 async function scrollJourney(page: Page, fraction: number): Promise<void> {
   await page.evaluate((f) => {
@@ -17,7 +18,7 @@ async function scrollJourney(page: Page, fraction: number): Promise<void> {
   }, fraction);
 }
 
-// The 3D path needs a GPU; headless Chromium's CPU renderer is treated as one (see helpers.ts).
+// The 3D thread needs a GPU; headless Chromium's CPU renderer is treated as one (see helpers.ts).
 test.beforeEach(({ page }) => assumeGpu(page));
 
 const years = (page: Page) => page.locator(`${milestones} .label span:first-child`).allTextContents();
@@ -46,39 +47,53 @@ test.describe('without JavaScript', () => {
   });
 });
 
-test('without WebGL the timeline stays and the 3D path is never downloaded', async ({ page }) => {
+test('without WebGL the timeline stays and the 3D thread is never downloaded', async ({ page }) => {
   await disableWebGL(page);
   const scripts: string[] = [];
   page.on('request', (request) => request.resourceType() === 'script' && scripts.push(request.url()));
 
   await page.goto('/');
   await scrollJourney(page, 0.3);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'off');
+  await expect(page.locator(room)).toHaveAttribute('data-scene', 'off');
   await expect(page.locator(`${stage} ol`).getByRole('listitem')).toHaveCount(5);
-  await expect(page.locator(`${stage} canvas`)).toHaveCSS('opacity', '0');
-  expect(scripts.filter((url) => /journey-path|mount/.test(url))).toEqual([]);
+  await expect(page.locator(stage)).not.toHaveAttribute('data-room-ready');
+  expect(scripts.filter((url) => /three|room|journey|hero|paper/.test(url))).toEqual([]);
 });
 
-test('the 3D path places labels and reaches milestones as you scroll', async ({ page }) => {
+test('the 3D thread reaches milestones as you scroll', async ({ page }) => {
   await page.goto('/');
   await scrollJourney(page, 0.2);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+  await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
     timeout: SCENE_READY_TIMEOUT,
   });
-  await expect(page.locator(milestones).first()).toHaveAttribute('style', /--x:/);
 
   const reached = page.locator(`${milestones}[data-reached="true"]`);
   await scrollJourney(page, 0.1);
   await expect.poll(() => reached.count()).toBeLessThan(5);
   // Scrolling to the end (or the page bottom on short pages) reaches every milestone.
-  await scrollJourney(page, 1);
+  await scrollJourney(page, 1.6);
   await expect.poll(() => reached.count()).toBe(5);
 });
 
-test('3D labels stay inside the stage and never cover the section text', async ({ page }) => {
+test('clicking a bead on the thread opens the same story as its card', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Same code path; the desktop layout leaves room beside the cards');
   await page.goto('/');
   await scrollJourney(page, 0.6);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+  await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
+    timeout: SCENE_READY_TIMEOUT,
+  });
+  await page.waitForTimeout(300);
+  const card = await page.locator(`${milestones} .label`).last().boundingBox();
+  if (!card) throw new Error('missing card');
+  // The bead sits on the timeline, 18 px left of the card (src/scenes/room/parts/journey.ts).
+  await page.mouse.click(card.x - 18, card.y + card.height / 2);
+  await expect(page.getByRole('dialog', { name: 'Founder' })).toBeVisible();
+});
+
+test('the cards stay inside the stage and never cover the section text', async ({ page }) => {
+  await page.goto('/');
+  await scrollJourney(page, 0.6);
+  await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
     timeout: SCENE_READY_TIMEOUT,
   });
   await page.waitForTimeout(500);
@@ -105,12 +120,12 @@ test('3D labels stay inside the stage and never cover the section text', async (
   }
 });
 
-test('reduced motion shows the whole path as completed', async ({ page }) => {
+test('reduced motion shows the whole thread as completed', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await scrollJourney(page, 0);
-  await expect(page.locator(stage)).toHaveAttribute('data-scene', 'still');
-  await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+  await expect(page.locator(room)).toHaveAttribute('data-scene', 'still');
+  await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
     timeout: SCENE_READY_TIMEOUT,
   });
   await expect(page.locator(`${milestones}[data-reached="false"]`)).toHaveCount(0);
@@ -121,7 +136,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme });
     await page.goto('/');
     await scrollJourney(page, 0.3);
-    await expect(page.locator(stage)).toHaveAttribute('data-scene-ready', 'true', {
+    await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
       timeout: SCENE_READY_TIMEOUT,
     });
     await page.waitForTimeout(500);

@@ -31,7 +31,7 @@ Tujuan: kode yang **mudah dibaca, mudah dites, dan aman diubah** oleh siapa pun,
 |---|---|---|
 | Komponen Astro | PascalCase | `ExperienceList.astro` |
 | Modul TS | camelCase | `formatDateRange.ts`, `isActiveCertification.ts` |
-| Folder | kebab-case | `photo-card/`, `journey-path/` |
+| Folder | kebab-case | `room/`, `kind-words/` |
 | Konstanta | UPPER_SNAKE | `MAX_PIXEL_RATIO` |
 | Tipe/interface | PascalCase, tanpa awalan `I` | `SceneHandle` |
 | Boolean | awalan `is/has/should/can` | `isReducedMotion` |
