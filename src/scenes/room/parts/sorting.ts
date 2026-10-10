@@ -18,8 +18,17 @@ import {
 } from 'three';
 
 import { isNear, rectCenter, type PageRect } from '../layout';
-import { blobShadow, brackets, fontsReady, label, MONO, SANS } from '../paper';
-import { activeCards, cardAt, firstDetection, linePlan, pushers, type LinePlan } from './sorting-plan';
+import { blobShadow, brackets, DISPLAY_FAMILY, fontsReady, label, MONO, SANS } from '../paper';
+import {
+  activeCards,
+  cardAt,
+  firstDetection,
+  linePlan,
+  pushers,
+  titleLines,
+  wrapTitle,
+  type LinePlan,
+} from './sorting-plan';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart, RoomTarget } from '../index';
@@ -39,6 +48,8 @@ interface BinData {
 const TILT = 0.95;
 const LABEL_HEIGHT = 18;
 const TITLE_FONT = '600 13px "Plus Jakarta Sans Variable", system-ui, sans-serif';
+/** Line height of the title printed on a card, as a multiple of its font size. */
+const LINE_HEIGHT = 1.15;
 /** Stripe period of the belt texture (CSS px). */
 const STRIPE = 22;
 /** A tapped card's title stays this long (ms). */
@@ -58,6 +69,12 @@ function canvasTexture(width: number, height: number, draw: (g: CanvasRenderingC
   map.colorSpace = SRGBColorSpace;
   map.anisotropy = 4;
   return map;
+}
+
+/** Labels read as overlays: drawn after the machine and never hidden behind the camera arm. */
+function onTop(mesh: Mesh): void {
+  mesh.renderOrder = 10;
+  for (const material of [mesh.material].flat()) material.depthTest = false;
 }
 
 function css(value: number): string {
@@ -96,6 +113,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
   let toScreen: RoomContext['toScreen'] = () => ({ x: 0, y: 0 });
   let rect: PageRect = { left: 0, top: 0, width: 0, height: 0 };
   let width = 0;
+  let bandHeight = 0;
   let clock = 0;
 
   // Rebuilt for each width (layout) and theme (recolor).
@@ -135,20 +153,32 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     built = null;
   };
 
+  /** The card's paper: an amber edge, the year, and the project title (up to three lines). */
   const paperFace = (card: CardData, w: number, d: number) =>
     canvasTexture(w, d, (g) => {
       if (!palette) return;
       g.fillStyle = css(palette['on-forest']);
       g.fillRect(0, 0, w, d);
       g.fillStyle = css(palette.amber);
-      g.fillRect(0, 0, w, Math.max(3, d * 0.08));
-      g.fillStyle = css(palette.forest);
-      g.font = `600 ${Math.max(7, d * 0.2)}px "IBM Plex Mono", ui-monospace, monospace`;
+      g.fillRect(0, 0, w, Math.max(3, d * 0.07));
+      const pad = w * 0.08;
       g.textBaseline = 'top';
-      g.fillText(card.year, w * 0.1, d * 0.2);
-      g.globalAlpha = 0.35;
-      for (const [i, share] of [0.8, 0.65, 0.72].entries()) {
-        g.fillRect(w * 0.1, d * (0.52 + i * 0.13), w * share * 0.85, Math.max(1.5, d * 0.05));
+      g.fillStyle = css(palette.forest);
+      g.globalAlpha = 0.7;
+      g.font = `600 ${Math.max(6, d * 0.12)}px "Plus Jakarta Sans Variable", system-ui, sans-serif`;
+      g.fillText(card.year, pad, d * 0.14);
+      g.globalAlpha = 1;
+      const size = Math.max(7, Math.min(15, d * 0.17));
+      g.font = `${size}px ${DISPLAY_FAMILY}`;
+      const top = d * 0.34;
+      const lines = titleLines(d - top, size, LINE_HEIGHT, 3);
+      for (const [i, text] of wrapTitle(
+        card.title,
+        w - pad * 2,
+        lines,
+        (t) => g.measureText(t).width,
+      ).entries()) {
+        g.fillText(text, pad, top + i * size * LINE_HEIGHT);
       }
     });
 
@@ -156,7 +186,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     const colors = palette;
     if (!colors || width <= 0) return;
     clearLine();
-    plan = linePlan(width, bins.length, targetsOf);
+    plan = linePlan(width, bins.length, targetsOf, bandHeight);
     const { length, beltDepth, binDepth, binWidth, card } = plan;
     const machine = new MeshStandardMaterial({ color: colors.forest, roughness: 0.6, metalness: 0.15 });
     const rail = new MeshStandardMaterial({ color: colors.line, roughness: 0.5, metalness: 0.2 });
@@ -284,6 +314,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
         height: LABEL_HEIGHT,
       });
       tag.visible = false;
+      onTop(tag);
       overlay.add(tag);
       return tag;
     });
@@ -317,6 +348,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     const titleWidth = (title.geometry as PlaneGeometry).parameters.width;
     if (titleWidth > maxWidth) title.scale.setScalar(maxWidth / titleWidth);
     title.visible = false;
+    onTop(title);
     overlay.add(title);
     built.titles[i] = title;
     return title;
@@ -440,8 +472,12 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       // A little above the band's centre, so the line's shadow ends before the project rows.
       line.position.y = 30;
       overlay.position.y = 30;
-      if (Math.round(next.width) !== Math.round(width)) {
+      if (
+        Math.round(next.width) !== Math.round(width) ||
+        Math.round(next.height) !== Math.round(bandHeight)
+      ) {
         width = next.width;
+        bandHeight = next.height;
         if (palette) assemble();
       }
       apply(clock);
@@ -492,6 +528,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
 
   /** The plan for the current slot width (before the first layout, the slot's own width). */
   function linePlanFor(): LinePlan {
-    return linePlan(width || slot?.getBoundingClientRect().width || 0, bins.length, targetsOf);
+    const box = slot?.getBoundingClientRect();
+    return linePlan(width || box?.width || 0, bins.length, targetsOf, bandHeight || box?.height || 0);
   }
 }

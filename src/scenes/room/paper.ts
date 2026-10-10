@@ -14,10 +14,16 @@ import {
 /** Label fonts: monospace only for machine output (detection labels, class names), docs/03 §3. */
 export const MONO = '500 12px "IBM Plex Mono", ui-monospace, monospace';
 export const SANS = '600 12px "Plus Jakarta Sans Variable", system-ui, sans-serif';
+/** The display face (titles printed on paper), without a size. */
+export const DISPLAY_FAMILY = '"Young Serif", Georgia, serif';
 
-/** Wait (at most 1.5 s) for the label fonts, so canvas text is not drawn in a fallback font. */
+/** Wait (at most 1.5 s) for the canvas fonts, so text is not drawn in a fallback font. */
 export async function fontsReady(): Promise<void> {
-  const load = Promise.all([document.fonts.load(MONO), document.fonts.load(SANS)]);
+  const load = Promise.all([
+    document.fonts.load(MONO),
+    document.fonts.load(SANS),
+    document.fonts.load(`400 15px ${DISPLAY_FAMILY}`),
+  ]);
   await Promise.race([load, new Promise((resolve) => setTimeout(resolve, 1500))]);
 }
 

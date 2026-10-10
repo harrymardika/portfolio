@@ -8,6 +8,8 @@ import {
   linePlan,
   pushers,
   TIMING,
+  titleLines,
+  wrapTitle,
 } from '@/scenes/room/parts/sorting-plan';
 
 describe('linePlan', () => {
@@ -86,5 +88,73 @@ describe('an empty line', () => {
     const plan = linePlan(800, 0, []);
     expect(activeCards(plan, 10)).toEqual([]);
     expect(cardAt(plan, 10, 0).gone).toBe(true);
+  });
+});
+
+describe('wrapTitle', () => {
+  // One character = 1 unit, so widths are character counts.
+  const measure = (text: string) => text.length;
+
+  it('keeps a short title on one line', () => {
+    expect(wrapTitle('Decklify', 20, 3, measure)).toEqual(['Decklify']);
+  });
+
+  it('breaks between words', () => {
+    expect(wrapTitle('Real-time crowd violence detection', 16, 3, measure)).toEqual([
+      'Real-time crowd',
+      'violence',
+      'detection',
+    ]);
+  });
+
+  it('ends the last line with an ellipsis, cutting whole words first', () => {
+    expect(wrapTitle('one two three four five six seven', 9, 2, measure)).toEqual(['one two', 'three…']);
+  });
+
+  it('breaks a long hyphenated word after its hyphen, without adding a space', () => {
+    expect(wrapTitle('Multimodal crisis-detection', 10, 3, measure)).toEqual([
+      'Multimodal',
+      'crisis-',
+      'detection',
+    ]);
+    expect(wrapTitle('Multimodal crisis-detection model', 10, 3, measure)).toEqual([
+      'Multimodal',
+      'crisis-',
+      'detection…',
+    ]);
+    // When the hyphen break is where the ellipsis falls, the pieces join without a space.
+    expect(wrapTitle('Multimodal crisis-detection', 10, 2, measure)).toEqual(['Multimodal', 'crisis-de…']);
+  });
+
+  it('cuts a single word that is still too wide', () => {
+    expect(wrapTitle('Supercalifragilistic', 6, 3, measure)).toEqual(['Super…']);
+  });
+
+  it('returns nothing for an empty title or no room', () => {
+    expect(wrapTitle('   ', 10, 3, measure)).toEqual([]);
+    expect(wrapTitle('Decklify', 10, 0, measure)).toEqual([]);
+  });
+});
+
+describe('titleLines', () => {
+  it('counts the lines that fit below the year, at most the maximum', () => {
+    // 20 px of room, 7 px text at 1.15 line height: 7, 15.05, 23.1 → two lines fit.
+    expect(titleLines(20, 7, 1.15, 3)).toBe(2);
+    expect(titleLines(100, 7, 1.15, 3)).toBe(3);
+    expect(titleLines(5, 7, 1.15, 3)).toBe(0);
+  });
+});
+
+describe('linePlan band fit', () => {
+  it('shrinks the cards so the line stays inside a short band', () => {
+    const tall = linePlan(900, 3, [0, 1, 2], 400);
+    const short = linePlan(900, 3, [0, 1, 2], 220);
+    expect(short.card.width).toBeLessThan(tall.card.width);
+    expect(short.card.width * 1.2).toBeLessThanOrEqual(220 / 2 - 10 + 0.001);
+  });
+
+  it('never makes a card wider than its bin, even with six bins on a phone', () => {
+    const plan = linePlan(340, 6, [0, 1, 2, 3, 4, 5], 200);
+    expect(plan.card.width).toBeLessThan(plan.binWidth);
   });
 });

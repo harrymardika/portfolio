@@ -28,17 +28,34 @@ export interface LinePlan {
 /** Seconds: a card dropping onto the belt, and being pushed into its bin. */
 export const TIMING = { drop: 0.45, push: 0.7 } as const;
 
-/** Plan the line for a band `width` px wide, `binCount` bins, and the bin index of every card. */
-export function linePlan(width: number, binCount: number, targets: readonly number[]): LinePlan {
+/**
+ * How far the line reaches below its band's centre, per px of card width (belt, bins, and their
+ * tilt all scale with the card). Measured from the rendered line, with a margin.
+ */
+export const DEPTH_PER_CARD = 1.2;
+
+/**
+ * Plan the line for a band `width` × `height` px, `binCount` bins, and the bin index of every card.
+ * The card size, and with it the whole machine, is capped so the line stays inside its band.
+ */
+export function linePlan(
+  width: number,
+  binCount: number,
+  targets: readonly number[],
+  height = Number.POSITIVE_INFINITY,
+): LinePlan {
   const length = Math.max(width, 1);
   const cameraX = -length / 2 + length * 0.18;
   const regionStart = cameraX + Math.min(90, length * 0.15);
   const regionEnd = length / 2 - 6;
   const slot = (regionEnd - regionStart) / Math.max(binCount, 1);
   const bins = Array.from({ length: binCount }, (_, i) => regionStart + slot * (i + 0.5));
-  const binWidth = Math.min(120, slot - 10);
-  const cardWidth = clamp(binWidth * 0.72, 30, 84);
-  const card = { width: cardWidth, depth: cardWidth * 0.68 };
+  const binWidth = Math.min(170, slot - 10);
+  // Wide enough to print the project title on the card (as in the approved preview), never wider
+  // than its bin, and small enough that the line fits its band.
+  const fitsBand = height > 0 ? (height / 2 - 10) / DEPTH_PER_CARD : 128;
+  const cardWidth = Math.max(18, Math.min(binWidth * 0.76, 128, fitsBand, binWidth - 4));
+  const card = { width: cardWidth, depth: cardWidth * 0.64 };
   const speed = clamp(length * 0.07, 32, 72);
   const firstDrop = -length / 2 + card.width / 2 + 4;
   // A card stays on the line from its drop to the end of its push; the same card never rides twice
@@ -145,4 +162,62 @@ export function pushers(plan: LinePlan, t: number): number[] {
     out[target] = Math.max(out[target] ?? 0, reach);
   }
   return out;
+}
+
+/** How many title lines of `size` px (line height `lineHeight` × size) fit in `space` px; at most `max`. */
+export function titleLines(space: number, size: number, lineHeight: number, max: number): number {
+  if (size <= 0) return 0;
+  return clamp(Math.floor((space - size) / (size * lineHeight)) + 1, 0, max);
+}
+
+/** Join two pieces of a title: no space after a hyphen break ("crisis-" + "detection"). */
+function join(a: string, b: string): string {
+  return a.endsWith('-') ? `${a}${b}` : `${a} ${b}`;
+}
+
+/** Shorten text until it fits with "…": whole words first, then characters. */
+function ellipsis(text: string, width: number, measure: (text: string) => number): string {
+  let cut = text.trimEnd();
+  while (cut.includes(' ') && measure(`${cut}…`) > width) cut = cut.slice(0, cut.lastIndexOf(' ')).trimEnd();
+  const chars = [...cut];
+  while (chars.length > 1 && measure(`${chars.join('')}…`) > width) chars.pop();
+  return `${chars.join('').replace(/[\s-]+$/, '')}…`;
+}
+
+/**
+ * Break a title into at most `maxLines` lines no wider than `width`; the last line ends with "…"
+ * when the title does not fit. Words too wide for a line break after their hyphens. Pure (the
+ * measuring function is passed in); tested.
+ */
+export function wrapTitle(
+  title: string,
+  width: number,
+  maxLines: number,
+  measure: (text: string) => number,
+): string[] {
+  if (maxLines <= 0) return [];
+  const words = title
+    .split(/\s+/)
+    .filter(Boolean)
+    .flatMap((word) => (measure(word) > width ? (word.match(/[^-]+-?|-/g) ?? [word]) : [word]))
+    .map((word) => (measure(word) > width ? ellipsis(word, width, measure) : word));
+  const lines: string[] = [];
+  let line = '';
+  for (const [i, word] of words.entries()) {
+    const next = line ? join(line, word) : word;
+    if (!line || measure(next) <= width) {
+      line = next;
+      continue;
+    }
+    if (lines.length === maxLines - 1) {
+      // No line left: the rest of the title ends this one with an ellipsis.
+      const rest = words.slice(i).reduce(join, line);
+      lines.push(ellipsis(rest, width, measure));
+      return lines;
+    }
+    lines.push(line);
+    line = word;
+  }
+  if (line) lines.push(line);
+  return lines;
 }

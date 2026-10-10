@@ -5,6 +5,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Fixed
+- The project cards on the home page's sorting line now show their title (up to three lines, long words broken at hyphens) instead of placeholder lines, are larger, and their detection labels are never hidden behind the camera arm.
+
 ## [1.5.0] - 2026-10-10
 
 Phase 13: the "Giok → Nila" look and the one-room 3D home page.
