@@ -1,6 +1,6 @@
 import type { Decision3D } from './capabilities';
 import type { ScenePalette } from './palette';
-import type { Camera, Scene } from 'three';
+import type { Camera, Scene, WebGLRenderer } from 'three';
 
 /** Returned by every `mount*` function (docs/02-architecture.md §6). */
 export interface SceneHandle {
@@ -28,10 +28,17 @@ export interface SceneModule {
   resize(width: number, height: number): void;
   /** Free resources that `disposeObject3D` cannot reach (DOM listeners, timers, canvas textures). */
   dispose?(): void;
+  /**
+   * Optional: whether the frame just updated changed anything. When it returns false the render is
+   * skipped, so a scene that is mostly still (the "one room", ADR 0019) costs almost nothing per frame.
+   */
+  needsRender?(): boolean;
 }
 
 export interface SceneSetup {
   readonly palette: ScenePalette;
+  /** The renderer, for scenes that configure it (shadows, color space, shader warm-up). */
+  readonly renderer: WebGLRenderer;
   readonly mode: Exclude<Decision3D['mode'], 'off'>;
   /** Ask for one more frame; needed in `still` mode after async work such as a texture load. */
   readonly invalidate: () => void;

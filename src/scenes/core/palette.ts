@@ -13,6 +13,7 @@ export const PALETTE_TOKENS = [
   'on-forest',
   'line',
   'mint',
+  'room-shadow',
 ] as const;
 export type PaletteToken = (typeof PALETTE_TOKENS)[number];
 export type ScenePalette = Readonly<Record<PaletteToken, number>>;

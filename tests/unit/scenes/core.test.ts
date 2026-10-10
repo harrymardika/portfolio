@@ -11,6 +11,7 @@ import {
   MAX_FRAME_DELTA,
   normalizePointer,
   parseCssColor,
+  realtimeShadows,
   smoothstep,
 } from '@/scenes/core';
 
@@ -206,5 +207,14 @@ describe('createLoop', () => {
     expect(errors).toHaveLength(1);
     expect(calls).toBe(2);
     expect(loop.running).toBe(true);
+  });
+});
+
+describe('realtimeShadows', () => {
+  it('draws real-time shadows on devices with more than four cores, or when the count is unknown', () => {
+    expect(realtimeShadows({ hardwareConcurrency: 8 })).toBe(true);
+    expect(realtimeShadows({ hardwareConcurrency: 0 })).toBe(true);
+    expect(realtimeShadows({ hardwareConcurrency: 4 })).toBe(false);
+    expect(realtimeShadows({ hardwareConcurrency: 3 })).toBe(false);
   });
 });

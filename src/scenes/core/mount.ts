@@ -54,6 +54,7 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
     if (!module || !compiled || destroyed) return;
     elapsed += dt;
     module.update({ dt, elapsed, pointer });
+    if (module.needsRender && !module.needsRender()) return;
     renderer.render(module.scene, module.camera);
   };
 
@@ -75,7 +76,7 @@ export function mountScene({ stage, canvas, create, decision }: MountOptions): S
     invalidate();
   };
 
-  module = create({ palette: readPalette(), mode: choice.mode, invalidate, ready });
+  module = create({ palette: readPalette(), renderer, mode: choice.mode, invalidate, ready });
   // Compile every shader up front without blocking the main thread (KHR_parallel_shader_compile
   // where available). Otherwise the first frame compiles them synchronously: one long task that
   // can also coincide with the photo texture upload.

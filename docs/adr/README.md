@@ -20,5 +20,6 @@
 | 0016 | [Draf studi kasus AI per proyek, bukan per repo](0016-group-aware-drafts.md) | Accepted |
 | 0017 | [Formulir kesan & pesan: antrean privat di layanan stats, terbit lewat Pull Request](0017-kind-words-form.md) | Accepted |
 | 0018 | [Warna "Giok → Nila": halaman sebagai ruangan bergradasi](0018-giok-nila-room.md) | Accepted |
+| 0019 | ["Satu ruang": satu kanvas 3D di belakang halaman, ditambatkan ke HTML](0019-one-room.md) | Accepted |
 
 Template: [0000-template.md](0000-template.md)

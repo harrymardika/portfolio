@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Tanggal:** 2026-10-10
-- **Menggantikan:** [0006](0006-visual-theme.md) (palet Hijau; konsep kartu foto + perjalanan tetap hidup dalam bentuk baru, ADR 0019 direncanakan di T13.3)
+- **Menggantikan:** [0006](0006-visual-theme.md) (palet Hijau; konsep kartu foto + perjalanan tetap hidup dalam bentuk baru, [ADR 0019](0019-one-room.md))
 
 ## Konteks
 Pemilik merasa situs datar dan warnanya kurang hidup: setiap bagian diisi satu warna rata (hijau tua, abu-hijau), tanpa cahaya. Latar biru foto profil (D3) juga bertabrakan dengan hijau. Di pratinjau, pemilik membandingkan Giok, Nila, Studio (terang sejuk), Sogan (batik), dan tiga campuran hijau-biru, lalu memilih **Giok → Nila** (D18, 2026-10-10).

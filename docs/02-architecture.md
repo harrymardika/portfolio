@@ -127,13 +127,15 @@ Aturan:
 │   │   │                        #   MessageReview (antrean privat pemilik, T12.3)
 │   │   ├── assistant/           # AskWidget (chatbot di sudut, T11.4) + ask-panel.ts (dimuat saat diklik)
 │   │   ├── contact/             # Contact (bagian kontak beranda)
+│   │   ├── room/                # RoomStage (kanvas tetap "satu ruang", ADR 0019)
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
 │   │   └── print/               # CvDocument, CvEntry, PortfolioDocument
 │   ├── scenes/
 │   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
 │   │   │                        #   palette, pointer, types (kontrak SceneModule)
-│   │   ├── photo-card/          # kartu foto 3D + kotak deteksi
-│   │   └── journey-path/        # jalur karier 3D
+│   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom)
+│   │   ├── photo-card/          # kartu foto 3D + kotak deteksi (diganti ruang di T13.4)
+│   │   └── journey-path/        # jalur karier 3D (diganti ruang di T13.5)
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   │                            #   · PrintLayout (halaman cetak PDF)
 │   ├── pages/
@@ -213,8 +215,9 @@ interface SceneModule {
   update(frame: { dt; elapsed; pointer: { x; y } }): void; // dt sudah dijepit [0, 0.05]
   resize(width: number, height: number): void;
   dispose?(): void; // listener/timer/canvas texture; geometry & material dibersihkan otomatis
+  needsRender?(): boolean; // opsional: false = frame ini tidak berubah, render dilewati (ADR 0019)
 }
-// create(setup) menerima { palette, mode: 'animated' | 'still', invalidate }
+// create(setup) menerima { palette, renderer, mode: 'animated' | 'still', invalidate, ready }
 ```
 
 `mountScene` menangani:
@@ -224,6 +227,29 @@ interface SceneModule {
 - `destroy()`: hentikan loop, lepas observer/listener, `disposeObject3D(scene)`, `renderer.dispose()`.
 
 Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi; `frameDelta` kini selalu menjepitnya dan dites.
+
+### 6.1 "Satu ruang" (ADR 0019, Fase 13)
+
+Beranda (dan nanti halaman lain) memakai **satu** kanvas `position: fixed` di belakang `main` (`src/components/room/RoomStage.astro`), dipasang dengan `mountRoom(stage, parts)` dari `src/scenes/room/` lewat `mountScene` yang sama.
+
+```ts
+// src/scenes/room/index.ts
+interface RoomPart {
+  slot: HTMLElement;                         // elemen HTML yang diikuti (juga tempat fallback-nya)
+  build(room): Object3D | Promise<Object3D>; // sekali, saat slot mendekati layar (BUILD_MARGIN)
+  layout(room, rect: PageRect): void;        // posisi dari rect slot (koordinat dokumen)
+  update?(frame): boolean;                   // true selama masih bergerak
+  recolor?(palette): void;                   // tema berganti
+  targets?(): RoomTarget[];                  // objek yang bisa diklik (wajib punya padanan HTML)
+  dispose?(): void;
+}
+```
+
+- **Halaman ↔ dunia** (`layout.ts`, murni dan dites): kamera berjarak `CAMERA.distance` dari bidang halaman (z = 0) dengan fov `CAMERA.fov`; `worldPerPixel` mengubah piksel CSS ke unit dunia. Bagian ditambatkan ke posisi dokumen slot di dalam grup `page`, dan scroll hanya menggeser grup itu (`pageOffset`), jadi 3D selalu sejajar dengan teksnya.
+- **Dinding bayangan**: `ShadowMaterial` di z = −`WALL_DEPTH`, warnanya `--room-shadow`. Satu `DirectionalLight` tetap. Peta bayangan hanya bila `realtimeShadows` (> 4 core).
+- **Render sesuai kebutuhan**: `needsRender()` true bila scroll, pointer (paralaks kecil), tema, atau `update()` sebuah bagian berubah.
+- **Klik**: klik di luar elemen interaktif HTML di-raycast ke `targets()`; `html.room-hover` memberi kursor tangan.
+- **Tema**: `MutationObserver` pada `data-theme` dan `prefers-color-scheme` membaca ulang palet dan memanggil `recolor`.
 
 ## 7. i18n
 

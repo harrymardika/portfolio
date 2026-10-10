@@ -105,6 +105,11 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
+  /* The room (ADR 0019) marks when the pointer is over a clickable 3D object. */
+  :root.room-hover body {
+    cursor: pointer;
+  }
+
   /* Print pages are plain paper. */
   :root[data-print] body {
     background: var(--surface);

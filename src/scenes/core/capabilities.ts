@@ -48,6 +48,17 @@ export function decide3D(caps: DeviceCapabilities): Decision3D {
   return { mode: 'animated' };
 }
 
+/** Devices with more logical cores than this draw real-time shadows (ADR 0019); others get soft blobs. */
+export const MIN_CORES_FOR_SHADOWS = 4;
+
+/**
+ * Whether the room renders real-time shadows. Unknown core counts (0) count as capable, like
+ * `decide3D`. Save-Data never gets here: it turns the 3D off.
+ */
+export function realtimeShadows(caps: Pick<DeviceCapabilities, 'hardwareConcurrency'>): boolean {
+  return caps.hardwareConcurrency === 0 || caps.hardwareConcurrency > MIN_CORES_FOR_SHADOWS;
+}
+
 /** CPU implementations of WebGL: SwiftShader (Chrome without a GPU), llvmpipe/softpipe (Linux), WARP (Windows). */
 const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software|basic render driver/i;
 
