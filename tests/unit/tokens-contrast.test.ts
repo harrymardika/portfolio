@@ -16,7 +16,24 @@ function block(selector: string): Record<string, string> {
 }
 
 const light = block(':root {');
-const dark = { ...light, ...block(":root[data-theme='dark']") };
+const darkChoice = block(":root[data-theme='dark']");
+const darkOs = block(":root:not([data-theme='light'])");
+const dark = { ...light, ...darkChoice };
+// Print pages (data-print) keep the original palette so the PDFs never change (ADR 0018).
+const print = { ...light, ...block(':root[data-print]') };
+const ORIGINAL_PRINT = {
+  'forest-ink': '#12302a',
+  sage: '#eef3ef',
+  surface: '#ffffff',
+  ink: '#173d32',
+  'ink-muted': '#3f5d52',
+  line: '#d6e2d9',
+  forest: '#173d32',
+  amber: '#f2b134',
+  'amber-deep': '#8a5a00',
+  'on-forest': '#ffffff',
+  'on-forest-muted': '#d3e2d9',
+};
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
@@ -46,14 +63,67 @@ const PAIRS: [string, string, number][] = [
   ['on-forest-muted', 'forest', 4.5],
   ['amber', 'forest', 4.5],
   ['forest', 'amber', 4.5],
+  ['ink', 'room-glow', 4.5],
+  ['ink-muted', 'room-glow', 4.5],
+  ['amber-deep', 'room-glow', 4.5],
 ];
+
+/** Text that sits directly on the room walls (ADR 0018). Checked at every 10% of the gradient. */
+const ON_ROOM: [string, number][] = [
+  ['ink', 4.5],
+  ['ink-muted', 4.5],
+  ['forest-ink', 4.5],
+  ['amber-deep', 4.5],
+];
+
+/** sRGB interpolation, like a CSS gradient. */
+function mix(a: string, b: string, t: number): string {
+  const channel = (hex: string, i: number) => parseInt(hex.slice(i, i + 2), 16);
+  return `#${[1, 3, 5]
+    .map((i) =>
+      Math.round(channel(a, i) + (channel(b, i) - channel(a, i)) * t)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+/**
+ * The paper grain (global.css, white noise blended with overlay) lightens the walls a little; text
+ * must stay readable on the lightened wall too. Measured at about 2–5%; checked with 4%.
+ */
+const GRAIN = 0.04;
+
+/** The wall color at fraction `f` (0 = top, 1 = bottom) of the room: top → mid → bottom. */
+function wall(tokens: Record<string, string>, f: number): string {
+  const [top, mid, bottom] = [
+    tokens['room-top'] ?? '',
+    tokens['room-mid'] ?? '',
+    tokens['room-bottom'] ?? '',
+  ];
+  return f <= 0.5 ? mix(top, mid, f * 2) : mix(mid, bottom, (f - 0.5) * 2);
+}
+
+const ROOM_TOKENS = ['room-top', 'room-mid', 'room-bottom', 'room-glow', 'room-shadow'];
 
 describe('token contrast (WCAG AA)', () => {
   it('found the tokens it needs', () => {
-    for (const [fg, bg] of PAIRS) {
-      expect(light[fg]).toBeDefined();
-      expect(light[bg]).toBeDefined();
+    for (const name of [
+      ...PAIRS.flatMap(([fg, bg]) => [fg, bg]),
+      ...ON_ROOM.map(([fg]) => fg),
+      ...ROOM_TOKENS,
+    ]) {
+      expect(light[name], name).toBeDefined();
+      expect(dark[name], name).toBeDefined();
     }
+  });
+
+  it('the OS dark preference and the explicit dark choice define the same colors', () => {
+    expect(darkOs).toEqual(darkChoice);
+  });
+
+  it('print pages keep the original palette, so the PDFs do not change', () => {
+    for (const [name, value] of Object.entries(ORIGINAL_PRINT)) expect(print[name], name).toBe(value);
   });
 
   for (const [theme, tokens] of [
@@ -67,8 +137,44 @@ describe('token contrast (WCAG AA)', () => {
       });
     }
   }
+  for (const [theme, tokens] of [
+    ['light', light],
+    ['dark', dark],
+  ] as const) {
+    for (const [fg, min] of ON_ROOM) {
+      it(`${theme}: ${fg} on every point of the room gradient ≥ ${min}:1`, () => {
+        for (let step = 0; step <= 10; step += 1) {
+          const surface = wall(tokens, step / 10);
+          for (const background of [surface, mix(surface, '#ffffff', GRAIN)]) {
+            const ratio = contrast(tokens[fg] ?? '', background);
+            expect(Number(ratio.toFixed(2))).toBeGreaterThanOrEqual(min);
+          }
+        }
+      });
+    }
+  }
   // The CV prints in the light theme only (print pages force data-theme="light").
-  it('light: print-ink on surface ≥ 4.5:1', () => {
-    expect(contrast(light['print-ink'] ?? '', light['surface'] ?? '')).toBeGreaterThanOrEqual(4.5);
+  it('print: print-ink on surface ≥ 4.5:1', () => {
+    expect(contrast(print['print-ink'] ?? '', print['surface'] ?? '')).toBeGreaterThanOrEqual(4.5);
   });
+  for (const [fg, bg, min] of PAIRS.filter(([, bg]) => !bg.startsWith('room-'))) {
+    it(`print: ${fg} on ${bg} ≥ ${min}:1`, () => {
+      expect(Number(contrast(print[fg] ?? '', print[bg] ?? '').toFixed(2))).toBeGreaterThanOrEqual(min);
+    });
+  }
+  for (const [theme, tokens] of [
+    ['light', light],
+    ['dark', dark],
+  ] as const) {
+    for (const [fg, min] of [
+      ['ink', 4.5],
+      ['ink-muted', 4.5],
+      ['amber-deep', 4.5],
+    ] as const) {
+      it(`${theme}: ${fg} on the room light with grain ≥ ${min}:1`, () => {
+        const glow = mix(tokens['room-glow'] ?? '', '#ffffff', GRAIN);
+        expect(Number(contrast(tokens[fg] ?? '', glow).toFixed(2))).toBeGreaterThanOrEqual(min);
+      });
+    }
+  }
 });

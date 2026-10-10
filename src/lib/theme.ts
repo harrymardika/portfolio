@@ -4,6 +4,12 @@
  */
 export type Theme = 'light' | 'dark';
 
+/**
+ * Where a page stands in the room gradient (ADR 0018): the home page walks all of it ('flow');
+ * other pages stand at one point (About at the jade top, Statistics and 404 at the indigo bottom).
+ */
+export type RoomPoint = 'flow' | 'top' | 'mid' | 'bottom';
+
 /** localStorage key, shared with the inline pre-paint script in BaseLayout. */
 export const THEME_STORAGE_KEY = 'theme';
 

@@ -14,7 +14,7 @@ Baca secukupnya sesuai tugas, jangan seluruh `docs/` di setiap sesi: konteks yan
 
 | Jika tugasnya tentang... | Baca juga |
 |---|---|
-| Tampilan, komponen, 3D | `docs/03-design-system.md`, buka `docs/design/theme-prototypes.html` (bagian "F + E", warna Hijau) |
+| Tampilan, komponen, 3D | `docs/03-design-system.md` (warna "Giok → Nila", ADR 0018; pratinjau tertaut di bagian atasnya) |
 | Isi / data / skema | `docs/04-content-guide.md` |
 | Docker, CI/CD, server | `docs/07-deployment.md` |
 | Analytics | `docs/08-analytics.md` |

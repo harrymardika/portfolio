@@ -2,9 +2,9 @@ import { expect, test, type Page } from '@playwright/test';
 
 const bodyBackground = (page: Page) => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
 
-// Token values from src/styles/tokens.css (--sage), as computed RGB.
-const LIGHT_BG = 'rgb(238, 243, 239)';
-const DARK_BG = 'rgb(17, 26, 23)';
+// Token values from src/styles/tokens.css (--room-mid, the body's base color), as computed RGB.
+const LIGHT_BG = 'rgb(213, 233, 234)';
+const DARK_BG = 'rgb(17, 58, 72)';
 
 test('follows the OS dark preference when no theme was chosen', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });

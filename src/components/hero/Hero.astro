@@ -21,22 +21,20 @@ const role = localize(profile.role, locale);
 const headline = splitEmphasis(localize(profile.headline, locale));
 ---
 
-<section class="bg-forest text-on-forest" aria-labelledby="hero-title">
+<section aria-labelledby="hero-title">
   <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-14 lg:grid-cols-[1.05fr_1fr] lg:py-20">
     <div class="grid min-w-0 gap-6">
-      <p class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-on-forest/25 bg-on-forest/10 px-3 py-1 font-mono text-xs">
+      <p class="inline-flex w-max max-w-full items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 font-mono text-xs">
         <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
         {role}
       </p>
-      <h1 id="hero-title" class="text-hero text-on-forest">
+      <h1 id="hero-title" class="text-hero">
         <span class="sr-only">{profile.name}: </span>
         {headline.map((segment) =>
-          segment.emphasis ? <span class="text-amber">{segment.text}</span> : segment.text,
+          segment.emphasis ? <span class="text-amber-deep">{segment.text}</span> : segment.text,
         )}
       </h1>
-      <p class="max-w-[42ch] text-base text-on-forest-muted sm:text-lg">
-        {localize(profile.tagline, locale)}
-      </p>
+      <p class="max-w-[42ch] text-base text-ink-muted sm:text-lg">{localize(profile.tagline, locale)}</p>
       <div class="flex flex-wrap gap-3">
         <a
           href={downloadPath(profile.name, 'cv', locale)}
@@ -51,7 +49,7 @@ const headline = splitEmphasis(localize(profile.headline, locale));
           href={downloadPath(profile.name, 'portfolio', locale)}
           download
           data-download="portfolio"
-          class="inline-flex min-h-11 items-center gap-2 rounded-full border border-on-forest/45 px-5 font-semibold text-on-forest transition hover:bg-on-forest/10"
+          class="inline-flex min-h-11 items-center gap-2 rounded-full border border-ink/40 px-5 font-semibold text-ink transition hover:bg-surface"
         >
           <DownloadIcon />
           {t['download.portfolio']}
@@ -60,10 +58,10 @@ const headline = splitEmphasis(localize(profile.headline, locale));
       <dl class="flex flex-wrap gap-x-8 gap-y-4" aria-label={t['hero.statsLabel']}>
         {profile.stats.map((stat) => (
           <div class="grid">
-            <dd class="order-1 font-mono text-xl font-medium text-amber">
+            <dd class="order-1 font-mono text-xl font-medium text-amber-deep">
               {localizeNumber(stat.value, locale)}
             </dd>
-            <dt class="order-2 text-xs text-on-forest-muted">{localize(stat.label, locale)}</dt>
+            <dt class="order-2 text-xs text-ink-muted">{localize(stat.label, locale)}</dt>
           </div>
         ))}
       </dl>

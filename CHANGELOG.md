@@ -8,6 +8,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ### Added
 - Feature inventory end-to-end test: every feature the site had before the Phase 13 redesign (downloads, language and theme switches, chatbot, journey stories, kind words, contact, project search and filters, CVs by role, statistics, message form, 404, PDFs) is checked in English and Indonesian, on desktop and phone (T13.0).
 
+### Changed
+- New colors, "Giok → Nila": every page is a softly lit room whose walls shift from jade at the top to indigo at the bottom, pale in the light theme and deep in the dark one, with a fine paper grain; the home page walks the whole gradient, About stands at the jade end, Statistics and 404 at the indigo end. The hero and contact sections now sit in the room instead of on dark green bands. Text contrast is checked at every point of the gradient. PDFs keep their original colors (T13.1, ADR 0018).
+
 ## [1.4.0] - 2026-10-09
 
 Phase 12: the moderated kind words form.

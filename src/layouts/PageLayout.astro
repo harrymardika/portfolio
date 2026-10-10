@@ -12,6 +12,7 @@ import SkipLink from '@/components/layout/SkipLink.astro';
 import type { Profile } from '@/lib/content';
 import type { Locale } from '@/lib/i18n';
 import type { JsonLd } from '@/lib/seo';
+import type { RoomPoint } from '@/lib/theme';
 
 interface Props {
   locale: Locale;
@@ -21,6 +22,8 @@ interface Props {
   /** False keeps the page out of the site statistics (the owner's private review page). */
   track?: boolean;
   jsonLd?: JsonLd[];
+  /** The page's point in the room gradient; defaults to the middle. */
+  room?: RoomPoint;
   profile: Pick<Profile, 'name' | 'socials'>;
 }
 

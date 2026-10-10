@@ -22,22 +22,22 @@ const channels = [...profile.socials].sort(
 );
 ---
 
-<section id="contact" aria-labelledby="contact-title" class="scroll-mt-20 bg-forest text-on-forest">
+<section id="contact" aria-labelledby="contact-title" class="scroll-mt-20">
   <div class="mx-auto grid max-w-[1120px] gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.9fr_1.1fr] lg:py-24">
     <div class="grid content-start gap-4">
-      <p class="font-mono text-eyebrow text-amber uppercase">{t['contact.eyebrow']}</p>
-      <h2 id="contact-title" class="text-h2 text-on-forest">
+      <p class="font-mono text-eyebrow text-amber-deep uppercase">{t['contact.eyebrow']}</p>
+      <h2 id="contact-title" class="text-h2">
         {title.map((segment) =>
-          segment.emphasis ? <span class="text-amber">{segment.text}</span> : segment.text,
+          segment.emphasis ? <span class="text-amber-deep">{segment.text}</span> : segment.text,
         )}
       </h2>
-      <p class="max-w-[42ch] text-on-forest-muted">{localize(profile.contact.intro, locale)}</p>
+      <p class="max-w-[42ch] text-ink-muted">{localize(profile.contact.intro, locale)}</p>
     </div>
     <ul class="grid gap-3 sm:grid-cols-2">
       {channels.map((social) => (
         <li
           class:list={[
-            'relative flex items-center gap-4 rounded-xl border border-on-forest/20 bg-on-forest/5 p-4 transition-colors hover:bg-on-forest/10',
+            'relative flex items-center gap-4 rounded-xl border border-line bg-surface/70 p-4 transition-colors hover:bg-surface',
             // Email is the primary channel: full width so the address is never truncated.
             social.platform === 'email' && 'sm:col-span-2',
           ]}
@@ -50,11 +50,11 @@ const channels = [...profile.socials].sort(
               href={social.url}
               rel={social.platform === 'email' ? undefined : 'me noopener'}
               data-outbound={social.platform}
-              class="font-semibold text-on-forest after:absolute after:inset-0 after:rounded-xl"
+              class="font-semibold text-ink after:absolute after:inset-0 after:rounded-xl"
             >
               {SOCIAL_LABELS[social.platform]}
             </a>
-            {social.handle && <span class="truncate text-sm text-on-forest-muted">{social.handle}</span>}
+            {social.handle && <span class="truncate text-sm text-ink-muted">{social.handle}</span>}
           </span>
           {social.platform === 'email' && (
             <button
@@ -62,7 +62,7 @@ const channels = [...profile.socials].sort(
               data-copy={profile.email}
               data-label-copied={t['contact.copied']}
               aria-label={t['contact.copyEmail']}
-              class="relative z-10 ml-auto hidden min-h-9 rounded-full border border-on-forest/40 px-3 text-xs font-semibold text-on-forest hover:bg-on-forest/10 [.js_&]:inline-flex [.js_&]:items-center"
+              class="relative z-10 ml-auto hidden min-h-9 rounded-full border border-ink/40 px-3 text-xs font-semibold text-ink hover:bg-sage [.js_&]:inline-flex [.js_&]:items-center"
             >
               <span data-copy-label>{t['contact.copy']}</span>
             </button>

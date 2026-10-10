@@ -9,7 +9,7 @@ import '@/styles/global.css';
 import StatsBeacon from '@/components/layout/StatsBeacon.astro';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
 import { DEFAULT_OG_IMAGE, type JsonLd, OG_HEIGHT, OG_WIDTH, ogImagePath, serializeJsonLd } from '@/lib/seo';
-import { THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
+import { type RoomPoint, THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
 
 interface Props {
   locale: Locale;
@@ -25,6 +25,10 @@ interface Props {
   track?: boolean;
   /** Structured data for search engines (src/lib/seo/json-ld.ts). */
   jsonLd?: JsonLd[];
+  /** The page's point in the room gradient (docs/03-design-system.md §2). */
+  room?: RoomPoint;
+  /** Print view: plain paper and the original palette, so the PDFs never change. */
+  print?: boolean;
 }
 
 const {
@@ -36,6 +40,8 @@ const {
   forceTheme,
   track = true,
   jsonLd = [],
+  room = 'mid',
+  print = false,
 } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
@@ -45,7 +51,7 @@ const ogImage = absolute(linkAlternates && !noindex ? ogImagePath(Astro.url.path
 ---
 
 <!doctype html>
-<html lang={LOCALE_TAGS[locale]} data-theme={forceTheme}>
+<html lang={LOCALE_TAGS[locale]} data-theme={forceTheme} data-print={print ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -95,7 +101,7 @@ const ogImage = absolute(linkAlternates && !noindex ? ogImagePath(Astro.url.path
       <script type="application/ld+json" is:inline set:html={serializeJsonLd(data)} />
     ))}
   </head>
-  <body>
+  <body data-room={room}>
     <slot />
     {track && <StatsBeacon />}
   </body>

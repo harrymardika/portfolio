@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.1 (warna Giok → Nila)
+**Terakhir diperbarui:** 2026-10-10 · **Fase aktif:** Fase 13 · **Tugas berikutnya:** T13.2 (rapikan "pola AI")
 
 ## Ringkasan
 
@@ -195,7 +195,7 @@ Aturan untuk semua tugas Fase 13 dan 14:
 
 - [x] **T13.0** Pagar pengaman fitur lama (sebelum tampilan diubah)
   - Kriteria: `tests/e2e/feature-inventory.spec.ts` memeriksa setiap butir §I di EN dan ID, desktop dan HP (selector berdasarkan peran dan teks, bukan kelas CSS, agar tetap berlaku setelah tampilan berubah); semua lulus pada tampilan sekarang; angka Lighthouse ketujuh halaman saat ini dicatat di log sesi sebagai pembanding; screenshot acuan (desktop/HP × terang/gelap) dibuat sebagai artefak lokal untuk perbandingan, tidak di-commit.
-- [ ] **T13.1** Warna Giok → Nila, terang dan gelap (ADR 0018 menggantikan ADR 0006)
+- [x] **T13.1** Warna Giok → Nila, terang dan gelap (ADR 0018 menggantikan ADR 0006)
   - Kriteria: token baru di `src/styles/tokens.css` untuk tiga titik ruangan (giok, tengah, nila) × tema terang (muda) dan gelap (tua), amber tetap; latar halaman berupa gradasi CSS panjang dari giok ke nila sehingga perubahan warna tetap ada tanpa JS; sorot cahaya dan tekstur butiran halus; halaman selain beranda memakai satu titik tetap (About giok, Projects tengah, Statistik dan 404 nila, lainnya tengah); `tests/unit/tokens-contrast.test.ts` mencakup semua pasangan teks di kedua tema, termasuk titik antara gradasi (sampel tiap 10%); `bun run lint:tokens` lulus; tombol tema tetap bekerja tanpa kedip; `docs/03-design-system.md` §2 ditulis ulang. Belum ada perubahan tata letak; pratinjau ke pemilik.
 - [ ] **T13.2** Rapikan "pola AI" di seluruh situs (tanpa 3D)
   - Kriteria: H1 beranda = nama pemilik (D19), `headline` tampil sebagai kalimat di bawahnya tanpa warna aksen; `*aksen*` tidak lagi diwarnai di web (format tetap diterima di `content/`, PDF tidak berubah); badge pil peran dan label mono huruf kapital dihapus (font mono hanya untuk keluaran mesin: label deteksi, nama kelas); tiga angka hero menjadi daftar dengan konteks (label di `profile.yaml` diperpanjang EN/ID, ditinjau pemilik); proyek pilihan di beranda menjadi baris, bukan kartu; Kontak menjadi email besar + tombol salin + tautan media sosial (semuanya tetap ada); judul halaman, meta, dan JSON-LD tidak berubah; `docs/03` dan `docs/04` diperbarui; `feature-inventory` lulus.
@@ -282,6 +282,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-10 · Claude Code (Opus) · T13.1 warna Giok → Nila
+- **Dikerjakan:** token ruangan `--room-top/-mid/-bottom/-glow/-shadow` (terang muda, gelap tua) dan nilai baru untuk `ink`, `ink-muted`, `forest-ink`, `sage`, `surface`, `line`, `amber-deep` (gelap `#f7c95f`) di `tokens.css`; `body` = cahaya radial + gradasi CSS + butiran kertas (`body::before`, overlay 22%, tanpa `isolation` pada `body` agar overlay benar-benar bercampur); prop `room` (`flow`/`top`/`mid`/`bottom`) di `BaseLayout`/`PageLayout` (beranda `flow`, About `top`, Statistik dan 404 `bottom`); `print` di `PrintLayout` memasang `data-print` sehingga halaman cetak memakai palet Hijau lama (PDF tidak berubah); hero dan kontak tidak lagi berlatar hijau tua (warna teks dari `ink`). `--forest`, `--amber`, dan `--on-forest*` tidak berubah.
+- **Tes:** `tokens-contrast.test.ts` kini mengecek `ink`, `ink-muted`, `forest-ink`, `amber-deep` di setiap 10% gradasi dan di atas cahaya, dengan dan tanpa margin butiran 4%, di kedua tema; mengunci palet cetak ke nilai lama; memastikan blok gelap OS dan pilihan sama (57 tes); `theme.spec.ts` membaca warna dasar baru (`--room-mid`). Dilihat di desktop dan HP, terang dan gelap.
+- **Review (subagent):** tanpa blocker. Diperbaiki: butiran memutihkan dinding gelap karena `isolation` (dihapus; `ink-muted` gelap → `#c4d6d3`, `amber-deep` gelap → `#f7c95f` agar tetap ≥ 4.5:1 dengan margin butiran), palet cetak kini dikunci tes, baris Hero/Journey di docs/03 §5. Reviewer membandingkan 16 PDF lama vs baru per piksel: identik.
+- **Pratinjau:** sesuai jawaban pemilik sebelum pergi, tidak menunggu persetujuan; screenshot desktop/HP × terang/gelap disiapkan untuk ditinjau pemilik setelah kembali.
+- **Docs:** ADR 0018 (menggantikan 0006), `docs/03` §2 ditulis ulang, `AGENTS.md` §1.
+- **Langkah berikutnya:** T13.2.
+
 ### 2026-10-10 · Claude Code (Opus) · T13.0 pagar pengaman fitur lama
 - **Dikerjakan:** `tests/e2e/feature-inventory.spec.ts` (60 tes: EN/ID × desktop/HP, plus tanpa JS dan file PDF): layout bersama di enam halaman (skip link, ganti bahasa, tombol tema, chatbot, footer Statistik/Resumes/Leave a message + lima tautan sosial, hreflang, og:image, navigasi termasuk menu HP), hero (nama di H1, Download CV + Portfolio PDF dengan `download`/`data-download`, tiga angka), Journey (semua milestone + cerita), proyek pilihan, Kind words + tautan formulir, Kontak (email, empat media sosial, tombol salin), Projects (pencarian, filter, `?filter=`, semua studi kasus), studi kasus, About, `/cv/` (dua PDF per varian), Statistik, formulir pesan, 404. Pemilih memakai peran, kamus UI, `content/`, dan id bagian (`#journey`, `#projects`, `#messages`, `#contact`) yang wajib dipertahankan oleh redesain.
 - **Lighthouse pembanding (HP, median 3 run, build e2e):** `/` 99/100/100/100 · `/id/` 98 · `/about/` 100 · `/projects/` 100 · `/projects/decklify/` 100 · `/stats/` 99 · `/messages/` 100 (performa; a11y, best practices, SEO semuanya 100). `bun run lighthouse` butuh akses jaringan untuk `bunx` (di sandbox agent gagal tanpa itu).
@@ -310,10 +318,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Diuji:** 496 tes unit (termasuk entri yang dibuat selalu lolos tes konten); uji live menyusul setelah merge (workflow harus ada di `main`).
 - **Uji live:** dua pesan uji lewat API publik → `notify` membuka issue #4 (jumlah saja) → satu disetujui, satu ditolak → `publish` membuka PR #5 dan menghapus salinan di server. Uji ini menemukan bug: terjemahan pesan tanpa jabatan selalu ditolak (cek "teks kosong" membaca jabatan yang tidak ada sebagai teks kosong); diperbaiki + tes regresi, dan alasan penolakan kini menyebut field dan kode masalah (tanpa teks).
 - **Langkah berikutnya:** uji ulang (pesan ID tanpa jabatan ditambahkan ke PR #5), bersihkan PR/issue uji, lalu T12.5 (penutupan Fase 12, rilis 1.4.0).
-
-### 2026-10-09 · Claude Code (Opus) · T12.3 halaman tinjau privat + token di server
-- **Server (atas izin pemilik mengerjakan seluruh Fase 12):** `compose.yml` baru disalin (cadangan di `backups/`), `MESSAGES_ADMIN_TOKEN` dibuat di `/opt/portfolio/.env` (tidak pernah dicetak; ambil dari sana untuk password manager) dan disalin ke secret repo GitHub; `docker compose up -d stats` → log `kind words form open`, `/api/messages/count` = 0, tanpa token 401.
-- **Dikerjakan:** `/messages/review/` + `/id/messages/review/` (`MessageReview.astro`): token di `sessionStorage` per tab, daftar pending (semua teks lewat `textContent`, tautan hanya bila https), ringkasan jumlah pending/approved, Setujui/Tolak dengan konfirmasi, token salah → dilupakan. `noindex`, `Disallow` di robots, `track={false}` (opsi baru di `PageLayout`).
-- **Diuji:** 12 e2e (teks aman dari XSS, tautan `javascript:` tetap teks, konfirmasi, token dikirim, token salah, privat/robots/tanpa statistik, axe terang/gelap, tombol ≥ 44 px); dilihat langsung di desktop dan HP (gaya tombol kartu sempat hilang karena dibuat skrip, diperbaiki dengan `:global`).
-- **Dari review (tanpa blocker):** setelah Setujui/Tolak kartu dihapus dan jumlah diperbarui di tempat (tadinya memuat ulang seluruh antrean, bisa balapan dan menimpa status sukses); tombol "Muat ulang antrean"; 404 = sudah diproses di tempat lain (kartu hilang, pesan jelas); fokus pindah ke kartu berikutnya / ringkasan / kolom token; tombol menyebut nama penulis (`aria-describedby`); placeholder diisi dengan fungsi (pola `$&` di nama tidak berlaku); tanggal sesuai bahasa halaman; tautan profil menampilkan alamat hasil parse (domain mirip terlihat); `autocomplete=current-password`. `/security-review`: tanpa temuan. 18 e2e.
-- **Langkah berikutnya:** T12.4 (workflow PR otomatis + notifikasi harian).

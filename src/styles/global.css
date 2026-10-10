@@ -56,9 +56,60 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /*
+   * The room (ADR 0018): a soft light near the top over a gradient from jade to indigo. The home page
+   * walks the whole gradient (data-room="flow"); other pages stand at one point of it. Pure CSS, so the
+   * colors are there without JavaScript or WebGL.
+   */
   body {
-    @apply bg-sage font-sans text-ink antialiased;
+    @apply font-sans text-ink antialiased;
+    --room-a: var(--room-mid);
+    --room-b: var(--room-mid);
+    --room-c: var(--room-mid);
+    min-height: 100vh;
     line-height: 1.6;
+    background-color: var(--room-mid);
+    background-image:
+      radial-gradient(70% 40rem at 78% 0, color-mix(in srgb, var(--room-glow) 70%, transparent), transparent),
+      linear-gradient(180deg, var(--room-a) 0%, var(--room-b) 50%, var(--room-c) 100%);
+  }
+
+  body[data-room='flow'] {
+    --room-a: var(--room-top);
+    --room-c: var(--room-bottom);
+  }
+
+  body[data-room='top'] {
+    --room-a: var(--room-top);
+    --room-b: var(--room-top);
+    --room-c: color-mix(in srgb, var(--room-top) 60%, var(--room-mid));
+  }
+
+  body[data-room='bottom'] {
+    --room-a: color-mix(in srgb, var(--room-bottom) 60%, var(--room-mid));
+    --room-b: var(--room-bottom);
+    --room-c: var(--room-bottom);
+  }
+
+  /* Fine paper grain over the walls, under the content. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Print pages are plain paper. */
+  :root[data-print] body {
+    background: var(--surface);
+  }
+
+  :root[data-print] body::before {
+    content: none;
   }
 
   h1,

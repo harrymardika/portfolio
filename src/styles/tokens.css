@@ -1,25 +1,38 @@
 /*
  * Design tokens: the ONLY place raw colors are allowed (docs/03-design-system.md §2).
+ * Palette "Giok → Nila" (ADR 0018, D18): the page is a room whose walls shift from jade (giok) at the
+ * top to indigo (nila) at the bottom; light theme = the same colors, pale; dark theme = deep. Amber is
+ * kept for primary actions and detection boxes.
  * Theme: light by default, dark via the OS setting or an explicit choice stored by ThemeToggle.
  *   - no data-theme      → follows prefers-color-scheme
  *   - data-theme="light" → always light
  *   - data-theme="dark"  → always dark
+ * Every text/background pair, including points along the room gradient, is checked by
+ * tests/unit/tokens-contrast.test.ts.
  */
 
 :root {
+  /* The room: three stops of the page gradient and the soft light near the top. */
+  --room-top: #dcefe5;
+  --room-mid: #d5e9ea;
+  --room-bottom: #dfe4f4;
+  --room-glow: #ffffff;
+  /* Shadows cast by 3D objects onto the room (Phase 13 "one room"). */
+  --room-shadow: #0f2a33;
+
   --forest: #173d32;
-  --forest-ink: #12302a;
+  --forest-ink: #0e2b35;
   --amber: #f2b134;
-  --amber-deep: #8a5a00; /* darker amber: 4.5:1+ for small text on sage/surface */
-  --sage: #eef3ef;
-  --surface: #ffffff;
-  --ink: #173d32;
-  --ink-muted: #3f5d52;
-  --line: #d6e2d9;
+  --amber-deep: #8a5a00; /* darker amber: 4.5:1+ for small text on the room and on surfaces */
+  --sage: #e4efec;
+  --surface: #fbfdfc;
+  --ink: #11293a;
+  --ink-muted: #3d5565;
+  --line: #c3d5d2;
   --on-forest: #ffffff;
   --on-forest-muted: #d3e2d9;
   --success: #7ee2a8;
-  /* Decorative only (3D spheres); never used for text. */
+  /* Decorative only (3D); never used for text. */
   --mint: #8fc2a8;
   /* Text of the ATS CV: plain black on white, the same in every theme (print pages are always light). */
   --print-ink: #000000;
@@ -28,24 +41,44 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --forest-ink: #e7efe9;
-    --amber-deep: #f2b134;
-    --sage: #111a17;
-    --surface: #18231f;
-    --ink: #e7efe9;
-    --ink-muted: #a9c4b6;
-    --line: #2a3a33;
+    --room-top: #12483a;
+    --room-mid: #113a48;
+    --room-bottom: #172a66;
+    --room-glow: #1a5645;
+    --room-shadow: #020b10;
+    --forest-ink: #f1f6f4;
+    --amber-deep: #f7c95f;
+    --sage: #0f2a31;
+    --surface: #12303a;
+    --ink: #e9f1ee;
+    --ink-muted: #c4d6d3;
+    --line: #2c4a52;
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --forest-ink: #e7efe9;
-  --amber-deep: #f2b134;
-  --sage: #111a17;
-  --surface: #18231f;
-  --ink: #e7efe9;
-  --ink-muted: #a9c4b6;
-  --line: #2a3a33;
+  --room-top: #12483a;
+  --room-mid: #113a48;
+  --room-bottom: #172a66;
+  --room-glow: #1a5645;
+  --room-shadow: #020b10;
+  --forest-ink: #f1f6f4;
+  --amber-deep: #f7c95f;
+  --sage: #0f2a31;
+  --surface: #12303a;
+  --ink: #e9f1ee;
+  --ink-muted: #c4d6d3;
+  --line: #2c4a52;
   color-scheme: dark;
+}
+
+/* Print pages (CV and Portfolio PDFs) keep the original "Hijau" palette, so the PDFs do not change. */
+:root[data-print] {
+  --forest-ink: #12302a;
+  --sage: #eef3ef;
+  --surface: #ffffff;
+  --ink: #173d32;
+  --ink-muted: #3f5d52;
+  --line: #d6e2d9;
 }

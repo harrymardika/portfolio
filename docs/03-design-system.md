@@ -1,9 +1,9 @@
-# 03 · Design system: tema "F + E", palet Hijau
+# 03 · Design system: ruangan "Giok → Nila"
 
-Referensi visual: buka `docs/design/theme-prototypes.html` di browser, bagian **F + E**, tombol warna **Hijau (E)**.
-Keputusan: `docs/adr/0006-visual-theme.md`.
+Referensi visual: pratinjau "satu ruang" yang disetujui pemilik (2026-10-10, privat): https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb, tombol **Giok → Nila**. Prototipe lama `docs/design/theme-prototypes.html` hanya arsip.
+Keputusan: warna `docs/adr/0018-giok-nila-room.md` (menggantikan palet Hijau `docs/adr/0006-visual-theme.md`).
 
-> **Akan diganti di Fase 13 (D18–D21, 2026-10-10):** warna Giok → Nila, H1 = nama, tanpa kata beraksen dan label mono huruf kapital, 3D "satu ruang". Rencananya di `docs/11-roadmap.md` §H. Sampai tugas terkait selesai (T13.1 warna, T13.2 tipografi, T13.3–T13.6 3D), dokumen ini tetap menggambarkan kode yang berjalan.
+> **Akan diganti di Fase 13 (D18–D21, 2026-10-10):** warna Giok → Nila, H1 = nama, tanpa kata beraksen dan label mono huruf kapital, 3D "satu ruang". Rencananya di `docs/11-roadmap.md` §H. Warna (§2) sudah diganti di T13.1. Sampai tugas lainnya selesai (T13.2 tipografi, T13.3–T13.6 3D), bagian lain dokumen ini tetap menggambarkan kode yang berjalan.
 
 ## 1. Konsep
 
@@ -11,30 +11,39 @@ Keputusan: `docs/adr/0006-visual-theme.md`.
 
 Nada: tenang, dewasa, ramah. Tidak "neon", tidak gelap pekat.
 
-## 2. Token warna
+## 2. Token warna: "Giok → Nila" (ADR 0018)
 
 Semua warna di komponen **wajib** memakai token ini. Nilainya ada di `src/styles/tokens.css` (satu-satunya tempat hex diizinkan; dijaga oleh `bun run lint:tokens`) dan dipetakan ke utilitas Tailwind di `src/styles/global.css`: `bg-forest`, `text-amber-deep`, `border-line`, `text-ink-muted`, dst.
 
+**Ruangan.** Halaman adalah satu ruangan: dindingnya bergradasi dari hijau giok (atas) ke biru nila (bawah), dengan cahaya lembut di kanan atas dan butiran kertas halus (`body::before`). Setiap halaman memilih titiknya lewat `room` di `PageLayout`/`BaseLayout` (`<body data-room>`): beranda `flow` (seluruh gradasi), About `top`, Statistik dan 404 `bottom`, lainnya `mid`. Semuanya CSS, jadi tetap ada tanpa JS dan WebGL.
+
 | Token | Terang | Gelap | Pemakaian |
 |---|---|---|---|
-| `--color-forest` | `#173d32` | `#173d32` | Latar hero, tombol utama di bagian terang |
-| `--color-forest-ink` | `#12302a` | `#e7efe9` | Judul di latar terang |
-| `--color-amber` | `#f2b134` | `#f2b134` | Aksen: kata kunci judul, tombol CTA di hero, titik jalur, kotak deteksi |
-| `--color-amber-deep` | `#8a5a00` | `#f2b134` | Aksen **teks** di latar terang (eyebrow, tahun journey). Prototipe memakai `#d48a00`, tetapi kontrasnya hanya 2,5:1, jadi diganti. |
-| `--color-sage` | `#eef3ef` | `#111a17` | Latar bagian terang (journey, konten) |
-| `--color-surface` | `#ffffff` | `#18231f` | Kartu, label |
-| `--color-ink` | `#173d32` | `#e7efe9` | Teks utama (`text-ink`) |
-| `--color-ink-muted` | `#3f5d52` | `#a9c4b6` | Teks sekunder (`text-ink-muted`) |
-| `--color-line` | `#d6e2d9` | `#2a3a33` | Garis, border |
-| `--color-on-forest` | `#ffffff` | `#ffffff` | Teks di atas `forest` |
-| `--color-on-forest-muted` | `#d3e2d9` | `#d3e2d9` | Teks sekunder di atas `forest` |
-| `--color-success` | `#7ee2a8` | `#7ee2a8` | Indikator status |
-| `--print-ink` | `#000000` | `#000000` | Teks CV PDF saja (halaman cetak selalu tema terang) |
+| `--room-top` | `#dcefe5` | `#12483a` | Dinding atas (giok) |
+| `--room-mid` | `#d5e9ea` | `#113a48` | Dinding tengah; warna dasar `body` |
+| `--room-bottom` | `#dfe4f4` | `#172a66` | Dinding bawah (nila) |
+| `--room-glow` | `#ffffff` | `#1a5645` | Cahaya lembut dekat atas (dicampur 70%) |
+| `--room-shadow` | `#0f2a33` | `#020b10` | Bayangan benda 3D di dinding dan lantai |
+| `--forest` | `#173d32` | `#173d32` | Tombol utama di luar hero (`bg-forest text-on-forest`), skip link |
+| `--forest-ink` | `#0e2b35` | `#f1f6f4` | Judul |
+| `--amber` | `#f2b134` | `#f2b134` | Tombol CTA, kotak deteksi, titik journey |
+| `--amber-deep` | `#8a5a00` | `#f7c95f` | Aksen **teks** kecil (tahun, angka) di atas ruangan dan permukaan |
+| `--sage` | `#e4efec` | `#0f2a31` | Latar kecil: chip, hover |
+| `--surface` | `#fbfdfc` | `#12303a` | Kartu, panel, label |
+| `--ink` | `#11293a` | `#e9f1ee` | Teks utama |
+| `--ink-muted` | `#3d5565` | `#c4d6d3` | Teks sekunder |
+| `--line` | `#c3d5d2` | `#2c4a52` | Garis, border |
+| `--on-forest` | `#ffffff` | `#ffffff` | Teks di atas `forest` |
+| `--on-forest-muted` | `#d3e2d9` | `#d3e2d9` | Teks sekunder di atas `forest` |
+| `--success` | `#7ee2a8` | `#7ee2a8` | Indikator status |
+| `--mint` | `#8fc2a8` | `#8fc2a8` | Dekorasi 3D saja, bukan teks |
+| `--print-ink` | `#000000` | `#000000` | Teks CV PDF saja |
 
-Kontras minimal: teks normal 4.5:1, teks besar 3:1. `amber` di atas `sage` **tidak** lolos untuk teks kecil; gunakan `amber-deep`.
-Semua pasangan teks/latar di atas dicek otomatis untuk kedua tema oleh `tests/unit/tokens-contrast.test.ts`. Jika menambah pasangan baru, tambahkan juga ke tes itu.
+**Halaman cetak** (`data-print` di `<html>`, dipasang `PrintLayout`) memakai nilai palet Hijau lama untuk `forest-ink`, `sage`, `surface`, `ink`, `ink-muted`, `line`, sehingga PDF tidak berubah. Halaman cetak selalu tema terang.
 
-Mode gelap: hero tetap `forest`; bagian terang berganti ke `sage` gelap. Default mengikuti `prefers-color-scheme`; tombol `ThemeToggle` menyimpan pilihan di `localStorage` (kunci `theme`) dan skrip kecil di `<head>` menerapkannya sebelum halaman tampil (tanpa kedip). Varian Tailwind `dark:` mengikuti `data-theme`.
+Kontras minimal: teks normal 4.5:1, teks besar 3:1. `amber` di atas dinding terang **tidak** lolos untuk teks kecil; gunakan `amber-deep`. `tests/unit/tokens-contrast.test.ts` mengecek semua pasangan teks/latar untuk kedua tema, **termasuk teks di setiap 10% gradasi ruangan dan di atas cahaya**. Jika menambah pasangan baru, tambahkan juga ke tes itu.
+
+Mode gelap: dinding giok dan nila yang tua dengan teks terang. Default mengikuti `prefers-color-scheme`; tombol `ThemeToggle` menyimpan pilihan di `localStorage` (kunci `theme`) dan skrip kecil di `<head>` menerapkannya sebelum halaman tampil (tanpa kedip). Varian Tailwind `dark:` mengikuti `data-theme`.
 
 ## 3. Tipografi
 
@@ -72,9 +81,9 @@ Lebar teks maksimal ±65 karakter. Judul memakai `text-wrap: balance`.
 
 | Komponen | Spesifikasi |
 |---|---|
-| **Hero** (`src/components/hero/`) | Latar `forest`. Kiri: badge peran (mono), H1 = headline (kata `*bertanda*` berwarna `amber`, nama disisipkan `sr-only` untuk SEO), paragraf, tombol utama (amber) + outline, 3 statistik mono dari `profile.yaml → stats`. Kanan: kartu foto. Tombol: "Download CV" (amber, solid) + "Portfolio PDF" (outline), ikon unduh, atribut `download` dan `data-download` (untuk statistik T5.3); URL dari `downloadPath()`. |
+| **Hero** (`src/components/hero/`) | Latar: ruangan (§2). Kiri: badge peran (mono), H1 = headline (kata `*bertanda*` berwarna `amber`, nama disisipkan `sr-only` untuk SEO), paragraf, tombol utama (amber) + outline, 3 statistik mono dari `profile.yaml → stats`. Kanan: kartu foto. Tombol: "Download CV" (amber, solid) + "Portfolio PDF" (outline), ikon unduh, atribut `download` dan `data-download` (untuk statistik T5.3); URL dari `downloadPath()`. |
 | **Kartu foto** | `PhotoCard.astro` = kartu HTML statis (gambar LCP, fallback tanpa JS/WebGL) sekaligus panggung 3D. `src/scenes/photo-card/` = versi 3D: tekstur kanvas (foto, nama Young Serif, peran, chip lokasi `amber`), lapisan deteksi terpisah (4 sudut + label `hero.detectionLabel`) yang "mengunci" tiap 4 s lewat skala/opacity tanpa menggambar ulang, miring mengikuti pointer (maks ±0.45 rad), dekorasi bola amber/putih/`mint` + cincin orbit. Posisi kotak wajah: `FACE_BOX` di `config.ts` (dipakai HTML dan 3D). Kanvas muncul (cross-fade) hanya setelah tekstur siap (`data-scene-ready`). |
-| **Journey** (`src/components/journey/`, `src/scenes/journey-path/`) | Latar `sage`. Kiri: eyebrow mono "Journey · 2022 → 2026" (dihitung dari data), H2 + paragraf dari `profile.yaml → journey`. Kanan: panggung tinggi tetap (480/560 px) berisi tabung `forest`, titik `amber` bercincin `forest`, bola amber yang mengikuti scroll (`sectionProgress`; selalu penuh di dasar halaman). Label = item `<ol>` yang sama dengan fallback, diposisikan di kanan titik lewat `--x/--y`; label belum tercapai bergaya putus-putus (bukan opacity, demi kontras). Klik label membuka popover detail (Popover API, berfungsi tanpa JS). |
+| **Journey** (`src/components/journey/`, `src/scenes/journey-path/`) | Latar: ruangan (§2). Kiri: eyebrow mono "Journey · 2022 → 2026" (dihitung dari data), H2 + paragraf dari `profile.yaml → journey`. Kanan: panggung tinggi tetap (480/560 px) berisi tabung `forest`, titik `amber` bercincin `forest`, bola amber yang mengikuti scroll (`sectionProgress`; selalu penuh di dasar halaman). Label = item `<ol>` yang sama dengan fallback, diposisikan di kanan titik lewat `--x/--y`; label belum tercapai bergaya putus-putus (bukan opacity, demi kontras). Klik label membuka popover detail (Popover API, berfungsi tanpa JS). |
 | **Fallback Journey** | `<ol>` yang sama ditampilkan sebagai timeline vertikal (garis + titik) tanpa JS/WebGL atau saat 3D `off`. Popover detail tetap berfungsi. |
 | **Button** | Varian `primary` (amber di forest / forest di terang), `outline`. Tinggi min 44px. Fokus: outline 2px `currentColor`, offset 2px. |
 | **Stat** | Angka mono 500 + label kecil. |

@@ -1,6 +1,6 @@
 # 0006 · Tema visual "F + E" dengan palet Hijau
 
-- **Status:** Accepted
+- **Status:** Superseded by [0018](0018-giok-nila-room.md) (warna, 2026-10-10)
 - **Tanggal:** 2026-10-05
 
 ## Konteks

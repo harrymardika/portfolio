@@ -25,6 +25,7 @@ const profile = await getProfile();
   title={`${t['stats.title']} · ${profile.name}`}
   description={t['stats.intro']}
   profile={profile}
+  room="bottom"
 >
   <div class="mx-auto grid max-w-[880px] gap-10 px-[clamp(16px,4vw,40px)] py-16">
     <header class="grid max-w-[65ch] gap-4">
