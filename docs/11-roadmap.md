@@ -11,7 +11,7 @@
 | Fase | Isi | Kenapa | Ukuran |
 |---|---|---|---|
 | 9 ✅ | **Personal branding & konten**: positioning, baris peran, skill lebih lengkap, terjemahan studi kasus, kesan & pesan (tampilan), format angka | Pondasi untuk fase lain; kebanyakan isi, sedikit kode | Kecil–sedang |
-| 10 ✅ | **CV per posisi**: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
+| 10 ✅ | **CV per posisi**: AI/ML, Data Scientist (ditambah 2026-10-12), Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee (versi khusus perusahaan batal, D10) | Satu CV umum kalah relevan di ATS dibanding CV yang menyorot hal yang dicari | Sedang |
 | 11 ✅ | **Chatbot "Tanya Harry"** di sudut setiap halaman | Recruiter mendapat jawaban cepat; menunjukkan kemampuan LLM secara langsung | Besar (layanan baru, ADR) |
 | 12 ✅ | **Formulir kesan & pesan** dengan moderasi | Bukti sosial dari orang lain tanpa membuka kolom komentar bebas | Sedang |
 | 13 | **Tampilan baru Giok → Nila** dan beranda "satu ruang" 3D | Situs terasa buatan AI dan datar; 3D yang bercerita tentang pekerjaan pemilik | Besar |
@@ -47,7 +47,7 @@ Pilihan yang dulu diajukan untuk D8: (a) "AI Engineer", (b) "AI Engineer · AI p
 
 ## B. CV per posisi (dan per perusahaan?)
 
-**Keputusan (D10, 2026-10-07 dan 2026-10-08):** 6 varian (Product dan Project Manager terpisah), PDF dibuat saat deploy di `/downloads/cv/`, didaftar di halaman `/cv/` yang ditautkan di footer (noindex). **CV per perusahaan tidak dibuat** (poin 4 batal). CV umum memakai baris peran AI Product Manager (D8).
+**Keputusan (D10, 2026-10-07 dan 2026-10-08):** **7 varian** (Product dan Project Manager terpisah 2026-10-08; Data Scientist ditambah 2026-10-12), PDF dibuat saat deploy di `/downloads/cv/`, didaftar di halaman `/cv/` yang ditautkan di footer (noindex). **CV per perusahaan tidak dibuat** (poin 4 batal). CV umum memakai baris peran AI Product Manager (D8).
 
 **Rekomendasi: varian per posisi dari data yang sama; versi per perusahaan hanya privat.**
 
@@ -215,7 +215,7 @@ Daftar ini dijaga oleh `tests/e2e/feature-inventory.spec.ts` (T13.0), di EN dan 
 | Statistik `/stats/` | Statistik situs publik dan status server; tetap tampil saat API mati |
 | Kesan & pesan | Formulir `/messages/` (juga tanpa JS), halaman terkirim/belum terkirim, halaman tinjau privat `/messages/review/` |
 | 404 | Teks dan tautan kembali |
-| Di luar tampilan | Halaman cetak dan PDF (CV EN/ID, Portfolio EN/ID, enam varian); sitemap dan robots; CSP dan header keamanan; sinkronisasi GitHub; Pages CMS; draf studi kasus AI; workflow kind words |
+| Di luar tampilan | Halaman cetak dan PDF (CV EN/ID, Portfolio EN/ID, tujuh varian); sitemap dan robots; CSP dan header keamanan; sinkronisasi GitHub; Pages CMS; draf studi kasus AI; workflow kind words |
 
 ## Keputusan
 
@@ -225,7 +225,7 @@ Semua sudah diputuskan pemilik. Rekomendasi awal dan alasannya ada di bagian mas
 |---|---|---|---|
 | D8 | Baris peran (hero, CV umum, Portfolio, JSON-LD) | **AI Product Manager** (2026-10-07) | T9.1 |
 | D9 | Positioning | **AI Product Manager dengan kemampuan AI engineering** (2026-10-07) | T9.1, Fase 10 |
-| D10 | Varian CV mana, dan apakah ditaruh di website | **6 varian**, PDF di `/downloads/cv/`, halaman `/cv/` ditautkan di footer (noindex); tanpa CV per perusahaan (2026-10-07; varian dan `/cv/` 2026-10-08) | T10.x |
+| D10 | Varian CV mana, dan apakah ditaruh di website | **7 varian** (Data Scientist ditambah 2026-10-12), PDF di `/downloads/cv/`, halaman `/cv/` ditautkan di footer (noindex); tanpa CV per perusahaan (2026-10-07; varian dan `/cv/` 2026-10-08) | T10.x |
 | D11 | Skill tambahan yang benar-benar dikuasai | **Semua kandidat**, dikonfirmasi satu per satu (2026-10-08) | T9.2 |
 | D12 | Studi kasus bahasa Indonesia | **(c) Terjemahkan semua**, istilah teknis tetap bahasa Inggris (2026-10-07) | T9.3 |
 | D13 | Asisten AI: lanjut dan letaknya | **Lanjut, chatbot di sudut kanan bawah** setiap halaman, bukan halaman cetak (2026-10-08) | Fase 11 |

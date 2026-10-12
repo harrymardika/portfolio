@@ -22,6 +22,31 @@ variants:
     sections: [skills, experience, education, training, awards, leadership, certifications]
     skills: [ai-ml, llm-genai, cloud-mlops, data, languages]
 
+  - id: data-scientist
+    name: { en: Data Scientist, id: Data Scientist }
+    role: { en: Data Scientist, id: Data Scientist }
+    summary:
+      en: >-
+        Data scientist who turns raw data into models with measurable results. Built a multimodal
+        crisis-detection model from **11k+ images and 1k+ transcripts** reaching **92.5% accuracy (AUC 0.96)**
+        and a 0.92 F1-score, and a BERT summarization system scoring **ROUGE-1 56.63%**. Built forecasting and
+        recommendation models, including LSTM stock prediction and film recommendations (content-based and
+        collaborative filtering), and led the ML team behind a spending-analysis model with **90% accuracy**.
+        Informatics graduate (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and Top 5 of 40 teams in
+        Regression Rumble at Neurontara Data Clash.
+      id: >-
+        Data scientist yang mengubah data mentah menjadi model dengan hasil terukur. Membangun model deteksi
+        krisis multimodal dari **11 ribu+ gambar dan 1 ribu+ transkrip** dengan **akurasi 92,5% (AUC 0,96)**
+        dan F1-score 0,92, serta sistem peringkasan berbasis BERT dengan **ROUGE-1 56,63%**. Membangun model
+        peramalan dan rekomendasi, termasuk prediksi harga saham dengan LSTM dan rekomendasi film (content-based
+        dan collaborative filtering), serta memimpin tim ML untuk model analisis pola pengeluaran dengan
+        **akurasi 90%**.
+        Lulusan Informatika (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan 5 besar dari 40 tim di
+        Regression Rumble, Neurontara Data Clash.
+    focus: [ai, data]
+    sections: [skills, experience, training, education, awards, certifications, leadership]
+    skills: [ai-ml, data, llm-genai, cloud-mlops, languages]
+
   - id: data-engineer
     name: { en: Data Engineer, id: Data Engineer }
     role: { en: Data Engineer, id: Data Engineer }

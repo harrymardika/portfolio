@@ -5,6 +5,9 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Added
+- A seventh CV by role, **Data Scientist** (EN/ID PDF on `/cv/`), built from existing content: modeling and research results first, then the data and AI skill groups.
+
 ### Fixed
 - The project cards on the home page's sorting line now show their title (up to three lines, long words broken at hyphens) instead of placeholder lines, are larger, and their detection labels are never hidden behind the camera arm.
 
