@@ -16,6 +16,7 @@ import RoomStage from './RoomStage.astro';
 
 <script>
   import { earlyDecision, ROOM_ATTRIBUTE } from '@/scenes/core/early';
+  import { yieldToMain } from '@/scenes/core/yield';
 
   import type { RoomPart } from '@/scenes/room';
 
@@ -44,6 +45,8 @@ import RoomStage from './RoomStage.astro';
       import('@/scenes/room/parts/notes'),
       import('@/scenes/room/parts/laptop'),
     ]);
+    // Evaluating three.js and creating the renderer are two long tasks; keep them apart.
+    await yieldToMain();
     const find = (selector: string) => document.querySelector<HTMLElement>(selector);
     const parts = [
       createHeroPart(find('[data-room-slot="hero"]')),

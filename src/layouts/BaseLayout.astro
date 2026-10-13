@@ -8,6 +8,11 @@
 import '@/styles/global.css';
 import StatsBeacon from '@/components/layout/StatsBeacon.astro';
 import { earlyRoomScript } from '@/scenes/core/early';
+// The display face of every heading and of the hero's name, fetched early on phones and tablets so it
+// is there before the first paint instead of swapping in later and rewrapping the name (a layout
+// shift there). Not on wide screens: there the swap moves nothing, and the hero prints stay the LCP
+// (an owner decision, T13.4) instead of the heading painted early in this font.
+import youngSerif from '@fontsource/young-serif/files/young-serif-latin-400-normal.woff2?url';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
 import { DEFAULT_OG_IMAGE, type JsonLd, OG_HEIGHT, OG_WIDTH, ogImagePath, serializeJsonLd } from '@/lib/seo';
 import { type RoomPoint, THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
@@ -78,6 +83,16 @@ const ogImage = absolute(linkAlternates && !noindex ? ogImagePath(Astro.url.path
         <!-- Runs before first paint: marks the root when the 3D room will run, so its layout never jumps. -->
         <script is:inline set:html={earlyRoomScript()} />
       </>
+    )}
+    {!print && (
+      <link
+        rel="preload"
+        href={youngSerif}
+        as="font"
+        type="font/woff2"
+        crossorigin
+        media="(max-width: 63.98rem)"
+      />
     )}
     <title>{title}</title>
     {description && <meta name="description" content={description} />}

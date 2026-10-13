@@ -153,6 +153,35 @@ describe('token contrast (WCAG AA)', () => {
       });
     }
   }
+  // The home page's room panels (ADR 0020, global.css and SelectedProjects.astro): `surface` at 92%
+  // over whatever is behind them, a wall or the 3D (the thread is `ink`, the machines `forest`, the
+  // shadows `room-shadow`); the detected project's row adds a 12% `amber` tint.
+  for (const [theme, tokens] of [
+    ['light', light],
+    ['dark', dark],
+  ] as const) {
+    const behind = [
+      ...Array.from({ length: 11 }, (_, step) => wall(tokens, step / 10)),
+      tokens['forest'] ?? '',
+      tokens['ink'] ?? '',
+      tokens['room-shadow'] ?? '',
+      tokens['on-forest'] ?? '',
+      // The extremes: dark hair in the photo, white paper.
+      '#000000',
+      '#ffffff',
+    ];
+    for (const [fg, min] of ON_ROOM) {
+      it(`${theme}: ${fg} on a room panel, whatever is behind it, ≥ ${min}:1`, () => {
+        for (const back of behind) {
+          const panel = mix(back, tokens['surface'] ?? '', 0.92);
+          for (const background of [panel, mix(panel, tokens['amber'] ?? '', 0.12)]) {
+            const ratio = contrast(tokens[fg] ?? '', background);
+            expect(Number(ratio.toFixed(2)), `${fg} on ${background}`).toBeGreaterThanOrEqual(min);
+          }
+        }
+      });
+    }
+  }
   // The CV prints in the light theme only (print pages force data-theme="light").
   it('print: print-ink on surface ≥ 4.5:1', () => {
     expect(contrast(print['print-ink'] ?? '', print['surface'] ?? '')).toBeGreaterThanOrEqual(4.5);

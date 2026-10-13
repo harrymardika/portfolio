@@ -111,8 +111,9 @@
   }
 
   /*
-   * Bands that only hold 3D (sorting line, homelab laptop, T13.6) take space only when the room
-   * runs (the head script sets data-room-3d, ADR 0020); without 3D or JavaScript they do not exist for the layout.
+   * Bands that hold the data of a 3D part (sorting line: height 0; homelab laptop: its caption, T13.6)
+   * exist only when the room runs (the head script sets data-room-3d, ADR 0020); without 3D or
+   * JavaScript they are not there.
    */
   [data-room-band] {
     display: none;
@@ -177,7 +178,7 @@
     :root[data-room-3d] [data-room-copy] {
       padding: 1.25rem;
       border-radius: 0.875rem;
-      background-color: color-mix(in srgb, var(--surface) 88%, transparent);
+      background-color: color-mix(in srgb, var(--surface) 92%, transparent);
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
     }

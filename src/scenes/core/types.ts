@@ -18,7 +18,7 @@ export interface FrameContext {
   readonly pointer: { readonly x: number; readonly y: number };
 }
 
-/** What a concrete scene (photo card, journey path) provides to `mountScene`. */
+/** What a concrete scene (the home page's room) provides to `mountScene`. */
 export interface SceneModule {
   readonly scene: Scene;
   readonly camera: Camera;

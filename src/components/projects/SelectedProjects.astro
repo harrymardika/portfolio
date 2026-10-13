@@ -98,7 +98,7 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
    */
   :root[data-room-3d] .projects-room {
     border-radius: 0.875rem;
-    background-color: color-mix(in srgb, var(--surface) 88%, transparent);
+    background-color: color-mix(in srgb, var(--surface) 92%, transparent);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
   }
@@ -128,7 +128,7 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
 
   /* The project the line's camera is looking at, as in the log. */
   :root[data-room-3d] .projects-room :global([data-project][data-detected]) {
-    background-color: color-mix(in srgb, var(--amber) 16%, transparent);
+    background-color: color-mix(in srgb, var(--amber) 12%, transparent);
     box-shadow: inset 3px 0 0 var(--amber-deep);
   }
 

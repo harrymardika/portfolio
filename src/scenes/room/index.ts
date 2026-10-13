@@ -15,6 +15,8 @@ import {
   PerspectiveCamera,
   PlaneGeometry,
   Raycaster,
+  Texture,
+  type Material,
   Scene,
   ShadowMaterial,
   Vector2,
@@ -27,6 +29,7 @@ import { decide3D, detectCapabilities, realtimeShadows, type Decision3D } from '
 import { disposeObject3D } from '../core/dispose';
 import { damp } from '../core/math';
 import { mountScene } from '../core/mount';
+import { yieldToMain } from '../core/yield';
 import { readPalette, type ScenePalette } from '../core/palette';
 import {
   flowAt,
@@ -341,38 +344,56 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       }
     };
 
+    /** Upload a part's textures one at a time, so no single frame carries all of them. */
+    const uploadTextures = async (root: Object3D): Promise<void> => {
+      const textures = new Set<Texture>();
+      root.traverse((node) => {
+        const material = (node as Mesh).material as Material | Material[] | undefined;
+        for (const one of [material ?? []].flat()) {
+          for (const value of Object.values(one)) if (value instanceof Texture) textures.add(value);
+        }
+      });
+      for (const texture of textures) {
+        renderer.initTexture(texture);
+        await yieldToMain();
+      }
+    };
+
+    // Parts are built one at a time, each step in its own task: building, compiling its shaders,
+    // and uploading its textures, so the page stays responsive while the room comes in.
+    let queue: Promise<void> = Promise.resolve();
+    const build = async (entry: Entry): Promise<void> => {
+      await yieldToMain();
+      const root = await entry.part.build(room);
+      const drop = (): void => {
+        disposeObject3D(root);
+        entry.part.dispose?.();
+      };
+      if (disposed) return drop();
+      entry.part.recolor?.(palette);
+      entry.root = root;
+      layout(entry);
+      await yieldToMain();
+      // Compile the part's shaders without blocking the page, before its first frame.
+      await renderer.compileAsync(root, camera, scene).catch(() => undefined);
+      await uploadTextures(root);
+      if (disposed) return drop();
+      scene.add(root);
+      entry.part.shown?.();
+      collectTargets();
+      if (!readySignalled) {
+        readySignalled = true;
+        setup.ready();
+      }
+      request();
+    };
     const buildNear = (): void => {
       for (const entry of entries) {
         if (entry.root || entry.building) continue;
         if (!isNear(pageRect(entry.part.slot), scrollY, view.height, BUILD_MARGIN)) continue;
         entry.building = true;
-        void Promise.resolve()
-          .then(() => entry.part.build(room))
-          .then(async (root) => {
-            if (disposed) {
-              disposeObject3D(root);
-              entry.part.dispose?.();
-              return;
-            }
-            entry.part.recolor?.(palette);
-            entry.root = root;
-            layout(entry);
-            // Compile the part's shaders without blocking the page, before its first frame.
-            await renderer.compileAsync(root, camera, scene).catch(() => undefined);
-            if (disposed) {
-              disposeObject3D(root);
-              entry.part.dispose?.();
-              return;
-            }
-            scene.add(root);
-            entry.part.shown?.();
-            collectTargets();
-            if (!readySignalled) {
-              readySignalled = true;
-              setup.ready();
-            }
-            request();
-          })
+        queue = queue
+          .then(() => build(entry))
           .catch((error: unknown) => console.warn('3D: a room part failed to build', error));
       }
     };

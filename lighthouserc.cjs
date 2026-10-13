@@ -3,7 +3,8 @@
  * median of 3 runs per page. Targets from docs/01-srs.md: performance ≥ 90, others ≥ 95.
  * BUILD_OUT_DIR picks the build (CI reuses the e2e build in dist-e2e).
  * Headless Chromium has no GPU, so the home pages are measured as a visitor without one sees them:
- * the static photo card (src/scenes/core/capabilities.ts). With a GPU the 3D scores 93–98 locally.
+ * the plain page with the HTML hero prints (src/scenes/core/early.ts). With a GPU (headed Chrome,
+ * --enable-gpu), the full-screen 3D room scores 90–91 on the home page (T14.5, 2026-10-13).
  */
 const { chromium } = require('@playwright/test');
 

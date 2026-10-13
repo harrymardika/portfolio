@@ -16,9 +16,10 @@ import {
   MeshStandardMaterial,
   PlaneGeometry,
   SRGBColorSpace,
+  ImageBitmapLoader,
+  Texture,
   TextureLoader,
   type Material,
-  type Texture,
 } from 'three';
 
 import { blobShadow, brackets, easeOut, fontsReady, label, MONO, paperFibers, SANS } from '../paper';
@@ -110,12 +111,26 @@ export function lampAt(t: number): { level: number; bulb: number; on: boolean } 
   return { level: LAMP.dim + (1 - LAMP.dim) * k, bulb: 1, on: k >= 1 };
 }
 
-function loadTexture(url: string): Promise<Texture> {
-  return new TextureLoader().loadAsync(url).then((map) => {
-    map.colorSpace = SRGBColorSpace;
-    map.anisotropy = 8;
-    return map;
-  });
+/**
+ * Load an image as a texture, decoded off the main thread where the browser can (`createImageBitmap`,
+ * already flipped for WebGL), so no long task decodes it on the first frame; otherwise as before.
+ */
+async function loadTexture(url: string): Promise<Texture> {
+  let map: Texture;
+  try {
+    if (typeof createImageBitmap !== 'function') throw new Error('no createImageBitmap');
+    const bitmap = await new ImageBitmapLoader()
+      .setOptions({ imageOrientation: 'flipY', premultiplyAlpha: 'none' })
+      .loadAsync(url);
+    map = new Texture(bitmap);
+    map.flipY = false;
+    map.needsUpdate = true;
+  } catch {
+    map = await new TextureLoader().loadAsync(url);
+  }
+  map.colorSpace = SRGBColorSpace;
+  map.anisotropy = 8;
+  return map;
 }
 
 /** Null when the slot or its data is missing; the HTML prints then simply stay. */
@@ -127,11 +142,10 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   const syllables = JSON.parse(boxesJson) as SheetBox[];
 
   const root = new Group();
-  const pivot = new Group();
+
   const photo = new Group();
   const sheet = new Group();
-  pivot.add(sheet, photo);
-  root.add(pivot);
+  root.add(sheet, photo);
 
   // The lamp hanging above the prints: cord, shade, and bulb (design px, like the prints).
   const lamp = new Group();

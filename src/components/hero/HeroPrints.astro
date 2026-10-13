@@ -1,9 +1,10 @@
 ---
 /**
  * The hero's two prints (T13.4, ADR 0019): the owner's photo in front of a sheet with his name in
- * Javanese script, each with its detection boxes. This HTML is the LCP image, the no-JS/no-WebGL
- * version, and the slot the room's 3D prints are anchored to; once the 3D prints are ready
- * (data-room-ready) they take its place. Geometry comes from hero-config.ts, shared with the 3D.
+ * Javanese script, each with its detection boxes. This HTML is the LCP image and the no-JS/no-WebGL
+ * version; with the room it also holds the 3D prints' data and the replay button, and steps aside
+ * once they are drawn (data-room-ready) at their station in the room (ADR 0020). Geometry comes from
+ * hero-config.ts, shared with the 3D.
  */
 import { Image, getImage } from 'astro:assets';
 

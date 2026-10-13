@@ -2,6 +2,8 @@
  * The home page's lower rooms (T13.6): the sorting line under Selected projects, Kind words as paper
  * notes, and the homelab laptop beside Contact. The content always stays HTML; the 3D only adds to it.
  */
+import { gzipSync } from 'node:zlib';
+
 import AxeBuilder from '@axe-core/playwright';
 import { assumeGpu, disableWebGL, SCENE_READY_TIMEOUT } from './helpers';
 import { expect, test, type Page } from '@playwright/test';
@@ -243,6 +245,40 @@ test.describe('with 3D', () => {
     await expect(page.locator(laptop)).toHaveAttribute('data-screen-status', 'Online');
   });
 
+  test("the home page's 3D JavaScript stays within its budget (180 KB gzip)", async ({ page, browser }) => {
+    test.skip(test.info().project.name === 'mobile', 'Same bundles on every screen');
+    /** Gzipped size of every script a page loads, by URL. */
+    const scripts = async (target: Page): Promise<Map<string, number>> => {
+      const sizes = new Map<string, number>();
+      target.on('response', (response) => {
+        if (response.request().resourceType() !== 'script') return;
+        // Recorded at once; the size follows when the body is read.
+        sizes.set(response.url(), 0);
+        void response
+          .body()
+          .then((body) => sizes.set(response.url(), gzipSync(body, { level: 9 }).length))
+          .catch(() => undefined);
+      });
+      await target.goto('/');
+      for (const selector of ['#journey', '#projects', '#messages', '#contact'])
+        await scrollTo(target, selector);
+      await target.waitForTimeout(1500);
+      return sizes;
+    };
+    const withRoom = await scripts(page);
+    await expect(page.locator('html')).toHaveAttribute('data-room-3d', 'animated');
+    const plainPage = await browser.newPage();
+    const without = await scripts(plainPage);
+    // A machine with a real GPU would run the room here too, and the comparison would mean nothing.
+    await expect(plainPage.locator('html')).not.toHaveAttribute('data-room-3d');
+    await plainPage.close();
+    // What the 3D adds: the scripts only loaded when the room runs.
+    const added = [...withRoom].filter(([url]) => !without.has(url)).reduce((sum, [, size]) => sum + size, 0);
+    const counted = [...withRoom].filter(([url]) => !without.has(url)).map(([url, size]) => `${url} ${size}`);
+    expect(added, counted.join('\n')).toBeGreaterThan(50_000);
+    expect(added, counted.join('\n')).toBeLessThanOrEqual(180 * 1024);
+  });
+
   test('Indonesian pages label the laptop in Indonesian', async ({ page }) => {
     await page.goto('/id/');
     await ready(page, laptop);
@@ -266,21 +302,17 @@ test.describe('the full-screen room layout (ADR 0020)', () => {
   test.describe('with 3D', () => {
     test.beforeEach(async ({ page }) => {
       await assumeGpu(page);
-      // What the root looked like before the load event, when web fonts finished loading, and every
-      // layout shift. A font swapping in can move text on any page (on phones Young Serif wraps the
-      // hero name onto two lines); what must not move anything is the 3D.
+      // What the root looked like before the load event, and every layout shift. The display font is
+      // preloaded (BaseLayout), so even its swap moves nothing; nor does the 3D.
       await page.addInitScript(() => {
         const state = window as unknown as {
           earlyRoom?: boolean;
-          fontsDone: number[];
           shifts: { at: number; value: number }[];
         };
-        state.fontsDone = [];
         state.shifts = [];
         document.addEventListener('DOMContentLoaded', () => {
           state.earlyRoom = document.documentElement.hasAttribute('data-room-3d');
         });
-        document.fonts.addEventListener('loadingdone', () => state.fontsDone.push(performance.now()));
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries() as (PerformanceEntry & { value: number })[])
             state.shifts.push({ at: entry.startTime, value: entry.value });
@@ -373,17 +405,15 @@ test.describe('the full-screen room layout (ADR 0020)', () => {
       await expect(page.locator(sorting)).toHaveAttribute('data-detected', /.+/, {
         timeout: SCENE_READY_TIMEOUT,
       });
-      // Give the 3D a moment to settle, then: no layout shift after the load event.
+      // Give the 3D a moment to settle, then: no layout shift at all, before or after the load event.
       await page.waitForTimeout(500);
-      const late = await page.evaluate(() => {
-        const state = window as unknown as { fontsDone: number[]; shifts: { at: number; value: number }[] };
-        const [nav] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
-        const fontSwap = (at: number) => state.fontsDone.some((done) => at >= done && at <= done + 250);
-        return state.shifts
-          .filter((shift) => shift.at > (nav?.loadEventEnd ?? 0) && !fontSwap(shift.at))
-          .reduce((sum, shift) => sum + shift.value, 0);
-      });
-      expect(late).toBeLessThan(0.01);
+      const shifted = await page.evaluate(() =>
+        (window as unknown as { shifts: { value: number }[] }).shifts.reduce(
+          (sum, shift) => sum + shift.value,
+          0,
+        ),
+      );
+      expect(shifted).toBeLessThan(0.01);
     });
   });
 });
