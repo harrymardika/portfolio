@@ -1,7 +1,8 @@
 /**
- * Room part: the homelab laptop beside Contact (T13.6). The small laptop at home that serves this
- * site, open on the floor at its station (ADR 0020), its screen showing a simple drawing of the home
- * page with the site's address (from the slot's data). It turns slightly with the pointer.
+ * Room part: the homelab laptop beside Contact (T13.6, T14.4). The small laptop at home that serves
+ * this site, open on the floor at its station (ADR 0020), its screen showing the home page in small:
+ * the site's address, the role line, the name, the CV button, the photo, and a live status line from
+ * /api/health and /api/stats/summary (left out when they fail). It turns slightly with the pointer.
  * Decorative: the HTML caption says what it is.
  */
 import {
@@ -16,7 +17,7 @@ import {
 } from 'three';
 
 import { DESIGN_UNIT, FLOOR_Y, STATIONS } from '../world';
-import { blobShadow, fontsReady, SANS } from '../paper';
+import { blobShadow, DISPLAY_FAMILY, fontsReady, SANS } from '../paper';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart } from '../index';
@@ -40,12 +41,47 @@ export function laptopSize(
   return { width, depth: width * 0.66, lid: width * 0.64 };
 }
 
-/** The screen: a browser bar with the site's address over a sketch of the home page. */
+/** What the screen shows (T14.4): the home page in small, with the live status line. */
+export interface ScreenContent {
+  readonly host: string;
+  readonly name: string;
+  readonly role: string;
+  readonly cv: string;
+  /** "Online · 123 visitors in the last 30 days", or null while unknown or when the server is unreachable. */
+  readonly status: string | null;
+  readonly photo: CanvasImageSource | null;
+}
+
+/**
+ * The status line from the site's own public endpoints, or null to leave it out: only when
+ * /api/health answers, with the visitor count of the last 30 days when /api/stats/summary does too.
+ * Pure; tested.
+ */
+export function statusLine(
+  online: boolean,
+  visitors: number | null,
+  labels: { readonly online: string; readonly visitors: string },
+  localeTag: string,
+): string | null {
+  if (!online) return null;
+  if (visitors === null) return labels.online;
+  const count = new Intl.NumberFormat(localeTag).format(visitors);
+  // Like `fill()` in @/lib/i18n, kept here so the 3D bundle does not pull in the dictionary.
+  return `${labels.online} · ${labels.visitors.replace('{count}', count)}`;
+}
+
+/** The 30-day visitor count from a /api/stats/summary response, or null when it is not one. */
+export function visitorsOf(summary: unknown): number | null {
+  const value = (summary as { visitors?: { last30Days?: unknown } } | null)?.visitors?.last30Days;
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0 ? value : null;
+}
+
+/** The screen: a browser bar with the site's address over the home page in small. */
 function drawScreen(
   g: CanvasRenderingContext2D,
   w: number,
   h: number,
-  host: string,
+  content: ScreenContent,
   palette: ScenePalette,
 ): void {
   g.fillStyle = css(palette.surface);
@@ -63,47 +99,74 @@ function drawScreen(
   g.font = SANS.replace('12px', `${Math.round(pill.h * 0.62)}px`);
   g.textBaseline = 'middle';
   g.textAlign = 'center';
-  g.fillText(host, w / 2, pill.y + pill.h / 2 + 0.5, pill.w * 0.9);
+  g.fillText(content.host, w / 2, pill.y + pill.h / 2 + 0.5, pill.w * 0.9);
+  g.textAlign = 'left';
   for (const [i, color] of [palette.amber, palette.mint, palette.sage].entries()) {
     g.fillStyle = css(color);
     g.beginPath();
     g.arc(w * 0.04 + i * bar * 0.5, bar / 2, bar * 0.14, 0, Math.PI * 2);
     g.fill();
   }
-  // Hero: name, sentence lines, two buttons on the left; photo print and sheet on the right.
-  const left = w * 0.08;
+  // The hero, in small: role line, the name, the CV button; the photo print on the right.
+  const left = w * 0.07;
+  const textWidth = w * 0.5;
+  g.textBaseline = 'alphabetic';
   g.fillStyle = css(palette.ink);
-  g.globalAlpha = 0.45;
-  g.fillRect(left, h * 0.25, w * 0.22, h * 0.03);
+  g.globalAlpha = 0.75;
+  g.font = SANS.replace('600 12px', `500 ${Math.round(h * 0.055)}px`);
+  g.fillText(content.role, left, h * 0.27, textWidth);
   g.globalAlpha = 1;
-  g.fillRect(left, h * 0.32, w * 0.4, h * 0.08);
-  g.globalAlpha = 0.35;
-  for (const [i, share] of [0.42, 0.36, 0.4].entries())
-    g.fillRect(left, h * (0.47 + i * 0.06), w * share, h * 0.025);
-  g.globalAlpha = 1;
+  const size = Math.round(h * 0.14);
+  g.font = `${size}px ${DISPLAY_FAMILY}`;
+  const words = content.name.split(' ');
+  const lines = words.length > 1 ? [words[0] ?? '', words.slice(1).join(' ')] : [content.name];
+  lines.forEach((line, i) => g.fillText(line, left, h * 0.27 + size * (1.05 + i * 0.95), textWidth));
+  const button = { x: left, y: h * 0.64, h: h * 0.1 };
+  g.font = SANS.replace('12px', `${Math.round(button.h * 0.48)}px`);
+  const buttonWidth = g.measureText(content.cv).width + button.h * 1.2;
   g.fillStyle = css(palette.amber);
   g.beginPath();
-  g.roundRect(left, h * 0.71, w * 0.15, h * 0.08, h * 0.04);
+  g.roundRect(button.x, button.y, buttonWidth, button.h, button.h / 2);
   g.fill();
-  g.strokeStyle = css(palette.ink);
-  g.lineWidth = Math.max(1, h * 0.006);
-  g.beginPath();
-  g.roundRect(left + w * 0.17, h * 0.71, w * 0.15, h * 0.08, h * 0.04);
-  g.stroke();
-  g.fillStyle = css(palette.sage);
-  g.fillRect(w * 0.64, h * 0.42, w * 0.28, h * 0.32);
-  g.fillStyle = css(palette['on-forest']);
-  g.fillRect(w * 0.56, h * 0.24, w * 0.2, h * 0.5);
   g.fillStyle = css(palette.forest);
-  g.fillRect(w * 0.575, h * 0.27, w * 0.17, h * 0.34);
-  g.strokeStyle = css(palette.amber);
-  g.lineWidth = Math.max(1, h * 0.008);
-  g.strokeRect(w * 0.615, h * 0.3, w * 0.09, h * 0.14);
+  g.textBaseline = 'middle';
+  g.fillText(content.cv, button.x + button.h * 0.6, button.y + button.h / 2 + 0.5);
+  // Photo print.
+  const frame = { x: w * 0.62, y: h * 0.2, w: w * 0.3 };
+  const border = frame.w * 0.06;
+  const picture = frame.w - border * 2;
+  g.fillStyle = css(palette['on-forest']);
+  g.fillRect(frame.x, frame.y, frame.w, picture + border * 3.2);
+  if (content.photo) g.drawImage(content.photo, frame.x + border, frame.y + border, picture, picture);
+  else {
+    g.fillStyle = css(palette.forest);
+    g.fillRect(frame.x + border, frame.y + border, picture, picture);
+  }
+  // The live status line, only when the server answered.
+  if (content.status) {
+    const y = h * 0.88;
+    g.fillStyle = css(palette.mint);
+    g.beginPath();
+    g.arc(left + h * 0.018, y, h * 0.018, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = css(palette.ink);
+    g.font = SANS.replace('600 12px', `500 ${Math.round(h * 0.05)}px`);
+    g.textBaseline = 'middle';
+    g.fillText(content.status, left + h * 0.05, y + 0.5, w - left * 2 - h * 0.05);
+  }
 }
 
 export function createLaptopPart(slot: HTMLElement | null): RoomPart | null {
   if (!slot) return null;
-  const host = slot.dataset['host'] ?? '';
+  const data = slot.dataset;
+  const content: { -readonly [K in keyof ScreenContent]: ScreenContent[K] } = {
+    host: data['host'] ?? '',
+    name: data['name'] ?? '',
+    role: data['role'] ?? '',
+    cv: data['cv'] ?? '',
+    status: null,
+    photo: null,
+  };
   const root = new Group();
   const laptop = new Group();
   root.add(laptop);
@@ -130,7 +193,7 @@ export function createLaptopPart(slot: HTMLElement | null): RoomPart | null {
     const g = canvas.getContext('2d');
     if (g) {
       g.scale(scale, scale);
-      drawScreen(g, w, h, host, palette);
+      drawScreen(g, w, h, content, palette);
     }
     screen?.dispose();
     screen = new CanvasTexture(canvas);
@@ -184,12 +247,59 @@ export function createLaptopPart(slot: HTMLElement | null): RoomPart | null {
     paintScreen();
   };
 
+  /**
+   * The photo (the hero's texture) and the live status, fetched once from the site's own public
+   * endpoints; nothing new is stored. A failure leaves the line out.
+   */
+  let disposed = false;
+  /** A 5 s timeout where the browser has it (Safari before 16 does not). */
+  const timeout = (): { signal?: AbortSignal } =>
+    'timeout' in AbortSignal ? { signal: AbortSignal.timeout(5000) } : {};
+  const loadScreen = (invalidate: () => void): void => {
+    const photoUrl = document.querySelector<HTMLElement>('[data-room-slot="hero"]')?.dataset['photoUrl'];
+    if (photoUrl) {
+      const image = new Image();
+      image.addEventListener('load', () => {
+        if (disposed) return;
+        content.photo = image;
+        paintScreen();
+        invalidate();
+      });
+      image.src = photoUrl;
+    }
+    // The summary may come from the browser cache (the service allows 5 minutes); health never does.
+    const summary = (): Promise<unknown> =>
+      fetch('/api/stats/summary', timeout()).then((response) =>
+        response.ok ? response.json() : Promise.reject(new Error(String(response.status))),
+      );
+    void (async () => {
+      const online = await fetch('/api/health', { cache: 'no-store', ...timeout() })
+        .then((response) => response.ok)
+        .catch(() => false);
+      const visitors =
+        online && data['stats'] === 'true' ? await summary().then(visitorsOf, () => null) : null;
+      if (disposed) return;
+      content.status = statusLine(
+        online,
+        visitors,
+        { online: data['online'] ?? '', visitors: data['visitors'] ?? '' },
+        data['locale'] ?? 'en-US',
+      );
+      // What the screen says, for tests and tools (the screen itself is a canvas).
+      if (content.status) slot.dataset['screenStatus'] = content.status;
+      slot.dataset['screenChecked'] = 'true';
+      paintScreen();
+      invalidate();
+    })().catch(() => undefined);
+  };
+
   return {
     slot,
     async build(room: RoomContext) {
       shadows = room.shadows;
       still = room.mode === 'still';
       palette = room.palette;
+      loadScreen(room.invalidate);
       await fontsReady();
       laptop.rotation.set(0, POSE.turn, 0);
       return root;
@@ -221,8 +331,11 @@ export function createLaptopPart(slot: HTMLElement | null): RoomPart | null {
       paintScreen();
     },
     dispose() {
+      disposed = true;
       screen?.dispose();
       delete slot.dataset['roomReady'];
+      delete slot.dataset['screenStatus'];
+      delete slot.dataset['screenChecked'];
     },
   };
 }

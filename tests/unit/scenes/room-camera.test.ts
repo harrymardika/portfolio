@@ -58,6 +58,16 @@ describe('poseFor', () => {
     expect(narrow.offset.y).toBeGreaterThan(0);
   });
 
+  it('follows the page layout when told, whatever the canvas width', () => {
+    // At 1024 px the canvas is 1009 px wide (scrollbar), but the CSS already lays the page out wide.
+    expect(poseFor(CAMERA_KEYS.projects, { width: 1009, height: 768, wide: true }).target).toEqual(
+      CAMERA_KEYS.projects.wide.target,
+    );
+    expect(poseFor(CAMERA_KEYS.projects, { width: 1200, height: 768, wide: false }).target).toEqual(
+      CAMERA_KEYS.projects.narrow.target,
+    );
+  });
+
   it('switches framing at the wide breakpoint', () => {
     expect(poseFor(CAMERA_KEYS.projects, { width: WIDE_MIN, height: 800 }).target).toEqual(
       CAMERA_KEYS.projects.wide.target,

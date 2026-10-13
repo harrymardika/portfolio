@@ -1,6 +1,7 @@
 /**
- * Room part: Kind words as paper notes taped up in the room (T13.6, ADR 0020), standing on the floor
- * at their station between the sorting line and the laptop, at most `MAX_NOTES`, rows growing upward.
+ * Room part: Kind words as paper notes taped to a wall (T13.6, T14.4, ADR 0020): a short wall standing
+ * on the floor at their station between the sorting line and the laptop, which only catches the
+ * notes' shadows; at most `MAX_NOTES`, rows growing upward.
  * The messages themselves are the HTML list beside them (Messages.astro), readable at any zoom; each
  * note only carries a large quotation mark and its writer's name, read from that HTML. Unlit paper in
  * the `--surface` token, like the HTML cards.
@@ -12,6 +13,7 @@ import {
   MeshBasicMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
+  ShadowMaterial,
   SRGBColorSpace,
 } from 'three';
 
@@ -21,7 +23,7 @@ import { blobShadow, DISPLAY_FAMILY, drawFibers, fontsReady } from '../paper';
 import { wrapTitle } from './sorting-plan';
 
 import type { ScenePalette } from '../../core/palette';
-import type { RoomFrame, RoomPart } from '../index';
+import type { RoomContext, RoomFrame, RoomPart } from '../index';
 
 /** A note's size, the gap between notes, and the tape (design px). */
 const NOTE = { width: 300, height: 200, gap: 36, padding: 24 } as const;
@@ -74,6 +76,24 @@ export function createNotesPart(slot: HTMLElement | null): RoomPart | null {
   if (cards.length === 0) return null;
 
   const root = new Group();
+  // The wall the notes are taped to: as wide and tall as the notes, plus a margin; it only shows the
+  // shadows they cast (with real-time shadows; otherwise each note has its own soft shadow).
+  const extent = cards.reduce(
+    (box, _, i) => {
+      const at = notePosition(i, cards.length);
+      return {
+        left: Math.min(box.left, at.x - NOTE.width / 2),
+        right: Math.max(box.right, at.x + NOTE.width / 2),
+        top: Math.max(box.top, at.y + NOTE.height / 2),
+      };
+    },
+    { left: 0, right: 0, top: 0 },
+  );
+  const wallMaterial = new ShadowMaterial({ opacity: 0.3 });
+  const wall = new Mesh(new PlaneGeometry(extent.right - extent.left + 160, extent.top + 120), wallMaterial);
+  wall.position.set((extent.left + extent.right) / 2, (extent.top + 120) / 2, -14);
+  wall.receiveShadow = true;
+  root.add(wall);
   const tapeMaterial = new MeshStandardMaterial({ transparent: true, opacity: 0.72, roughness: 0.6 });
   const notes: Note[] = cards.map((card, i) => {
     const group = new Group();
@@ -129,7 +149,12 @@ export function createNotesPart(slot: HTMLElement | null): RoomPart | null {
 
   return {
     slot,
-    async build() {
+    async build(room: RoomContext) {
+      wall.visible = room.shadows;
+      for (const note of notes) {
+        note.paper.castShadow = room.shadows;
+        note.shadow.visible = !room.shadows;
+      }
       await fontsReady();
       root.scale.setScalar(DESIGN_UNIT);
       root.position.set(STATIONS.notes.x, STATIONS.notes.y, STATIONS.notes.z);
@@ -144,6 +169,7 @@ export function createNotesPart(slot: HTMLElement | null): RoomPart | null {
     },
     recolor(palette: ScenePalette) {
       tapeMaterial.color.setHex(palette.amber);
+      wallMaterial.color.setHex(palette['room-shadow']);
       for (const note of notes) {
         note.shadow.material.color.setHex(palette['room-shadow']);
         print(note, palette);

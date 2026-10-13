@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-13 · **Fase aktif:** Fase 14 · **Tugas berikutnya:** T14.4 (ruang Kind words dan kontak: laptop dengan angka asli)
+**Terakhir diperbarui:** 2026-10-13 · **Fase aktif:** Fase 14 · **Tugas berikutnya:** T14.5 (tema terang, HP, reduced motion, aksesibilitas, performa)
 
 ## Ringkasan
 
@@ -225,7 +225,7 @@ Rencana disetujui pemilik 2026-10-10 (rencana lengkap: `docs/11-roadmap.md` §H2
   - Kriteria: foto dan lembar aksara besar digantung dengan jepitan di tali yang menjadi benang journey (satu benang utuh); urutan pembuka: ruangan redup → lampu menyala → deteksi, sekali (reduced motion: keadaan akhir); titik journey besar, kamera turun mengikuti bola, klik titik membuka cerita, `data-reached` tetap; lampu bergeser pelan mengikuti kursor (pointer halus saja); serat kertas prosedural dan bayangan kontak.
 - [x] **T14.3** Ruang proyek: konveyor di lantai (wadah di belakang sabuk, kartu berjudul) + 3 kolom proyek + log deteksi sinkron
   - Kriteria: kartu yang terdeteksi menyorot kolom/baris proyek yang sama di HTML (`data-detected`) dengan catatan mono "Judul → Bidang" dari `content/` (tanpa skor rekaan); klik kartu membuka studi kasus.
-- [ ] **T14.4** Ruang Kind words dan kontak: laptop besar dengan beranda mini dan angka asli
+- [x] **T14.4** Ruang Kind words dan kontak: laptop besar dengan beranda mini dan angka asli
   - Kriteria: layar = nama, baris peran, tombol Download CV, foto, dan baris status dari `/api/health` + `/api/stats/summary` (pengunjung 30 hari; disembunyikan bila gagal; tanpa data baru); pesan Kind words ditempel di dinding (teks tetap HTML).
 - [ ] **T14.5** Tema terang yang hidup, HP, reduced motion, aksesibilitas, performa
   - Kriteria: tema mengikuti perangkat (pilihan pemilik) dan versi terang sama hidupnya dengan gelap; HP: 3D di atas, panel teks di bawah; kontras teks di atas scrim/panel ≥ 4,5:1 di kedua tema; JS 3D beranda ≤ 180 KB gzip; Lighthouse ≥ 90/95.
@@ -310,6 +310,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-13 · Claude Code (Opus) · T14.4 Kind words dan kontak
+- **Dikerjakan:** layar laptop = beranda mini (bilah alamat, baris peran, nama Young Serif, tombol "Download CV", foto dari tekstur hero) dengan baris status asli: `statusLine` + `visitorsOf` (murni, dites) dari `/api/health` dan `/api/stats/summary` (pengunjung 30 hari; hanya bila `PUBLIC_STATS_ENABLED`; baris disembunyikan bila server tidak menjawab; "Online" saja bila statistik gagal; tanpa data baru). Teks dari kamus UI (`contact.screenOnline`, `contact.screenVisitors`, EN/ID) dan atribut data di `Contact.astro`. Kertas Kind words ditempel di dinding pendek penangkap bayangan (kertas menjatuhkan bayangan nyata; bayangan lembut hanya tanpa bayangan nyata); teks pesan tetap HTML. Keterangan laptop pindah ke kolom teks di bawah tautan sosial (sebelumnya menumpuk di atas laptop 3D); kolom Kontak 40rem di mode ruangan agar email satu baris.
+- **Review subagent `reviewer`:** blocker diperbaiki: di tema terang desktop tombol Copy jatuh di atas tutup laptop 3D (kolom 40rem terlalu lebar); kini kolom `min(40rem, 44vw)`, email sedikit lebih kecil agar satu baris, tombol Copy di bawahnya dan berlatar `surface`; bingkai laptop diperlebar. Ditemukan juga saat cek 1024 px: kamera memakai lebar kanvas (tanpa scrollbar, 1009 px) sehingga memilih bingkai HP sementara CSS sudah memakai tata letak lebar; kini kamera memakai media query yang sama dengan CSS (`WIDE_QUERY`). Should-fix: `AbortSignal.timeout` dijaga (Safari lama, juga di `ServerStatus.astro`), ringkasan statistik boleh dari cache browser (5 menit, seperti `/stats/`), tes "server tidak menjawab" menunggu penanda `data-screen-checked`, tes baru statistik gagal → "Online". Nit: penjaga `disposed`, komentar, catatan dinding kertas hanya terlihat dengan bayangan nyata.
+- **Tes:** unit `statusLine`, `visitorsOf`, `laptopSize`; e2e status laptop dengan API tiruan (`data-screen-status` = "Online · 1,234 visitors in the last 30 days") dan tanpa jawaban server (baris hilang).
+
 ### 2026-10-13 · Claude Code (Opus) · T14.3 ruang proyek
 - **Dikerjakan:** konveyor kini seperti pratinjau: wadah di belakang sabuk (dinding belakang lebih tinggi, nama bidang di atasnya), pendorong di depan sabuk mendorong kartu ke belakang (`cardAt` di `sorting-plan.ts`: `z` negatif saat didorong, tes diperbarui). Log deteksi sinkron: kartu yang terdeteksi menandai baris proyek yang sama di panel (`data-detected`, latar `amber` 16% + garis kiri) dan mengisi `[data-detection-log]` "Judul → Bidang" (mono, dari data `content/`, tanpa skor, `aria-hidden`). Tiga kolom proyek sudah ada sejak T14.1; klik kartu tetap membuka studi kasus.
 - **Kamera:** target Proyek di antara sabuk dan wadah agar wadah terlihat di bawah panel; pemberhentian kamera untuk bagian yang lebih tinggi dari layar kini di tepi atasnya (sebelumnya di tengah, sehingga di HP panel menutupi sabuk); di layar laptop pendek (< 52rem) ringkasan proyek disembunyikan agar sabuk dan wadah tetap terlihat.
@@ -337,8 +342,4 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Review subagent `reviewer`:** semua should-fix diperbaiki: garis header/bagian ternyata masih tampil (aturan di `@layer base` kalah oleh utilitas `border-line`; kini di luar layer, plus tes e2e); keputusan awal kini berlaku penuh dan membawa modenya (`data-room-3d="animated|still"`, `earlyDecision()`), jadi `HomeRoom` tidak memeriksa WebGL lagi dan tidak memasang ruangan bila skrip awal tidak jalan; ADR 0020 diperbaiki (`earlyMode` adalah salinan yang dijaga tes, bukan logika yang sama); tes sinkron diperluas (ambang core, semua pola renderer CPU, storage/WebGL yang melempar galat). Biaya pemeriksaan WebGL di `<head>` diukur ±10–30 ms (laptop, GPU AMD), dicatat di ADR 0020. Nit: ruang tombol replay hanya di mode `animated`, `-webkit-backdrop-filter`, tinggi header 73 px.
 - **Catatan:** pergeseran karena font dimuat pertama kali (sebelum `load`) sudah ada sebelumnya dan tetap kecil (HP ±0,02). Hingga T14.1 benda 3D masih ditambatkan ke HTML, jadi ruang kosong di layar ruangan memang belum terisi.
 - **Langkah berikutnya:** T14.1 (kamera di dunia tetap, warna mengikuti kamera).
-
-### 2026-10-12 · Claude Code (Opus) · Varian CV Data Scientist
-- **Dikerjakan (permintaan pemilik):** varian ke-7 `data-scientist` di `content/cv-variants.yaml`, diletakkan setelah AI/ML Engineer. Pemilik memilih penekanan "modeling & riset": fokus `ai` + `data`; urutan bagian skills → experience → training → education → awards → certifications → leadership; grup skill `ai-ml`, `data`, `llm-genai`, `cloud-mlops`, `languages`. Ringkasan EN/ID hanya mengulang fakta yang sudah ada (deteksi krisis 11 ribu+ gambar/1 ribu+ transkrip, akurasi 92,5%/AUC 0,96/F1 0,92; BERT ROUGE-1 56,63%; LSTM saham, rekomendasi film, tim ML model analisis pola pengeluaran 90%; IPK, GEMASTIK, Regression Rumble). Halaman `/cv/`, PDF EN/ID, dan pengetahuan chatbot mengambilnya otomatis. README, D10, `docs/11` diperbarui (7 varian).
-- **Langkah berikutnya:** pemilik meninjau PDF `Data Scientist` di `/cv/` setelah deploy.
 

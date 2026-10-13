@@ -2,16 +2,16 @@
 /**
  * Contact section (FR-02): the e-mail address large, with a copy button (JavaScript only), then the
  * social profiles as plain links. No phone number. All channels come from profile.yaml socials.
- * Beside it, the room's homelab laptop (T13.6, drawn by the camera, ADR 0020) and its caption, which
- * only shows when the 3D runs.
+ * With the room, the homelab laptop (T13.6, drawn by the camera beside the copy, ADR 0020) and its
+ * caption under the links, which only shows when the 3D runs.
  */
 import { localize, stripEmphasis, type Profile } from '@/lib/content';
-import { type Locale, UI } from '@/lib/i18n';
+import { fill, LOCALE_TAGS, type Locale, UI } from '@/lib/i18n';
 import { SOCIAL_LABELS } from '@/lib/navigation';
 
 interface Props {
   locale: Locale;
-  profile: Pick<Profile, 'contact' | 'socials' | 'email'>;
+  profile: Pick<Profile, 'contact' | 'socials' | 'email' | 'name' | 'role' | 'location'>;
 }
 
 const { locale, profile } = Astro.props;
@@ -20,6 +20,10 @@ const title = stripEmphasis(localize(profile.contact.title, locale));
 const email = profile.socials.find((social) => social.platform === 'email');
 const profiles = profile.socials.filter((social) => social.platform !== 'email');
 const host = Astro.site?.host ?? '';
+// What the laptop's screen shows (T14.4): the home page in small, and the live status line.
+const city = profile.location.split(',')[0] ?? profile.location;
+const roleLine = fill(t['hero.roleIn'], { role: localize(profile.role, locale), city });
+const stats = import.meta.env.PUBLIC_STATS_ENABLED === 'true';
 ---
 
 <section id="contact" aria-labelledby="contact-title" class="scroll-mt-20" data-room-section="contact">
@@ -43,7 +47,7 @@ const host = Astro.site?.host ?? '';
             data-copy={profile.email}
             data-label-copied={t['contact.copied']}
             aria-label={t['contact.copyEmail']}
-            class="hidden min-h-11 rounded-full border border-ink/40 px-4 text-sm font-semibold text-ink hover:bg-surface [.js_&]:inline-flex [.js_&]:items-center"
+            class="hidden min-h-11 rounded-full border border-ink/40 bg-surface px-4 text-sm font-semibold text-ink hover:bg-sage [.js_&]:inline-flex [.js_&]:items-center"
           >
             <span data-copy-label>{t['contact.copy']}</span>
           </button>
@@ -64,7 +68,19 @@ const host = Astro.site?.host ?? '';
         ))}
       </ul>
     </div>
-    <figure class="laptop-band" data-room-band data-room-slot="laptop" data-host={host}>
+    <figure
+      class="laptop-band"
+      data-room-band
+      data-room-slot="laptop"
+      data-host={host}
+      data-name={profile.name}
+      data-role={roleLine}
+      data-cv={t['download.cv']}
+      data-online={t['contact.screenOnline']}
+      data-visitors={t['contact.screenVisitors']}
+      data-stats={stats ? 'true' : undefined}
+      data-locale={LOCALE_TAGS[locale]}
+    >
       <figcaption class="laptop-caption text-sm text-ink-muted">
         <!-- A surface pill keeps the contrast where the laptop's shadow falls. -->
         <span class="inline-block rounded-full bg-surface px-3 py-1">{t['contact.homelab']}</span>
@@ -76,16 +92,25 @@ const host = Astro.site?.host ?? '';
 <style>
   /*
    * The laptop stands on the room's floor (ADR 0020), drawn by the camera beside the copy (wide
-   * screens) or above it (phones); the band holds its data and caption.
+   * screens) or above it (phones); the band holds its data, and its caption follows the copy.
    */
-  .laptop-caption {
-    text-align: center;
-  }
-
   @media (min-width: 1024px) {
+    /*
+     * The copy stays left of the laptop and within the scrim: the column is capped by the screen width,
+     * the e-mail address a little smaller so it fits on one line, and the Copy button goes below it.
+     */
     :root[data-room-3d] .contact-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
-      align-items: end;
+      grid-template-columns: minmax(0, min(40rem, 44vw));
+      gap: 1.5rem;
+    }
+
+    :root[data-room-3d] .contact-grid a[data-outbound='email'] {
+      font-size: clamp(1.25rem, 2.4vw, 2rem);
+    }
+
+    :root[data-room-3d] .contact-grid p:has(> a[data-outbound='email']) {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

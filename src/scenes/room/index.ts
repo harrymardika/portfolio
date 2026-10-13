@@ -37,6 +37,7 @@ import {
   stopsFor,
   trackAt,
   wallColors,
+  WIDE_QUERY,
   type Sections,
   type Stop,
 } from './camera';
@@ -229,7 +230,9 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       scene.add(surface);
     }
 
-    let view = { width: window.innerWidth, height: window.innerHeight };
+    // The wide layout as the CSS sees it: the canvas is narrower by the scrollbar.
+    const wideQuery = window.matchMedia(WIDE_QUERY);
+    let view = { width: window.innerWidth, height: window.innerHeight, wide: wideQuery.matches };
     let scrollY = window.scrollY;
     let stops: Stop[] = [];
     let dirty = true;
@@ -517,7 +520,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         return render;
       },
       resize(width, height) {
-        view = { width, height };
+        view = { width, height, wide: wideQuery.matches };
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         room = makeContext();

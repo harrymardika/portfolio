@@ -213,6 +213,36 @@ test.describe('with 3D', () => {
     expect(errors).toEqual([]);
   });
 
+  test("the laptop screen shows the live status from the site's own endpoints", async ({ page }) => {
+    await page.route('**/api/health', (route) => route.fulfill({ json: { ok: true } }));
+    await page.route('**/api/stats/summary', (route) =>
+      route.fulfill({ json: { visitors: { total: 5000, last30Days: 1234 } } }),
+    );
+    await page.goto('/');
+    await ready(page, laptop);
+    await expect(page.locator(laptop)).toHaveAttribute(
+      'data-screen-status',
+      'Online · 1,234 visitors in the last 30 days',
+    );
+  });
+
+  test('without an answer from the server, the laptop screen leaves the status out', async ({ page }) => {
+    await page.route('**/api/health', (route) => route.fulfill({ status: 503 }));
+    await page.goto('/');
+    await ready(page, laptop);
+    // Once the check is done, there is no status to show.
+    await expect(page.locator(laptop)).toHaveAttribute('data-screen-checked', 'true');
+    await expect(page.locator(laptop)).not.toHaveAttribute('data-screen-status');
+  });
+
+  test('without statistics, the laptop screen only says the server is online', async ({ page }) => {
+    await page.route('**/api/health', (route) => route.fulfill({ json: { ok: true } }));
+    await page.route('**/api/stats/summary', (route) => route.fulfill({ status: 500 }));
+    await page.goto('/');
+    await ready(page, laptop);
+    await expect(page.locator(laptop)).toHaveAttribute('data-screen-status', 'Online');
+  });
+
   test('Indonesian pages label the laptop in Indonesian', async ({ page }) => {
     await page.goto('/id/');
     await ready(page, laptop);

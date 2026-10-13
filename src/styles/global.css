@@ -184,8 +184,7 @@
 
     /* The 3D sits above the copy (visual order only; nothing focusable moves before the copy but the
        hero's replay button, which belongs to the prints). */
-    :root[data-room-3d] [data-room-slot='hero'],
-    :root[data-room-3d] [data-room-slot='laptop'] {
+    :root[data-room-3d] [data-room-slot='hero'] {
       order: -1;
     }
   }

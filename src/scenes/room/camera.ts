@@ -78,7 +78,8 @@ export const CAMERA_KEYS: Readonly<Record<KeyName, CameraKey>> = {
   contact: {
     dir: vec3(-0.3, 0.42, 0.86),
     distance: 6.5,
-    wide: { target: vec3(STATIONS.laptop.x, FLOOR_Y + 0.7, STATIONS.laptop.z), fit: 3.6, offset: side },
+    // The laptop, turned, is wider than its base: room to spare so it never reaches the copy.
+    wide: { target: vec3(STATIONS.laptop.x, FLOOR_Y + 0.7, STATIONS.laptop.z), fit: 4.4, offset: side },
     narrow: { target: vec3(STATIONS.laptop.x, FLOOR_Y + 0.7, STATIONS.laptop.z), fit: 3.4, offset: above },
   },
 };
@@ -96,6 +97,11 @@ export const KEY_ORDER: readonly KeyName[] = [
 export interface View {
   readonly width: number;
   readonly height: number;
+  /**
+   * Whether the page uses its wide layout, as the CSS decides it (`min-width: 64rem`, which counts the
+   * scrollbar, unlike the canvas width). Without it, the width decides.
+   */
+  readonly wide?: boolean;
 }
 
 export interface Pose {
@@ -114,7 +120,10 @@ const normalize = (a: Vec3): Vec3 => {
   return length > 0 ? scale(a, 1 / length) : vec3(0, 0, 1);
 };
 
-export const isWide = (view: View): boolean => view.width >= WIDE_MIN;
+export const isWide = (view: View): boolean => view.wide ?? view.width >= WIDE_MIN;
+
+/** The media query of the page's wide layout (the CSS `lg` breakpoint, 64rem). */
+export const WIDE_QUERY = '(min-width: 64rem)';
 
 /** Distance at which a width `fit` fills `usable` of the screen width. */
 export function fitDistance(fit: number, fovDegrees: number, aspect: number, usable: number): number {

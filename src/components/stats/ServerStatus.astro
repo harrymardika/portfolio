@@ -43,7 +43,10 @@ const t = UI[locale];
       badge.dataset['serverStatus'] = state;
       if (text) text.textContent = badge.dataset[state === 'online' ? 'labelOnline' : 'labelOffline'] ?? '';
     };
-    fetch('/api/health', { cache: 'no-store', signal: AbortSignal.timeout(5000) })
+    fetch('/api/health', {
+      cache: 'no-store',
+      ...('timeout' in AbortSignal ? { signal: AbortSignal.timeout(5000) } : {}),
+    })
       .then((response) => show(response.ok ? 'online' : 'offline'))
       .catch(() => show('offline'));
   }
