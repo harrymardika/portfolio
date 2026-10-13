@@ -11,7 +11,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { load } from 'js-yaml';
 
 import { localizePath, type Locale, UI } from '../../src/lib/i18n';
-import { cvVariants, publishedCaseStudies } from './helpers';
+import { assumeGpu, cvVariants, publishedCaseStudies } from './helpers';
 
 const LOCALES: Locale[] = ['en', 'id'];
 const contentFile = (name: string) => join(import.meta.dirname, '..', '..', 'content', name);
@@ -98,66 +98,78 @@ for (const locale of LOCALES) {
     }
   });
 
-  test.describe(`${locale}: home`, () => {
-    test('hero: name, both PDF downloads, three highlights', async ({ page }) => {
-      await page.goto(path('/'));
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(profile.name);
-      const cv = page.getByRole('link', { name: t['download.cv'] }).first();
-      await expect(cv).toHaveAttribute('href', `/downloads/Harry-Mardika-CV-${suffix}.pdf`);
-      await expect(cv).toHaveAttribute('download', /.*/);
-      await expect(cv).toHaveAttribute('data-download', /.+/);
-      const portfolio = page.getByRole('link', { name: t['download.portfolio'] }).first();
-      await expect(portfolio).toHaveAttribute('href', `/downloads/Harry-Mardika-Portfolio-${suffix}.pdf`);
-      await expect(portfolio).toHaveAttribute('data-download', /.+/);
-      await expect(page.getByLabel(t['hero.statsLabel']).locator('dt')).toHaveCount(profile.stats.length);
-      await expect(page.locator('main img').first()).toBeVisible();
+  // Both layouts of the home page (ADR 0020): the plain page, and the full-screen room when 3D runs.
+  for (const mode of ['plain', 'room'] as const) {
+    test.describe(`${locale}: home (${mode})`, () => {
+      test.beforeEach(async ({ page }) => {
+        if (mode === 'room') await assumeGpu(page);
+      });
+
+      test.afterEach(async ({ page }) => {
+        if (mode === 'room') await expect(page.locator('html')).toHaveAttribute('data-room-3d');
+        else await expect(page.locator('html')).not.toHaveAttribute('data-room-3d');
+      });
+
+      test('hero: name, both PDF downloads, three highlights', async ({ page }) => {
+        await page.goto(path('/'));
+        await expect(page.getByRole('heading', { level: 1 })).toContainText(profile.name);
+        const cv = page.getByRole('link', { name: t['download.cv'] }).first();
+        await expect(cv).toHaveAttribute('href', `/downloads/Harry-Mardika-CV-${suffix}.pdf`);
+        await expect(cv).toHaveAttribute('download', /.*/);
+        await expect(cv).toHaveAttribute('data-download', /.+/);
+        const portfolio = page.getByRole('link', { name: t['download.portfolio'] }).first();
+        await expect(portfolio).toHaveAttribute('href', `/downloads/Harry-Mardika-Portfolio-${suffix}.pdf`);
+        await expect(portfolio).toHaveAttribute('data-download', /.+/);
+        await expect(page.getByLabel(t['hero.statsLabel']).locator('dt')).toHaveCount(profile.stats.length);
+        await expect(page.locator('main img').first()).toBeVisible();
+      });
+
+      test('journey: every milestone, each with its story', async ({ page }) => {
+        await page.goto(path('/'));
+        const journey = page.locator('#journey');
+        const openers = journey.getByRole('button', { name: new RegExp(t['journey.openDetail']) });
+        await expect(openers).toHaveCount(milestones.length);
+        await openers.last().click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+      });
+
+      test('selected projects, kind words, and contact', async ({ page, context, browserName }) => {
+        await page.goto(path('/'));
+        const featured = publishedCaseStudies()
+          .filter((project) => project.featured)
+          .slice(0, 3);
+        const projects = page.locator('#projects');
+        for (const project of featured) {
+          await expect(
+            projects.locator(`a[href="${path(`/projects/${project.slug}/`)}"]`).first(),
+          ).toBeVisible();
+        }
+        await expect(projects.getByRole('link', { name: t['projects.viewAll'] })).toHaveAttribute(
+          'href',
+          path('/projects/'),
+        );
+
+        const messages = page.locator('#messages');
+        await expect(messages.getByRole('heading', { name: t['messages.title'] })).toBeVisible();
+        await expect(messages.getByText('Test Manager')).toBeVisible();
+        await expect(messages.getByRole('link', { name: t['messages.leave'] })).toHaveAttribute(
+          'href',
+          path('/messages/'),
+        );
+
+        const contact = page.locator('#contact');
+        await expect(contact.locator('a[href^="mailto:"]').first()).toBeVisible();
+        for (const platform of SOCIALS) {
+          await expect(
+            contact.getByRole('link', { name: new RegExp(SOCIAL_NAMES[platform]) }).first(),
+          ).toBeVisible();
+        }
+        if (browserName === 'chromium') await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+        await contact.getByRole('button', { name: t['contact.copyEmail'] }).click();
+        await expect(contact.getByText(t['contact.copied'])).toBeVisible();
+      });
     });
-
-    test('journey: every milestone, each with its story', async ({ page }) => {
-      await page.goto(path('/'));
-      const journey = page.locator('#journey');
-      const openers = journey.getByRole('button', { name: new RegExp(t['journey.openDetail']) });
-      await expect(openers).toHaveCount(milestones.length);
-      await openers.last().click();
-      await expect(page.getByRole('dialog')).toBeVisible();
-    });
-
-    test('selected projects, kind words, and contact', async ({ page, context, browserName }) => {
-      await page.goto(path('/'));
-      const featured = publishedCaseStudies()
-        .filter((project) => project.featured)
-        .slice(0, 3);
-      const projects = page.locator('#projects');
-      for (const project of featured) {
-        await expect(
-          projects.locator(`a[href="${path(`/projects/${project.slug}/`)}"]`).first(),
-        ).toBeVisible();
-      }
-      await expect(projects.getByRole('link', { name: t['projects.viewAll'] })).toHaveAttribute(
-        'href',
-        path('/projects/'),
-      );
-
-      const messages = page.locator('#messages');
-      await expect(messages.getByRole('heading', { name: t['messages.title'] })).toBeVisible();
-      await expect(messages.getByText('Test Manager')).toBeVisible();
-      await expect(messages.getByRole('link', { name: t['messages.leave'] })).toHaveAttribute(
-        'href',
-        path('/messages/'),
-      );
-
-      const contact = page.locator('#contact');
-      await expect(contact.locator('a[href^="mailto:"]').first()).toBeVisible();
-      for (const platform of SOCIALS) {
-        await expect(
-          contact.getByRole('link', { name: new RegExp(SOCIAL_NAMES[platform]) }).first(),
-        ).toBeVisible();
-      }
-      if (browserName === 'chromium') await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-      await contact.getByRole('button', { name: t['contact.copyEmail'] }).click();
-      await expect(contact.getByText(t['contact.copied'])).toBeVisible();
-    });
-  });
+  }
 
   test.describe(`${locale}: other pages`, () => {
     test('projects: search, field filters, filter links, every case study', async ({ page }) => {

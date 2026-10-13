@@ -24,6 +24,8 @@ interface Props {
   jsonLd?: JsonLd[];
   /** The page's point in the room gradient; defaults to the middle. */
   room?: RoomPoint;
+  /** Lay the page out as a full-screen 3D room when the device runs it (ADR 0020). */
+  earlyRoom?: boolean;
   profile: Pick<Profile, 'name' | 'socials'>;
 }
 

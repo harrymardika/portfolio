@@ -23,9 +23,9 @@ const city = profile.location.split(',')[0] ?? profile.location;
 const roleLine = fill(t['hero.roleIn'], { role, city });
 ---
 
-<section aria-labelledby="hero-title">
+<section aria-labelledby="hero-title" data-room-section="hero">
   <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-14 lg:grid-cols-[1.05fr_1fr] lg:py-20">
-    <div class="grid min-w-0 gap-6">
+    <div class="grid min-w-0 gap-6" data-room-copy>
       <p class="text-ink-muted">{roleLine}</p>
       <h1 id="hero-title" class="text-name">
         {profile.name}

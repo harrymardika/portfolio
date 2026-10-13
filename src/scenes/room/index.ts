@@ -21,7 +21,7 @@ import {
   type WebGLRenderer,
 } from 'three';
 
-import { decide3D, detectCapabilities, realtimeShadows } from '../core/capabilities';
+import { decide3D, detectCapabilities, realtimeShadows, type Decision3D } from '../core/capabilities';
 import { disposeObject3D } from '../core/dispose';
 import { damp } from '../core/math';
 import { mountScene } from '../core/mount';
@@ -441,18 +441,29 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
 
 /**
  * Mount the room on its fixed stage (RoomStage.astro). Returns null when the 3D stays off; every
- * part's HTML fallback then simply stays visible. Probes the device once.
+ * part's HTML fallback then simply stays visible. With a `decision` already taken (the home page's
+ * early decision, ADR 0020) WebGL is not probed again; otherwise the device is probed once.
  */
-export function mountRoom(stage: HTMLElement, parts: readonly RoomPart[]): SceneHandle | null {
+export function mountRoom(
+  stage: HTMLElement,
+  parts: readonly RoomPart[],
+  decision?: Decision3D,
+): SceneHandle | null {
   const canvas = stage.querySelector('canvas');
   if (!canvas || parts.length === 0) return null;
-  const caps = detectCapabilities();
-  return mountScene({
-    stage,
-    canvas,
-    decision: decide3D(caps),
-    create: createRoom(parts, realtimeShadows(caps)),
-  });
+  let choice = decision;
+  let device: Parameters<typeof realtimeShadows>[0];
+  if (choice) {
+    device = {
+      hardwareConcurrency: navigator.hardwareConcurrency ?? 0,
+      coarsePointer: window.matchMedia('(pointer: coarse)').matches,
+    };
+  } else {
+    const caps = detectCapabilities();
+    choice = decide3D(caps);
+    device = caps;
+  }
+  return mountScene({ stage, canvas, decision: choice, create: createRoom(parts, realtimeShadows(device)) });
 }
 
 export type { PageRect } from './layout';

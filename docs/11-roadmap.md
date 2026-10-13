@@ -1,6 +1,6 @@
-# 11 · Rencana lanjutan (Fase 9–14)
+# 11 · Rencana lanjutan (Fase 9–15)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D21 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–14).
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D22 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–15).
 >
 > **Status (2026-10-10):** Fase 9–12 selesai (rilis 1.1.0–1.4.0); chatbot dan formulir kesan & pesan tayang 2026-10-09. Rencana Fase 13–14 ditulis ulang 2026-10-10 (§H, §I). Berikutnya Fase 13.
 >
@@ -164,7 +164,7 @@ Beranda (Fase 13), mengikuti urutan bagian yang sudah ada:
 4. **Kind words:** pesan sebagai kertas yang ditempel; teksnya tetap HTML, beserta tombol "Leave a message".
 5. **Kontak:** laptop homelab yang melayani situs ini, layarnya menampilkan beranda.
 
-Halaman lain (Fase 14) adalah sudut lain dari ruangan yang sama: **Projects** konveyor penuh, **About** dinding penghargaan dan sertifikat berbingkai, **Statistik** meja laptop homelab dengan status server, **404** kotak deteksi yang memindai dinding kosong. Halaman lain tetap tanpa 3D, tetapi memakai warna dan tipografi baru.
+Halaman lain (Fase 15) adalah sudut lain dari ruangan yang sama: **Projects** konveyor penuh, **About** dinding penghargaan dan sertifikat berbingkai, **Statistik** meja laptop homelab dengan status server, **404** kotak deteksi yang memindai dinding kosong. Halaman lain tetap tanpa 3D, tetapi memakai warna dan tipografi baru.
 
 ### Warna: Giok → Nila
 
@@ -199,6 +199,20 @@ Halaman lain (Fase 14) adalah sudut lain dari ruangan yang sama: **Projects** ko
 | Teks sulit dibaca di atas 3D | Kolom teks dengan scrim (desktop) atau panel (HP); tes kontras gradasi |
 | Kamera dan scroll terasa berat | Kamera hanya mengikuti scroll, tanpa scroll-jacking; reduced motion dihormati |
 | Lighthouse turun | CI mengukur fallback (tanpa GPU); 3D dimuat setelah LCP; angka pembanding dicatat di T13.0 |
+
+## H2. Beranda "full 3D" persis artifact (Fase 14, D22)
+
+**Kenapa:** setelah rilis 1.5.0 pemilik membandingkan situs dengan artifact yang ia setujui dan menilai tampilannya masih berbeda. Penyebab utamanya keputusan teknis agent di T13.3 (ADR 0019): 3D ditempelkan ke elemen HTML, sehingga ruangan selayar penuh dan kamera yang bergerak hilang, 3D kecil dan datar, cahaya redup.
+
+**Keputusan (D22, 2026-10-10):** beranda dibuat **persis seperti artifact** ([pratinjau](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb)), dengan peningkatan yang dipilih pemilik:
+- **Tali jemuran:** foto dan lembar aksara digantung dengan jepitan; tali yang sama turun menjadi benang journey sampai konveyor (satu benang utuh).
+- **Lampu yang menyala:** pembuka sekali: ruangan redup, lampu menyala, lalu deteksi.
+- **Log deteksi sinkron:** kartu yang terdeteksi di konveyor menyorot proyek yang sama di HTML dengan catatan "Judul → Bidang".
+- **Laptop dengan angka asli:** beranda mini di layar + status server dan pengunjung 30 hari dari API yang sudah ada.
+- **Lampu ikut kursor** (desktop) dan **kertas bertekstur** (serat + bayangan kontak).
+- Tema tetap mengikuti perangkat; versi terang harus sama hidupnya.
+
+**Cara kerja (ADR 0020):** keputusan 3D diambil sebelum tampilan pertama (`html[data-room-3d]`), jadi tata letak ruangan (selayar penuh, teks kiri di atas scrim, panel bawah di HP) hanya berlaku saat 3D benar-benar jalan; tanpa 3D beranda tetap seperti sekarang. Kamera bergerak di dunia tetap menurut titik jangkar dari posisi bagian-bagian halaman (fungsi murni dan dites); warna dinding mengikuti kamera dari giok ke nila. Bagian 3D yang sudah ada (cetakan, benang, konveyor, kertas pesan, laptop) dipakai ulang dan ditempatkan di dunia. Semua isi tetap HTML; daftar §I tetap wajib.
 
 ## I. Fitur yang wajib tetap ada
 
@@ -235,5 +249,6 @@ Semua sudah diputuskan pemilik. Rekomendasi awal dan alasannya ada di bagian mas
 | D17 | 3D tambahan | ~~Keempatnya~~ (2026-10-08); **diganti D21** (2026-10-10), hanya 404 yang tetap | — |
 | D18 | Warna situs | **Giok → Nila**, terang = versi muda, amber tetap; menggantikan palet Hijau ADR 0006 (2026-10-10) | T13.1 |
 | D19 | Judul hero | **Nama pemilik** sebagai H1 (2026-10-10) | T13.2 |
-| D20 | Tampilan Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) | T14.1 |
+| D20 | Tampilan Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) | T15.1 |
 | D21 | Arah 3D | **"Satu ruang"**: satu kanvas di belakang setiap halaman, isi tetap HTML; beranda lima ruang, Projects konveyor, About dinding penghargaan, Statistik laptop homelab, 404 deteksi (2026-10-10) | Fase 13–14 |
+| D22 | Beranda "full 3D" | **Persis artifact** (ruangan selayar penuh, kamera bergerak) + tali jemuran, lampu yang menyala, log deteksi sinkron, laptop dengan angka asli, lampu ikut kursor, kertas bertekstur; tema mengikuti perangkat (2026-10-10) | Fase 14 |

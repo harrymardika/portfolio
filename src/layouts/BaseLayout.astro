@@ -7,6 +7,7 @@
  */
 import '@/styles/global.css';
 import StatsBeacon from '@/components/layout/StatsBeacon.astro';
+import { earlyRoomScript } from '@/scenes/core/early';
 import { alternates, DEFAULT_LOCALE, LOCALE_TAGS, LOCALES, type Locale } from '@/lib/i18n';
 import { DEFAULT_OG_IMAGE, type JsonLd, OG_HEIGHT, OG_WIDTH, ogImagePath, serializeJsonLd } from '@/lib/seo';
 import { type RoomPoint, THEME_STORAGE_KEY, type Theme } from '@/lib/theme';
@@ -29,6 +30,8 @@ interface Props {
   room?: RoomPoint;
   /** Print view: plain paper and the original palette, so the PDFs never change. */
   print?: boolean;
+  /** Take the 3D decision before the first paint (ADR 0020), for pages laid out as a full-screen room. */
+  earlyRoom?: boolean;
 }
 
 const {
@@ -42,6 +45,7 @@ const {
   jsonLd = [],
   room = 'mid',
   print = false,
+  earlyRoom = false,
 } = Astro.props;
 const paths = alternates(Astro.url.pathname);
 const absolute = (path: string): string => new URL(path, Astro.site).href;
@@ -67,6 +71,12 @@ const ogImage = absolute(linkAlternates && !noindex ? ogImagePath(Astro.url.path
             /* Storage blocked: follow the OS theme. */
           }
         </script>
+      </>
+    )}
+    {earlyRoom && (
+      <>
+        <!-- Runs before first paint: marks the root when the 3D room will run, so its layout never jumps. -->
+        <script is:inline set:html={earlyRoomScript()} />
       </>
     )}
     <title>{title}</title>

@@ -8,7 +8,12 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ### Added
 - A seventh CV by role, **Data Scientist** (EN/ID PDF on `/cv/`), built from existing content: modeling and research results first, then the data and AI skill groups.
 
+### Changed
+- On devices that run the 3D room, the home page is laid out as full-screen rooms from the first paint: every section fills the screen without dividing lines, the copy sits on the left over a soft scrim (or on its own panel under the 3D on phones and tablets), and nothing shifts once the 3D appears. The 3D decision now runs in the page head (an inline script, allowed by hash in the CSP). Without 3D the home page keeps its plain layout (T14.0, ADR 0020).
+- Kind words: the invitation to leave a message now sits under the heading, before the messages (T14.0).
+
 ### Fixed
+- Journey milestones the reader has not reached yet keep their card background, so the 3D thread behind them no longer runs through the year on phones (T14.0).
 - The project cards on the home page's sorting line now show their title (up to three lines, long words broken at hyphens) instead of placeholder lines, are larger, and their detection labels are never hidden behind the camera arm.
 
 ## [1.5.0] - 2026-10-10

@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-12 · **Fase aktif:** Fase 14 (mulai setelah pemilik meninjau Fase 13) · **Tugas berikutnya:** T14.1 (Projects: jalur sortir penuh dan daftar indeks)
+**Terakhir diperbarui:** 2026-10-13 · **Fase aktif:** Fase 14 · **Tugas berikutnya:** T14.1 (kamera di dunia tetap)
 
 ## Ringkasan
 
@@ -23,9 +23,10 @@
 | 11 | Chatbot "Tanya Harry" di sudut (§E) | ✅ Selesai 2026-10-09 (rilis 1.3.0; chatbot tayang) |
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ✅ Selesai 2026-10-09 (rilis 1.4.0; formulir tayang) |
 | 13 | Tampilan baru Giok → Nila dan beranda "satu ruang" 3D (§H, §I) | ✅ Selesai 2026-10-10 (rilis 1.5.0) |
-| 14 | Halaman lain (Projects, About, Statistik, 404) dalam ruang 3D yang sama (§H) | ⏳ Berikutnya |
+| 14 | Beranda "full 3D" persis artifact: ruangan selayar penuh, kamera bergerak (§H2, D22) | ⏳ Berikutnya |
+| 15 | Halaman lain (Projects, About, Statistik, 404) dalam ruang 3D yang sama (§H) | Direncanakan |
 
-Progres keseluruhan: **Fase 0–13 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09, tampilan Giok → Nila dan beranda "satu ruang" 3D sejak 2026-10-10. Rencana Fase 14: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–13 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09, tampilan Giok → Nila dan beranda "satu ruang" 3D sejak 2026-10-10. Rencana Fase 14–15: `docs/11-roadmap.md`**
 
 ---
 
@@ -212,26 +213,47 @@ Aturan untuk semua tugas Fase 13 dan 14:
 - [x] **T13.7** Penutupan Fase 13: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.5.0
   - Kriteria: kode/dependency/branch yang tidak terpakai dihapus (termasuk scene lama dan token hijau lama); README, docs/02, docs/03, docs/04 sesuai kode; ADR 0018 dan 0019 tercatat di `docs/adr/README.md`; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus, `feature-inventory` lulus, Lighthouse ketujuh halaman ≥ 90/95 dan dibandingkan dengan angka T13.0; situs live dicek di desktop dan HP sungguhan; laporan ke pemilik.
 
-## Fase 14: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21)
+## Fase 14: Beranda "full 3D" persis artifact (`docs/11-roadmap.md` §H2; D22)
 
-Dikerjakan setelah Fase 13 selesai. Setiap halaman adalah sudut lain dari ruangan yang sama, memakai inti dari T13.3.
+Rencana disetujui pemilik 2026-10-10 (rencana lengkap: `docs/11-roadmap.md` §H2 dan ADR 0020). Pembanding: [artifact satu ruang Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb). Aturan Fase 13 (fitur lama tetap, `feature-inventory`, aturan 3D, PDF tidak berubah) tetap berlaku. Dikerjakan di branch `phase/14`, merge ke `main` sekali di T14.6.
 
-- [ ] **T14.1** Projects: jalur sortir penuh dan daftar indeks (D20)
+- [x] **T14.0** Kerangka: ADR 0020, rencana di docs, keputusan 3D sebelum tampilan pertama (`html[data-room-3d]` dari skrip inline yang memakai `decide3D`), tata letak ruangan (selayar penuh, kolom teks kiri dengan scrim, panel bawah di HP, tanpa garis) hanya saat 3D aktif
+  - Kriteria: tanpa 3D (tanpa WebGL/GPU, Save-Data, Lighthouse CI) beranda tetap tata letak sekarang tanpa ruang kosong; dengan 3D tidak ada lompatan tata letak setelah `load`; `feature-inventory` lulus di kedua mode; CSP memuat hash skrip baru.
+- [ ] **T14.1** Kamera di dunia tetap dan warna ruangan mengikuti kamera
+  - Kriteria: `src/scenes/room/camera.ts` murni + tes (titik jangkar dari posisi bagian, interpolasi, jarak untuk lebar yang harus muat, offset tampilan desktop/HP); grup halaman tidak lagi digeser scroll; dinding dan lantai penangkap bayangan; cahaya mengikuti target kamera; `--room-a/b/c` mengikuti kamera dari giok ke nila (diskret, hanya saat berubah).
+- [ ] **T14.2** Ruang hero dan journey skala artifact + tali jemuran, lampu yang menyala, lampu ikut kursor, kertas bertekstur
+  - Kriteria: foto dan lembar aksara besar digantung dengan jepitan di tali yang menjadi benang journey (satu benang utuh); urutan pembuka: ruangan redup → lampu menyala → deteksi, sekali (reduced motion: keadaan akhir); titik journey besar, kamera turun mengikuti bola, klik titik membuka cerita, `data-reached` tetap; lampu bergeser pelan mengikuti kursor (pointer halus saja); serat kertas prosedural dan bayangan kontak.
+- [ ] **T14.3** Ruang proyek: konveyor di lantai (wadah di belakang sabuk, kartu berjudul) + 3 kolom proyek + log deteksi sinkron
+  - Kriteria: kartu yang terdeteksi menyorot kolom/baris proyek yang sama di HTML (`data-detected`) dengan catatan mono "Judul → Bidang" dari `content/` (tanpa skor rekaan); klik kartu membuka studi kasus.
+- [ ] **T14.4** Ruang Kind words dan kontak: laptop besar dengan beranda mini dan angka asli
+  - Kriteria: layar = nama, baris peran, tombol Download CV, foto, dan baris status dari `/api/health` + `/api/stats/summary` (pengunjung 30 hari; disembunyikan bila gagal; tanpa data baru); pesan Kind words ditempel di dinding (teks tetap HTML).
+- [ ] **T14.5** Tema terang yang hidup, HP, reduced motion, aksesibilitas, performa
+  - Kriteria: tema mengikuti perangkat (pilihan pemilik) dan versi terang sama hidupnya dengan gelap; HP: 3D di atas, panel teks di bawah; kontras teks di atas scrim/panel ≥ 4,5:1 di kedua tema; JS 3D beranda ≤ 180 KB gzip; Lighthouse ≥ 90/95.
+
+---
+- [ ] **T14.6** Penutupan Fase 14 (AGENTS.md §2a), rilis 1.6.0
+  - Kriteria: review subagent; screenshot berdampingan dengan artifact (desktop 1440, HP 412, terang/gelap); `bun run verify`; merge `phase/14` → `main`, deploy, tag v1.6.0, cek live; laporan ke pemilik.
+
+## Fase 15: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21)
+
+Dikerjakan setelah Fase 14 selesai. Setiap halaman adalah sudut lain dari ruangan yang sama, memakai inti dari T13.3.
+
+- [ ] **T15.1** Projects: jalur sortir penuh dan daftar indeks (D20)
   - Catatan dari T13.2: `ProjectRow` belum menampilkan jumlah bintang GitHub, chip tag, dan bidang (menampilkan peran); putuskan apa yang dibutuhkan indeks `/projects/` sebelum grid diganti, dan ganti sisa font mono di kartu.
   - Kriteria: semua proyek (studi kasus dan repo GitHub) di konveyor dari data, wadah per kategori (aturan sama dengan filter: kategori < 2 proyek disembunyikan); filter dan tautan `?filter=` menyorot wadah dan proyeknya; pencarian tetap; daftar indeks (tahun, judul, deskripsi, bidang, angka utama) menggantikan grid kartu; klik kartu di konveyor membuka studi kasus; e2e memakai helper `publishedCaseStudies` (tanpa daftar proyek di kode tes); Lighthouse `/projects/` ≥ 90.
-- [ ] **T14.2** About: dinding penghargaan
+- [ ] **T15.2** About: dinding penghargaan
   - Kriteria: penghargaan dan sertifikat aktif sebagai cetakan berbingkai dari `awards.yaml` dan `certifications.yaml` (sertifikat kedaluwarsa tetap hilang otomatis); hover/klik menyorot item yang sama di daftar HTML; semua bagian About tetap (ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skill).
-- [ ] **T14.3** Statistik: laptop homelab
+- [ ] **T15.3** Statistik: laptop homelab
   - Kriteria: layar laptop menampilkan status server dan kunjungan dari API statistik publik yang sudah ada (tidak ada data baru yang disimpan); saat API mati layar menampilkan "offline" dan isi HTML `/stats/` tetap; semua isi halaman Statistik tetap.
-- [ ] **T14.4** 404 ala computer vision
+- [ ] **T15.4** 404 ala computer vision
   - Kriteria: kotak deteksi memindai dinding kosong lalu mengunci "page · not found 0.99"; teks 404 dan tautan tetap HTML; label dari kamus UI (EN/ID).
-- [ ] **T14.5** Halaman tanpa 3D mengikuti tampilan baru
+- [ ] **T15.5** Halaman tanpa 3D mengikuti tampilan baru
   - Kriteria: studi kasus, `/cv/`, `/messages/` (beserta halaman terkirim, belum terkirim, dan tinjau), panel chatbot, menu HP, dan footer memakai warna dan tipografi baru; gambar OG dibuat ulang dengan warna baru; halaman cetak dan PDF tidak berubah; axe tanpa pelanggaran di kedua tema.
-- [ ] **T14.6** (opsional, diputuskan pemilik setelah T14.5) Transisi antarhalaman
+- [ ] **T15.6** (opsional, diputuskan pemilik setelah T15.5) Transisi antarhalaman
   - Kriteria: kanvas tetap hidup saat pindah halaman (Astro View Transitions) dan kamera terbang ke sudut halaman baru, hanya bila chatbot, statistik, formulir, dan skrip halaman tetap benar; bila tidak, dibatalkan dan alasannya dicatat.
 
 ---
-- [ ] **T14.7** Penutupan Fase 14: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.6.0
+- [ ] **T15.7** Penutupan Fase 15: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.7.0
   - Kriteria: seperti T13.7; `feature-inventory` lulus; laporan ke pemilik.
 
 ## Keputusan pemilik
@@ -261,6 +283,7 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D19 | Judul hero | **Nama pemilik** ("Harry Mardika") sebagai H1; kalimat `headline` tampil di bawahnya tanpa kata berwarna (2026-10-10) |
 | D20 | Halaman Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) |
 | D21 | Arah 3D | **"Satu ruang"**: satu kanvas 3D di belakang setiap halaman, isi tetap HTML. Beranda: foto + lembar aksara Jawa, benang journey, konveyor proyek, Kind words, laptop homelab. Projects: konveyor penuh. About: dinding penghargaan. Statistik: laptop homelab. 404: kotak deteksi. Menggantikan D17 (peta embedding, rasi skill, dan globe batal) (2026-10-10) |
+| D22 | Beranda "full 3D" | **Persis artifact** "satu ruang" Giok → Nila: ruangan selayar penuh, kamera bergerak mengikuti scroll (menggantikan "ditambatkan ke HTML" ADR 0019 → ADR 0020); tema tetap mengikuti perangkat (versi terang harus sama hidupnya); layar laptop = beranda mini; plus peningkatan: tali jemuran (satu benang), lampu yang menyala, log deteksi sinkron, laptop dengan angka asli, lampu ikut kursor, kertas bertekstur; live sekali di akhir fase (2026-10-10) |
 
 **Dijawab pemilik 2026-10-10 sebelum pergi** (Fase 13 dikerjakan tanpa pemilik):
 - **Deploy:** semua tugas Fase 13 dikumpulkan di branch `phase/13` (di-push sebagai cadangan) dan baru di-merge ke `main` di T13.7 setelah semua tes dan Lighthouse lulus, agar situs live tidak pernah tampil setengah jadi.
@@ -268,8 +291,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 - **Label angka hero (T13.2):** "from idea to commercial launch at Decklify", "NPS in Decklify's first two weeks", "accuracy in grant-funded crisis-detection research" (versi ID diterjemahkan).
 - **Ejaan aksara:** ꦲꦂꦫꦶ ꦩꦂꦢꦶꦏ (har-ri mar-di-ka) sudah benar.
 
+**Dijawab pemilik 2026-10-13:**
+- **Tinjauan Fase 13:** pemilik meminta agent yang meninjau (bukan di perangkat sungguhan). Hasilnya di log sesi 2026-10-13.
+- **Perbaikan dari tinjauan:** dikerjakan sekarang, tetapi **tayang bersama Fase 14** (tidak ada rilis terpisah). Fase 14 dikerjakan sampai selesai; `main` dan situs live baru berubah di T14.6.
+
 **Belum diputuskan** (dijawab saat tugasnya tiba):
-- Transisi antarhalaman (T14.6, opsional): diputuskan setelah T14.5. Rekomendasi: kerjakan hanya bila chatbot, statistik, dan formulir tetap benar.
+- Transisi antarhalaman (T15.6, opsional): diputuskan setelah T15.5. Rekomendasi: kerjakan hanya bila chatbot, statistik, dan formulir tetap benar.
 - Skor kelas pada label aksara (T13.4, opsional): pemilik boleh menjalankan model skripsinya pada gambar lembar aksara untuk mendapat skor asli; tanpa itu label hanya berisi nama kelas, tanpa angka.
 
 ## Catatan data
@@ -282,6 +309,14 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-13 · Claude Code (Opus) · Tinjauan Fase 13 + T14.0 kerangka ruangan
+- **Tinjauan Fase 13 (diminta pemilik, di situs live):** Playwright, 1440 px dan HP 412 px, terang/gelap, 3D dipaksa aktif dan mode tanpa 3D. Semua halaman 200 (404 untuk halaman tak dikenal), tanpa error konsol, tanpa scroll ke samping; 16 PDF dan API status/statistik jalan; popover journey, chatbot, tema berfungsi. Temuan: (1) di HP benang journey memotong tahun "2022" karena kartu yang belum tercapai transparan, **diperbaiki** (kartu tetap berlatar `surface`); (2) label wadah dan judul kartu konveyor di HP ±7 px, dan (3) label wadah di tema terang menempel di tepi wadah: keduanya masuk T14.3. Batasan: browser otomatis, bukan HP/laptop sungguhan.
+- **`main` lebih maju dari `phase/14`:** PR #11 (studi kasus Humidity IoT) sudah di-merge pemilik dan varian CV Data Scientist (2026-10-12). `phase/14` di-fast-forward ke `main` dan di-push; bentrokan `PROGRESS.md` diselesaikan (D10 = 7 varian tetap).
+- **T14.0 dikerjakan:** skrip inline `earlyRoomScript()` di `<head>` beranda (prop `earlyRoom`), `HomeRoom.astro` hanya mencabut `data-room-3d` bila gagal; di bawah atribut itu setiap bagian beranda selayar penuh tanpa garis, scrim kiri di layar lebar, panel teks di HP/tablet (cetakan hero dan laptop di atas panel); Kind words: undangan pindah ke bawah judul agar panel tidak menutupi kertas 3D. Ruang tombol "Play again" dipesan sejak awal (aturan di `@layer base`, karena `!important` dari layer mengalahkan CSS tanpa layer). Tes: `early.test.ts` (jumlah kombinasi diperbaiki 768 → 384), `home-room.spec.ts` (keputusan sebelum `load`, setiap bagian selayar, tanpa pergeseran setelah `load`, tata letak biasa tanpa 3D), `feature-inventory` beranda dijalankan dalam mode biasa dan mode ruangan.
+- **Review subagent `reviewer`:** semua should-fix diperbaiki: garis header/bagian ternyata masih tampil (aturan di `@layer base` kalah oleh utilitas `border-line`; kini di luar layer, plus tes e2e); keputusan awal kini berlaku penuh dan membawa modenya (`data-room-3d="animated|still"`, `earlyDecision()`), jadi `HomeRoom` tidak memeriksa WebGL lagi dan tidak memasang ruangan bila skrip awal tidak jalan; ADR 0020 diperbaiki (`earlyMode` adalah salinan yang dijaga tes, bukan logika yang sama); tes sinkron diperluas (ambang core, semua pola renderer CPU, storage/WebGL yang melempar galat). Biaya pemeriksaan WebGL di `<head>` diukur ±10–30 ms (laptop, GPU AMD), dicatat di ADR 0020. Nit: ruang tombol replay hanya di mode `animated`, `-webkit-backdrop-filter`, tinggi header 73 px.
+- **Catatan:** pergeseran karena font dimuat pertama kali (sebelum `load`) sudah ada sebelumnya dan tetap kecil (HP ±0,02). Hingga T14.1 benda 3D masih ditambatkan ke HTML, jadi ruang kosong di layar ruangan memang belum terisi.
+- **Langkah berikutnya:** T14.1 (kamera di dunia tetap, warna mengikuti kamera).
 
 ### 2026-10-12 · Claude Code (Opus) · Varian CV Data Scientist
 - **Dikerjakan (permintaan pemilik):** varian ke-7 `data-scientist` di `content/cv-variants.yaml`, diletakkan setelah AI/ML Engineer. Pemilik memilih penekanan "modeling & riset": fokus `ai` + `data`; urutan bagian skills → experience → training → education → awards → certifications → leadership; grup skill `ai-ml`, `data`, `llm-genai`, `cloud-mlops`, `languages`. Ringkasan EN/ID hanya mengulang fakta yang sudah ada (deteksi krisis 11 ribu+ gambar/1 ribu+ transkrip, akurasi 92,5%/AUC 0,96/F1 0,92; BERT ROUGE-1 56,63%; LSTM saham, rekomendasi film, tim ML model analisis pola pengeluaran 90%; IPK, GEMASTIK, Regression Rumble). Halaman `/cv/`, PDF EN/ID, dan pengetahuan chatbot mengambilnya otomatis. README, D10, `docs/11` diperbarui (7 varian).
@@ -299,15 +334,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Keputusan pemilik di fase ini:** D18–D21; jawaban sebelum pergi (deploy lewat `phase/13`, pratinjau dinilai agent, label angka hero, ejaan aksara; lalu: kriteria LCP foto **atau** lembar aksara, layar laptop berupa gambar sederhana, boleh deploy sebelum melihat pratinjau).
 - **Menunggu pemilik:** (1) tinjau tampilan live di HP dan laptop sungguhan (agent hanya bisa mengecek di browser headless) dan screenshot pratinjau; (2) PR #11 (draf studi kasus AI `humadity_IoT-main`); (3) opsional: skor kelas asli untuk label aksara dari model skripsi; (4) keputusan mulai Fase 14. Catatan: `content/messages.yaml` masih kosong, jadi kertas Kind words baru terlihat setelah pesan pertama disetujui.
 
-### 2026-10-10 · Claude Code (Opus) · T13.6 konveyor, Kind words, laptop homelab
-- **Dikerjakan:** tiga bagian ruang baru. `parts/sorting.ts` + `sorting-plan.ts` (linimasa murni): pita di antara judul Proyek pilihan dan barisnya; kartu = 3 proyek pilihan lalu studi kasus lain yang punya bidang (maks. 8, dipilih `sortingLine()` dari `content/`), wadah = bidang `profile.projects.categories` yang menerima kartu; kamera mendeteksi kartu (kotak + label bidang), pendorong memasukkannya ke wadah; hover/ketuk pertama = judul, klik/ketuk kedua = studi kasus; hanya bergerak selama terlihat; reduced motion = satu frame dengan kartu pertama terdeteksi. `parts/notes.ts`: kertas `surface` tanpa pencahayaan tepat di belakang setiap pesan (kontras teks sama dengan kartu HTML), selotip amber, bayangan lembut; kartu HTML melepas latar dan garisnya saat 3D tergambar. `parts/laptop.ts`: laptop homelab di samping (desktop) atau di bawah (HP) Kontak, layar digambar canvas (bilah alamat dari `Astro.site` + sketsa beranda, pilihan pemilik), keterangan baru `contact.homelab` (EN/ID). Inti ruang: `RoomTarget.onHover`, `onClick(event, pointerType)`, `RoomContext.toScreen`; pita khusus 3D (`data-room-band`) hanya memakan ruang saat `html[data-room-3d]`. Font label dipindah ke `paper.ts`.
-- **Tes:** `home-room.spec.ts` (tanpa WebGL/GPU/JS: pita tidak ada, isi tetap HTML; dengan 3D: kartu terdeteksi = salah satu proyek pilihan dan klik membuka studi kasusnya, ketuk dua kali di HP, kertas dan laptop tergambar, axe terang/gelap, konveyor berjalan tanpa error, label laptop ID); unit `room-sorting.test.ts`, `sortingLine` di `categories.test.ts`. JS 3D beranda ±152 KB gzip (batas 180).
-- **Review (subagent `reviewer`):** blocker diperbaiki: setelah tema diganti atau lebar berubah, kartu lama yang sudah dibuang masih bisa diklik di titik layar yang tetap (membuka studi kasus dari mana saja); kini inti membaca ulang `targets()` setelah layout/resize/recolor (+ tes e2e yang gagal tanpa perbaikan). Juga: pita dicabut bila chunk 3D gagal dimuat dan disembunyikan sampai bagiannya tergambar; keterangan laptop berlatar `surface` (bayangan laptop menurunkan kontrasnya ke 3,45:1); hover diperiksa ulang saat kartu bergerak; kebocoran tekstur `alphaMap`; label wadah tidak lagi terpotong dindingnya.
-- **Screenshot** desktop/HP × terang/gelap untuk pemilik: lihat laporan akhir sesi.
-- **Langkah berikutnya:** T13.7.
-
-### 2026-10-10 · Claude Code (Opus) · T13.5 selesai: verifikasi, perbaikan review, dokumen
-- **Dikerjakan:** perbaikan review T13.4 yang belum diverifikasi kini lulus `bun run verify` (satu galat tipe: variabel `paper` tertimpa di `hero.ts`); `bun.lock` mencatat font aksara `5.3.0` persis. Di HP benang journey menembus judul "From student to founder." dan keluar layar saat berayun: kini memutar di sisi judul yang lebih lapang (`detour`, teks diukur dari baris aslinya lewat `Range`) dan ayunan berhenti 12 px dari tepi kiri. Warna bola dan bayangan lembutnya ikut tema. ADR 0019 diberi catatan bertanggal (ambang bayangan ≥ 6 core dan bukan layar sentuh; kamera tanpa paralaks). Dokumen basi diperbarui: `docs/01` (isi beranda), `docs/03` (hero), `docs/04` (`role`, file `aksara-sheet.*` dibuat skrip), `docs/05`, README; kriteria T13.4 soal LCP diubah atas persetujuan pemilik (foto **atau** lembar aksara).
-- **Keputusan pemilik sebelum pergi (kedua kalinya, 2026-10-10):** selesaikan Fase 13 sampai T13.7; layar laptop T13.6 berupa gambar sederhana (bilah alamat + blok), bukan screenshot asli; merge `phase/13` → `main`, deploy, dan tag v1.5.0 boleh dilakukan sebelum pemilik melihat pratinjau. PR #11 (draf studi kasus AI `humadity_IoT-main`) dibiarkan untuk pemilik.
-- **Review:** subagent `reviewer`; semua temuan should-fix diperbaiki.
-- **Langkah berikutnya:** T13.6.

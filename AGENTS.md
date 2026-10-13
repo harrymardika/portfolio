@@ -20,7 +20,7 @@ Baca secukupnya sesuai tugas, jangan seluruh `docs/` di setiap sesi: konteks yan
 | Analytics | `docs/08-analytics.md` |
 | PDF CV / Portfolio | `docs/09-pdf-generation.md` |
 | Operasional server, akun & secret, insiden, pemulihan | `docs/10-operations.md` |
-| Fase 9–14 (branding, CV per posisi, chatbot, kesan & pesan, tampilan baru dan "satu ruang" 3D) | `docs/11-roadmap.md` (Fase 13–14: §H dan daftar fitur wajib §I) |
+| Fase 9–15 (branding, CV per posisi, chatbot, kesan & pesan, tampilan baru dan "satu ruang" 3D, beranda full 3D) | `docs/11-roadmap.md` (Fase 13–15: §H, §H2, daftar fitur wajib §I) |
 
 ## 2. Alur kerja satu tugas
 

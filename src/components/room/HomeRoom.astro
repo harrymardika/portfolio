@@ -1,30 +1,33 @@
 ---
 /**
- * The home page's room (ADR 0019): the fixed stage plus the script that mounts it with the home
- * parts. Decides before downloading three.js, so devices that should not run 3D never fetch it, and
- * waits for the load event so the 3D never competes with the LCP image. Marks the root with
- * `data-room-3d` while the room runs, so bands that only hold 3D (global.css) take space.
+ * The home page's room (ADR 0019, 0020): the fixed stage, the scrim behind the copy, and the script
+ * that mounts the room with the home parts. The 3D decision is taken in <head> before the first paint
+ * (src/scenes/core/early.ts sets `data-room-3d`), so the full-screen room layout (global.css) is there
+ * from the start; three.js is only fetched when that decision says the room runs, and only after the
+ * load event so the 3D never competes with the LCP image. If the room cannot start, the attribute is
+ * removed and the page falls back to its plain layout.
  */
 import RoomStage from './RoomStage.astro';
 ---
 
 <RoomStage />
+<div class="room-scrim" aria-hidden="true"></div>
 
 <script>
-  import { decide3D, detectCapabilities } from '@/scenes/core/capabilities';
+  import { earlyDecision, ROOM_ATTRIBUTE } from '@/scenes/core/early';
 
   import type { RoomPart } from '@/scenes/room';
 
   async function start(): Promise<void> {
     const stage = document.querySelector<HTMLElement>('[data-room-stage]');
     if (!stage) return;
-    if (decide3D(detectCapabilities()).mode === 'off') {
+    // The early decision (head script) is authoritative: without it the page has its plain layout.
+    const decision = earlyDecision(document.documentElement);
+    if (!decision) {
       stage.dataset['scene'] = 'off';
+      document.documentElement.removeAttribute(ROOM_ATTRIBUTE);
       return;
     }
-    // Reserve the 3D-only bands now: they sit far below the first screen, and scroll anchoring keeps
-    // the view steady if the page was already scrolled.
-    document.documentElement.setAttribute('data-room-3d', '');
     const [
       { mountRoom },
       { createHeroPart },
@@ -52,14 +55,14 @@ import RoomStage from './RoomStage.astro';
       createNotesPart(find('[data-room-slot="notes"]')),
       createLaptopPart(find('[data-room-slot="laptop"]')),
     ].filter((part): part is RoomPart => part !== null);
-    if (!mountRoom(stage, parts)) document.documentElement.removeAttribute('data-room-3d');
+    if (!mountRoom(stage, parts, decision)) document.documentElement.removeAttribute(ROOM_ATTRIBUTE);
   }
 
   // A chunk that fails to load (flaky network, or a deploy replacing it while the tab is open) must
-  // not leave the 3D-only bands reserved and empty.
+  // not leave the room layout and its 3D-only bands reserved and empty.
   function run(): void {
     start().catch((error: unknown) => {
-      document.documentElement.removeAttribute('data-room-3d');
+      document.documentElement.removeAttribute(ROOM_ATTRIBUTE);
       console.warn('3D: the room failed to load', error);
     });
   }
@@ -67,3 +70,35 @@ import RoomStage from './RoomStage.astro';
   if (document.readyState === 'complete') run();
   else window.addEventListener('load', run, { once: true });
 </script>
+
+<style>
+  /*
+   * Behind the copy column on wide screens (ADR 0020): the wall fades toward the surface color on the
+   * left, so text stays readable over the room. Above the canvas, below the content; only while the
+   * room runs. On phones the copy has its own panel instead (global.css).
+   */
+  .room-scrim {
+    display: none;
+  }
+
+  @media (width >= 64rem) {
+    :root[data-room-3d] .room-scrim {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--surface) 70%, transparent) 0%,
+        transparent 46%
+      );
+    }
+  }
+
+  @media print {
+    .room-scrim {
+      display: none !important;
+    }
+  }
+</style>

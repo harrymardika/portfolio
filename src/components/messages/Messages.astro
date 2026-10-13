@@ -1,9 +1,9 @@
 ---
 /**
  * "Kind words" / "Kesan & pesan" on the home page (T9.4, D15): messages people left for the owner,
- * from content/messages.yaml, and a link to the form for leaving one (T12.2). While the list is empty
- * only the invitation shows. A message without an Indonesian version is shown in English and marked
- * lang="en".
+ * from content/messages.yaml, and a link to the form for leaving one (T12.2), placed under the
+ * heading. While the list is empty only the invitation shows. A message without an Indonesian
+ * version is shown in English and marked lang="en".
  */
 import { isFallback, localize, type LocalizedText, type Message } from '@/lib/content';
 import { localizePath, type Locale, UI } from '@/lib/i18n';
@@ -22,11 +22,28 @@ const details = (item: Message): LocalizedText[] =>
   item.role ? [item.role, item.relationship] : [item.relationship];
 ---
 
-<section id="messages" aria-labelledby="messages-title" class="scroll-mt-20 border-t border-line">
+<section
+  id="messages"
+  aria-labelledby="messages-title"
+  class="scroll-mt-20 border-t border-line"
+  data-room-section="messages"
+>
   <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
-    <h2 id="messages-title" class="text-h2">
-      {t['messages.title']}
-    </h2>
+    <!-- Heading and invitation together, so the room's copy panel (ADR 0020) never covers the notes. -->
+    <div class="grid gap-6" data-room-copy>
+      <h2 id="messages-title" class="text-h2">
+        {t['messages.title']}
+      </h2>
+      <p class="flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-muted">
+        {t['messages.invite'].replaceAll('{name}', ownerName)}
+        <a
+          href={localizePath('/messages/', locale)}
+          class="inline-flex min-h-11 items-center rounded-full border border-line px-5 font-semibold text-forest-ink transition-colors hover:bg-surface"
+        >
+          {t['messages.leave']}
+        </a>
+      </p>
+    </div>
     {items.length > 0 && (
       <ul class="notes grid gap-5 md:grid-cols-2" data-room-slot="notes">
         {items.map((item) => (
@@ -62,15 +79,6 @@ const details = (item: Message): LocalizedText[] =>
         ))}
       </ul>
     )}
-    <p class="flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-muted">
-      {t['messages.invite'].replaceAll('{name}', ownerName)}
-      <a
-        href={localizePath('/messages/', locale)}
-        class="inline-flex min-h-11 items-center rounded-full border border-line px-5 font-semibold text-forest-ink transition-colors hover:bg-surface"
-      >
-        {t['messages.leave']}
-      </a>
-    </p>
   </div>
 </section>
 

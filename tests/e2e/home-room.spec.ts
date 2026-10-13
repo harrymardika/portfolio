@@ -178,3 +178,73 @@ test.describe('with 3D', () => {
     await expect(page.locator(laptop)).toContainText('Situs ini dilayani dari laptop ini');
   });
 });
+
+test.describe('the full-screen room layout (ADR 0020)', () => {
+  const sections = '[data-room-section]';
+
+  test('without 3D the home page keeps its plain layout, without a scrim', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('html')).not.toHaveAttribute('data-room-3d');
+    for (const display of await page
+      .locator(sections)
+      .evaluateAll((els) => els.map((el) => getComputedStyle(el).display)))
+      expect(display).toBe('block');
+    await expect(page.locator('.room-scrim')).toBeHidden();
+  });
+
+  test.describe('with 3D', () => {
+    test.beforeEach(async ({ page }) => {
+      await assumeGpu(page);
+      // What the root looked like before the load event, and every layout shift after it.
+      await page.addInitScript(() => {
+        const state = window as unknown as { earlyRoom?: boolean; lateShift: number };
+        state.lateShift = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+          state.earlyRoom = document.documentElement.hasAttribute('data-room-3d');
+        });
+        new PerformanceObserver((list) => {
+          const [nav] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+          for (const entry of list.getEntries() as (PerformanceEntry & { value: number })[])
+            if (nav && nav.loadEventEnd > 0 && entry.startTime > nav.loadEventEnd)
+              state.lateShift += entry.value;
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+    });
+
+    test('the room is decided before the page loads, every section fills the screen, and nothing jumps once the 3D is drawn', async ({
+      page,
+    }) => {
+      await page.goto('/');
+      expect(await page.evaluate(() => (window as unknown as { earlyRoom?: boolean }).earlyRoom)).toBe(true);
+      await expect(page.locator('html')).toHaveAttribute('data-room-3d', 'animated');
+      await expect(page.locator('[data-room-slot="hero"]')).toHaveAttribute('data-room-ready', 'true', {
+        timeout: SCENE_READY_TIMEOUT,
+      });
+      const height = page.viewportSize()?.height ?? 0;
+      for (const [name, box] of await page
+        .locator(sections)
+        .evaluateAll((els) =>
+          els.map(
+            (el) => [(el as HTMLElement).dataset['roomSection'], el.getBoundingClientRect().height] as const,
+          ),
+        ))
+        expect(box, `${name} fills the screen`).toBeGreaterThanOrEqual(
+          name === 'hero' ? height - 80 : height - 1,
+        );
+      // No dividing lines: the header and the sections lose their borders.
+      const transparent = 'rgba(0, 0, 0, 0)';
+      expect(
+        await page.locator('body > header').evaluate((el) => getComputedStyle(el).borderBottomColor),
+      ).toBe(transparent);
+      for (const color of await page
+        .locator(sections)
+        .evaluateAll((els) => els.map((el) => getComputedStyle(el).borderTopColor)))
+        expect(color).toBe(transparent);
+      // Give the 3D a moment to settle, then: no layout shift after the load event.
+      await page.waitForTimeout(500);
+      expect(await page.evaluate(() => (window as unknown as { lateShift: number }).lateShift)).toBeLessThan(
+        0.01,
+      );
+    });
+  });
+});

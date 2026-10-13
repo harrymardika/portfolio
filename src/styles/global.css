@@ -112,7 +112,7 @@
 
   /*
    * Bands that only hold 3D (sorting line, homelab laptop, T13.6) take space only when the room
-   * runs (HomeRoom sets data-room-3d); without 3D or JavaScript they do not exist for the layout.
+   * runs (the head script sets data-room-3d, ADR 0020); without 3D or JavaScript they do not exist for the layout.
    */
   [data-room-band] {
     display: none;
@@ -124,6 +124,57 @@
 
   /* Until its part is drawn (or if it never is), a band keeps its space but shows nothing. */
   :root[data-room-3d] [data-room-band]:not([data-room-ready]) {
+    visibility: hidden;
+  }
+
+  /*
+   * The home page as full-screen rooms (ADR 0020), only while the room runs. The decision is taken in
+   * <head> (src/scenes/core/early.ts), so this layout is there from the first paint and nothing jumps
+   * after load. Each section fills the screen, without dividing lines; the copy sits on the left over
+   * the scrim (HomeRoom.astro) on wide screens, or on its own panel on phones and tablets, with the 3D
+   * of the section above it. Without the room the page keeps its plain layout.
+   */
+  :root[data-room-3d] [data-room-section] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+  }
+
+  :root[data-room-3d] [data-room-section] > * {
+    width: 100%;
+  }
+
+  /* The hero shares the first screen with the header (73 px with its border). */
+  :root[data-room-3d] [data-room-section='hero'] {
+    min-height: calc(100svh - 4.6rem);
+  }
+
+  @media (width < 64rem) {
+    :root[data-room-3d] [data-room-copy] {
+      padding: 1.25rem;
+      border-radius: 0.875rem;
+      background-color: color-mix(in srgb, var(--surface) 88%, transparent);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    /* The 3D sits above the copy (visual order only; nothing focusable moves before the copy but the
+       hero's replay button, which belongs to the prints). */
+    :root[data-room-3d] [data-room-slot='hero'],
+    :root[data-room-3d] [data-room-slot='laptop'] {
+      order: -1;
+    }
+  }
+
+  /*
+   * The hero's replay button only shows once the 3D prints are ready (animated mode only); with the
+   * room its space is kept from the first paint, since on phones the copy sits under the prints and
+   * must not jump. In this layer, so its `!important` outranks the base `[hidden] { display: none
+   * !important }`.
+   */
+  :root[data-room-3d='animated'] [data-replay][hidden] {
+    display: inline-block !important;
     visibility: hidden;
   }
 
@@ -195,4 +246,16 @@
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/*
+ * The room has no dividing lines (ADR 0020). Unlayered, so it outranks the `border-line` utilities
+ * of the header and the sections.
+ */
+:root[data-room-3d] body > header {
+  border-bottom-color: transparent;
+}
+
+:root[data-room-3d] [data-room-section] {
+  border-top-color: transparent;
 }

@@ -42,9 +42,14 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
 ---
 
 {items.length > 0 && (
-  <section id="projects" aria-labelledby="projects-title" class="scroll-mt-20 border-t border-line">
+  <section
+    id="projects"
+    aria-labelledby="projects-title"
+    class="scroll-mt-20 border-t border-line"
+    data-room-section="projects"
+  >
     <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-wrap items-end justify-between gap-4" data-room-copy>
         <div class="grid max-w-[60ch] gap-3">
           <h2 id="projects-title" class="text-h2">
             {t['projects.selected']}
