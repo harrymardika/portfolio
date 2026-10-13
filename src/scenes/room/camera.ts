@@ -65,8 +65,9 @@ export const CAMERA_KEYS: Readonly<Record<KeyName, CameraKey>> = {
   projects: {
     dir: vec3(0, 0.8, 0.6),
     distance: 14,
-    wide: { target: vec3(0.3, FLOOR_Y, STATIONS.sorting.z + 0.4), fit: 17.5, offset: { x: 0, y: -0.3 } },
-    narrow: { target: vec3(-3.6, FLOOR_Y, STATIONS.sorting.z + 0.4), fit: 6.6, offset: { x: 0, y: 0.28 } },
+    // The belt and the bins behind it, below the copy panel (wide) or above it (phones).
+    wide: { target: vec3(0.3, FLOOR_Y, STATIONS.sorting.z - 1), fit: 17.5, offset: { x: 0, y: -0.36 } },
+    narrow: { target: vec3(-3.6, FLOOR_Y, STATIONS.sorting.z - 1), fit: 6.6, offset: { x: 0, y: 0.26 } },
   },
   messages: {
     dir: vec3(0.15, 0.2, 1),
@@ -154,14 +155,15 @@ export interface Stop {
 /**
  * Where the camera reaches each key, from the sections' positions: the hero at the top, the journey
  * from just before its section until its end (the camera travels down the thread while it scrolls
- * by), and every other room when its section is centred on the screen. Sections that are missing
+ * by), and every other room when its section is centred on the screen, or, for a section taller than
+ * the screen, when its top reaches the top (its copy follows below, or stays, sticky). Sections that are missing
  * (no selected projects) are skipped. Positions never pass the end of the page and always increase;
  * on a page too short for them, the later rooms are squeezed in before its end rather than pushed
  * past it (where scrolling could never reach them).
  */
 export function stopsFor(sections: Sections, viewHeight: number, maxScroll: number): Stop[] {
   const h = viewHeight;
-  const centred = (box: SectionBox) => box.top + (box.height - h) / 2;
+  const centred = (box: SectionBox) => box.top + Math.min(0, (box.height - h) / 2);
   const raw: { key: KeyName; scroll: number }[] = [{ key: 'hero', scroll: 0 }];
   if (sections.journey) {
     raw.push({ key: 'journeyStart', scroll: sections.journey.top - h * 0.25 });
@@ -169,8 +171,7 @@ export function stopsFor(sections: Sections, viewHeight: number, maxScroll: numb
   }
   if (sections.projects) raw.push({ key: 'projects', scroll: centred(sections.projects) });
   if (sections.messages) raw.push({ key: 'messages', scroll: centred(sections.messages) });
-  if (sections.contact)
-    raw.push({ key: 'contact', scroll: sections.contact.top + Math.max(0, sections.contact.height - h) / 2 });
+  if (sections.contact) raw.push({ key: 'contact', scroll: centred(sections.contact) });
   const end = Math.max(0, maxScroll);
   const at = raw.map(({ scroll }) => clamp(scroll, 0, end));
   // Increasing from the top, then never past the end: each stop at least 1 px before the next.

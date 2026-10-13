@@ -250,18 +250,20 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     lens.position.set(plan.cameraX, 90, 0);
     line.add(post, arm, head, lens);
 
-    // Bins in front of the belt, each with its field's name; pushers behind the belt.
+    // Bins behind the belt, each with its field's name above its back wall; pushers in front of the
+    // belt push the cards back into them (as in the approved preview).
     const binHeight = 34;
-    const binZ = beltDepth / 2 + binDepth / 2 + 6;
+    const binZ = -(beltDepth / 2 + binDepth / 2 + 6);
     const pusherMeshes: Mesh[] = [];
     plan.bins.forEach((x, i) => {
       const bin = new Group();
       bin.position.set(x, -binHeight / 2 - 8, binZ);
       const wall = 3;
+      const backHeight = binHeight + 14;
       for (const [w, h, d, px, py, pz] of [
         [binWidth, wall, binDepth, 0, -binHeight / 2, 0],
         [binWidth, binHeight, wall, 0, 0, binDepth / 2],
-        [binWidth, binHeight, wall, 0, 0, -binDepth / 2],
+        [binWidth, backHeight, wall, 0, (backHeight - binHeight) / 2, -binDepth / 2],
         [wall, binHeight, binDepth, -binWidth / 2, 0, 0],
         [wall, binHeight, binDepth, binWidth / 2, 0, 0],
       ] as const) {
@@ -272,9 +274,9 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       const name = label(bins[i]?.label ?? '', { font: SANS, color: colors.ink, height: LABEL_HEIGHT });
       const nameWidth = (name.geometry as PlaneGeometry).parameters.width;
       name.scale.setScalar(Math.min(1, (binWidth * 0.94) / nameWidth));
-      // Upright toward the viewer (the line is tilted back), just in front of the bin.
+      // Upright toward the viewer (the line is tilted back), above the bin's back wall.
       name.rotation.x = -TILT;
-      name.position.set(0, 2, binDepth / 2 + wall / 2 + 8);
+      name.position.set(0, backHeight - binHeight / 2 + LABEL_HEIGHT / 2 + 4, -binDepth / 2);
       // Never cut by the bin's own walls.
       name.material.depthTest = false;
       name.renderOrder = 1;
@@ -282,7 +284,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       line.add(bin);
 
       const pusher = cast(new Mesh(new BoxGeometry(card.width * 0.8, 12, 8), machine));
-      pusher.position.set(x, 7, back + 2);
+      pusher.position.set(x, 7, beltDepth / 2 + 8);
       pusherMeshes.push(pusher);
       line.add(pusher);
     });
@@ -411,7 +413,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     });
     pushers(p, t).forEach((reach, i) => {
       const pusher = built?.pushers[i];
-      if (pusher) pusher.position.z = -p.beltDepth / 2 - 8 + reach * p.beltDepth * 0.75;
+      if (pusher) pusher.position.z = p.beltDepth / 2 + 8 - reach * p.beltDepth * 0.75;
     });
     // Title of the hovered or tapped card, above it while it is on the belt.
     const active = tapped >= 0 ? tapped : hovered;
@@ -446,9 +448,31 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       delete slot.dataset['detectedAt'];
       return;
     }
+    if (slot.dataset['detected'] !== data.href) logDetection(data);
     slot.dataset['detected'] = data.href;
     const point = toScreen(mesh.getWorldPosition(new Vector3()));
     slot.dataset['detectedAt'] = `${Math.round(point.x)} ${Math.round(point.y)}`;
+  };
+
+  /**
+   * The detection log (T14.3): the detected project's row in the HTML index is marked
+   * (`data-detected`), and the log line reads "Title → Field", both from content/, no scores.
+   */
+  const section = slot.closest('section');
+  const log = section?.querySelector<HTMLElement>('[data-detection-log]') ?? null;
+  const rows = [...(section?.querySelectorAll<HTMLElement>('[data-project]') ?? [])];
+  const urlOf = (href: string): string => new URL(href, window.location.href).href;
+  const logDetection = (data: CardData): void => {
+    const field = bins.find((bin) => bin.id === data.bin)?.label ?? '';
+    if (log) log.textContent = `${data.title} → ${field}`;
+    // Cards for projects without a row (the line carries more than the three selected) only log.
+    const url = urlOf(data.href);
+    for (const row of rows) {
+      const link = row.querySelector<HTMLAnchorElement>('a[href]');
+      const match = link ? urlOf(link.href) === url : false;
+      if (match) row.dataset['detected'] = '';
+      else delete row.dataset['detected'];
+    }
   };
 
   const select = (i: number): void => {
@@ -535,6 +559,8 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     },
     dispose() {
       window.clearTimeout(tapTimer);
+      if (log) log.textContent = '';
+      for (const row of rows) delete row.dataset['detected'];
       delete slot.dataset['roomReady'];
       delete slot.dataset['detected'];
       delete slot.dataset['detectedAt'];

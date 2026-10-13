@@ -51,12 +51,12 @@ describe('cardAt', () => {
     expect(cardAt(plan, firstDetection(plan) + 3, 0).detected).toBe(false);
   });
 
-  it('is pushed toward the viewer into its own bin, then gone', () => {
+  it('is pushed back into its own bin behind the belt, then gone', () => {
     const binX = plan.bins[2] ?? 0;
     const arrive = (binX - dropX(plan)) / plan.speed;
     const pushing = cardAt(plan, arrive + TIMING.push * 0.5, 0);
     expect(pushing.x).toBe(binX);
-    expect(pushing.z).toBeGreaterThan(0);
+    expect(pushing.z).toBeLessThan(0);
     expect(pushing.push).toBeCloseTo(0.5);
     expect(cardAt(plan, arrive + TIMING.push + 0.01, 0).gone).toBe(true);
     // Before its turn, a card is not on the line.

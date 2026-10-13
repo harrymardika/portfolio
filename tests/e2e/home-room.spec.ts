@@ -16,13 +16,16 @@ async function scrollTo(page: Page, selector: string): Promise<void> {
   await page.mouse.wheel(0, 1);
 }
 
-/** Scroll to where the room's camera stops at a section: centred on the screen (camera.ts `stopsFor`). */
+/**
+ * Scroll to where the room's camera stops at a section (camera.ts `stopsFor`): centred on the
+ * screen, or at its top when it is taller than the screen.
+ */
 async function scrollToRoom(page: Page, section: string): Promise<void> {
   await page.evaluate((name) => {
     const element = document.querySelector(`[data-room-section="${name}"]`);
     if (!element) throw new Error(`section ${name} missing`);
     const top = element.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo(0, top + (element.clientHeight - window.innerHeight) / 2);
+    window.scrollTo(0, top + Math.min(0, (element.clientHeight - window.innerHeight) / 2));
   }, section);
   await page.mouse.wheel(0, 1);
 }
@@ -103,6 +106,24 @@ test.describe('with 3D', () => {
       await expect(page.locator('html')).toHaveClass(/room-hover/);
       await page.mouse.click(x, y);
       await expect(page).toHaveURL(new RegExp(`${href}$`));
+    });
+
+    test('the detection log names the detected project and marks its row', async ({ page }) => {
+      await page.goto('/');
+      await ready(page, sorting);
+      const href = await page.locator(sorting).getAttribute('data-detected');
+      if (!href) throw new Error('nothing detected');
+      // Exactly the detected project's row is marked.
+      const marked = page.locator('#projects [data-project][data-detected]');
+      await expect(marked).toHaveCount(1);
+      const title = (await marked.locator('h3 a').innerText()).trim();
+      expect(
+        new URL(await marked.locator('h3 a').evaluate((a) => (a as HTMLAnchorElement).href)).pathname,
+      ).toBe(href);
+      // The log reads "Title → Field", from the same content.
+      const log = page.locator('[data-detection-log]');
+      await expect(log).toBeVisible();
+      await expect(log).toHaveText(new RegExp(`^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} → .+`));
     });
 
     test('after a theme switch the redrawn cards are the ones that respond, never the old ones', async ({
@@ -317,6 +338,11 @@ test.describe('the full-screen room layout (ADR 0020)', () => {
         .locator(sections)
         .evaluateAll((els) => els.map((el) => getComputedStyle(el).borderTopColor)))
         expect(color).toBe(transparent);
+      // On to the projects room: its detection log fills in without moving anything either.
+      await scrollToRoom(page, 'projects');
+      await expect(page.locator(sorting)).toHaveAttribute('data-detected', /.+/, {
+        timeout: SCENE_READY_TIMEOUT,
+      });
       // Give the 3D a moment to settle, then: no layout shift after the load event.
       await page.waitForTimeout(500);
       const late = await page.evaluate(() => {

@@ -55,6 +55,8 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
             {t['projects.selected']}
           </h2>
           <p class="text-ink-muted">{localize(copy.intro, locale)}</p>
+          <!-- The sorting line's detection log (T14.3), "Title → Field"; visual only, the rows say the same. -->
+          <p class="detection-log font-mono text-sm text-ink-muted" data-detection-log aria-hidden="true"></p>
         </div>
         <a
           href={localizePath('/projects/', locale)}
@@ -99,6 +101,35 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
     background-color: color-mix(in srgb, var(--surface) 88%, transparent);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+  }
+
+  /*
+   * The detection log only exists with the room. Its line is kept from the first paint and never
+   * wraps, so nothing moves when detections come in.
+   */
+  .detection-log {
+    display: none;
+  }
+
+  :root[data-room-3d] .detection-log {
+    display: block;
+    min-block-size: 1lh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Room for the mark below, on every row so nothing moves when it appears. */
+  :root[data-room-3d] .projects-room :global([data-project]) {
+    padding-inline: 0.625rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+  }
+
+  /* The project the line's camera is looking at, as in the log. */
+  :root[data-room-3d] .projects-room :global([data-project][data-detected]) {
+    background-color: color-mix(in srgb, var(--amber) 16%, transparent);
+    box-shadow: inset 3px 0 0 var(--amber-deep);
   }
 
   /* One panel is enough: the heading's own phone panel steps aside. */
@@ -160,6 +191,21 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
 
     :root[data-room-3d] .projects-room :global(.project-row .metric) {
       text-align: left;
+    }
+  }
+
+  /*
+   * On laptop heights the summaries step aside visually, so the line and its bins stay in view;
+   * screen readers still read them.
+   */
+  @media (width >= 64rem) and (height < 52rem) {
+    :root[data-room-3d] .projects-room :global(.project-row .main > p) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 </style>

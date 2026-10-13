@@ -1,8 +1,9 @@
 /**
  * Timeline of the sorting line (T13.6), pure and tested: where every card is at a given time. Cards
- * drop onto the belt at its left end, ride under the detection camera, and are pushed into the bin of
- * their category. Units are CSS px and seconds, in the belt's own frame: x along the belt (centre 0),
- * y up from the belt surface, z toward the viewer (belt centre line 0).
+ * drop onto the belt at its left end, ride under the detection camera, and are pushed back into the
+ * bin of their category, behind the belt (T14.3, as in the approved preview). Units are design px and
+ * seconds, in the belt's own frame: x along the belt (centre 0), y up from the belt surface, z toward
+ * the viewer (belt centre line 0).
  */
 import { clamp } from '../../core/math';
 import { easeOut } from '../paper';
@@ -121,8 +122,8 @@ export function cardAt(plan: LinePlan, t: number, k: number): CardState {
   }
   const push = (local - ride) / TIMING.push;
   if (push >= 1) return { x: binX, y: 0, z: 0, scale: 0, detected: false, push: 1, gone: true };
-  // Pushed forward off the belt, then dropping into the bin and out of sight.
-  const across = plan.beltDepth / 2 + plan.binDepth / 2 + 4;
+  // Pushed back off the belt, then dropping into the bin behind it and out of sight.
+  const across = -(plan.beltDepth / 2 + plan.binDepth / 2 + 4);
   const fall = clamp((push - 0.55) / 0.45, 0, 1);
   return {
     x: binX,

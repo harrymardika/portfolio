@@ -95,13 +95,20 @@ describe('stopsFor', () => {
     expect(stops.every((stop) => stop.scroll <= maxScroll)).toBe(true);
   });
 
-  it('travels the journey while its section scrolls by, and centres the other rooms', () => {
+  it('travels the journey while its section scrolls by, and stops at the other rooms', () => {
     const stops = stopsFor(sections, H, maxScroll);
     const at = (key: string) => stops.find((stop) => stop.key === key)?.scroll;
     expect(at('journeyStart')).toBe(H - H * 0.25);
     expect(at('journeyEnd')).toBe(H + 2.4 * H - H * 1.05);
-    expect(at('projects')).toBe(3.4 * H + (1.2 * H - H) / 2);
+    // Taller than the screen: when its top reaches the top. As tall: the same.
+    expect(at('projects')).toBe(3.4 * H);
     expect(at('messages')).toBe(4.6 * H);
+  });
+
+  it('centres a section shorter than the screen', () => {
+    const short = { ...sections, messages: { top: 4.6 * H, height: 0.8 * H } };
+    const stop = stopsFor(short, H, maxScroll).find((s) => s.key === 'messages');
+    expect(stop?.scroll).toBeCloseTo(4.6 * H - 0.1 * H, 6);
   });
 
   it('skips missing sections', () => {
