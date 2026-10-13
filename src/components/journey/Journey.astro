@@ -20,7 +20,7 @@ const title = stripEmphasis(localize(copy.title, locale));
 ---
 
 <section id="journey" aria-labelledby="journey-title" class="scroll-mt-20" data-room-section="journey">
-  <div class="mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.8fr_1.2fr] lg:py-24">
+  <div class="journey-grid mx-auto grid max-w-[1120px] items-center gap-10 px-[clamp(16px,4vw,40px)] py-16 lg:grid-cols-[0.8fr_1.2fr] lg:py-24">
     <div class="grid min-w-0 gap-4" data-journey-intro data-room-copy>
       <h2 id="journey-title" class="text-h2">
         {title}
@@ -133,5 +133,48 @@ const title = stripEmphasis(localize(copy.title, locale));
   .journey-stage[data-room-ready] .milestone[data-reached='false'] .label {
     border-style: dashed;
     box-shadow: none;
+  }
+
+  /*
+   * The full-screen room (ADR 0020): the camera travels down the 3D thread while this tall section
+   * scrolls by. The heading and the milestones form one column on the left (sticky on wide screens);
+   * the thread is drawn beside it, so the timeline's own line and dots step aside.
+   */
+  :root[data-room-3d] [data-room-section='journey'] {
+    min-height: 260svh;
+    justify-content: flex-start;
+  }
+
+  :root[data-room-3d] .journey-grid {
+    grid-template-columns: minmax(0, 31rem);
+    align-items: start;
+    gap: 1.5rem;
+  }
+
+  :root[data-room-3d] .journey-stage {
+    height: auto;
+  }
+
+  :root[data-room-3d] .journey-list {
+    gap: 0.5rem;
+  }
+
+  :root[data-room-3d] .journey-list::before,
+  :root[data-room-3d] .milestone::before {
+    display: none;
+  }
+
+  /* Sticky only where the whole column fits on the screen (not on laptop heights like 720 px). */
+  @media (width >= 64rem) and (height >= 52rem) {
+    :root[data-room-3d] .journey-grid {
+      position: sticky;
+      top: 12svh;
+    }
+  }
+
+  @media (width < 64rem) {
+    :root[data-room-3d] [data-room-section='journey'] {
+      padding-top: 48svh;
+    }
   }
 </style>

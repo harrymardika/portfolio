@@ -10,6 +10,7 @@ export const PALETTE_TOKENS = [
   'sage',
   'surface',
   'ink',
+  'ink-muted',
   'on-forest',
   'line',
   'mint',

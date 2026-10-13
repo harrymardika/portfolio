@@ -1,7 +1,8 @@
 /**
  * Room part: the homelab laptop beside Contact (T13.6). The small laptop at home that serves this
- * site, open, its screen showing a simple drawing of the home page with the site's address (from the
- * slot's data). It turns slightly with the pointer. Decorative: the HTML caption says what it is.
+ * site, open on the floor at its station (ADR 0020), its screen showing a simple drawing of the home
+ * page with the site's address (from the slot's data). It turns slightly with the pointer.
+ * Decorative: the HTML caption says what it is.
  */
 import {
   BoxGeometry,
@@ -14,14 +15,16 @@ import {
   SRGBColorSpace,
 } from 'three';
 
-import { rectCenter, type PageRect } from '../layout';
+import { DESIGN_UNIT, FLOOR_Y, STATIONS } from '../world';
 import { blobShadow, fontsReady, SANS } from '../paper';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart } from '../index';
 
-/** Resting angles (radians): looking down at the keyboard, three-quarter view, lid tilted back. */
-const POSE = { down: 0.42, turn: -0.42, lid: -0.24 } as const;
+/** Resting angles (radians): three-quarter view, lid tilted back. The camera looks down on it. */
+const POSE = { turn: -0.45, lid: -0.24 } as const;
+/** Design size of the laptop's slot (px): the largest laptop `laptopSize` makes. */
+const DESIGN = { width: 480, height: 360 } as const;
 const POINTER_TURN = 0.12;
 
 function css(value: number): string {
@@ -188,20 +191,18 @@ export function createLaptopPart(slot: HTMLElement | null): RoomPart | null {
       still = room.mode === 'still';
       palette = room.palette;
       await fontsReady();
-      laptop.rotation.set(POSE.down, POSE.turn, 0);
+      laptop.rotation.set(0, POSE.turn, 0);
       return root;
     },
-    layout(room: RoomContext, rect: PageRect) {
-      const center = rectCenter(rect, room.viewWidth, room.wpp);
-      root.scale.setScalar(room.wpp);
-      root.position.set(center.x, center.y, 0);
-      const next = laptopSize(rect.width, rect.height);
+    layout() {
+      root.scale.setScalar(DESIGN_UNIT);
+      // The base (8 design px thick) rests on the floor.
+      root.position.set(STATIONS.laptop.x, FLOOR_Y + 4 * DESIGN_UNIT, STATIONS.laptop.z);
+      const next = laptopSize(DESIGN.width, DESIGN.height);
       if (Math.round(next.width) !== Math.round(size.width)) {
         size = next;
         assemble();
       }
-      // Above the caption at the bottom of the band.
-      laptop.position.y = rect.height * 0.5 - size.lid * 1.05;
     },
     shown() {
       slot.dataset['roomReady'] = 'true';

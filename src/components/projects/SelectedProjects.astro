@@ -1,9 +1,9 @@
 ---
 /**
  * Home page section with featured projects as index rows (D20) and a link to the full list. Above the
- * rows, a band for the room's sorting line (T13.6): its cards (featured first, then other case studies
- * that belong to a field) and bins (the fields) come from content/ and are passed as data; the band
- * only takes space when the 3D runs.
+ * rows, the data of the room's sorting line (T13.6): its cards (featured first, then other case
+ * studies that belong to a field) and bins (the fields) come from content/; the line itself stands on
+ * the room's floor (ADR 0020), so the band takes no space.
  */
 import ProjectIndex from './ProjectIndex.astro';
 import { itemYear, localize, sortingLine, type Profile, type ProjectItem } from '@/lib/content';
@@ -48,7 +48,7 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
     class="scroll-mt-20 border-t border-line"
     data-room-section="projects"
   >
-    <div class="mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
+    <div class="projects-room mx-auto grid max-w-[1120px] gap-8 px-[clamp(16px,4vw,40px)] py-16 lg:py-24">
       <div class="flex flex-wrap items-end justify-between gap-4" data-room-copy>
         <div class="grid max-w-[60ch] gap-3">
           <h2 id="projects-title" class="text-h2">
@@ -79,7 +79,87 @@ const bins = line.bins.map((bin) => ({ id: bin.id, label: localize(bin.label, lo
 )}
 
 <style>
+  /*
+   * The sorting line stands on the room's floor (ADR 0020), drawn by the camera, not in the page flow:
+   * the band only carries its data (cards, bins, and what is detected).
+   */
   .sorting-band {
-    height: clamp(200px, 28vw, 360px);
+    height: 0;
+  }
+
+  /*
+   * The projects room (ADR 0020, after the approved preview): the heading and the selected projects
+   * sit on one panel, so the journey thread and the line behind them never cut through the text. On
+   * wide screens the panel stays at the top, three projects to a row, while the camera shows the
+   * sorting line on the floor below it (the rows never cover the line or catch a click meant for its
+   * cards); on phones the line fills the top of the screen and the panel comes below.
+   */
+  :root[data-room-3d] .projects-room {
+    border-radius: 0.875rem;
+    background-color: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  /* One panel is enough: the heading's own phone panel steps aside. */
+  :root[data-room-3d] .projects-room [data-room-copy] {
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  @media (width < 64rem) {
+    :root[data-room-3d] .projects-room {
+      width: auto;
+      margin-inline: clamp(16px, 4vw, 40px);
+      gap: 1.25rem;
+      padding: 1.25rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    :root[data-room-3d] [data-room-section='projects'] {
+      min-height: 150svh;
+      justify-content: flex-start;
+    }
+
+    :root[data-room-3d] .projects-room {
+      position: sticky;
+      top: 9svh;
+      gap: 1.25rem;
+      padding-block: 1.5rem;
+    }
+
+    :root[data-room-3d] .projects-room :global([data-project-grid]) {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 1.75rem;
+      border-bottom: 0;
+    }
+
+    :root[data-room-3d] .projects-room :global([data-project-grid] > li) {
+      border-bottom: 1px solid var(--line);
+    }
+
+    :root[data-room-3d] .projects-room :global(.project-row) {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 0.75rem;
+    }
+
+    :root[data-room-3d] .projects-room :global(.project-row .role) {
+      display: none;
+    }
+
+    :root[data-room-3d] .projects-room :global(.project-row .main > p) {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    :root[data-room-3d] .projects-room :global(.project-row .metric) {
+      text-align: left;
+    }
   }
 </style>

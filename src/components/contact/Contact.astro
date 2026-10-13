@@ -2,8 +2,8 @@
 /**
  * Contact section (FR-02): the e-mail address large, with a copy button (JavaScript only), then the
  * social profiles as plain links. No phone number. All channels come from profile.yaml socials.
- * Beside it, a band for the room's homelab laptop (T13.6) with its caption; it only takes space when
- * the 3D runs.
+ * Beside it, the room's homelab laptop (T13.6, drawn by the camera, ADR 0020) and its caption, which
+ * only shows when the 3D runs.
  */
 import { localize, stripEmphasis, type Profile } from '@/lib/content';
 import { type Locale, UI } from '@/lib/i18n';
@@ -74,27 +74,18 @@ const host = Astro.site?.host ?? '';
 </section>
 
 <style>
-  .laptop-band {
-    position: relative;
-    height: 260px;
-  }
-
+  /*
+   * The laptop stands on the room's floor (ADR 0020), drawn by the camera beside the copy (wide
+   * screens) or above it (phones); the band holds its data and caption.
+   */
   .laptop-caption {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
     text-align: center;
   }
 
   @media (min-width: 1024px) {
     :root[data-room-3d] .contact-grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
-      align-items: center;
-    }
-
-    .laptop-band {
-      height: 300px;
+      align-items: end;
     }
   }
 </style>

@@ -150,7 +150,30 @@
     min-height: calc(100svh - 4.6rem);
   }
 
+  /*
+   * The walls are the screen, not the page: the camera travels through the room, and the room's colors
+   * follow it (src/scenes/room/index.ts sets --room-a/b/c from jade to indigo). Until its first frame
+   * the screen shows the jade end, the same colors the camera starts with (camera.ts `wallColors(0)`).
+   */
+  :root[data-room-3d] body[data-room='flow'] {
+    --room-a: var(--room-top);
+    --room-b: color-mix(in srgb, var(--room-top), var(--room-mid) 12%);
+    --room-c: color-mix(in srgb, var(--room-top), var(--room-mid) 24%);
+    background-attachment: fixed;
+  }
+
   @media (width < 64rem) {
+    /* Phones and tablets: the 3D of a room fills the upper part of the screen, the copy comes below. */
+    :root[data-room-3d]
+      [data-room-section]:is(
+        [data-room-section='projects'],
+        [data-room-section='messages'],
+        [data-room-section='contact']
+      ) {
+      justify-content: flex-end;
+      padding-top: 48svh;
+    }
+
     :root[data-room-3d] [data-room-copy] {
       padding: 1.25rem;
       border-radius: 0.875rem;

@@ -1,8 +1,9 @@
 /**
- * Room part: the journey thread (T13.5). A thread leaves the bottom of the hero's aksara sheet and
- * runs down through a bead at every milestone of the HTML timeline (Journey.astro), then on toward
- * the next section. A ball rides the thread at the reader's eye line; beads it has passed glow, and
- * their HTML items are marked reached. Clicking a bead opens the same story as its HTML button.
+ * Room part: the journey thread (T13.5, ADR 0020). A thread leaves the bottom of the hero's aksara
+ * sheet, runs down the wall through a bead for every milestone of the HTML timeline (Journey.astro),
+ * then across the floor to the sorting line. A ball rides the thread as the camera travels down it;
+ * beads it has passed glow, and their HTML items are marked reached. Clicking a bead opens the same
+ * story as its HTML button.
  */
 import {
   CatmullRomCurve3,
@@ -15,112 +16,60 @@ import {
   Vector3,
 } from 'three';
 
-import { crossing } from '../layout';
-import { blobShadow } from '../paper';
+import { disposeObject3D } from '../../core/dispose';
+import { STATIONS, FLOOR_Y, vec3, type Vec3 } from '../world';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart, RoomTarget } from '../index';
 
-/** Sizes in CSS px. */
-const SIZE = { thread: 3.2, bead: 9, ring: 14, ball: 7.5 } as const;
-/** How far the thread swings sideways between beads (CSS px), alternating wide and narrow. */
-const SWING = { wide: 48, narrow: 18 } as const;
-/** Swings stop this far from the left edge of the page (CSS px), so the thread never leaves it. */
-const EDGE = 12;
-/** The reader's eye line, as a fraction of the viewport height from the top. */
-export const EYE_LINE = 0.58;
-const SAMPLES = 240;
-
-export interface ThreadAnchors {
-  /** Where the thread starts (document px), e.g. under the hero sheet. */
-  readonly start: { x: number; y: number } | null;
-  /** Bead centres (document px), top to bottom. */
-  readonly beads: readonly { x: number; y: number }[];
-  /** Where the thread ends (document px), e.g. at the next section. */
-  readonly end: { x: number; y: number } | null;
-  /** Text the thread must not cross on its way to the first bead (document px), e.g. the heading. */
-  readonly avoid?: Box | null;
-  /** Page width (CSS px); a detour stays inside it. */
-  readonly viewWidth?: number;
-}
-
-export interface Box {
-  readonly left: number;
-  readonly top: number;
-  readonly right: number;
-  readonly bottom: number;
-}
-
-/** Clearance around avoided text (CSS px). */
-const CLEARANCE = { side: 10, vertical: 28, edge: 12 } as const;
+/** Sizes in world units. */
+const SIZE = { thread: 0.07, bead: 0.24, ring: 0.34, ringTube: 0.035, ball: 0.18 } as const;
+const SAMPLES = 800;
 
 /**
- * Waypoints that take a straight segment from `from` (above) to `to` (below) around `box` on the side
- * with more room, or none when the segment does not cross it. On phones the journey heading spans
- * the page between the hero sheet and the first bead. Pure; tested.
+ * Bead positions for `count` milestones: the stations' beads when the count matches, otherwise as
+ * many beads spread evenly between the first and the last station, alternating sides. Pure; tested.
  */
-export function detour(
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-  box: Box,
-  viewWidth: number,
-): { x: number; y: number }[] {
-  const top = Math.max(box.top, from.y);
-  const bottom = Math.min(box.bottom, to.y);
-  if (bottom <= top || to.y <= from.y) return [];
-  const xAt = (y: number) => from.x + ((to.x - from.x) * (y - from.y)) / (to.y - from.y);
-  const [lo, hi] = [Math.min(xAt(top), xAt(bottom)), Math.max(xAt(top), xAt(bottom))];
-  if (hi < box.left - CLEARANCE.side || lo > box.right + CLEARANCE.side) return [];
-  const right = box.right + CLEARANCE.side;
-  const left = box.left - CLEARANCE.side;
-  const x =
-    viewWidth - right >= left ? Math.min(right, viewWidth - CLEARANCE.edge) : Math.max(left, CLEARANCE.edge);
-  return [
-    { x, y: box.top - CLEARANCE.vertical },
-    { x, y: box.bottom + CLEARANCE.vertical },
-  ];
-}
-
-/**
- * Points the thread passes through, in document px: start, then each bead, then the end. Between
- * two beads the thread swings to the left (away from the cards, which sit to the right of their
- * beads), alternately wide and narrow, never closer than `EDGE` to the page edge; other segments run straight. Before the first bead the thread
- * goes around `avoid` (see `detour`). Pure; tested.
- */
-export function threadPoints(anchors: ThreadAnchors): { x: number; y: number }[] {
-  const first = anchors.beads[0];
-  const around =
-    anchors.start && first && anchors.avoid
-      ? detour(anchors.start, first, anchors.avoid, anchors.viewWidth ?? Number.POSITIVE_INFINITY)
-      : [];
-  const stops = [
-    ...(anchors.start ? [anchors.start] : []),
-    ...around,
-    ...anchors.beads,
-    ...(anchors.end ? [anchors.end] : []),
-  ];
-  const points: { x: number; y: number }[] = [];
-  const isBead = (point: { x: number; y: number }) => anchors.beads.includes(point);
-  let swings = 0;
-  stops.forEach((stop, i) => {
-    const next = stops[i + 1];
-    points.push(stop);
-    if (!next) return;
-    if (isBead(stop) && isBead(next)) {
-      const swing = swings % 2 === 0 ? SWING.wide : SWING.narrow;
-      swings += 1;
-      points.push({ x: Math.max(EDGE, Math.min(stop.x, next.x) - swing), y: (stop.y + next.y) / 2 });
-    } else {
-      points.push({ x: (stop.x + next.x) / 2, y: (stop.y + next.y) / 2 });
-    }
+export function beadPositions(count: number): Vec3[] {
+  const stations = STATIONS.journey.beads;
+  if (count === stations.length) return [...stations];
+  const first = stations[0] ?? vec3(-1.1, -6.5, -1.2);
+  const last = stations[stations.length - 1] ?? vec3(-1.1, -18.5, -1.2);
+  return Array.from({ length: count }, (_, i) => {
+    const t = count > 1 ? i / (count - 1) : 0.5;
+    return vec3(i % 2 === 0 ? first.x : -first.x, first.y + (last.y - first.y) * t, first.z);
   });
-  return points;
 }
 
-/** Make a sequence non-decreasing (a curve may bulge back up a little near sharp turns). */
-export function monotonic(values: readonly number[]): number[] {
-  let max = Number.NEGATIVE_INFINITY;
-  return values.map((value) => (max = Math.max(max, value)));
+/** Points the thread passes through: from the sheet, through every bead, down to the line. Pure; tested. */
+export function threadWaypoints(beads: readonly Vec3[]): Vec3[] {
+  const { start, end } = STATIONS.journey;
+  const last = beads[beads.length - 1] ?? start;
+  return [
+    start,
+    vec3(0.6, start.y - 2.1, -1.1),
+    ...beads,
+    vec3(0.2, last.y - 3, -1.2),
+    vec3(-1.5, FLOOR_Y + 2.5, -1.4),
+    vec3(-3.5, FLOOR_Y + 0.12, 0.6),
+    vec3(-7.5, FLOOR_Y + 0.12, 4.2),
+    end,
+  ];
+}
+
+/**
+ * Where the ball is on the thread (0..1) for the camera's key position (camera.ts `keyPosition`):
+ * from the start to the first bead while the camera comes down from the hero, from the first to the
+ * last bead along the journey, then on to the sorting line. Pure; tested.
+ */
+export function ballAt(keys: number, firstBead: number, lastBead: number): number {
+  const along = [0, firstBead, lastBead, 1];
+  if (keys <= 0) return 0;
+  if (keys >= along.length - 1) return 1;
+  const i = Math.floor(keys);
+  const a = along[i] ?? 0;
+  const b = along[i + 1] ?? 1;
+  return a + (b - a) * (keys - i);
 }
 
 interface Bead {
@@ -128,152 +77,111 @@ interface Bead {
   readonly mesh: Mesh<SphereGeometry, MeshStandardMaterial>;
   readonly ring: Mesh<TorusGeometry, MeshStandardMaterial>;
   /** Position along the thread, 0..1. */
-  at: number;
+  readonly at: number;
 }
 
-export function createJourneyPart(
-  slot: HTMLElement | null,
-  options: { from?: HTMLElement | null; to?: HTMLElement | null; avoid?: HTMLElement | null } = {},
-): RoomPart | null {
+export function createJourneyPart(slot: HTMLElement | null): RoomPart | null {
   if (!slot) return null;
   const items = [...slot.querySelectorAll<HTMLElement>('[data-milestone]')];
   if (items.length < 2) return null;
 
   const root = new Group();
-  const threadMaterial = new MeshStandardMaterial({ roughness: 0.55 });
+  const threadMaterial = new MeshStandardMaterial({ roughness: 0.5 });
   const beadMaterial = new MeshStandardMaterial({ roughness: 0.35, emissiveIntensity: 0 });
-  const ringMaterial = new MeshStandardMaterial({ roughness: 0.5 });
-  const ballMaterial = new MeshStandardMaterial({
-    roughness: 0.25,
-    emissiveIntensity: 0.35,
-  });
-  let thread: Mesh<TubeGeometry, MeshStandardMaterial> | null = null;
-  let ballShadow: ReturnType<typeof blobShadow> | null = null;
-  const ball = new Mesh(new SphereGeometry(SIZE.ball, 24, 16), ballMaterial);
-  root.add(ball);
-  const beads: Bead[] = items.map((item) => {
-    const mesh = new Mesh(new SphereGeometry(SIZE.bead, 24, 16), beadMaterial.clone());
-    const ring = new Mesh(new TorusGeometry(SIZE.ring, 2, 10, 40), ringMaterial);
+  const ballMaterial = new MeshStandardMaterial({ roughness: 0.25, emissiveIntensity: 0.35 });
+
+  const positions = beadPositions(items.length);
+  const curve = new CatmullRomCurve3(
+    threadWaypoints(positions).map((point) => new Vector3(point.x, point.y, point.z)),
+    false,
+    'catmullrom',
+    0.4,
+  );
+  const samples = curve.getSpacedPoints(SAMPLES);
+  /** Where a point lies along the thread, 0..1 (the nearest sample). */
+  const along = (point: Vec3): number => {
+    let best = 0;
+    let distance = Number.POSITIVE_INFINITY;
+    const target = new Vector3(point.x, point.y, point.z);
+    samples.forEach((sample, i) => {
+      const d = sample.distanceToSquared(target);
+      if (d < distance) {
+        distance = d;
+        best = i;
+      }
+    });
+    return best / SAMPLES;
+  };
+
+  const thread = new Mesh(new TubeGeometry(curve, 400, SIZE.thread, 10, false), threadMaterial);
+  const ball = new Mesh(new SphereGeometry(SIZE.ball, 32, 24), ballMaterial);
+  root.add(thread, ball);
+  const beads: Bead[] = items.map((item, i) => {
+    const position = positions[i] ?? vec3(0, 0, 0);
+    const mesh = new Mesh(new SphereGeometry(SIZE.bead, 32, 24), beadMaterial.clone());
+    const ring = new Mesh(new TorusGeometry(SIZE.ring, SIZE.ringTube, 10, 40), threadMaterial);
+    mesh.position.set(position.x, position.y, position.z);
+    ring.position.copy(mesh.position);
     root.add(mesh, ring);
-    return { item, mesh, ring, at: 0 };
+    return { item, mesh, ring, at: along(position) };
   });
-  let samples: Vector3[] = [];
-  let ys: number[] = [];
-  let ballAt = 0;
-  let shadows = true;
+  const firstAt = beads[0]?.at ?? 0;
+  const lastAt = beads[beads.length - 1]?.at ?? 1;
+
   let still = false;
-  let palette: ScenePalette | null = null;
-
-  /** Bead centre: the dot to the left of each milestone card (the HTML timeline's dot). */
-  const beadAnchor = (item: HTMLElement): { x: number; y: number } => {
-    const card = item.querySelector<HTMLElement>('.label') ?? item;
-    const box = card.getBoundingClientRect();
-    return { x: box.left - 18, y: box.top + window.scrollY + box.height / 2 };
-  };
-  const startAnchor = (): { x: number; y: number } | null => {
-    if (!options.from) return null;
-    const box = options.from.getBoundingClientRect();
-    return { x: box.left + box.width * 0.2, y: box.bottom + window.scrollY - 6 };
-  };
-  const endAnchor = (): { x: number; y: number } | null => {
-    if (!options.to) return null;
-    const box = options.to.getBoundingClientRect();
-    const last = items[items.length - 1];
-    const x = last ? beadAnchor(last).x : box.left + 24;
-    return { x, y: box.top + window.scrollY + 40 };
-  };
-
-  /** The rendered text of `options.avoid` (its line boxes, not its full-width block). */
-  const avoidBox = (): Box | null => {
-    if (!options.avoid) return null;
-    const range = document.createRange();
-    range.selectNodeContents(options.avoid);
-    const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
-    if (rects.length === 0) return null;
-    return {
-      left: Math.min(...rects.map((rect) => rect.left)),
-      right: Math.max(...rects.map((rect) => rect.right)),
-      top: Math.min(...rects.map((rect) => rect.top)) + window.scrollY,
-      bottom: Math.max(...rects.map((rect) => rect.bottom)) + window.scrollY,
-    };
-  };
+  let built = false;
+  let lastKeys = Number.NaN;
+  let toScreen: RoomContext['toScreen'] = () => ({ x: 0, y: 0 });
+  const world = new Vector3();
 
   const glow = (bead: Bead, reached: boolean): void => {
-    bead.mesh.material.emissiveIntensity = reached ? 0.55 : 0;
+    bead.mesh.material.emissiveIntensity = reached ? 0.6 : 0;
     // Only touch the DOM when the state changes: this runs on every scroll frame.
     if (bead.item.dataset['reached'] !== String(reached)) bead.item.dataset['reached'] = String(reached);
   };
 
-  const place = (scrollY: number, viewHeight: number): void => {
-    if (samples.length === 0) return;
-    ballAt = still ? 1 : crossing(ys, scrollY + viewHeight * EYE_LINE);
-    const index = ballAt * (samples.length - 1);
-    const a = samples[Math.floor(index)];
-    const b = samples[Math.min(samples.length - 1, Math.ceil(index))];
-    if (a && b) ball.position.lerpVectors(a, b, index - Math.floor(index)).setZ(SIZE.ball + 4);
-    for (const bead of beads) glow(bead, still || bead.at <= ballAt + 0.002);
+  const place = (keys: number): void => {
+    const u = still ? 1 : ballAt(keys, firstAt, lastAt);
+    ball.position.copy(curve.getPointAt(Math.min(0.999, Math.max(0, u))));
+    for (const bead of beads) {
+      glow(bead, still || u >= bead.at - 0.002);
+      // Where the bead is drawn, for tests (like the sorting line's `data-detected-at`). Still mode
+      // only: there it stays put, while an animated camera would rewrite it every frame.
+      if (!still) continue;
+      const point = toScreen(bead.mesh.getWorldPosition(world));
+      const at = `${Math.round(point.x)} ${Math.round(point.y)}`;
+      if (bead.item.dataset['beadAt'] !== at) bead.item.dataset['beadAt'] = at;
+    }
   };
-
-  let lastScroll = Number.NaN;
 
   return {
     slot,
     build(room: RoomContext) {
-      shadows = room.shadows;
+      built = true;
       still = room.mode === 'still';
-      palette = room.palette;
-      for (const node of [ball, ...beads.flatMap((bead) => [bead.mesh, bead.ring])])
-        node.castShadow = shadows;
+      toScreen = room.toScreen;
+      for (const node of [thread, ball, ...beads.flatMap((bead) => [bead.mesh, bead.ring])]) {
+        node.castShadow = room.shadows;
+        node.receiveShadow = room.shadows;
+      }
       return root;
     },
     layout(room: RoomContext) {
-      root.scale.setScalar(room.wpp);
-      root.position.set((-room.viewWidth / 2) * room.wpp, 0, 0);
-      const anchors: ThreadAnchors = {
-        start: startAnchor(),
-        beads: items.map(beadAnchor),
-        end: endAnchor(),
-        avoid: avoidBox(),
-        viewWidth: room.viewWidth,
-      };
-      const curve = new CatmullRomCurve3(
-        threadPoints(anchors).map((point) => new Vector3(point.x, -point.y, 0)),
-        false,
-        'centripetal',
-      );
-      if (thread) {
-        root.remove(thread);
-        thread.geometry.dispose();
-      }
-      thread = new Mesh(new TubeGeometry(curve, SAMPLES, SIZE.thread, 8, false), threadMaterial);
-      thread.castShadow = shadows;
-      root.add(thread);
-      samples = curve.getSpacedPoints(SAMPLES);
-      ys = monotonic(samples.map((point) => -point.y));
-      anchors.beads.forEach((anchor, i) => {
-        const bead = beads[i];
-        if (!bead) return;
-        bead.mesh.position.set(anchor.x, -anchor.y, 0);
-        bead.ring.position.set(anchor.x, -anchor.y, 0);
-        bead.at = crossing(ys, anchor.y);
-      });
-      lastScroll = Number.NaN;
-      place(window.scrollY, room.viewHeight);
+      toScreen = room.toScreen;
+      lastKeys = Number.NaN;
     },
     shown() {
       slot.dataset['roomReady'] = 'true';
     },
     update(frame: RoomFrame) {
-      if (frame.scrollY !== lastScroll) {
-        lastScroll = frame.scrollY;
-        place(frame.scrollY, frame.room.viewHeight);
+      if (frame.keys !== lastKeys) {
+        lastKeys = frame.keys;
+        place(frame.keys);
       }
       return false;
     },
-    recolor(next: ScenePalette) {
-      palette = next;
+    recolor(palette: ScenePalette) {
       threadMaterial.color.setHex(palette.ink);
-      ringMaterial.color.setHex(palette.ink);
       for (const bead of beads) {
         bead.mesh.material.color.setHex(palette.amber);
         bead.mesh.material.emissive.setHex(palette.amber);
@@ -281,12 +189,7 @@ export function createJourneyPart(
       // The ball is paper white in both themes, like the hero prints.
       ballMaterial.color.setHex(palette['on-forest']);
       ballMaterial.emissive.setHex(palette.amber);
-      if (!shadows && !ballShadow) {
-        ballShadow = blobShadow(SIZE.ball * 4, SIZE.ball * 4, palette['room-shadow'], 0.3);
-        ballShadow.position.set(6, -6, -2);
-        ball.add(ballShadow);
-      }
-      ballShadow?.material.color.setHex(palette['room-shadow']);
+      lastKeys = Number.NaN;
     },
     targets(): RoomTarget[] {
       return beads.map((bead) => ({
@@ -295,9 +198,14 @@ export function createJourneyPart(
       }));
     },
     dispose() {
-      // Each bead has its own clone; the template is never added to the scene.
+      // Each bead has its own clone; the template is never added to the scene. A part that was never
+      // built is not in the scene either, so the room cannot free its objects.
       beadMaterial.dispose();
-      for (const bead of beads) delete bead.item.dataset['reached'];
+      if (!built) disposeObject3D(root);
+      for (const bead of beads) {
+        delete bead.item.dataset['reached'];
+        delete bead.item.dataset['beadAt'];
+      }
       delete slot.dataset['roomReady'];
     },
   };

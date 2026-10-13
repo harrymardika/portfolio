@@ -1,6 +1,6 @@
 /**
  * Small building blocks shared by the room's parts: text labels, detection brackets, and soft blob
- * shadows. Sizes are in CSS pixels; parts place them inside a group scaled by `worldPerPixel`.
+ * shadows. Sizes are in design pixels; parts place them inside a group scaled to world units.
  */
 import {
   CanvasTexture,

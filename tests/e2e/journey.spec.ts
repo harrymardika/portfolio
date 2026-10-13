@@ -76,17 +76,20 @@ test('the 3D thread reaches milestones as you scroll', async ({ page }) => {
 });
 
 test('clicking a bead on the thread opens the same story as its card', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'Same code path; the desktop layout leaves room beside the cards');
+  test.skip(isMobile, 'Same code path; on phones the copy panel may cover the last bead');
+  // A still frame: no pointer parallax, so the bead stays where it was reported.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await scrollJourney(page, 0.6);
+  await scrollJourney(page, 1);
   await expect(page.locator(stage)).toHaveAttribute('data-room-ready', 'true', {
     timeout: SCENE_READY_TIMEOUT,
   });
   await page.waitForTimeout(300);
-  const card = await page.locator(`${milestones} .label`).last().boundingBox();
-  if (!card) throw new Error('missing card');
-  // The bead sits on the timeline, 18 px left of the card (src/scenes/room/parts/journey.ts).
-  await page.mouse.click(card.x - 18, card.y + card.height / 2);
+  // Where the room drew the last bead (src/scenes/room/parts/journey.ts, `data-bead-at`).
+  const at = (await page.locator(milestones).last().getAttribute('data-bead-at')) ?? '';
+  const [x, y] = at.split(' ').map(Number);
+  if (x === undefined || y === undefined || Number.isNaN(x)) throw new Error('no bead position');
+  await page.mouse.click(x, y);
   await expect(page.getByRole('dialog', { name: 'Founder' })).toBeVisible();
 });
 

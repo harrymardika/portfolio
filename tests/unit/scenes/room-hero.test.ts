@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 
 import sheet from '../../../content/media/aksara-sheet.json';
 import { PHOTO_PRINT, photoPrintPadding, PRINTS, SEQUENCE } from '@/scenes/room/parts/hero-config';
-import { boxOnPrint, curl, sequenceAt } from '@/scenes/room/parts/hero';
+import { boxOnPrint, curl, printLayout, sequenceAt, STAGE_WIDTH } from '@/scenes/room/parts/hero';
 
 describe('boxOnPrint', () => {
   it('turns a box in sheet fractions into px around the print centre, y up', () => {
@@ -71,5 +71,39 @@ describe('photoPrintPadding', () => {
     const padding = photoPrintPadding();
     expect(padding.side / PRINTS.photo.width).toBeCloseTo(PHOTO_PRINT.border, 9);
     expect(padding.bottom / PRINTS.photo.width).toBeCloseTo(PHOTO_PRINT.bottom, 9);
+  });
+});
+
+describe('printLayout', () => {
+  const sheetAspect = 0.7;
+  const prints = printLayout(STAGE_WIDTH, sheetAspect);
+  const stageHeight = STAGE_WIDTH / PRINTS.aspect;
+
+  it('sizes the prints from the same fractions as the HTML', () => {
+    expect(prints.photo.width).toBeCloseTo(PRINTS.photo.width * STAGE_WIDTH, 9);
+    expect(prints.sheet.width).toBeCloseTo(PRINTS.sheet.width * STAGE_WIDTH, 9);
+    expect(prints.sheet.height).toBeCloseTo(prints.sheet.width * sheetAspect, 9);
+  });
+
+  it('makes the photo print the square photo plus its border, deeper at the bottom', () => {
+    const { width, height } = prints.photo;
+    const photo = width * (1 - 2 * PHOTO_PRINT.border);
+    expect(height).toBeCloseTo(photo + width * PHOTO_PRINT.border + width * PHOTO_PRINT.bottom, 9);
+  });
+
+  it('places each print where its HTML twin starts, relative to the stage centre, y up', () => {
+    const left = (box: { x: number; width: number }) => box.x - box.width / 2 + STAGE_WIDTH / 2;
+    const top = (box: { y: number; height: number }) => stageHeight / 2 - (box.y + box.height / 2);
+    expect(left(prints.photo)).toBeCloseTo(PRINTS.photo.left * STAGE_WIDTH, 9);
+    expect(top(prints.photo)).toBeCloseTo(PRINTS.photo.top * stageHeight, 9);
+    expect(left(prints.sheet)).toBeCloseTo(PRINTS.sheet.left * STAGE_WIDTH, 9);
+    expect(top(prints.sheet)).toBeCloseTo(PRINTS.sheet.top * stageHeight, 9);
+  });
+
+  it('keeps both prints within the stage width', () => {
+    for (const box of [prints.photo, prints.sheet]) {
+      expect(box.x - box.width / 2).toBeGreaterThanOrEqual(-STAGE_WIDTH / 2 - 1e-9);
+      expect(box.x + box.width / 2).toBeLessThanOrEqual(STAGE_WIDTH / 2 + 1e-9);
+    }
   });
 });

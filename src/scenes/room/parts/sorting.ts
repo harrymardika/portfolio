@@ -3,7 +3,9 @@
  * cards ride a belt under a detection camera that labels each with its field, then a pusher drops it
  * into that field's bin. Hovering a card (or tapping it once on a touch screen) shows its title;
  * clicking opens its case study, the same page as its row in the HTML index. Cards, bins, and labels
- * come from the slot's data (SelectedProjects.astro, content/), never from this file.
+ * come from the slot's data (SelectedProjects.astro, content/), never from this file. The line stands
+ * on the floor at its station (ADR 0020); it keeps its Phase 13 geometry (design pixels, tilted back
+ * toward a level viewer) and the whole part is turned toward the camera's view from above.
  */
 import {
   BoxGeometry,
@@ -17,7 +19,8 @@ import {
   Vector3,
 } from 'three';
 
-import { isNear, rectCenter, type PageRect } from '../layout';
+import { CAMERA_KEYS, KEY_ORDER } from '../camera';
+import { FLOOR_Y, STATIONS } from '../world';
 import { blobShadow, brackets, DISPLAY_FAMILY, fontsReady, label, MONO, SANS } from '../paper';
 import {
   activeCards,
@@ -44,8 +47,19 @@ interface BinData {
   readonly label: string;
 }
 
-/** The line is tilted back so the camera looks down on the belt (radians). */
+/** The line is tilted back so a level viewer looks down on the belt (radians). */
 const TILT = 0.95;
+/** Design size of the line (px) and world units per design pixel: about 16 units long. */
+const DESIGN = { width: 1100, height: 340 } as const;
+const UNIT = 0.0145;
+/** The camera looks down at the line from this elevation; turning the part by it lays the belt flat. */
+const VIEW_ELEVATION = Math.atan2(CAMERA_KEYS.projects.dir.y, CAMERA_KEYS.projects.dir.z);
+/**
+ * The line is shown, and runs, while the camera is this close to its key (keys, camera.ts
+ * `keyPosition`): its labels are drawn over everything, so it must not show through other rooms.
+ */
+const NEAR_KEYS = 0.75;
+const PROJECTS_KEY = KEY_ORDER.indexOf('projects');
 const LABEL_HEIGHT = 18;
 const TITLE_FONT = '600 13px "Plus Jakarta Sans Variable", system-ui, sans-serif';
 /** Line height of the title printed on a card, as a multiple of its font size. */
@@ -111,7 +125,6 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
   let still = false;
   let invalidate: () => void = () => undefined;
   let toScreen: RoomContext['toScreen'] = () => ({ x: 0, y: 0 });
-  let rect: PageRect = { left: 0, top: 0, width: 0, height: 0 };
   let width = 0;
   let bandHeight = 0;
   let clock = 0;
@@ -129,6 +142,7 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
   let tapped = -1;
   let tapTimer = 0;
   let detected = -1;
+  let lastKeys = Number.NaN;
   const world = new Vector3();
 
   const clearLine = (): void => {
@@ -420,8 +434,9 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
   };
 
   /**
-   * Which card the camera is looking at, and where it is on screen. Updated only when the detected
-   * card changes (and once shown), so the position is exact in still mode only; e2e tests use it.
+   * Which card the camera is looking at, and where it is on screen. Updated when the detected card
+   * changes, once shown, and when the room's camera moves, so the position is exact in still mode
+   * only; e2e tests use it.
    */
   const reportDetected = (): void => {
     const mesh = detected >= 0 ? built?.cards[detected] : undefined;
@@ -463,21 +478,15 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       clock = still ? firstDetection(linePlanFor()) : Math.max(0, firstDetection(linePlanFor()) - 1.6);
       return root;
     },
-    layout(room: RoomContext, next: PageRect) {
-      rect = next;
+    layout(room: RoomContext) {
       toScreen = room.toScreen;
-      const center = rectCenter(next, room.viewWidth, room.wpp);
-      root.scale.setScalar(room.wpp);
-      root.position.set(center.x, center.y, 0);
-      // A little above the band's centre, so the line's shadow ends before the project rows.
-      line.position.y = 30;
-      overlay.position.y = 30;
-      if (
-        Math.round(next.width) !== Math.round(width) ||
-        Math.round(next.height) !== Math.round(bandHeight)
-      ) {
-        width = next.width;
-        bandHeight = next.height;
+      root.scale.setScalar(UNIT);
+      root.rotation.x = -VIEW_ELEVATION;
+      // Lifted so the bins under the belt stand on the floor.
+      root.position.set(STATIONS.sorting.x, FLOOR_Y + 1.2, STATIONS.sorting.z);
+      if (width !== DESIGN.width) {
+        width = DESIGN.width;
+        bandHeight = DESIGN.height;
         if (palette) assemble();
       }
       apply(clock);
@@ -487,8 +496,14 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
       reportDetected();
     },
     update(frame: RoomFrame) {
-      if (still) return false;
-      if (!isNear(rect, frame.scrollY, frame.room.viewHeight, 0)) return false;
+      const near = Math.abs(frame.keys - PROJECTS_KEY) <= NEAR_KEYS;
+      root.visible = near;
+      // The camera moved: the detected card is somewhere else on screen.
+      if (frame.keys !== lastKeys) {
+        lastKeys = frame.keys;
+        if (near) reportDetected();
+      }
+      if (still || !near) return false;
       clock += Math.min(frame.dt, 0.1);
       apply(clock);
       return true;
@@ -526,9 +541,8 @@ export function createSortingPart(slot: HTMLElement | null): RoomPart | null {
     },
   };
 
-  /** The plan for the current slot width (before the first layout, the slot's own width). */
+  /** The plan for the line's design size. */
   function linePlanFor(): LinePlan {
-    const box = slot?.getBoundingClientRect();
-    return linePlan(width || box?.width || 0, bins.length, targetsOf, bandHeight || box?.height || 0);
+    return linePlan(width || DESIGN.width, bins.length, targetsOf, bandHeight || DESIGN.height);
   }
 }

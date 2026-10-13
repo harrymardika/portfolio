@@ -131,11 +131,12 @@ Aturan:
 │   │   ├── stats/               # SiteStats, ServerStatus (halaman /stats/)
 │   │   └── print/               # CvDocument, CvEntry, PortfolioDocument
 │   ├── scenes/
-│   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), mount, loop, dispose, math,
-│   │   │                        #   palette, pointer, types (kontrak SceneModule)
-│   │   ├── room/                # "satu ruang" (ADR 0019): layout (halaman ↔ dunia, murni), index (createRoom, mountRoom),
-│   │   │                        #   paper (label, kotak deteksi, bayangan lembut, font label), parts/hero (+ hero-config),
-│   │   │                        #   parts/journey, parts/sorting (+ sorting-plan, murni), parts/notes, parts/laptop
+│   │   ├── core/                # capabilities (WebGL, hemat data, reduced motion), early (keputusan 3D di <head>),
+│   │   │                        #   mount, loop, dispose, math, palette, pointer, types (kontrak SceneModule)
+│   │   ├── room/                # "satu ruang" (ADR 0019, 0020): world (koordinat dunia, stasiun), camera (kunci kamera,
+│   │   │                        #   murni), layout (isNear), index (createRoom, mountRoom), paper (label, kotak deteksi,
+│   │   │                        #   bayangan lembut, font label), parts/hero (+ hero-config), parts/journey,
+│   │   │                        #   parts/sorting (+ sorting-plan, murni), parts/notes, parts/laptop
 │   ├── layouts/                 # BaseLayout (dokumen, head, SEO, hreflang, tema) · PageLayout (skip link, header, main, footer)
 │   │                            #   · PrintLayout (halaman cetak PDF)
 │   ├── pages/
@@ -228,17 +229,17 @@ interface SceneModule {
 
 Pelajaran dari prototipe: `dt` negatif pada frame pertama pernah merusak animasi; `frameDelta` kini selalu menjepitnya dan dites.
 
-### 6.1 "Satu ruang" (ADR 0019, Fase 13)
+### 6.1 "Satu ruang" (ADR 0019, 0020; Fase 13–14)
 
-Beranda (dan nanti halaman lain) memakai **satu** kanvas `position: fixed` di belakang `main` (`src/components/room/RoomStage.astro`), dipasang dengan `mountRoom(stage, parts)` dari `src/scenes/room/` lewat `mountScene` yang sama.
+Beranda (dan nanti halaman lain) memakai **satu** kanvas `position: fixed` di belakang `main` (`src/components/room/RoomStage.astro`), dipasang dengan `mountRoom(stage, parts, decision?)` dari `src/scenes/room/` lewat `mountScene` yang sama. Sejak ADR 0020 benda 3D **tidak lagi ditambatkan ke HTML**: setiap bagian berdiri di stasiun tetap di dunia (`world.ts`), dan kamera bergerak di antara stasiun mengikuti scroll.
 
 ```ts
 // src/scenes/room/index.ts
 interface RoomPart {
-  slot: HTMLElement;                         // elemen HTML yang diikuti (juga tempat fallback-nya)
-  build(room): Object3D | Promise<Object3D>; // sekali, saat slot mendekati layar (BUILD_MARGIN)
-  layout(room, rect: PageRect): void;        // posisi dari rect slot (koordinat dokumen)
-  update?(frame): boolean;                   // true selama masih bergerak
+  slot: HTMLElement;                         // elemen HTML yang memegang data dan fallback bagian itu
+  build(room): Object3D | Promise<Object3D>; // sekali, saat slot mendekati layar (BUILD_MARGIN); root sudah di stasiunnya
+  layout?(room): void;                       // layar berubah (ukuran, lebar/sempit): setelah build dan tiap resize
+  update?(frame): boolean;                   // true selama masih bergerak; frame.keys = posisi kamera di antara kunci
   recolor?(palette): void;                   // tema berganti
   shown?(): void;                            // root sudah di scene; tergambar mulai frame berikutnya
   targets?(): RoomTarget[];                  // objek yang bisa diklik/di-hover (wajib punya padanan HTML)
@@ -246,17 +247,17 @@ interface RoomPart {
 }
 ```
 
-- **Halaman ↔ dunia** (`layout.ts`, murni dan dites): kamera berjarak `CAMERA.distance` dari bidang halaman (z = 0) dengan fov `CAMERA.fov`; `worldPerPixel` mengubah piksel CSS ke unit dunia. Bagian ditambatkan ke posisi dokumen slot di dalam grup `page`, dan scroll hanya menggeser grup itu (`pageOffset`), jadi 3D selalu sejajar dengan teksnya.
-- **Dinding bayangan**: `ShadowMaterial` di z = −`WALL_DEPTH`, warnanya `--room-shadow`; hanya digambar bila ada peta bayangan. Satu `DirectionalLight` tetap dan `HemisphereLight`, warnanya dari `--room-sun/-sky/-ground`. Peta bayangan hanya bila `realtimeShadows` (≥ 6 core dan bukan layar sentuh); tanpa itu bagian menggambar bayangan lembut (`paper.ts`).
+- **Dunia** (`world.ts`, satuan dunia, meniru artifact yang disetujui): dinding di `WALL_Z` (hero, journey) dan lantai di `FLOOR_Y` (konveyor, kertas Kind words, laptop), keduanya `ShadowMaterial` yang hanya menangkap bayangan (warna ruangan tetap latar CSS; hanya digambar bila ada peta bayangan). `STATIONS` memberi posisi setiap bagian. Bagian lama tetap memakai ukuran "piksel desain" Fase 13 dan menskalakan root-nya (`DESIGN_UNIT`, konveyor dengan skala sendiri).
+- **Kamera** (`camera.ts`, murni dan dites): satu kunci per ruang (`hero`, `journeyStart`, `journeyEnd`, `projects`, `messages`, `contact`): target, arah, jarak minimum, lebar dunia yang harus muat, dan offset tampilan (`setViewOffset`) agar subjek di kanan kolom teks (layar ≥ `WIDE_MIN` 1024 px) atau di atas panel (HP). `stopsFor` menghitung posisi scroll setiap kunci dari `[data-room-section]` (hero di atas, journey dari sebelum bagiannya sampai akhirnya, ruang lain saat bagiannya di tengah layar; bagian yang tidak ada dilewati); `trackAt` + `poseAt` menginterpolasi (smoothstep) di antara dua kunci; `keyPosition` memberi posisi kontinu (0–5) yang diikuti bagian (bola journey, konveyor hanya jalan dan tampil dekat kuncinya). Paralaks pointer kecil hanya di mode `animated`.
+- **Cahaya**: matahari (`DirectionalLight`) dan target bayangannya mengikuti target kamera (`SUN.offset`, jangkauan ±12), `HemisphereLight` tetap; warnanya dari `--room-sun/-sky/-ground`. Peta bayangan hanya bila `realtimeShadows` (≥ 6 core dan bukan layar sentuh); tanpa itu bagian menggambar bayangan lembut (`paper.ts`).
+- **Warna dinding mengikuti kamera**: `flowAt` (0–1, 40 langkah) → `wallColors` menulis `--room-a/b/c` di `body` sebagai `color-mix()` dari token ruangan sepanjang jalur `room-top → room-mid → room-bottom` (jalur yang sama dengan yang dites kontrasnya), hanya saat langkahnya berubah. Di mode ruangan latar `body` dipaku ke layar (`background-attachment: fixed`) dan mulai dari ujung giok sebelum frame pertama. Safari iOS mengabaikan `fixed` sehingga gradasinya membentang sepanjang halaman; karena a, b, dan c hanya berjarak 12% jalur, hasilnya tetap halus.
 - **Stage**: `RoomStage.astro` setinggi `100lvh` (toolbar HP tidak mengubah skala) dan tidak boleh berada di dalam elemen ber-`transform`/`filter`/`contain`/`isolation`.
-- **Bagian**: dibangun saat slotnya dekat, lalu shader-nya dikompilasi async (`compileAsync`) sebelum ditambahkan; bagian yang selesai setelah `destroy()` dibuang. `layout` dipanggil saat resize dan saat ukuran `body` berubah.
-- **Render sesuai kebutuhan**: `needsRender()` true bila scroll, pointer, tema, atau `update()` sebuah bagian berubah. Kamera tidak pernah bergerak (benda tetap tepat di atas kembaran HTML-nya); bagian yang ingin terasa hidup memiringkan bendanya sendiri. Bagian yang beranimasi terus (konveyor) hanya maju selama slotnya terlihat.
-- **Klik dan hover**: klik di luar elemen interaktif HTML di-raycast ke `targets()`, kecuali bila pointer bergeser > 5 px atau ada teks terpilih; `onClick(event, pointerType)` menerima jenis pointer saat ditekan (konveyor: ketuk pertama di layar sentuh menampilkan judul, ketuk kedua membuka studi kasus). `onHover(true/false)` saat mouse masuk/keluar objek; `html.room-hover` memberi kursor tangan (mouse saja). `RoomContext.toScreen` memberi posisi layar sebuah titik dunia.
-- **Keputusan 3D sebelum tampilan pertama** (ADR 0020): beranda memakai `earlyRoom` di `PageLayout`/`BaseLayout`, yang menyisipkan skrip inline di `<head>` dari `earlyRoomScript()` (`src/scenes/core/early.ts`). Fungsi `earlyMode` di sana adalah salinan mandiri dari `decide3D(detectCapabilities())` (sumbernya disisipkan dengan `toString()`, jadi tidak boleh memakai apa pun dari luar); tes unit memastikan keduanya sama untuk setiap kombinasi masukan (termasuk ambang core, semua pola renderer CPU, dan storage/WebGL yang melempar galat), jadi setiap perubahan di `capabilities.ts` harus diulang di `early.ts`. Hasilnya `html[data-room-3d="animated|still"]` sudah ada sebelum halaman tergambar. Keputusan ini berlaku penuh: `HomeRoom.astro` membacanya dengan `earlyDecision()` dan meneruskannya ke `mountRoom` (WebGL tidak diperiksa dua kali); tanpa atribut (skrip diblokir atau gagal) ruangan tidak dipasang. Atribut dicabut bila `mountRoom` gagal atau chunk 3D gagal dimuat. Hash CSP skrip ini dibuat otomatis oleh `scripts/generate-csp.ts`.
-- **Tata letak ruangan** (hanya di bawah `html[data-room-3d]`, `global.css`): setiap `[data-room-section]` beranda (hero, journey, projects, messages, contact) selayar penuh tanpa garis pemisah; `[data-room-copy]` adalah blok teks bagian itu, di kolom kiri di atas `.room-scrim` (layar ≥ 64rem, dari `HomeRoom.astro`) atau di panel sendiri di bawah 3D-nya (layar < 64rem: cetakan hero dan laptop pindah ke atas). Ruang tombol "Play again" disediakan sejak awal (hanya mode `animated`) agar teks hero di HP tidak melompat. Garis header dan garis atas bagian dihilangkan dengan aturan di luar `@layer`, agar mengalahkan utilitas `border-line`.
-- **Pita khusus 3D** (`data-room-band`: konveyor di Proyek pilihan, laptop di Kontak): `display: none` kecuali `html[data-room-3d]`. Sebelum bagiannya tergambar (`data-room-ready`), pita tetap memakan ruang tetapi tidak terlihat. Tanpa 3D atau JS, pita itu tidak memakan ruang.
+- **Bagian**: dibangun saat slotnya dekat, lalu shader-nya dikompilasi async (`compileAsync`) sebelum ditambahkan; bagian yang selesai setelah `destroy()` dibuang. Posisi kunci kamera dihitung ulang saat resize dan saat ukuran `body` berubah.
+- **Render sesuai kebutuhan**: `needsRender()` true bila scroll (kamera bergerak), pointer, tema, atau `update()` sebuah bagian berubah. Bagian yang beranimasi terus (konveyor) hanya maju selama kamera dekat kuncinya.
+- **Klik dan hover**: klik di luar elemen interaktif HTML di-raycast ke `targets()` lewat kamera yang sedang bergerak, kecuali bila pointer bergeser > 5 px atau ada teks terpilih; `onClick(event, pointerType)` menerima jenis pointer saat ditekan; objek yang tersembunyi (sendiri atau lewat induknya, mis. bagian yang hanya tampil dekat ruangnya) tidak bisa diklik atau di-hover (konveyor: ketuk pertama di layar sentuh menampilkan judul, ketuk kedua membuka studi kasus). `onHover(true/false)` saat mouse masuk/keluar objek; `html.room-hover` memberi kursor tangan (mouse saja). `RoomContext.toScreen` memberi posisi layar sebuah titik dunia (dipakai untuk `data-detected-at` konveyor dan `data-bead-at` journey, yang dibaca tes).
+- **Pita data 3D** (`data-room-band`: konveyor di Proyek pilihan, laptop di Kontak): `display: none` kecuali `html[data-room-3d]`; isinya data bagian 3D (dan keterangan laptop), bukan tempat 3D-nya. Pita konveyor tingginya 0; pita laptop hanya memuat keterangan. Sebelum bagiannya tergambar (`data-room-ready`) pita tidak terlihat.
 - **Target diperbarui**: `targets()` dibaca ulang setelah build, layout, resize, dan recolor, karena bagian boleh mengganti objeknya (konveyor membangun ulang kartu untuk lebar dan tema baru). Hover diperiksa ulang setiap frame selama ada bagian yang bergerak sendiri.
-- **Bagian beranda** (urutan halaman): `hero` (cetakan foto + aksara), `journey` (benang; memutar di sisi judul bila judul menghalangi, `detour`), `sorting` (konveyor: kartu dan wadah dari atribut data `SelectedProjects.astro`, yang memilihnya dengan `sortingLine()` dari `content/`; linimasa murni di `sorting-plan.ts`), `notes` (kertas Kind words tepat di belakang setiap pesan HTML, warna `--surface` tanpa pencahayaan agar kontras teks sama; kartu HTML melepas latar dan garisnya saat `data-room-ready`), `laptop` (layar digambar dengan canvas: bilah alamat dari `Astro.site` + sketsa beranda).
+- **Bagian beranda** (urutan halaman): `hero` (cetakan foto + aksara di dinding; posisi dari `hero-config.ts` lewat `printLayout`, sama dengan HTML-nya), `journey` (benang `CatmullRom` dari bawah lembar aksara, lewat satu titik per milestone di dinding (`beadPositions`), lalu menyeberang lantai ke konveyor; bola mengikuti `keyPosition` lewat `ballAt`; titik yang dilewati menyala dan item HTML-nya `data-reached`), `sorting` (konveyor di lantai: kartu dan wadah dari atribut data `SelectedProjects.astro`, yang memilihnya dengan `sortingLine()` dari `content/`; linimasa murni di `sorting-plan.ts`; geometri Fase 13 diputar sebesar sudut pandang kamera sehingga sabuk rebah di lantai; tampil dan jalan hanya dekat kunci `projects` karena labelnya selalu di atas), `notes` (maks. `MAX_NOTES` kertas Kind words berdiri di lantai, baris dari lantai ke atas (`notePosition`), masing-masing tanda kutip dan nama penulis dari HTML-nya; isi pesan hanya di HTML; tampil hanya dekat kunci `messages`), `laptop` (di lantai; layar digambar dengan canvas: bilah alamat dari `Astro.site` + sketsa beranda).
 - **Tema**: `MutationObserver` pada `data-theme` dan `prefers-color-scheme` membaca ulang palet dan memanggil `recolor`.
 
 ## 7. i18n

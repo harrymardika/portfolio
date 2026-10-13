@@ -1,8 +1,9 @@
 /**
  * Room part: the hero prints (T13.4). The owner's photo print floats in front of a ruled sheet with
- * his name in Javanese script; both cast shadows on the page. Once, when they are ready, the face is
- * detected (person → name) and then the thesis model reads the sheet syllable by syllable. The HTML
- * twin (HeroPrints.astro) supplies every position and size, so the 3D lands where the HTML was.
+ * his name in Javanese script, at the hero's station on the wall (ADR 0020); both cast shadows on it.
+ * Once, when they are ready, the face is detected (person → name) and then the thesis model reads the
+ * sheet syllable by syllable. The prints keep the proportions of their HTML twin (HeroPrints.astro,
+ * both from hero-config.ts), on a stage `STAGE_WIDTH` design pixels wide.
  */
 import {
   BoxGeometry,
@@ -17,6 +18,7 @@ import {
 } from 'three';
 
 import { blobShadow, brackets, easeOut, fontsReady, label, MONO, SANS } from '../paper';
+import { DESIGN_UNIT, STATIONS } from '../world';
 import { FACE_BOX, PHOTO_PRINT, PRINTS, SEQUENCE } from './hero-config';
 
 import type { ScenePalette } from '../../core/palette';
@@ -74,22 +76,35 @@ export function sequenceAt(t: number, syllables: number) {
   };
 }
 
-interface PrintMeasure {
-  /** Centre in document px. */
-  cx: number;
-  cy: number;
-  width: number;
-  height: number;
+/** Width of the hero stage in design pixels (the size it had on the page in Phase 13). */
+export const STAGE_WIDTH = 600;
+
+export interface PrintBox {
+  /** Centre relative to the stage centre, y up (design px). */
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
 }
 
-function measure(element: HTMLElement): PrintMeasure {
-  const box = element.getBoundingClientRect();
-  // offsetWidth/Height ignore the CSS rotation; the centre is the same either way.
+/**
+ * Where the two prints sit on a stage `stageWidth` wide, from the same fractions as the HTML prints.
+ * The photo print is the photo plus its paper border (deeper at the bottom); the sheet keeps its
+ * image's aspect (`sheetAspect` = height / width). Pure; tested.
+ */
+export function printLayout(stageWidth: number, sheetAspect: number): { photo: PrintBox; sheet: PrintBox } {
+  const stageHeight = stageWidth / PRINTS.aspect;
+  const place = (print: { left: number; top: number }, width: number, height: number): PrintBox => ({
+    x: print.left * stageWidth + width / 2 - stageWidth / 2,
+    y: stageHeight / 2 - (print.top * stageHeight + height / 2),
+    width,
+    height,
+  });
+  const photoWidth = PRINTS.photo.width * stageWidth;
+  const sheetWidth = PRINTS.sheet.width * stageWidth;
   return {
-    cx: box.left + box.width / 2,
-    cy: box.top + window.scrollY + box.height / 2,
-    width: element.offsetWidth,
-    height: element.offsetHeight,
+    photo: place(PRINTS.photo, photoWidth, photoWidth * (1 - PHOTO_PRINT.border + PHOTO_PRINT.bottom)),
+    sheet: place(PRINTS.sheet, sheetWidth, sheetWidth * sheetAspect),
   };
 }
 
@@ -104,11 +119,9 @@ function loadTexture(url: string): Promise<Texture> {
 /** Null when the slot or its data is missing; the HTML prints then simply stay. */
 export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   if (!slot) return null;
-  const photoElement = slot.querySelector<HTMLElement>('[data-print="photo"]');
-  const sheetElement = slot.querySelector<HTMLElement>('[data-print="sheet"]');
   const replay = slot.querySelector<HTMLButtonElement>('[data-replay]');
   const { photoUrl, sheetUrl, boxes: boxesJson, person = 'person', name = '' } = slot.dataset;
-  if (!photoElement || !sheetElement || !photoUrl || !sheetUrl || !boxesJson) return null;
+  if (!photoUrl || !sheetUrl || !boxesJson) return null;
   const syllables = JSON.parse(boxesJson) as SheetBox[];
 
   const root = new Group();
@@ -294,25 +307,22 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
       }
       return root;
     },
-    layout(room: RoomContext) {
-      const center = measure(slot.querySelector<HTMLElement>('.stage') ?? slot);
-      const photoBox = measure(photoElement);
-      const sheetBox = measure(sheetElement);
-      root.scale.setScalar(room.wpp);
-      root.position.set((-room.viewWidth / 2) * room.wpp, 0, 0);
-      pivot.position.set(center.cx, -center.cy, 0);
-      photo.position.set(photoBox.cx - center.cx, center.cy - photoBox.cy, DEPTH.photo);
-      sheet.position.set(sheetBox.cx - center.cx, center.cy - sheetBox.cy, DEPTH.sheet);
+    layout() {
+      if (size.photo.width > 0 || !textures) return;
+      const image = textures.sheet.image as { width: number; height: number } | undefined;
+      const aspect = image && image.width > 0 ? image.height / image.width : 1 / PRINTS.aspect;
+      const prints = printLayout(STAGE_WIDTH, aspect);
+      root.scale.setScalar(DESIGN_UNIT);
+      root.position.set(STATIONS.hero.x, STATIONS.hero.y, STATIONS.hero.z);
+      photo.position.set(prints.photo.x, prints.photo.y, DEPTH.photo);
+      sheet.position.set(prints.sheet.x, prints.sheet.y, DEPTH.sheet);
       photo.rotation.z = (-PRINTS.photo.rotate * Math.PI) / 180;
       sheet.rotation.z = (-PRINTS.sheet.rotate * Math.PI) / 180;
-      const changed =
-        Math.abs(size.photo.width - photoBox.width) > 0.5 ||
-        Math.abs(size.sheet.width - sheetBox.width) > 0.5;
       size = {
-        photo: { width: photoBox.width, height: photoBox.height },
-        sheet: { width: sheetBox.width, height: sheetBox.height },
+        photo: { width: prints.photo.width, height: prints.photo.height },
+        sheet: { width: prints.sheet.width, height: prints.sheet.height },
       };
-      if (changed) assemble();
+      assemble();
     },
     shown() {
       // Only now is the 3D on screen: hide the flat prints and start the sequence.

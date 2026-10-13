@@ -46,11 +46,7 @@ import RoomStage from './RoomStage.astro';
     const find = (selector: string) => document.querySelector<HTMLElement>(selector);
     const parts = [
       createHeroPart(find('[data-room-slot="hero"]')),
-      createJourneyPart(find('[data-journey-stage]'), {
-        from: find('[data-room-slot="hero"] [data-print="sheet"]'),
-        to: find('#projects'),
-        avoid: find('[data-journey-intro]'),
-      }),
+      createJourneyPart(find('[data-journey-stage]')),
       createSortingPart(find('[data-room-slot="sorting"]')),
       createNotesPart(find('[data-room-slot="notes"]')),
       createLaptopPart(find('[data-room-slot="laptop"]')),
