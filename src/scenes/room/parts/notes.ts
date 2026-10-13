@@ -17,7 +17,7 @@ import {
 
 import { KEY_ORDER } from '../camera';
 import { DESIGN_UNIT, STATIONS } from '../world';
-import { blobShadow, DISPLAY_FAMILY, fontsReady } from '../paper';
+import { blobShadow, DISPLAY_FAMILY, drawFibers, fontsReady } from '../paper';
 import { wrapTitle } from './sorting-plan';
 
 import type { ScenePalette } from '../../core/palette';
@@ -106,6 +106,7 @@ export function createNotesPart(slot: HTMLElement | null): RoomPart | null {
       g.scale(scale, scale);
       g.fillStyle = css(palette.surface);
       g.fillRect(0, 0, NOTE.width, NOTE.height);
+      drawFibers(g, NOTE.width, NOTE.height);
       g.textBaseline = 'top';
       g.fillStyle = css(palette.amber);
       g.font = `96px ${DISPLAY_FAMILY}`;

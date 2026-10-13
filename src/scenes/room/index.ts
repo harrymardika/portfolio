@@ -47,6 +47,10 @@ import type { FrameContext, SceneHandle, SceneModule, SceneSetup } from '../core
 
 /** Where the sun stands relative to the camera's target, and how far its shadows reach around it. */
 const SUN = { offset: new Vector3(-6, 7, 8), reach: 12 } as const;
+/** How far the sun follows a fine pointer (world units at the pointer's edge), animated mode only. */
+const SUN_FOLLOW = { x: 2.4, y: 1.2 } as const;
+/** Full intensity of the sky and the sun; `RoomContext.setLight` scales both. */
+const LIGHT = { sky: 2.3, sun: 1.8 } as const;
 /** Pointer parallax of the camera (world units), animated mode only. */
 const PARALLAX = { x: 0.25, y: 0.15 } as const;
 /** Parts are built when their slot is this close to the viewport (CSS px). */
@@ -68,6 +72,8 @@ export interface RoomContext {
   readonly invalidate: () => void;
   /** Viewport position (CSS px) of a world point, as currently drawn. */
   readonly toScreen: (world: Vector3) => { x: number; y: number };
+  /** Scale the room's light, 0 (dark) to 1 (full): the hero's lamp switching on (T14.2). */
+  readonly setLight: (level: number) => void;
 }
 
 /**
@@ -183,8 +189,14 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     const camera = new PerspectiveCamera(FOV, 1, 0.1, 200);
 
     let palette = setup.palette;
-    const sky = new HemisphereLight(palette['room-sky'], palette['room-ground'], 2.3);
-    const sun = new DirectionalLight(palette['room-sun'], 1.8);
+    const sky = new HemisphereLight(palette['room-sky'], palette['room-ground'], LIGHT.sky);
+    const sun = new DirectionalLight(palette['room-sun'], LIGHT.sun);
+    const setLight = (level: number): void => {
+      const k = Math.min(1, Math.max(0, level));
+      sky.intensity = LIGHT.sky * k;
+      sun.intensity = LIGHT.sun * k;
+      dirty = true;
+    };
     sun.castShadow = shadows;
     const mapSize = window.innerWidth < 768 ? 1024 : 2048;
     sun.shadow.mapSize.set(mapSize, mapSize);
@@ -229,6 +241,9 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     let hovered: RoomTarget | null = null;
     let flow = -1;
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    // The sun follows a mouse or a pen only (a finger tapping would make the light jump), also on a
+    // touch laptop: its own pointer, moved by those alone.
+    const sunPointer = { x: 0, y: 0, tx: 0, ty: 0 };
     const pointerPx = new Vector2(-1, -1);
     const entries: Entry[] = parts.map((part) => ({ part, root: null, building: false }));
     const body = document.body;
@@ -254,6 +269,7 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
       renderer,
       invalidate: request,
       toScreen,
+      setLight,
     });
     // Rebuilt only when its inputs change (resize, theme), not every frame.
     let room = makeContext();
@@ -292,6 +308,11 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         view.height,
       );
       sun.position.copy(target).add(SUN.offset);
+      // The light drifts a little toward the cursor, as if someone moved the lamp.
+      if (setup.mode === 'animated') {
+        sun.position.x += sunPointer.x * SUN_FOLLOW.x;
+        sun.position.y -= sunPointer.y * SUN_FOLLOW.y;
+      }
       sun.target.position.copy(target);
       frame.keys = keyPosition(track, stops);
       // The walls follow the camera from jade to indigo, in steps (a style change repaints the page).
@@ -402,6 +423,10 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     const onPointer = (event: PointerEvent): void => {
       pointer.tx = (event.clientX / view.width) * 2 - 1;
       pointer.ty = (event.clientY / view.height) * 2 - 1;
+      if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
+        sunPointer.tx = pointer.tx;
+        sunPointer.ty = pointer.ty;
+      }
       // Hover only means something for a mouse; touch taps would leave the cursor class stuck.
       if (event.pointerType !== 'mouse') return;
       pointerPx.set(event.clientX, event.clientY);
@@ -461,8 +486,14 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
         if (setup.mode === 'animated') {
           pointer.x = damp(pointer.x, pointer.tx, 4, input.dt);
           pointer.y = damp(pointer.y, pointer.ty, 4, input.dt);
+          sunPointer.x = damp(sunPointer.x, sunPointer.tx, 2, input.dt);
+          sunPointer.y = damp(sunPointer.y, sunPointer.ty, 2, input.dt);
         }
-        animating = Math.abs(pointer.tx - pointer.x) > 0.002 || Math.abs(pointer.ty - pointer.y) > 0.002;
+        animating =
+          Math.abs(pointer.tx - pointer.x) > 0.002 ||
+          Math.abs(pointer.ty - pointer.y) > 0.002 ||
+          Math.abs(sunPointer.tx - sunPointer.x) > 0.002 ||
+          Math.abs(sunPointer.ty - sunPointer.y) > 0.002;
         placeCamera();
         Object.assign(frame, { dt: input.dt, elapsed: input.elapsed, room, scrollY });
         frame.pointer.x = pointer.x;

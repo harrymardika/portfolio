@@ -22,7 +22,7 @@ export const FLOOR = { width: 80, depth: 60 } as const;
 
 /**
  * World units per design pixel. Parts keep their geometry in design pixels (the sizes they had on
- * the page in Phase 13) and scale their root by this, so the hero stage (600 px) is 5.1 units wide.
+ * the page in Phase 13) and scale their root by this (the hero and the line use scales of their own).
  */
 export const DESIGN_UNIT = 0.0085;
 
@@ -39,8 +39,7 @@ export const STATIONS = {
       vec3(1.1, -15.5, -1.2),
       vec3(-1.1, -18.5, -1.2),
     ],
-    /** The thread leaves the hero sheet here and ends at the start of the sorting line. */
-    start: vec3(1.9, -2.1, -1.0),
+    /** The thread (after the hero's clothesline) ends here, at the start of the sorting line. */
     end: vec3(-9.4, FLOOR_Y + 0.5, 6),
   },
   /** Centre of the sorting line, on the floor. */

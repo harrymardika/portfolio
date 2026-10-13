@@ -7,6 +7,10 @@
  */
 import {
   BoxGeometry,
+  ConeGeometry,
+  CylinderGeometry,
+  DoubleSide,
+  SphereGeometry,
   Group,
   Mesh,
   MeshStandardMaterial,
@@ -17,17 +21,24 @@ import {
   type Texture,
 } from 'three';
 
-import { blobShadow, brackets, easeOut, fontsReady, label, MONO, SANS } from '../paper';
-import { DESIGN_UNIT, STATIONS } from '../world';
-import { FACE_BOX, PHOTO_PRINT, PRINTS, SEQUENCE } from './hero-config';
+import { blobShadow, brackets, easeOut, fontsReady, label, MONO, paperFibers, SANS } from '../paper';
+import { STATIONS } from '../world';
+import {
+  FACE_BOX,
+  HERO_UNIT,
+  PHOTO_PRINT,
+  PRINT_DEPTH,
+  printLayout,
+  PRINTS,
+  SEQUENCE,
+  STAGE_WIDTH,
+} from './hero-config';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart } from '../index';
 
 /** How far the photo print floats in front of the sheet, and the sheet's curl (CSS px). */
-const DEPTH = { photo: 36, sheet: 0, curl: 16, boxes: 10 } as const;
-/** Pointer tilt of both prints, radians. */
-const TILT = { x: 0.1, y: 0.16 } as const;
+const DEPTH = { ...PRINT_DEPTH, curl: 16, boxes: 10 } as const;
 const LABEL_HEIGHT = 18;
 
 export interface SheetBox {
@@ -76,36 +87,27 @@ export function sequenceAt(t: number, syllables: number) {
   };
 }
 
-/** Width of the hero stage in design pixels (the size it had on the page in Phase 13). */
-export const STAGE_WIDTH = 600;
+/** The opening (T14.2): the room starts dim, the hero's lamp flickers on, then detection starts. */
+export const LAMP = {
+  /** Light level of the dim room. */
+  dim: 0.18,
+  /** The lamp flickers at this time (s after the prints are drawn), then comes up to full. */
+  flicker: 0.45,
+  full: 1.15,
+  /** The detection sequence starts this long after the prints are drawn. */
+  detectFrom: 1.3,
+  /** Where the lamp hangs, relative to the hero stage centre (design px, y up). */
+  at: { x: 10, y: 300, z: 140 },
+} as const;
 
-export interface PrintBox {
-  /** Centre relative to the stage centre, y up (design px). */
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
-
-/**
- * Where the two prints sit on a stage `stageWidth` wide, from the same fractions as the HTML prints.
- * The photo print is the photo plus its paper border (deeper at the bottom); the sheet keeps its
- * image's aspect (`sheetAspect` = height / width). Pure; tested.
- */
-export function printLayout(stageWidth: number, sheetAspect: number): { photo: PrintBox; sheet: PrintBox } {
-  const stageHeight = stageWidth / PRINTS.aspect;
-  const place = (print: { left: number; top: number }, width: number, height: number): PrintBox => ({
-    x: print.left * stageWidth + width / 2 - stageWidth / 2,
-    y: stageHeight / 2 - (print.top * stageHeight + height / 2),
-    width,
-    height,
-  });
-  const photoWidth = PRINTS.photo.width * stageWidth;
-  const sheetWidth = PRINTS.sheet.width * stageWidth;
-  return {
-    photo: place(PRINTS.photo, photoWidth, photoWidth * (1 - PHOTO_PRINT.border + PHOTO_PRINT.bottom)),
-    sheet: place(PRINTS.sheet, sheetWidth, sheetWidth * sheetAspect),
-  };
+/** The room's light level and the bulb's glow (0..1) at time `t` of the opening. Pure; tested. */
+export function lampAt(t: number): { level: number; bulb: number; on: boolean } {
+  if (t < LAMP.flicker) return { level: LAMP.dim, bulb: 0, on: false };
+  // A short flicker: on, off, then up.
+  if (t < LAMP.flicker + 0.08) return { level: 0.7, bulb: 1, on: false };
+  if (t < LAMP.flicker + 0.16) return { level: LAMP.dim, bulb: 0.1, on: false };
+  const k = easeOut((t - LAMP.flicker - 0.16) / (LAMP.full - LAMP.flicker - 0.16));
+  return { level: LAMP.dim + (1 - LAMP.dim) * k, bulb: 1, on: k >= 1 };
 }
 
 function loadTexture(url: string): Promise<Texture> {
@@ -131,6 +133,31 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   pivot.add(sheet, photo);
   root.add(pivot);
 
+  // The lamp hanging above the prints: cord, shade, and bulb (design px, like the prints).
+  const lamp = new Group();
+  const cordMaterial = new MeshStandardMaterial({ roughness: 0.6 });
+  const shadeMaterial = new MeshStandardMaterial({ roughness: 0.55, side: DoubleSide });
+  const bulbMaterial = new MeshStandardMaterial({ roughness: 0.2, emissiveIntensity: 0 });
+  const pinMaterial = new MeshStandardMaterial({ roughness: 0.7 });
+  {
+    const cord = new Mesh(new CylinderGeometry(1.4, 1.4, 600, 8), cordMaterial);
+    cord.position.y = 300 + 30;
+    const shade = new Mesh(new ConeGeometry(52, 46, 32, 1, true), shadeMaterial);
+    shade.position.y = 23;
+    const bulb = new Mesh(new SphereGeometry(15, 24, 16), bulbMaterial);
+    bulb.position.y = 4;
+    lamp.add(cord, shade, bulb);
+    lamp.position.set(LAMP.at.x, LAMP.at.y, LAMP.at.z);
+    root.add(lamp);
+  }
+  /**
+   * The opening: waiting for the prints, playing, or done. It plays only when the room starts with
+   * the page at its top (not when it opens further down, e.g. at #contact, and the prints are only
+   * built once the reader scrolls back up).
+   */
+  let intro: 'waiting' | 'playing' | 'done' = window.scrollY < window.innerHeight * 0.5 ? 'waiting' : 'done';
+  let introStart = 0;
+  let setLight: (level: number) => void = () => undefined;
   let textures: { photo: Texture; sheet: Texture } | null = null;
   let palette: ScenePalette | null = null;
   let size = { photo: { width: 0, height: 0 }, sheet: { width: 0, height: 0 } };
@@ -161,7 +188,8 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
           for (const owned of [map, alphaMap]) {
             if (owned && owned !== textures?.photo && owned !== textures?.sheet) owned.dispose();
           }
-          material.dispose();
+          // The clothespins share one material, reused by the next assemble.
+          if (material !== pinMaterial) material.dispose();
         }
       });
     }
@@ -171,6 +199,19 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
   // Prints are white paper in both themes, like the HTML twins (`--on-forest`).
   const paper = (): number => palette?.['on-forest'] ?? 0xffffff;
   const ink = (): number => palette?.forest ?? 0x173d32;
+
+  /** A clothespin holding a print at the middle of its top edge (`y`), just in front of it (`z`). */
+  const clothespin = (y: number, z: number): Group => {
+    const pin = new Group();
+    for (const side of [-1, 1]) {
+      const jaw = new Mesh(new BoxGeometry(10, 34, 5), pinMaterial);
+      jaw.position.set(0, 4, side * 3.5);
+      jaw.castShadow = shadows;
+      pin.add(jaw);
+    }
+    pin.position.set(0, y, z);
+    return pin;
+  };
 
   const assemble = (): void => {
     if (!textures || size.photo.width === 0 || size.sheet.width === 0) return;
@@ -182,7 +223,7 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     const { width: pw, height: ph } = size.photo;
     const print = new Mesh(
       new BoxGeometry(pw, ph, 3),
-      new MeshStandardMaterial({ color: paper(), roughness: 0.85 }),
+      new MeshStandardMaterial({ color: paper(), roughness: 0.85, bumpMap: paperFibers(), bumpScale: 1.5 }),
     );
     print.castShadow = shadows;
     const side = pw * (1 - 2 * PHOTO_PRINT.border);
@@ -192,12 +233,11 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     );
     const pictureY = ph / 2 - pw * PHOTO_PRINT.border - side / 2;
     picture.position.set(0, pictureY, 1.6);
-    photo.add(print, picture);
-    if (!shadows) {
-      const blob = blobShadow(pw * 1.25, ph * 1.2, shadowColor, 0.4);
-      blob.position.set(pw * 0.08, -ph * 0.08, -DEPTH.photo - 6);
-      photo.add(blob);
-    }
+    photo.add(print, picture, clothespin(ph / 2, 3));
+    // A soft contact shadow behind the print; without a shadow map it is the only one, so darker.
+    const photoBlob = blobShadow(pw * 1.25, ph * 1.2, shadowColor, shadows ? 0.16 : 0.4);
+    photoBlob.position.set(pw * 0.08, -ph * 0.08, -DEPTH.photo - 6);
+    photo.add(photoBlob);
     const face = boxOnPrint(
       { x: FACE_BOX.x, y: FACE_BOX.y, w: FACE_BOX.width, h: FACE_BOX.height },
       side,
@@ -223,16 +263,20 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     geometry.computeVertexNormals();
     const page = new Mesh(
       geometry,
-      new MeshStandardMaterial({ map: textures.sheet, color: paper(), roughness: 0.92 }),
+      new MeshStandardMaterial({
+        map: textures.sheet,
+        color: paper(),
+        roughness: 0.92,
+        bumpMap: paperFibers(),
+        bumpScale: 1.5,
+      }),
     );
     page.castShadow = shadows;
     page.receiveShadow = shadows;
-    sheet.add(page);
-    if (!shadows) {
-      const blob = blobShadow(sw * 1.2, sh * 1.25, shadowColor, 0.3);
-      blob.position.set(sw * 0.05, -sh * 0.08, -12);
-      sheet.add(blob);
-    }
+    sheet.add(page, clothespin(sh / 2, curl(0, sw) + 2));
+    const sheetBlob = blobShadow(sw * 1.2, sh * 1.25, shadowColor, shadows ? 0.14 : 0.3);
+    sheetBlob.position.set(sw * 0.05, -sh * 0.08, -12);
+    sheet.add(sheetBlob);
     sheetMarks = syllables.map((syllable) => {
       const b = boxOnPrint(syllable, sw, sh);
       const group = new Group();
@@ -283,8 +327,22 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     });
   };
 
+  const lightBulb = (glow: number): void => {
+    bulbMaterial.emissiveIntensity = glow * 2.2;
+  };
+
+  /**
+   * The walls dim with the lamp (0 = lamp fully on, 1 = dark): a layer behind the canvas
+   * (HomeRoom.astro), since the walls are the page's own background, not part of the 3D.
+   */
+  const darkWalls = (dark: number): void => {
+    if (dark <= 0) document.documentElement.style.removeProperty('--room-dark');
+    else document.documentElement.style.setProperty('--room-dark', dark.toFixed(3));
+  };
+
   const onReplay = (): void => {
-    started = clock;
+    // During the opening, detection still waits for the lamp.
+    started = intro === 'playing' ? Math.max(clock, introStart + LAMP.detectFrom) : clock;
     invalidate();
   };
 
@@ -294,7 +352,10 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
       shadows = room.shadows;
       still = room.mode === 'still';
       invalidate = room.invalidate;
+      setLight = room.setLight;
       palette = room.palette;
+      // The opening plays once, in animated mode; otherwise the lamp is simply on.
+      if (still) intro = 'done';
       const [photoTexture, sheetTexture] = await Promise.all([
         loadTexture(photoUrl),
         loadTexture(sheetUrl),
@@ -309,10 +370,8 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
     },
     layout() {
       if (size.photo.width > 0 || !textures) return;
-      const image = textures.sheet.image as { width: number; height: number } | undefined;
-      const aspect = image && image.width > 0 ? image.height / image.width : 1 / PRINTS.aspect;
-      const prints = printLayout(STAGE_WIDTH, aspect);
-      root.scale.setScalar(DESIGN_UNIT);
+      const prints = printLayout(STAGE_WIDTH);
+      root.scale.setScalar(HERO_UNIT);
       root.position.set(STATIONS.hero.x, STATIONS.hero.y, STATIONS.hero.z);
       photo.position.set(prints.photo.x, prints.photo.y, DEPTH.photo);
       sheet.position.set(prints.sheet.x, prints.sheet.y, DEPTH.sheet);
@@ -325,28 +384,60 @@ export function createHeroPart(slot: HTMLElement | null): RoomPart | null {
       assemble();
     },
     shown() {
-      // Only now is the 3D on screen: hide the flat prints and start the sequence.
+      // Only now is the 3D on screen: hide the flat prints and start the opening (or the sequence).
       slot.dataset['roomReady'] = 'true';
       startPending = true;
+      // The reader may have scrolled on while the prints were loading: then no opening.
+      if (intro === 'waiting' && window.scrollY >= window.innerHeight * 0.5) intro = 'done';
+      if (intro === 'waiting') {
+        setLight(LAMP.dim);
+        darkWalls(1);
+        slot.dataset['lamp'] = 'off';
+      } else {
+        lightBulb(1);
+        slot.dataset['lamp'] = 'on';
+      }
     },
     update(frame: RoomFrame) {
       clock = frame.elapsed;
       if (startPending) {
         startPending = false;
-        started = clock;
+        introStart = clock;
+        intro = intro === 'waiting' ? 'playing' : intro;
+        // After the opening, the face is detected once the lamp is on.
+        started = intro === 'playing' ? clock + LAMP.detectFrom : clock;
       }
-      pivot.rotation.set(frame.pointer.y * TILT.x, frame.pointer.x * TILT.y, 0);
+      let opening = false;
+      if (intro === 'playing') {
+        const state = lampAt(clock - introStart);
+        setLight(state.level);
+        lightBulb(state.bulb);
+        darkWalls(state.on ? 0 : (1 - state.level) / (1 - LAMP.dim));
+        if (state.on) {
+          intro = 'done';
+          slot.dataset['lamp'] = 'on';
+        } else opening = true;
+      }
       applySequence();
-      return !still && !sequenceAt(clock - started, syllables.length).done;
+      return opening || (!still && !sequenceAt(clock - started, syllables.length).done);
     },
     recolor(next: ScenePalette) {
       palette = next;
+      cordMaterial.color.setHex(next.ink);
+      shadeMaterial.color.setHex(next.forest);
+      pinMaterial.color.setHex(next.line);
+      bulbMaterial.color.setHex(next['room-sun']);
+      bulbMaterial.emissive.setHex(next['room-sun']);
       assemble();
     },
     dispose() {
       replay?.removeEventListener('click', onReplay);
       if (replay) replay.hidden = true;
+      // An opening cut short must not leave the room dark.
+      if (intro === 'playing') setLight(1);
+      darkWalls(0);
       delete slot.dataset['roomReady'];
+      delete slot.dataset['lamp'];
     },
   };
 }

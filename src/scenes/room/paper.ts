@@ -1,6 +1,7 @@
 /**
- * Small building blocks shared by the room's parts: text labels, detection brackets, and soft blob
- * shadows. Sizes are in design pixels; parts place them inside a group scaled to world units.
+ * Small building blocks shared by the room's parts: text labels, detection brackets, soft blob
+ * shadows, and paper fibers. Sizes are in design pixels; parts place them inside a group scaled to
+ * world units.
  */
 import {
   CanvasTexture,
@@ -139,4 +140,60 @@ export function blobShadow(width: number, height: number, color: ColorRepresenta
 export function easeOut(k: number): number {
   const t = Math.min(1, Math.max(0, k));
   return 1 - (1 - t) ** 3;
+}
+
+/** A small, deterministic random sequence (mulberry32), so the paper looks the same on every visit. */
+export function seeded(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Draw paper fibers: short, faint strokes in every direction, light and dark, over what is there. */
+export function drawFibers(g: CanvasRenderingContext2D, width: number, height: number, strength = 1): void {
+  const random = seeded(17);
+  const count = Math.round((width * height) / 90);
+  g.save();
+  g.lineCap = 'round';
+  for (let i = 0; i < count; i++) {
+    const x = random() * width;
+    const y = random() * height;
+    const length = 2 + random() * 9;
+    const angle = random() * Math.PI;
+    const light = random() < 0.5;
+    g.strokeStyle = light ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
+    g.globalAlpha = (0.025 + random() * 0.05) * strength;
+    g.lineWidth = 0.4 + random() * 0.8;
+    g.beginPath();
+    g.moveTo(x, y);
+    g.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+    g.stroke();
+  }
+  g.restore();
+}
+
+let fibers: CanvasTexture | null = null;
+
+/**
+ * A height map of paper fibers, shared by every lit paper in the room (bumpMap), stretched once over
+ * each print: the prints catch the light like real paper. Created once and disposed with the scene;
+ * three.js uploads it again if a new room uses it.
+ */
+export function paperFibers(): CanvasTexture {
+  if (fibers) return fibers;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 256;
+  const g = canvas.getContext('2d');
+  if (g) {
+    g.fillStyle = 'rgb(128,128,128)';
+    g.fillRect(0, 0, 256, 256);
+    drawFibers(g, 256, 256, 4);
+  }
+  fibers = new CanvasTexture(canvas);
+  return fibers;
 }

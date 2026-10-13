@@ -78,6 +78,13 @@ test.describe('with 3D', () => {
   test.describe('reduced motion (a still frame)', () => {
     test.use({ reducedMotion: 'reduce' });
 
+    test('the lamp is on from the start, without the opening', async ({ page }) => {
+      await page.goto('/');
+      const hero = page.locator('[data-room-slot="hero"]');
+      await expect(hero).toHaveAttribute('data-room-ready', 'true', { timeout: SCENE_READY_TIMEOUT });
+      await expect(hero).toHaveAttribute('data-lamp', 'on');
+    });
+
     test('the camera detects a selected project, and clicking its card opens the case study', async ({
       page,
     }) => {
@@ -228,6 +235,45 @@ test.describe('the full-screen room layout (ADR 0020)', () => {
             state.shifts.push({ at: entry.startTime, value: entry.value });
         }).observe({ type: 'layout-shift', buffered: true });
       });
+    });
+
+    test('the room opens dim, then the lamp switches on', async ({ page }) => {
+      // Every state the lamp goes through, and whether the walls were dimmed meanwhile.
+      await page.addInitScript(() => {
+        const state = window as unknown as { lamp: string[]; wallsDimmed: boolean };
+        state.lamp = [];
+        state.wallsDimmed = false;
+        new MutationObserver(() => {
+          const value = document.querySelector<HTMLElement>('[data-room-slot="hero"]')?.dataset['lamp'];
+          if (value && state.lamp[state.lamp.length - 1] !== value) state.lamp.push(value);
+          if (document.documentElement.style.getPropertyValue('--room-dark')) state.wallsDimmed = true;
+        }).observe(document, { subtree: true, attributes: true, attributeFilter: ['data-lamp', 'style'] });
+      });
+      await page.goto('/');
+      const hero = page.locator('[data-room-slot="hero"]');
+      await expect(hero).toHaveAttribute('data-room-ready', 'true', { timeout: SCENE_READY_TIMEOUT });
+      await expect(hero).toHaveAttribute('data-lamp', 'on', { timeout: 10_000 });
+      const seen = await page.evaluate(() => {
+        const state = window as unknown as { lamp: string[]; wallsDimmed: boolean };
+        return { lamp: state.lamp, wallsDimmed: state.wallsDimmed };
+      });
+      expect(seen.lamp).toEqual(['off', 'on']);
+      expect(seen.wallsDimmed).toBe(true);
+      // Once the lamp is on, the walls are back to full light.
+      expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--room-dark'))).toBe(
+        '',
+      );
+    });
+
+    test('opened further down the page, the lamp is simply on', async ({ page }) => {
+      await page.goto('/#contact');
+      await expect(page.locator('[data-room-stage]')).toHaveAttribute('data-scene', 'animated');
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.mouse.wheel(0, -1);
+      const hero = page.locator('[data-room-slot="hero"]');
+      await expect(hero).toHaveAttribute('data-room-ready', 'true', { timeout: SCENE_READY_TIMEOUT });
+      // On at once: no opening played.
+      expect(await hero.getAttribute('data-lamp')).toBe('on');
     });
 
     test('the walls follow the camera from jade at the hero to indigo at the contact', async ({ page }) => {

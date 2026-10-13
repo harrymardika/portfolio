@@ -1,9 +1,10 @@
 /**
- * Room part: the journey thread (T13.5, ADR 0020). A thread leaves the bottom of the hero's aksara
- * sheet, runs down the wall through a bead for every milestone of the HTML timeline (Journey.astro),
- * then across the floor to the sorting line. A ball rides the thread as the camera travels down it;
- * beads it has passed glow, and their HTML items are marked reached. Clicking a bead opens the same
- * story as its HTML button.
+ * Room part: the journey thread (T13.5, T14.2, ADR 0020). One thread: first the clothesline the hero
+ * prints hang on (from a nail on the wall, through each print's clothespin, to a second nail), then
+ * down the wall through a bead for every milestone of the HTML timeline (Journey.astro), then across
+ * the floor to the sorting line. A ball waits at the end of the clothesline and rides the thread as
+ * the camera travels down it; beads it has passed glow, and their HTML items are marked reached.
+ * Clicking a bead opens the same story as its HTML button.
  */
 import {
   CatmullRomCurve3,
@@ -17,7 +18,8 @@ import {
 } from 'three';
 
 import { disposeObject3D } from '../../core/dispose';
-import { STATIONS, FLOOR_Y, vec3, type Vec3 } from '../world';
+import { STATIONS, FLOOR_Y, vec3, WALL_Z, type Vec3 } from '../world';
+import { heroPins } from './hero-config';
 
 import type { ScenePalette } from '../../core/palette';
 import type { RoomContext, RoomFrame, RoomPart, RoomTarget } from '../index';
@@ -41,13 +43,33 @@ export function beadPositions(count: number): Vec3[] {
   });
 }
 
-/** Points the thread passes through: from the sheet, through every bead, down to the line. Pure; tested. */
-export function threadWaypoints(beads: readonly Vec3[]): Vec3[] {
-  const { start, end } = STATIONS.journey;
-  const last = beads[beads.length - 1] ?? start;
+/** The clothesline's nails on the wall, left of the photo and right of the sheet. Pure; tested. */
+export function clotheslineNails(pins: readonly [Vec3, Vec3] = heroPins()): [Vec3, Vec3] {
+  const [photo, sheet] = pins;
+  const z = WALL_Z + 1.4;
+  return [vec3(photo.x - 2.2, photo.y + 0.45, z), vec3(sheet.x + 1.9, sheet.y + 0.55, z)];
+}
+
+/**
+ * Points the thread passes through: the clothesline (nail, photo pin, sheet pin, nail; sagging a
+ * little between them), then down the wall through every bead, then down to the line. Pure; tested.
+ */
+export function threadWaypoints(beads: readonly Vec3[], pins: readonly [Vec3, Vec3] = heroPins()): Vec3[] {
+  const [photo, sheet] = pins;
+  const [left, right] = clotheslineNails(pins);
+  const sag = (a: Vec3, b: Vec3, depth: number): Vec3 =>
+    vec3((a.x + b.x) / 2, Math.min(a.y, b.y) - depth, (a.z + b.z) / 2);
+  const { end } = STATIONS.journey;
+  const last = beads[beads.length - 1] ?? right;
   return [
-    start,
-    vec3(0.6, start.y - 2.1, -1.1),
+    left,
+    sag(left, photo, 0.18),
+    photo,
+    sag(photo, sheet, 0.22),
+    sheet,
+    sag(sheet, right, 0.15),
+    right,
+    vec3(right.x - 0.3, right.y - 2.4, -1.1),
     ...beads,
     vec3(0.2, last.y - 3, -1.2),
     vec3(-1.5, FLOOR_Y + 2.5, -1.4),
@@ -58,13 +80,13 @@ export function threadWaypoints(beads: readonly Vec3[]): Vec3[] {
 }
 
 /**
- * Where the ball is on the thread (0..1) for the camera's key position (camera.ts `keyPosition`):
- * from the start to the first bead while the camera comes down from the hero, from the first to the
- * last bead along the journey, then on to the sorting line. Pure; tested.
+ * Where the ball is on the thread (0..1) for the camera's key position (camera.ts `keyPosition`): at
+ * the end of the clothesline (`rest`) in the hero, to the first bead while the camera comes down,
+ * from the first to the last bead along the journey, then on to the sorting line. Pure; tested.
  */
-export function ballAt(keys: number, firstBead: number, lastBead: number): number {
-  const along = [0, firstBead, lastBead, 1];
-  if (keys <= 0) return 0;
+export function ballAt(keys: number, rest: number, firstBead: number, lastBead: number): number {
+  const along = [rest, firstBead, lastBead, 1];
+  if (keys <= 0) return rest;
   if (keys >= along.length - 1) return 1;
   const i = Math.floor(keys);
   const a = along[i] ?? 0;
@@ -125,6 +147,7 @@ export function createJourneyPart(slot: HTMLElement | null): RoomPart | null {
     root.add(mesh, ring);
     return { item, mesh, ring, at: along(position) };
   });
+  const restAt = along(clotheslineNails()[1]);
   const firstAt = beads[0]?.at ?? 0;
   const lastAt = beads[beads.length - 1]?.at ?? 1;
 
@@ -141,7 +164,7 @@ export function createJourneyPart(slot: HTMLElement | null): RoomPart | null {
   };
 
   const place = (keys: number): void => {
-    const u = still ? 1 : ballAt(keys, firstAt, lastAt);
+    const u = still ? 1 : ballAt(keys, restAt, firstAt, lastAt);
     ball.position.copy(curve.getPointAt(Math.min(0.999, Math.max(0, u))));
     for (const bead of beads) {
       glow(bead, still || u >= bead.at - 0.002);

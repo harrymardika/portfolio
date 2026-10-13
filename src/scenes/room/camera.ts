@@ -45,8 +45,10 @@ export const CAMERA_KEYS: Readonly<Record<KeyName, CameraKey>> = {
   hero: {
     dir: vec3(0, 0, 1),
     distance: 11,
-    wide: { target: STATIONS.hero, fit: 7.2, offset: side },
-    narrow: { target: vec3(STATIONS.hero.x, STATIONS.hero.y, 0), fit: 6.4, offset: above },
+    // The clothesline, nail to nail, and the lamp above it.
+    wide: { target: vec3(STATIONS.hero.x, STATIONS.hero.y + 0.4, 0), fit: 7.9, offset: side },
+    // Phones: a little more room above, so the lamp clears the header.
+    narrow: { target: vec3(STATIONS.hero.x, STATIONS.hero.y + 1.1, 0), fit: 7.4, offset: above },
   },
   journeyStart: {
     dir: vec3(0.25, 0.12, 1),

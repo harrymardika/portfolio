@@ -10,6 +10,7 @@
 import RoomStage from './RoomStage.astro';
 ---
 
+<div class="room-dark" aria-hidden="true"></div>
 <RoomStage />
 <div class="room-scrim" aria-hidden="true"></div>
 
@@ -73,8 +74,31 @@ import RoomStage from './RoomStage.astro';
    * left, so text stays readable over the room. Above the canvas, below the content; only while the
    * room runs. On phones the copy has its own panel instead (global.css).
    */
-  .room-scrim {
+  .room-scrim,
+  .room-dark {
     display: none;
+  }
+
+  /*
+   * The opening (T14.2): the walls dim while the hero's lamp is off. Behind the canvas, so it darkens
+   * only the walls (the 3D dims through its own lights); `--room-dark` (0..1) comes from the hero part.
+   */
+  :root[data-room-3d] .room-dark {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background: var(--room-shadow);
+    opacity: calc(var(--room-dark, 0) * 0.6);
+  }
+
+  /* Never behind the copy column: its text keeps its contrast while the room is dim. */
+  @media (width >= 64rem) {
+    :root[data-room-3d] .room-dark {
+      -webkit-mask-image: linear-gradient(90deg, transparent 46%, black 62%);
+      mask-image: linear-gradient(90deg, transparent 46%, black 62%);
+    }
   }
 
   @media (width >= 64rem) {
@@ -93,7 +117,8 @@ import RoomStage from './RoomStage.astro';
   }
 
   @media print {
-    .room-scrim {
+    .room-scrim,
+    .room-dark {
       display: none !important;
     }
   }

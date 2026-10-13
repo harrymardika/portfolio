@@ -1,8 +1,18 @@
 import { describe, expect, it } from 'bun:test';
 
 import sheet from '../../../content/media/aksara-sheet.json';
-import { PHOTO_PRINT, photoPrintPadding, PRINTS, SEQUENCE } from '@/scenes/room/parts/hero-config';
-import { boxOnPrint, curl, printLayout, sequenceAt, STAGE_WIDTH } from '@/scenes/room/parts/hero';
+import {
+  HERO_UNIT,
+  heroPins,
+  PHOTO_PRINT,
+  photoPrintPadding,
+  printLayout,
+  PRINTS,
+  SEQUENCE,
+  STAGE_WIDTH,
+} from '@/scenes/room/parts/hero-config';
+import { boxOnPrint, curl, LAMP, lampAt, sequenceAt } from '@/scenes/room/parts/hero';
+import { STATIONS } from '@/scenes/room/world';
 
 describe('boxOnPrint', () => {
   it('turns a box in sheet fractions into px around the print centre, y up', () => {
@@ -105,5 +115,36 @@ describe('printLayout', () => {
       expect(box.x - box.width / 2).toBeGreaterThanOrEqual(-STAGE_WIDTH / 2 - 1e-9);
       expect(box.x + box.width / 2).toBeLessThanOrEqual(STAGE_WIDTH / 2 + 1e-9);
     }
+  });
+});
+
+describe('heroPins', () => {
+  const [photo, sheet] = heroPins();
+
+  it('holds each print at the top of its stage area, the photo left of the sheet', () => {
+    const prints = printLayout(STAGE_WIDTH);
+    expect(photo.x).toBeLessThan(sheet.x);
+    // Near the top edge of each print (turned only a few degrees), in world units.
+    expect(photo.y).toBeCloseTo(STATIONS.hero.y + (prints.photo.y + prints.photo.height / 2) * HERO_UNIT, 1);
+    expect(sheet.y).toBeCloseTo(STATIONS.hero.y + (prints.sheet.y + prints.sheet.height / 2) * HERO_UNIT, 1);
+    // The photo floats in front of the sheet.
+    expect(photo.z).toBeGreaterThan(sheet.z);
+  });
+});
+
+describe('lampAt', () => {
+  it('starts dim with the bulb off, flickers, then comes up to full', () => {
+    expect(lampAt(0)).toEqual({ level: LAMP.dim, bulb: 0, on: false });
+    expect(lampAt(LAMP.flicker + 0.04).bulb).toBe(1);
+    expect(lampAt(LAMP.flicker + 0.12).level).toBe(LAMP.dim);
+    const rising = lampAt((LAMP.flicker + LAMP.full) / 2 + 0.08);
+    expect(rising.level).toBeGreaterThan(LAMP.dim);
+    expect(rising.level).toBeLessThan(1);
+    expect(lampAt(LAMP.full)).toEqual({ level: 1, bulb: 1, on: true });
+    expect(lampAt(10).on).toBe(true);
+  });
+
+  it('is fully on before the detection starts', () => {
+    expect(LAMP.detectFrom).toBeGreaterThanOrEqual(LAMP.full);
   });
 });
