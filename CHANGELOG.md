@@ -5,12 +5,16 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-13
+
+Phase 14: the home page as a full-screen 3D room with a moving camera, as in the approved preview.
+
 ### Added
 - A seventh CV by role, **Data Scientist** (EN/ID PDF on `/cv/`), built from existing content: modeling and research results first, then the data and AI skill groups.
 
 ### Changed
 - Polish for the full-screen room: on phones and tablets the headings' font is preloaded, so nothing shifts when it arrives (the hero name used to rewrap); room panels are a little more opaque (92%) and the detected project's tint lighter, so every text keeps 4.5:1 whatever 3D is behind it; the 3D JavaScript budget (180 KB gzip, now about 158 KB) is checked by a test; the room is built one part at a time with the images decoded off the main thread, so it no longer blocks the page for long. Lighthouse on phones: 99 performance without 3D, 90–91 with the room running on a GPU, 100 for the rest (T14.5).
-- The homelab laptop's screen now shows the home page in small with live numbers: the role line, the name, the CV button, the photo, and "Online · N visitors in the last 30 days" from the site's own public status and statistics (left out when the server does not answer; nothing new is stored). The Kind words notes are taped to a wall, and the laptop's caption sits under the contact links (T14.4).
+- The homelab laptop's screen now shows the home page in small with live numbers: the role line, the name, the CV button, the photo, and "Online · Visitors in the last 30 days: N" from the site's own public status and statistics (left out when the server does not answer; nothing new is stored). The Kind words notes are taped to a wall, and the laptop's caption sits under the contact links (T14.4).
 - The sorting line's bins stand behind the belt and its pushers in front, as in the preview; whichever project the line's camera detects is marked in the selected projects above it, with a log line "Title → Field" (T14.3).
 - The hero prints hang from clothespins on a clothesline, and the same line becomes the journey thread: one thread from the hero down to the projects. The room opens dim; the lamp above the prints flickers on, then the face and the Javanese sheet are detected (once, at the top of the page; with reduced motion the lamp is simply on). The prints are larger, like the preview, with paper fibers and soft contact shadows, and the light follows the cursor a little (T14.2).
 - The home page's 3D is now one room with a moving camera, like the approved preview: the hero prints and the journey thread hang on a wall, the sorting line, the Kind words notes, and the homelab laptop stand on the floor, and the camera travels from one to the next as you scroll, beside the copy on wide screens and above it on phones. The light follows the camera, and the walls shift from jade to indigo with it. The journey becomes a tall section whose heading and milestones stay on the left while the camera follows the thread; the selected projects sit three to a row on a panel above the sorting line; the Kind words list sits beside paper notes that carry each writer's name (T14.1, ADR 0020).
@@ -18,6 +22,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 - Kind words: the invitation to leave a message now sits under the heading, before the messages (T14.0).
 
 ### Fixed
+- If the room's own script cannot load, the home page falls back to its plain layout instead of keeping the empty full-screen sections; with reduced motion, the camera cuts from room to room instead of flying; printing the home page no longer gives blank pages (T14.6).
 - Journey milestones the reader has not reached yet keep their card background, so the 3D thread behind them no longer runs through the year on phones (T14.0).
 - The project cards on the home page's sorting line now show their title (up to three lines, long words broken at hyphens) instead of placeholder lines, are larger, and their detection labels are never hidden behind the camera arm.
 

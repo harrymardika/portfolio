@@ -2,13 +2,13 @@ import { describe, expect, it } from 'bun:test';
 
 import { laptopSize, statusLine, visitorsOf } from '@/scenes/room/parts/laptop';
 
-const labels = { online: 'Online', visitors: '{count} visitors in the last 30 days' };
+const labels = { online: 'Online', visitors: 'Visitors in the last 30 days: {count}' };
 
 describe('statusLine', () => {
   it('says online with the 30-day visitor count, in the page language', () => {
-    expect(statusLine(true, 1234, labels, 'en-US')).toBe('Online · 1,234 visitors in the last 30 days');
-    expect(statusLine(true, 1234, { online: 'Online', visitors: '{count} pengunjung' }, 'id-ID')).toBe(
-      'Online · 1.234 pengunjung',
+    expect(statusLine(true, 1234, labels, 'en-US')).toBe('Online · Visitors in the last 30 days: 1,234');
+    expect(statusLine(true, 1234, { online: 'Online', visitors: 'Pengunjung: {count}' }, 'id-ID')).toBe(
+      'Online · Pengunjung: 1.234',
     );
   });
 

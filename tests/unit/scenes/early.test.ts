@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'bun:test';
 
 import { decide3D, detectCapabilities, MIN_CORES_FOR_3D } from '@/scenes/core/capabilities';
-import { earlyDecision, earlyMode, earlyRoomScript, ROOM_ATTRIBUTE } from '@/scenes/core/early';
+import {
+  earlyDecision,
+  earlyMode,
+  earlyRoomScript,
+  ROOM_ATTRIBUTE,
+  ROOM_START_ATTRIBUTE,
+  ROOM_START_GRACE,
+} from '@/scenes/core/early';
 
 interface FakeOptions {
   webgl: boolean;
@@ -105,22 +112,48 @@ describe('earlyMode', () => {
 });
 
 describe('earlyRoomScript', () => {
-  it('is self-contained, so its source can run inline in <head>, and marks the root with the mode', () => {
-    const script = earlyRoomScript();
-    expect(script).toContain(ROOM_ATTRIBUTE);
-    const run = (options: FakeOptions): Map<string, string> => {
-      const attributes = new Map<string, string>();
-      const win = fakeWindow(options);
-      const document = {
-        ...win.document,
-        documentElement: { setAttribute: (k: string, v: string) => attributes.set(k, v) },
-      };
-      new Function('window', 'document', script)(win, document);
-      return attributes;
+  /** Run the script against a fake page; returns the root's attributes and the page's timers. */
+  const run = (options: FakeOptions, started = false) => {
+    const attributes = new Map<string, string>();
+    const win = fakeWindow(options);
+    const listeners: (() => void)[] = [];
+    const timers: { fn: () => void; ms: number }[] = [];
+    const document = {
+      ...win.document,
+      documentElement: {
+        setAttribute: (k: string, v: string) => attributes.set(k, v),
+        removeAttribute: (k: string) => attributes.delete(k),
+      },
+      querySelector: (selector: string) => (selector === `[${ROOM_START_ATTRIBUTE}]` && started ? {} : null),
     };
-    expect(run(base).get(ROOM_ATTRIBUTE)).toBe('animated');
-    expect(run({ ...base, reduced: true }).get(ROOM_ATTRIBUTE)).toBe('still');
-    expect(run({ ...base, webgl: false }).has(ROOM_ATTRIBUTE)).toBe(false);
+    new Function('window', 'document', 'addEventListener', 'setTimeout', earlyRoomScript())(
+      win,
+      document,
+      (type: string, fn: () => void) => type === 'load' && listeners.push(fn),
+      (fn: () => void, ms: number) => timers.push({ fn, ms }),
+    );
+    const load = () => {
+      for (const fn of listeners) fn();
+      for (const timer of timers) timer.fn();
+    };
+    return { attributes, load, timers };
+  };
+
+  it('is self-contained, so its source can run inline in <head>, and marks the root with the mode', () => {
+    expect(earlyRoomScript()).toContain(ROOM_ATTRIBUTE);
+    expect(run(base).attributes.get(ROOM_ATTRIBUTE)).toBe('animated');
+    expect(run({ ...base, reduced: true }).attributes.get(ROOM_ATTRIBUTE)).toBe('still');
+    expect(run({ ...base, webgl: false }).attributes.has(ROOM_ATTRIBUTE)).toBe(false);
+  });
+
+  it('falls back to the plain layout when the room script never starts after load', () => {
+    const failed = run(base, false);
+    failed.load();
+    expect(failed.timers[0]?.ms).toBe(ROOM_START_GRACE);
+    expect(failed.attributes.has(ROOM_ATTRIBUTE)).toBe(false);
+    const started = run(base, true);
+    started.load();
+    expect(started.attributes.get(ROOM_ATTRIBUTE)).toBe('animated');
   });
 });
 

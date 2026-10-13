@@ -2,7 +2,7 @@
 
 > Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D22 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–15).
 >
-> **Status (2026-10-10):** Fase 9–12 selesai (rilis 1.1.0–1.4.0); chatbot dan formulir kesan & pesan tayang 2026-10-09. Rencana Fase 13–14 ditulis ulang 2026-10-10 (§H, §I). Berikutnya Fase 13.
+> **Status (2026-10-13):** Fase 9–14 selesai (rilis 1.1.0–1.6.0): chatbot dan formulir kesan & pesan tayang 2026-10-09, tampilan Giok → Nila 2026-10-10, beranda "full 3D" 2026-10-13. Berikutnya Fase 15 (§H).
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -178,7 +178,7 @@ Halaman lain (Fase 15) adalah sudut lain dari ruangan yang sama: **Projects** ko
 ### Desain teknis
 
 - **Satu renderer per halaman** (`src/scenes/room/`, ADR 0019) menggantikan dua scene terpisah di beranda. Dimuat lewat dynamic import setelah LCP; kontrak `SceneHandle` dan keputusan `decide3D` tetap (ADR 0007 tetap berlaku).
-- ~~**Jalur kamera** dihitung dari posisi bagian-bagian HTML (titik jangkar).~~ Diganti ADR 0019 (T13.3): kamera diam, **benda 3D ditambatkan ke elemen HTML** dan ikut bergeser bersama scroll, jadi tata letak tetap ditentukan HTML. Pemetaan halaman ↔ dunia murni dan dites.
+- ~~**Jalur kamera** dihitung dari posisi bagian-bagian HTML (titik jangkar).~~ Diganti ADR 0019 (T13.3): kamera diam, **benda 3D ditambatkan ke elemen HTML** dan ikut bergeser bersama scroll, jadi tata letak tetap ditentukan HTML. Untuk beranda, ADR 0020 (Fase 14) mengembalikan **kamera yang bergerak** di dunia tetap dengan titik jangkar dari posisi bagian-bagian HTML (`src/scenes/room/camera.ts`, murni dan dites); halaman lain memutuskan sendiri di Fase 15.
 - **Tingkatan perangkat:**
   - Penuh: bayangan real-time.
   - Sedang: bayangan statis.
@@ -200,7 +200,7 @@ Halaman lain (Fase 15) adalah sudut lain dari ruangan yang sama: **Projects** ko
 | Kamera dan scroll terasa berat | Kamera hanya mengikuti scroll, tanpa scroll-jacking; reduced motion dihormati |
 | Lighthouse turun | CI mengukur fallback (tanpa GPU); 3D dimuat setelah LCP; angka pembanding dicatat di T13.0 |
 
-## H2. Beranda "full 3D" persis artifact (Fase 14, D22)
+## H2. Beranda "full 3D" persis artifact (Fase 14, D22) ✅ rilis 1.6.0, 2026-10-13
 
 **Kenapa:** setelah rilis 1.5.0 pemilik membandingkan situs dengan artifact yang ia setujui dan menilai tampilannya masih berbeda. Penyebab utamanya keputusan teknis agent di T13.3 (ADR 0019): 3D ditempelkan ke elemen HTML, sehingga ruangan selayar penuh dan kamera yang bergerak hilang, 3D kecil dan datar, cahaya redup.
 
@@ -225,7 +225,7 @@ Daftar ini dijaga oleh `tests/e2e/feature-inventory.spec.ts` (T13.0), di EN dan 
 | Projects | Pencarian; filter bidang dengan jumlah; tautan `?filter=`; semua studi kasus dan repo GitHub; tautan ke studi kasus |
 | Studi kasus | Isi EN/ID, angka utama, peran, tautan repo/demo, gambar |
 | About | Ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif (yang kedaluwarsa hilang otomatis), skill |
-| CV per posisi `/cv/` | Enam varian dengan PDF EN/ID; noindex |
+| CV per posisi `/cv/` | Tujuh varian dengan PDF EN/ID; noindex |
 | Statistik `/stats/` | Statistik situs publik dan status server; tetap tampil saat API mati |
 | Kesan & pesan | Formulir `/messages/` (juga tanpa JS), halaman terkirim/belum terkirim, halaman tinjau privat `/messages/review/` |
 | 404 | Teks dan tautan kembali |
@@ -250,5 +250,5 @@ Semua sudah diputuskan pemilik. Rekomendasi awal dan alasannya ada di bagian mas
 | D18 | Warna situs | **Giok → Nila**, terang = versi muda, amber tetap; menggantikan palet Hijau ADR 0006 (2026-10-10) | T13.1 |
 | D19 | Judul hero | **Nama pemilik** sebagai H1 (2026-10-10) | T13.2 |
 | D20 | Tampilan Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) | T15.1 |
-| D21 | Arah 3D | **"Satu ruang"**: satu kanvas di belakang setiap halaman, isi tetap HTML; beranda lima ruang, Projects konveyor, About dinding penghargaan, Statistik laptop homelab, 404 deteksi (2026-10-10) | Fase 13–14 |
+| D21 | Arah 3D | **"Satu ruang"**: satu kanvas di belakang setiap halaman, isi tetap HTML; beranda lima ruang, Projects konveyor, About dinding penghargaan, Statistik laptop homelab, 404 deteksi (2026-10-10) | Fase 13 (beranda), Fase 15 (halaman lain) |
 | D22 | Beranda "full 3D" | **Persis artifact** (ruangan selayar penuh, kamera bergerak) + tali jemuran, lampu yang menyala, log deteksi sinkron, laptop dengan angka asli, lampu ikut kursor, kertas bertekstur; tema mengikuti perangkat (2026-10-10) | Fase 14 |

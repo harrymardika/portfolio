@@ -49,9 +49,20 @@ export function earlyMode(win: Window): 'animated' | 'still' | 'off' {
 /** Root attribute holding the early decision: `animated` or `still`; absent when the room does not run. */
 export const ROOM_ATTRIBUTE = 'data-room-3d';
 
-/** The inline <head> script: marks the root with the mode when the room will run. */
+/** Set on the room's stage by HomeRoom as soon as its script runs (see the watchdog below). */
+export const ROOM_START_ATTRIBUTE = 'data-room-start';
+/** How long after `load` the room's script may take to start before the page falls back (ms). */
+export const ROOM_START_GRACE = 4000;
+
+/**
+ * The inline <head> script: marks the root with the mode when the room will run. A watchdog then
+ * removes the mark if the room's own script never started (it failed to load: a content blocker,
+ * a network error, or an old cached page naming files a deploy replaced), so the page falls back to
+ * its plain layout instead of keeping the room's empty, full-screen sections.
+ */
 export function earlyRoomScript(): string {
-  return `try{var m=(${earlyMode.toString()})(window);if(m!=='off')document.documentElement.setAttribute('${ROOM_ATTRIBUTE}',m)}catch(e){}`;
+  const watchdog = `addEventListener('load',function(){setTimeout(function(){if(!document.querySelector('[${ROOM_START_ATTRIBUTE}]'))document.documentElement.removeAttribute('${ROOM_ATTRIBUTE}')},${ROOM_START_GRACE})})`;
+  return `try{var m=(${earlyMode.toString()})(window);if(m!=='off'){document.documentElement.setAttribute('${ROOM_ATTRIBUTE}',m);${watchdog}}}catch(e){}`;
 }
 
 /**

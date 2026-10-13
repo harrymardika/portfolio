@@ -45,7 +45,7 @@ export const HERO_UNIT = 0.0094;
 /** How far each print stands in front of the stage plane (design px). */
 export const PRINT_DEPTH = { photo: 36, sheet: 0 } as const;
 /** The aksara sheet's aspect (height / width), from its image (content/media/aksara-sheet.json). */
-export const SHEET_ASPECT = sheetData.height / sheetData.width;
+const SHEET_ASPECT = sheetData.height / sheetData.width;
 
 export interface PrintBox {
   /** Centre relative to the stage centre, y up (design px). */

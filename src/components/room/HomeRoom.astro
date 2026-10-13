@@ -15,7 +15,7 @@ import RoomStage from './RoomStage.astro';
 <div class="room-scrim" aria-hidden="true"></div>
 
 <script>
-  import { earlyDecision, ROOM_ATTRIBUTE } from '@/scenes/core/early';
+  import { earlyDecision, ROOM_ATTRIBUTE, ROOM_START_ATTRIBUTE } from '@/scenes/core/early';
   import { yieldToMain } from '@/scenes/core/yield';
 
   import type { RoomPart } from '@/scenes/room';
@@ -23,6 +23,8 @@ import RoomStage from './RoomStage.astro';
   async function start(): Promise<void> {
     const stage = document.querySelector<HTMLElement>('[data-room-stage]');
     if (!stage) return;
+    // Tells the head script's watchdog that this script did load (src/scenes/core/early.ts).
+    stage.setAttribute(ROOM_START_ATTRIBUTE, '');
     // The early decision (head script) is authoritative: without it the page has its plain layout.
     const decision = earlyDecision(document.documentElement);
     if (!decision) {

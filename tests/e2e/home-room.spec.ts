@@ -83,6 +83,26 @@ test.describe('with 3D', () => {
   test.describe('reduced motion (a still frame)', () => {
     test.use({ reducedMotion: 'reduce' });
 
+    test('the camera cuts between rooms instead of flying', async ({ page }) => {
+      await page.goto('/');
+      const bead = page.locator('[data-journey-stage] [data-milestone]').last();
+      const seen = new Set<string>();
+      for (const fraction of [0.1, 0.25, 0.4, 0.55, 0.7, 0.85]) {
+        await page.evaluate((f) => {
+          const journey = document.querySelector<HTMLElement>('[data-room-section="journey"]');
+          if (!journey) throw new Error('journey missing');
+          const top = journey.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo(0, top + journey.clientHeight * f - window.innerHeight / 2);
+        }, fraction);
+        await page.mouse.wheel(0, 1);
+        await expect(bead).toHaveAttribute('data-bead-at', /\d+ \d+/, { timeout: SCENE_READY_TIMEOUT });
+        await page.waitForTimeout(200);
+        seen.add((await bead.getAttribute('data-bead-at')) ?? '');
+      }
+      // Scrolling through the journey shows the bead from at most the two journey views.
+      expect(seen.size).toBeLessThanOrEqual(2);
+    });
+
     test('the lamp is on from the start, without the opening', async ({ page }) => {
       await page.goto('/');
       const hero = page.locator('[data-room-slot="hero"]');
@@ -224,7 +244,7 @@ test.describe('with 3D', () => {
     await ready(page, laptop);
     await expect(page.locator(laptop)).toHaveAttribute(
       'data-screen-status',
-      'Online · 1,234 visitors in the last 30 days',
+      'Online · Visitors in the last 30 days: 1,234',
     );
   });
 
@@ -318,6 +338,16 @@ test.describe('the full-screen room layout (ADR 0020)', () => {
             state.shifts.push({ at: entry.startTime, value: entry.value });
         }).observe({ type: 'layout-shift', buffered: true });
       });
+    });
+
+    test("if the room's own script cannot load, the page falls back to its plain layout", async ({
+      page,
+    }) => {
+      await page.route('**/HomeRoom*.js', (route) => route.abort());
+      await page.goto('/');
+      await expect(page.locator('html')).toHaveAttribute('data-room-3d', 'animated');
+      // The head script's watchdog (src/scenes/core/early.ts) takes the room layout back.
+      await expect(page.locator('html')).not.toHaveAttribute('data-room-3d', /.*/, { timeout: 10_000 });
     });
 
     test('the room opens dim, then the lamp switches on', async ({ page }) => {

@@ -296,7 +296,9 @@ export function createRoom(parts: readonly RoomPart[], shadows: boolean) {
     // The camera: where the scroll position falls between the keys, plus a little pointer parallax.
     const target = new Vector3();
     const placeCamera = (): void => {
-      const track = trackAt(scrollY, stops);
+      // With reduced motion the camera never flies: it cuts from one room's view to the next.
+      const travel = trackAt(scrollY, stops);
+      const track = setup.mode === 'still' ? { ...travel, local: travel.local < 0.5 ? 0 : 1 } : travel;
       const pose = poseAt(track, stops, view);
       target.set(pose.target.x, pose.target.y, pose.target.z);
       camera.position.set(

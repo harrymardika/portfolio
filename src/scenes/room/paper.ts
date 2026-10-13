@@ -143,7 +143,7 @@ export function easeOut(k: number): number {
 }
 
 /** A small, deterministic random sequence (mulberry32), so the paper looks the same on every visit. */
-export function seeded(seed: number): () => number {
+function seeded(seed: number): () => number {
   let state = seed >>> 0;
   return () => {
     state = (state + 0x6d2b79f5) >>> 0;

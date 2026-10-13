@@ -282,3 +282,16 @@
 :root[data-room-3d] [data-room-section] {
   border-top-color: transparent;
 }
+
+/* Printing the home page while the room runs: plain flow, no full-screen or sticky rooms. */
+@media print {
+  :root[data-room-3d] [data-room-section] {
+    min-height: auto;
+    padding-top: 0;
+  }
+
+  :root[data-room-3d] .journey-grid,
+  :root[data-room-3d] .projects-room {
+    position: static;
+  }
+}
