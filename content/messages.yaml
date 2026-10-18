@@ -13,4 +13,17 @@
 #     link: https://www.linkedin.com/in/...    # optional
 #     approved: 2026-10                         # month they allowed the message to be published
 
-items: []
+items:
+  - id: masriq
+    name: Masriq
+    role:
+      en: Larper IT
+      id: Larper IT
+    relationship:
+      en: Guru linuknya
+      id: Guru Linuxnya
+    message:
+      en: Ya bagus web nya sudah oke ya
+      id: Ya bagus webnya sudah oke ya
+    link: https://www.linkedin.com/in/mikailthoriq/
+    approved: 2026-10
