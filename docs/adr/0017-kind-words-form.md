@@ -1,6 +1,6 @@
 # 0017 · Formulir kesan & pesan: antrean privat di layanan stats, terbit lewat Pull Request
 
-- **Status:** Accepted
+- **Status:** Accepted · langkah terjemahan diganti AI editor: [ADR 0023](0023-kind-words-ai-editor.md) (2026-10-30)
 - **Tanggal:** 2026-10-09
 - **Tugas:** T12.1 (berlaku untuk T12.2–T12.4)
 

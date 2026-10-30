@@ -195,7 +195,7 @@ bun run build
 |---|---|---|
 | `ci.yml` (*CI*) | Pull request; dipanggil `deploy.yml` | `bun run verify` (check → unit → e2e), Lighthouse CI + ringkasan anotasi |
 | `deploy.yml` (*Deploy*) | Push ke `main`, jadwal `17 */6 * * *` (UTC), manual | `ci.yml` → build image `web` + `stats` → push ke GHCR (`latest`, `sha-<commit>`) |
-| `kind-words.yml` (*Kind words*) | Tiap jam (`publish`) dan 08.07 WIB (`notify`), manual | Pesan yang disetujui → terjemahan AI → satu PR antrean (`kind-words/queue`) → dihapus dari server; jumlah pesan menunggu → issue (email GitHub), tanpa isi pesan (T12.4, ADR 0017) |
+| `kind-words.yml` (*Kind words*) | Tiap jam (`publish`) dan 08.07 WIB (`notify`), manual | Pesan yang disetujui → AI editor (bahasa tulisan, metadata dirapikan, terjemahan, saran, tanda; ADR 0023) → satu PR antrean berisi tabel laporan (`kind-words/queue`) → dihapus dari server; jumlah pesan menunggu → issue (email GitHub), tanpa isi pesan (T12.4, ADR 0017) |
 | `assistant-eval.yml` (*Assistant eval*) | Manual saja | Build + ±30 pertanyaan uji ke chatbot dengan model sungguhan → laporan di ringkasan run (T11.5, `docs/assistant-eval.md`) |
 | `case-study-drafts.yml` (*Case study drafts*) | Jadwal `41 2,14 * * *` (UTC, dua kali sehari), manual | `bun run drafts`: draf studi kasus AI → satu PR per proyek, grup repo = satu proyek (ADR 0013, 0016) |
 

@@ -1,28 +1,31 @@
 #!/usr/bin/env bun
 /**
  * The "Kind words" workflow (T12.4, ADR 0017), run by .github/workflows/kind-words.yml:
- *   bun scripts/kind-words.ts publish   approved messages → translated → added to the one open pull
- *                                       request (branch kind-words/queue) → deleted from the server
+ *   bun scripts/kind-words.ts publish   approved messages → AI editor (written language, tidied role and
+ *                                       relationship, translation, suggestions, flags; T16.4) → added to
+ *                                       the one open pull request (branch kind-words/queue) with a report
+ *                                       table → deleted from the server
  *   bun scripts/kind-words.ts notify    the number of messages waiting → one issue (GitHub e-mails the
  *                                       owner); never their text
  * Env: MESSAGES_ADMIN_TOKEN, SITE_URL (default https://harry.mardika.my.id), DRAFT_GEMINI_API_KEY and/or
- * DRAFT_GROQ_API_KEY (translation), GH_TOKEN (gh). The repository is public: logs and issues show ids and
+ * DRAFT_GROQ_API_KEY (AI editor), GH_TOKEN (gh). The repository is public: logs and issues show ids and
  * counts only, never a message; the pull request holds only messages the owner already approved.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { failureReason, gemini, groq, parseJson, type Provider } from '../src/lib/ai';
+import { gemini, groq, type Provider } from '../src/lib/ai';
 import {
   appendEntry,
-  checkTranslation,
+  EDIT_JSON_SCHEMA,
+  editMessage,
+  editReport,
   existingIds,
   messageEntry,
-  TRANSLATION_JSON_SCHEMA,
-  translationPrompt,
   type ApprovedMessage,
-  type Translation,
+  type Edit,
 } from '../src/lib/messages';
+import type { Locale } from '../src/lib/i18n/locales';
 
 const ROOT = join(import.meta.dir, '..');
 const MESSAGES_FILE = join(ROOT, 'content/messages.yaml');
@@ -75,33 +78,14 @@ async function api(path: string, method = 'GET'): Promise<Response> {
   return response;
 }
 
-async function translate(
-  providers: readonly Provider[],
-  message: ApprovedMessage,
-): Promise<Translation | null> {
-  for (const provider of providers) {
-    try {
-      const checked = checkTranslation(
-        parseJson(await provider.complete(translationPrompt(message))),
-        message,
-      );
-      if (checked.ok) return checked.translation;
-      console.log(`::warning::kind words: ${message.id}: ${provider.name}: ${checked.reason}`);
-    } catch (error) {
-      console.log(`::warning::kind words: ${message.id}: ${provider.name}: ${failureReason(error)}`);
-    }
-  }
-  return null;
-}
-
-const PR_BODY = `Kesan & pesan dari formulir situs yang **sudah Anda setujui** di halaman tinjau. Setiap pesan ada di commit tersendiri; versi bahasa lainnya diterjemahkan AI. Pesan yang disetujui berikutnya ditambahkan ke PR ini selama masih terbuka.
+const PR_BODY = `Kesan & pesan dari formulir situs yang **sudah Anda setujui** di halaman tinjau. Setiap pesan ada di commit tersendiri. AI editor (ADR 0023) mendeteksi bahasa tulisannya, merapikan peran dan hubungan, menerjemahkan isi pesan ke bahasa lainnya, dan menandai hal yang perlu dicek; isi pesan asli tidak diubah, saran perbaikannya hanya ditulis di tabel. Pesan yang disetujui berikutnya ditambahkan ke PR ini (tabelnya di komentar) selama masih terbuka.
 
 **Merge PR ini = semua pesan di dalamnya langsung tayang** di bagian Kesan & pesan beranda (±20 menit setelah merge). Sebelum merge:
 
 - [ ] Para penulisnya memang orang yang Anda kenal (cek tautan profil bila ada).
-- [ ] Terjemahan wajar dan setia pada aslinya (✏️ Edit file di tab *Files changed* bila perlu; hapus entri yang tidak jadi ditayangkan).
+- [ ] Tanda di tabel sudah diperiksa, dan terjemahan wajar serta setia pada aslinya (✏️ Edit file di tab *Files changed* bila perlu, termasuk menerapkan saran; hapus entri yang tidak jadi ditayangkan).
 
-Catatan: repo ini publik, jadi isi pesan sudah terbaca di PR ini sejak dibuka, juga bila PR ditutup tanpa merge. Salinan di server dihapus saat pesan masuk ke PR ini. Lihat ADR 0017 dan docs/10 §3.2.`;
+Catatan: repo ini publik, jadi isi pesan sudah terbaca di PR ini sejak dibuka, juga bila PR ditutup tanpa merge. Salinan di server dihapus saat pesan masuk ke PR ini. Lihat ADR 0017, ADR 0023, dan docs/10 §3.2.`;
 
 /** Only the failing tests' names: the content tests print paths, never the text of a message. */
 const failures = (error: unknown): string =>
@@ -128,9 +112,7 @@ async function publish(): Promise<void> {
   const groqKey = env('DRAFT_GROQ_API_KEY');
   if (geminiKey) providers.push(gemini(geminiKey));
   if (groqKey)
-    providers.push(
-      groq(groqKey, { jsonSchema: { name: 'kind_words_translation', schema: TRANSLATION_JSON_SCHEMA } }),
-    );
+    providers.push(groq(groqKey, { jsonSchema: { name: 'kind_words_edit', schema: EDIT_JSON_SCHEMA } }));
   if (providers.length === 0) throw new Error('set DRAFT_GEMINI_API_KEY and/or DRAFT_GROQ_API_KEY');
 
   sh([
@@ -157,6 +139,7 @@ async function publish(): Promise<void> {
 
   const done: string[] = [];
   const added: string[] = [];
+  const report: { entryId: string; formLang: Locale; edit: Edit }[] = [];
   let failed = 0;
   try {
     for (const message of messages.slice(0, MAX_PER_RUN)) {
@@ -169,17 +152,19 @@ async function publish(): Promise<void> {
         done.push(message.id);
         continue;
       }
-      const translation = await translate(providers, message);
-      // Without a translation an English message still goes out (the Indonesian page then shows the
-      // English text); an Indonesian one waits, since every text needs English.
-      if (!translation && message.lang === 'id') {
-        failed += 1;
-        console.log(`::warning::kind words: ${message.id}: no usable translation; trying again next hour`);
-        continue;
-      }
+      // Without a usable answer the message still goes in, unedited and flagged for the owner (D30).
+      const edit = await editMessage(providers, message, (line) =>
+        console.log(`::warning::kind words: ${line}`),
+      );
+      // Ids and codes only: the text stays out of the public log.
+      console.log(
+        `kind words: ${message.id}: written ${edit.language}, form ${message.lang}, ${edit.changes.length} metadata change(s), ${edit.refused.length} refused, ${edit.suggestions.length} suggestion(s), flags: ${edit.flags.join(',') || 'none'}`,
+      );
       const current = await readFile(MESSAGES_FILE, 'utf8');
+      let entryId: string;
       try {
-        const entry = messageEntry(message, translation, existingIds(current));
+        const entry = messageEntry(message, edit, existingIds(current));
+        entryId = String(entry['id']);
         await writeFile(MESSAGES_FILE, appendEntry(current, entry));
         // The content checks the build runs: schema, unique ids, no phone numbers, no stray asterisks.
         sh(['bun', 'test', 'tests/unit/content']);
@@ -206,6 +191,7 @@ async function publish(): Promise<void> {
         `${TRAILER} ${message.id}`,
       ]);
       added.push(message.id);
+      report.push({ entryId, formLang: message.lang, edit });
     }
 
     if (added.length > 0) {
@@ -214,7 +200,7 @@ async function publish(): Promise<void> {
       if (pr) {
         sh(
           ['gh', 'pr', 'comment', String(pr.number), '--body-file', '-'],
-          `${added.length} pesan baru ditambahkan ke PR ini.`,
+          `${added.length} pesan baru ditambahkan ke PR ini.\n\n${editReport(report)}`,
         );
         console.log(`kind words: added ${added.length} message(s) to ${pr.url}`);
       } else {
@@ -234,7 +220,7 @@ async function publish(): Promise<void> {
             '--body-file',
             '-',
           ],
-          PR_BODY,
+          `${PR_BODY}\n\n${editReport(report)}`,
         ).trim();
         console.log(`kind words: opened ${url} with ${added.length} message(s)`);
       }

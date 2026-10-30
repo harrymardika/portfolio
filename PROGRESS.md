@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.4 (AI editor Kind words)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.6 (penutupan Fase 16; menunggu pemilik memakai tracker sekali)
 
 ## Ringkasan
 
@@ -270,7 +270,7 @@ Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** se
   - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
 - [x] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
   - Kriteria: `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa yang diinginkan, kenapa, contoh/tautan, prioritas; label otomatis `inbox`; peringatan "repo publik, tanpa data pribadi") dan `config.yml` (issue kosong dimatikan); label `inbox`, `planned`, `needs-owner` dibuat; `AGENTS.md` §1 (cek `gh issue list --label inbox` setelah membaca PROGRESS) dan §2b baru (alur triase: tanya di komentar bila ambigu, tulis tugas berkriteria di PROGRESS bila jelas, `closes #N` di commit penutup, rencana besar ke `docs/`); diuji dengan satu issue contoh yang ditutup setelahnya.
-- [ ] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
+- [x] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
   - Kriteria: langkah AI di `kind-words.yml` mendeteksi bahasa asli tulisan, merapikan `role`/`relationship` (EN/ID), menerjemahkan isi pesan, menulis saran untuk isi pesan (tidak diterapkan), dan memberi tanda (spam, kata kasar, data pribadi, prompt injection, bukan kesan & pesan); badan PR berisi tabel per pesan; log publik tanpa isi pesan; jawaban AI divalidasi skema dan pemeriksaan lama tetap; bila AI gagal pesan tetap masuk PR dengan tanda "periksa manual"; tanpa secret/layanan baru; tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal); ADR 0017 diperbarui atau ADR baru; `/security-review`.
 
 - [x] **T16.5** Evaluasi semua CV menurut kriteria HR per posisi, lalu perbaiki (D32, `docs/12-v2.md` §B2)
@@ -389,6 +389,9 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-30 · Claude Code (Opus) · T16.4 AI editor Kind words
+- **Dikerjakan:** langkah terjemahan diganti AI editor (`src/lib/messages/publish.ts`: `editPrompt`, `checkEdit`, `editMessage`, `editReport`; `scripts/kind-words.ts`): deteksi bahasa tulisan, `role`/`relationship` dirapikan (ditolak bila nama hilang atau panjang berubah jauh), isi pesan asli selalu dipertahankan, saran hanya di tabel PR, tanda spam/kata kasar/data pribadi/prompt injection/bukan kesan & pesan; bila AI gagal pesan tetap masuk dengan tanda "periksa manual". Log publik hanya id dan kode. ADR 0023 (mengubah langkah terjemahan ADR 0017), `docs/10` §3.2. Tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal, tabel laporan). `/security-review` dijalankan.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.3 tracker permintaan di GitHub Issues
 - **Dikerjakan:** formulir `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa, kenapa, contoh, prioritas; label `inbox`; peringatan repo publik) dan `config.yml` (issue kosong mati); label `inbox`, `planned`, `needs-owner` dibuat di GitHub; `AGENTS.md` §1 (cek `gh issue list --label inbox`) dan §2b (alur triase); panduan pemilik `docs/10-operations.md` §3.3. Uji: satu issue contoh ditriase sesuai §2b lalu ditutup (lihat CHANGELOG).
