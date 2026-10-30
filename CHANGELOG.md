@@ -5,13 +5,17 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-30
+
+Phase 16: fixes and content on the way to version 2.
+
 ### Added
 - A **Permintaan / update** issue form on GitHub for the owner's requests (also from the GitHub app on a phone); agents triage every `inbox` issue into a planned task or a question first (`AGENTS.md` §2b) (T16.3).
 - CVs by role now have a **Selected projects** section with two or three case studies that back the role's skills (AI/ML Engineer, Data Scientist, Data Engineer, Data Analyst, Product Manager), chosen in `content/cv-variants.yaml` (T16.5).
 
 ### Changed
 - Kind words pull requests are prepared by an AI editor: it detects the language a message is written in (not the form page's language), tidies typos in the role and relationship, translates the message, suggests fixes without applying them, and flags spam, profanity, personal data, prompt injection, or off-topic text in a table for the owner. If the AI fails, the message still arrives, marked for a manual check (T16.4, ADR 0023).
-- Every CV was reviewed against what recruiters look for in each role (`docs/cv-evaluation.md`): each role's summary now opens with the role and its main tools, and claims match their sources (T16.5).
+- Every CV was reviewed against what recruiters look for in each role (`docs/cv-evaluation.md`): each role's summary now opens with the role and its main tools, claims match their sources, and the Decklify entry has one idea per line with the team and the PIMNAS finals first (T16.5).
 - Decklify, told in full from the PKM-K reports and with Harry's actual role: he designed the system, ran the evaluation and the self-hosted server, and handled the business, finance, and legal work, while the team's CTO wrote the code. New facts: live since 27 August 2026, a load test of 200 concurrent generations with zero errors, 45 paid transactions in October 2026 (mostly with launch vouchers), an IDR 8,125,000 grant fully spent and reported, copyrights, a business license, and a trademark filing. Older claims now match the reports (8.39 is the ease-of-use score, the +45 NPS comes from a 38-respondent survey). The PKM-K award is now **Finalist, PIMNAS 2026** (T16.2).
 - The "Ask Harry" assistant's knowledge keeps case study bodies in English only (it still answers in Indonesian) with a 30,000-token budget, and its compact version for the backup model is leaner, so new case studies no longer stop the build (T16.2, ADR 0022).
 
@@ -20,7 +24,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [1.6.1] - 2026-10-30
 
-Hotfix: the site deploys again, so the first Kind words message and seven new case studies go live.
+Hotfix: the site deploys again, so the first Kind words message and seven new case studies go live. (The 1.6.1 deploy itself then stopped at the assistant's knowledge budget; these changes went live with the first change of 1.7.0, T16.2.)
 
 ### Fixed
 - Deploys had failed since 2026-10-26: a unit test read the real `content/messages.yaml` and assumed its list was empty, so the first published message broke it. The test now keeps only the file's header comments, and checks the same thing (T16.1).

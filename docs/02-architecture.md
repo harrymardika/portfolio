@@ -91,7 +91,7 @@ Aturan:
 │   ├── certifications.yaml
 │   ├── skills.yaml
 │   ├── journey.yaml
-│   ├── cv-variants.yaml         # varian CV per posisi (Fase 10): memilih & mengurutkan isi
+│   ├── cv-variants.yaml         # varian CV per posisi (Fase 10): memilih & mengurutkan isi, proyek pilihan (T16.5)
 │   ├── messages.yaml            # kesan & pesan dari orang lain (T9.4); yang dari formulir masuk lewat PR (ADR 0017)
 │   ├── github.yaml              # repo GitHub yang ditampilkan (include, topic, exclude)
 │   ├── projects/*.md            # studi kasus; projects/id/*.md = body bahasa Indonesia (T9.3)

@@ -3,7 +3,7 @@
 Website portfolio pribadi **Harry Mardika** (AI Product Manager; Founder, Decklify), dwibahasa, dengan CV dan Portfolio PDF yang dibuat otomatis, di-host sendiri di server rumah.
 
 - **Live:** https://harry.mardika.my.id (Indonesia: https://harry.mardika.my.id/id/)
-- **Status:** online sejak 2026-10-06. Fase 0–14 selesai: chatbot "Tanya Harry" dan formulir kesan & pesan tayang 2026-10-09, tampilan baru Giok → Nila tayang 2026-10-10 (rilis 1.5.0), beranda "full 3D" dengan ruangan selayar penuh dan kamera yang bergerak tayang 2026-10-13 (rilis 1.6.0). Berikutnya versi 2 (tampilan ala lamalama.com, gambar proyek, tracker permintaan): rencana di [`docs/12-v2.md`](docs/12-v2.md). Detail di [`PROGRESS.md`](PROGRESS.md).
+- **Status:** online sejak 2026-10-06. Fase 0–14 dan 16 selesai: chatbot "Tanya Harry" dan formulir kesan & pesan tayang 2026-10-09, tampilan Giok → Nila 2026-10-10 (rilis 1.5.0), beranda "full 3D" 2026-10-13 (rilis 1.6.0), lalu perbaikan dan konten 2026-10-30 (rilis 1.7.0: Decklify lengkap, CV per posisi dengan proyek pilihan, tracker permintaan di GitHub Issues, AI editor Kind words). Berikutnya versi 2 (gambar proyek, tampilan ala lamalama.com): rencana di [`docs/12-v2.md`](docs/12-v2.md). Detail di [`PROGRESS.md`](PROGRESS.md).
 - **Dokumentasi:** [`docs/`](docs/README.md). Untuk pemilik, mulai dari **[panduan operasional](docs/10-operations.md)**.
 
 ## Fitur
