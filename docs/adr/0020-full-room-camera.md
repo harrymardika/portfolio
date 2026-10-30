@@ -1,6 +1,6 @@
 # 0020 · Beranda "full 3D": ruangan selayar penuh dengan kamera yang bergerak
 
-- **Status:** Accepted
+- **Status:** **Superseded** oleh [0021](0021-v2-lamalama.md) (2026-10-28), tetap berlaku sampai rilis 2.0.0
 - **Tanggal:** 2026-10-10
 - **Menggantikan:** bagian "benda 3D ditambatkan ke elemen HTML" di [0019](0019-one-room.md), untuk **beranda**. Bagian lain ADR 0019 (satu kanvas tetap lewat `mountScene`, tingkatan perangkat, render seperlunya, klik hanya untuk benda yang punya padanan HTML) tetap berlaku. [0007](0007-threejs-progressive-enhancement.md) tetap berlaku.
 

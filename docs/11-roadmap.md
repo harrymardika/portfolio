@@ -2,7 +2,7 @@
 
 > Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D22 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–15).
 >
-> **Status (2026-10-13):** Fase 9–14 selesai (rilis 1.1.0–1.6.0): chatbot dan formulir kesan & pesan tayang 2026-10-09, tampilan Giok → Nila 2026-10-10, beranda "full 3D" 2026-10-13. Berikutnya Fase 15 (§H).
+> **Status (2026-10-28):** Fase 9–14 selesai (rilis 1.1.0–1.6.0): chatbot dan formulir kesan & pesan tayang 2026-10-09, tampilan Giok → Nila 2026-10-10, beranda "full 3D" 2026-10-13. **Fase 15 dibatalkan** (D23): berikutnya versi 2 ala lamalama.com di [`12-v2.md`](12-v2.md) (Fase 16–18, ADR 0021). Daftar fitur wajib §I tetap berlaku untuk v2.
 >
 > Prinsip lama tetap berlaku: satu sumber data (`content/`), situs tetap utuh tanpa JS dan saat server mati, tanpa secret di repo, tanpa skrip pihak ketiga tanpa ADR, dan teks buatan AI selalu ditinjau pemilik.
 
@@ -135,6 +135,8 @@ Pemilik meminta penulisan angka desimal konsisten di semua tempat (IPK, akurasi,
 **Keputusan (D16, 2026-10-08): ikuti aturan baku tiap bahasa.** Usulan awal "titik untuk semua" ditarik karena menyimpang dari PUEBI. Teks ditulis per bahasa; nilai yang ditulis sekali (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman Indonesia. Dijaga tes (T9.5).
 
 ## H. Tampilan baru dan "satu ruang" 3D (Fase 13–14, D18–D21)
+
+> **Digantikan** oleh versi 2 ([`12-v2.md`](12-v2.md) §E, ADR 0021, D23, 2026-10-28). Bagian ini tetap sebagai riwayat; rencana Fase 15 di sini tidak dikerjakan.
 
 **Keputusan (2026-10-10):** warna **Giok → Nila** (D18), H1 beranda = **nama pemilik** (D19), Projects memakai **daftar indeks** (D20), dan arah 3D **"satu ruang"** (D21). D21 menggantikan D17: peta embedding, rasi skill, dan globe pengunjung batal; 404 ala computer vision tetap. Pratinjau (privat): [satu ruang 3D, Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb) dan [diagnosis, hero foto + aksara, konveyor](https://claude.ai/artifact/ERboSgCo7gpAGg1LZoNe1t). Daftar tugas: Fase 13 dan 14 di [`PROGRESS.md`](../PROGRESS.md).
 

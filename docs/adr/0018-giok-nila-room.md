@@ -1,6 +1,6 @@
 # 0018 · Warna "Giok → Nila": halaman sebagai ruangan bergradasi
 
-- **Status:** Accepted
+- **Status:** **Superseded** oleh [0021](0021-v2-lamalama.md) (2026-10-28), tetap berlaku sampai rilis 2.0.0
 - **Tanggal:** 2026-10-10
 - **Menggantikan:** [0006](0006-visual-theme.md) (palet Hijau; konsep kartu foto + perjalanan tetap hidup dalam bentuk baru, [ADR 0019](0019-one-room.md))
 

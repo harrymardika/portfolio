@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-13 · **Fase aktif:** Fase 15 (menunggu pemilik meninjau Fase 14) · **Tugas berikutnya:** T15.1 (Projects: jalur sortir penuh dan daftar indeks)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.1 (hotfix deploy dan Kind words)
 
 ## Ringkasan
 
@@ -24,9 +24,12 @@
 | 12 | Formulir kesan & pesan bermoderasi (§F) | ✅ Selesai 2026-10-09 (rilis 1.4.0; formulir tayang) |
 | 13 | Tampilan baru Giok → Nila dan beranda "satu ruang" 3D (§H, §I) | ✅ Selesai 2026-10-10 (rilis 1.5.0) |
 | 14 | Beranda "full 3D" persis artifact: ruangan selayar penuh, kamera bergerak (§H2, D22) | ✅ Selesai 2026-10-13 (rilis 1.6.0) |
-| 15 | Halaman lain (Projects, About, Statistik, 404) dalam ruang 3D yang sama (§H) | ⏳ Berikutnya |
+| 15 | ~~Halaman lain (Projects, About, Statistik, 404) dalam ruang 3D yang sama (§H)~~ | ❌ Dibatalkan 2026-10-28 (D23, digantikan versi 2) |
+| 16 | Perbaikan dan konten: deploy, Kind words, PIMNAS, tracker issue, AI editor Kind words (`docs/12-v2.md` §A–C2) | ⏳ Berikutnya (rilis 1.6.1 lalu 1.7.0) |
+| 17 | Gambar proyek (3 per proyek) dan Portfolio PDF bergambar (`docs/12-v2.md` §D) | Belum (rilis 1.8.0) |
+| 18 | **Versi 2**: tampilan ala lamalama.com, ruangan 3D diganti (`docs/12-v2.md` §E, ADR 0021) | Belum (rilis 2.0.0) |
 
-Progres keseluruhan: **Fase 0–14 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09, tampilan Giok → Nila sejak 2026-10-10, beranda "full 3D" (ruangan selayar penuh, kamera bergerak) sejak 2026-10-13. Rencana Fase 15: `docs/11-roadmap.md`**
+Progres keseluruhan: **Fase 0–14 selesai; situs online sejak 2026-10-06, chatbot dan formulir kesan & pesan sejak 2026-10-09, tampilan Giok → Nila sejak 2026-10-10, beranda "full 3D" (ruangan selayar penuh, kamera bergerak) sejak 2026-10-13. Deploy gagal sejak 2026-10-26 (diperbaiki di T16.1). Rencana versi 2 (Fase 16–18): `docs/12-v2.md`**
 
 ---
 
@@ -234,9 +237,9 @@ Rencana disetujui pemilik 2026-10-10 (rencana lengkap: `docs/11-roadmap.md` §H2
 - [x] **T14.6** Penutupan Fase 14 (AGENTS.md §2a), rilis 1.6.0
   - Kriteria: review subagent; screenshot berdampingan dengan artifact (desktop 1440, HP 412, terang/gelap); `bun run verify`; merge `phase/14` → `main`, deploy, tag v1.6.0, cek live; laporan ke pemilik.
 
-## Fase 15: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21)
+## Fase 15: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21) ❌ Dibatalkan
 
-Dikerjakan setelah Fase 14 selesai. Setiap halaman adalah sudut lain dari ruangan yang sama, memakai inti dari T13.3.
+**Dibatalkan pemilik 2026-10-28 (D23):** situs pindah ke versi 2 ala lamalama.com (Fase 16–18 di bawah). Daftar tugas di bawah tetap sebagai riwayat dan **tidak dikerjakan**. Kebutuhan yang masih berlaku dipindah: indeks Projects dengan tag dan bidang (catatan T15.1, D20) → T18.4; halaman tanpa 3D mengikuti tampilan baru dan OG baru (T15.5) → T18.5.
 
 - [ ] **T15.1** Projects: jalur sortir penuh dan daftar indeks (D20)
   - Catatan dari T13.2: `ProjectRow` belum menampilkan jumlah bintang GitHub, chip tag, dan bidang (menampilkan peran); putuskan apa yang dibutuhkan indeks `/projects/` sebelum grid diganti, dan ganti sisa font mono di kartu.
@@ -255,6 +258,73 @@ Dikerjakan setelah Fase 14 selesai. Setiap halaman adalah sudut lain dari ruanga
 ---
 - [ ] **T15.7** Penutupan Fase 15: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.7.0
   - Kriteria: seperti T13.7; `feature-inventory` lulus; laporan ke pemilik.
+
+## Fase 16: Perbaikan dan konten, menuju versi 2 (`docs/12-v2.md` §A–C2; D24, D26, D27, D29–D32)
+
+Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** segera setelah selesai (situs tidak ter-update sejak 2026-10-26); sisanya dirilis bersama di penutupan sebagai **1.7.0**.
+
+- [x] **T16.0** Rencana versi 2 ditulis: `docs/12-v2.md`, ADR 0021 (menggantikan 0018–0020), Fase 15 dibatalkan, Fase 16–18 di sini, keputusan D23–D30
+- [ ] **T16.1** Hotfix: deploy jalan lagi dan Kind words tayang (rilis 1.6.1)
+  - Kriteria: fixture tes `appendEntry` di `tests/unit/messages/publish.test.ts` tidak lagi bergantung pada isi `content/messages.yaml` (seluruh isi setelah `items:` dibuang; yang dicek tetap setara); dugaan penyebab versi `en` Masriq berbahasa Indonesia dipastikan (bahasa halaman formulir ≠ bahasa tulisan) dan dicatat; entri Masriq: terjemahan Inggris yang benar, `role`/`relationship` dirapikan (D29), isi pesan tidak diubah; `bun run verify` lulus; deploy sukses; live dicek: Kind words tampil di beranda EN/ID dan 7 studi kasus AI yang sudah di-merge (PR #12–#17, #21) ada di `/projects/`; CHANGELOG 1.6.1, tag `v1.6.1`.
+- [ ] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
+  - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
+- [ ] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
+  - Kriteria: `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa yang diinginkan, kenapa, contoh/tautan, prioritas; label otomatis `inbox`; peringatan "repo publik, tanpa data pribadi") dan `config.yml` (issue kosong dimatikan); label `inbox`, `planned`, `needs-owner` dibuat; `AGENTS.md` §1 (cek `gh issue list --label inbox` setelah membaca PROGRESS) dan §2b baru (alur triase: tanya di komentar bila ambigu, tulis tugas berkriteria di PROGRESS bila jelas, `closes #N` di commit penutup, rencana besar ke `docs/`); diuji dengan satu issue contoh yang ditutup setelahnya.
+- [ ] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
+  - Kriteria: langkah AI di `kind-words.yml` mendeteksi bahasa asli tulisan, merapikan `role`/`relationship` (EN/ID), menerjemahkan isi pesan, menulis saran untuk isi pesan (tidak diterapkan), dan memberi tanda (spam, kata kasar, data pribadi, prompt injection, bukan kesan & pesan); badan PR berisi tabel per pesan; log publik tanpa isi pesan; jawaban AI divalidasi skema dan pemeriksaan lama tetap; bila AI gagal pesan tetap masuk PR dengan tanda "periksa manual"; tanpa secret/layanan baru; tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal); ADR 0017 diperbarui atau ADR baru; `/security-review`.
+
+- [ ] **T16.5** Evaluasi semua CV menurut kriteria HR per posisi, lalu perbaiki (D32, `docs/12-v2.md` §B2)
+  - Kriteria: CV umum dan 7 varian dinilai dengan kriteria umum (ATS, ≤ 2 halaman, ringkasan menyebut posisi, poin berpola aksi + hasil terukur, kata kunci posisi, konsistensi, tanpa klaim tak terbukti) dan kriteria per posisi; hasil di `docs/cv-evaluation.md` (temuan, perbaikan, skor sebelum/sesudah, keputusan yang menunggu pemilik); perbaikan diterapkan di `content/` tanpa fakta baru; semua PDF CV dicek ulang (halaman, teks bisa disalin); `bun run verify` lulus; dikerjakan setelah T16.2.
+
+---
+- [ ] **T16.6** Penutupan Fase 16 (AGENTS.md §2a), rilis 1.7.0
+  - Kriteria: seperti T13.7; tracker sudah dipakai minimal sekali oleh pemilik; laporan ke pemilik.
+
+## Fase 17: Gambar proyek dan Portfolio PDF bergambar (`docs/12-v2.md` §D; D25)
+
+Tiga gambar per studi kasus (sampul, diagram, hasil), jujur dan dibuat skrip; tidak ada angka atau tampilan rekaan.
+
+- [ ] **T17.1** Skema dan tampilan gambar proyek
+  - Kriteria: field `images` di frontmatter studi kasus (`src`, `alt` EN/ID, `kind`: `cover`/`diagram`/`result`) di skema + Pages CMS; galeri di halaman studi kasus (EN/ID, `loading="lazy"` di luar layar pertama, ukuran tetap tanpa CLS); sampul di daftar Projects; tes: setiap gambar ada filenya dan punya `alt` EN; dua gambar lama (reclaimyt, dompet-juara) dipakai; tes tidak mengasumsikan jumlah proyek.
+- [ ] **T17.2** Skrip `scripts/generate-project-visuals.ts`
+  - Kriteria: pola `generate-og.ts` (halaman template Astro + Chromium Playwright → WebP), tanpa dependency baru; masukan `content/media/projects/<slug>/visuals.yaml` (motif sampul, simpul/panah diagram, data grafik) divalidasi skema; warna dari token desain; hasil di-commit; dijalankan ulang menghasilkan file yang sama; diuji pada 2 proyek dan ditinjau pemilik sebelum T17.3.
+- [ ] **T17.3** Isi gambar untuk semua studi kasus
+  - Kriteria: setiap studi kasus terbit punya tepat 3 gambar; data diagram dan grafik hanya dari studi kasus/repo (sumber dicatat di `visuals.yaml`); tes "setiap studi kasus terbit punya 3 gambar" diaktifkan; dikerjakan per batch (±7 proyek) dan tiap batch ditinjau pemilik; draf AI baru (T8.2) ikut membuat `visuals.yaml`.
+- [ ] **T17.4** Portfolio PDF bergambar
+  - Kriteria: setiap proyek di Portfolio PDF EN/ID menampilkan sampul dan gambar hasil (diagram bila muat); ukuran PDF wajar (target dicatat di `docs/09-pdf-generation.md`); CV PDF dan tujuh varian tetap tanpa gambar (ATS); tes PDF diperbarui.
+
+---
+- [ ] **T17.5** Penutupan Fase 17 (AGENTS.md §2a), rilis 1.8.0
+  - Kriteria: seperti T13.7; `docs/04-content-guide.md` menjelaskan `images` dan `visuals.yaml`; laporan ke pemilik.
+
+## Fase 18: Versi 2, tampilan ala lamalama.com (`docs/12-v2.md` §E; ADR 0021; D23, D28)
+
+Aturan untuk semua tugas Fase 18:
+- **Fitur lama tidak boleh hilang** (`docs/11-roadmap.md` §I, `tests/e2e/feature-inventory.spec.ts`); tes lama hanya boleh disesuaikan bila yang dicek tetap setara.
+- Situs utuh tanpa JS; reduced motion dihormati; Lighthouse ≥ 90/95; kontras ≥ 4,5:1 di kedua tema; halaman cetak dan PDF tidak berubah.
+- Hanya bahasa desain lamalama yang ditiru; logo, foto, teks, dan aset mereka tidak dipakai.
+- Semua tugas di branch `phase/18`, merge ke `main` sekali di T18.8 (situs live tidak pernah setengah jadi). Setiap tugas tampilan dicek di desktop dan HP, gelap dan terang.
+
+- [ ] **T18.0** Pratinjau desain v2 untuk disetujui pemilik (sebelum kode tampilan)
+  - Kriteria: pratinjau beranda, Projects, dan studi kasus (desktop 1440 dan HP 412, gelap dan terang) berdampingan dengan screenshot lamalama.com; keputusan yang tersisa di `docs/12-v2.md` §E dijawab pemilik (font grotesk berlisensi terbuka, warna aksen, teks navigasi pil, isi marquee, foto di hero, bentuk journey, sisa 3D); hasilnya dicatat sebagai keputusan baru di PROGRESS.
+- [ ] **T18.1** Fondasi: token, tipografi, tema
+  - Kriteria: token baru (arang, krem, aksen) di `src/styles/tokens.css`, tema gelap bawaan dan terang lewat tombol yang ada tanpa kedip (D28); font di-self-host (Fontsource, alasan di commit); skala tipografi judul raksasa; komponen label `[ ... ]` dan chip tag; `tokens-contrast.test.ts` dan `lint:tokens` diperbarui; `docs/03-design-system.md` ditulis ulang.
+- [ ] **T18.2** Kerangka global: navigasi pil, panel kanan, footer
+  - Kriteria: navigasi pil di tengah dengan teks per bagian (tanpa JS: teks tetap); panel kecil yang bisa dibuka-tutup (Download CV, Portfolio PDF, Tanya Harry, Leave a message) ramah keyboard dan pembaca layar; footer dengan jam live WIB (tanpa JS: tanpa jam), tautan sosial, saklar EN/ID; menu HP; chatbot dan semua tautan footer lama tetap.
+- [ ] **T18.3** Beranda v2 dan pelepasan ruangan 3D
+  - Kriteria: hero (H1 nama + pernyataan besar), journey, deretan proyek pilihan dengan chip dan strip gambar Fase 17, marquee, Kind words, kontak; animasi titik canvas 2D setelah LCP (diam untuk reduced motion); ruangan 3D tidak dipasang lagi di beranda; tombol Download CV/Portfolio PDF dan statistik unduhan tetap; LCP < 2,5 s di HP.
+- [ ] **T18.4** Projects dan studi kasus
+  - Kriteria: indeks Projects sebagai deretan baris (judul, chip tag/bidang, `( + )` ringkasan, strip gambar; catatan T15.1: bintang GitHub dan bidang); pencarian, filter, dan `?filter=` tetap; halaman studi kasus dengan galeri gambar besar; e2e memakai `publishedCaseStudies`.
+- [ ] **T18.5** Halaman lain: About, Statistik, `/cv/`, `/messages/*`, 404, OG
+  - Kriteria: semua halaman memakai tampilan v2; isi About, Statistik, formulir, dan halaman tinjau tetap; gambar OG dibuat ulang; axe tanpa pelanggaran di kedua tema.
+- [ ] **T18.6** Gerak, aksesibilitas, performa
+  - Kriteria: transisi dan hover halus dengan CSS; reduced motion; fokus keyboard terlihat; Lighthouse ≥ 90/95 di semua halaman; JS per halaman dicatat dan dibandingkan dengan 1.6.0.
+- [ ] **T18.7** Hapus kode lama
+  - Kriteria: `src/scenes/room/`, `earlyMode` dan `html[data-room-3d]` (beserta hash CSP-nya), token `--room-*`/Giok → Nila, dependency `three` dan `@types/three`, tes yang hanya menguji 3D (diganti tes setara bila fiturnya tetap) dihapus; `docs/02-architecture.md` §6 diselaraskan; gambar proyek dibuat ulang dengan token v2 (`generate-project-visuals`).
+
+---
+- [ ] **T18.8** Penutupan Fase 18 (AGENTS.md §2a), rilis **2.0.0**
+  - Kriteria: seperti T13.7; review subagent dan `/security-review` seluruh fase; screenshot berdampingan dengan lamalama.com (desktop/HP × gelap/terang); merge `phase/18` → `main`, deploy, tag `v2.0.0`, cek live; laporan ke pemilik.
 
 ## Keputusan pemilik
 
@@ -284,6 +354,16 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D20 | Halaman Projects | **Daftar indeks** menggantikan grid kartu; pencarian dan filter tetap (2026-10-10) |
 | D21 | Arah 3D | **"Satu ruang"**: satu kanvas 3D di belakang setiap halaman, isi tetap HTML. Beranda: foto + lembar aksara Jawa, benang journey, konveyor proyek, Kind words, laptop homelab. Projects: konveyor penuh. About: dinding penghargaan. Statistik: laptop homelab. 404: kotak deteksi. Menggantikan D17 (peta embedding, rasi skill, dan globe batal) (2026-10-10) |
 | D22 | Beranda "full 3D" | **Persis artifact** "satu ruang" Giok → Nila: ruangan selayar penuh, kamera bergerak mengikuti scroll (menggantikan "ditambatkan ke HTML" ADR 0019 → ADR 0020); tema tetap mengikuti perangkat (versi terang harus sama hidupnya); layar laptop = beranda mini; plus peningkatan: tali jemuran (satu benang), lampu yang menyala, log deteksi sinkron, laptop dengan angka asli, lampu ikut kursor, kertas bertekstur; live sekali di akhir fase (2026-10-10) |
+| D23 | Arah tampilan v2 | **Tema dan konsep mirip lamalama.com**, ruangan 3D diganti; menggantikan D18, D21, D22 dan "label mono dihapus" (T13.2). Fase 15 dibatalkan. Hanya bahasa desain yang ditiru, bukan aset (2026-10-28; `docs/12-v2.md` §E, ADR 0021) |
+| D24 | Versi | **Bertahap:** 1.6.1 (hotfix) → 1.7.0 (konten, tracker, AI editor) → 1.8.0 (gambar proyek) → **2.0.0** (redesain) (2026-10-28) |
+| D25 | Gambar proyek | **3 per studi kasus, campuran jujur**: sampul, diagram alur, hasil dari angka asli atau screenshot asli; dibuat skrip; Portfolio PDF wajib bergambar, CV tetap tanpa gambar (2026-10-28) |
+| D26 | PKM-K dan dana | **Finalis PIMNAS 2026 (PKM-K)**, hasil PIMNAS belum keluar (pemilik membuat issue bila ada medali); dana hibah **Rp8.125.000**, bukan Rp5,85 juta (2026-10-28) |
+| D27 | Tracker permintaan | **GitHub Issues + formulir**, label `inbox`/`planned`/`needs-owner`; repo publik, jadi tanpa data pribadi di issue (2026-10-28) |
+| D28 | Tema v2 | **Gelap bawaan, terang pilihan, satu warna aksen** (2026-10-28) |
+| D29 | Kind words Masriq | `role` dan `relationship` **boleh dirapikan**; isi pesan tetap, diterjemahkan ke Inggris (2026-10-28) |
+| D30 | AI editor Kind words | **Setelah disetujui, di PR**: deteksi bahasa, rapikan metadata, terjemahkan, tandai masalah; **isi pesan hanya saran**; tanpa secret/layanan baru (2026-10-28) |
+| D31 | Keterangan Decklify | Dilengkapi dari dokumen PKM-K. Pemilik **tidak menulis kode** Decklify; perannya perencanaan dan evaluasi (desain sistem, evaluasi produk), server, dokumen/keuangan, legalitas. 45 transaksi Oktober boleh tampil **tanpa rupiah**; klaim lama dikoreksi sesuai laporan akhir (2026-10-30) |
+| D32 | Evaluasi CV | Semua CV (umum + 7 varian) dievaluasi menurut kriteria HR per posisi lalu **langsung diperbaiki**; pemilik meninjau di ringkasan akhir (2026-10-30) |
 
 **Dijawab pemilik 2026-10-10 sebelum pergi** (Fase 13 dikerjakan tanpa pemilik):
 - **Deploy:** semua tugas Fase 13 dikumpulkan di branch `phase/13` (di-push sebagai cadangan) dan baru di-merge ke `main` di T13.7 setelah semua tes dan Lighthouse lulus, agar situs live tidak pernah tampil setengah jadi.
@@ -296,8 +376,8 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 - **Perbaikan dari tinjauan:** dikerjakan sekarang, tetapi **tayang bersama Fase 14** (tidak ada rilis terpisah). Fase 14 dikerjakan sampai selesai; `main` dan situs live baru berubah di T14.6.
 
 **Belum diputuskan** (dijawab saat tugasnya tiba):
-- Transisi antarhalaman (T15.6, opsional): diputuskan setelah T15.5. Rekomendasi: kerjakan hanya bila chatbot, statistik, dan formulir tetap benar.
-- Skor kelas pada label aksara (T13.4, opsional): pemilik boleh menjalankan model skripsinya pada gambar lembar aksara untuk mendapat skor asli; tanpa itu label hanya berisi nama kelas, tanpa angka.
+- Detail desain v2 (T18.0, dengan pratinjau): font grotesk, warna aksen, teks navigasi pil, isi marquee, foto di hero, bentuk journey, sisa 3D (`docs/12-v2.md` §E).
+- Medali PIMNAS 2026: menunggu hasil; pemilik membuat issue di tracker.
 
 ## Catatan data
 
@@ -309,6 +389,17 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-30 · Claude Code (Opus) · T16.0 tambahan rencana Fase 16
+- **Permintaan pemilik:** (1) evaluasi semua CV menurut kriteria HR per posisi, (2) keterangan Decklify yang lengkap dari folder PKM-K, lalu kerjakan Fase 16.
+- **Dikerjakan:** dokumen PKM-K dibaca (laporan akhir, bank angka dan naskah PIMNAS, repo `decklify-main`); peran pemilik divalidasi (D31: tidak menulis kode; perencanaan, evaluasi, server, dokumen/keuangan, legalitas); T16.2 diperluas, T16.5 baru (evaluasi CV, D32), penutupan menjadi T16.6; `docs/12-v2.md` §B dan §B2.
+
+### 2026-10-28 · Claude Code (Opus) · T16.0 rencana versi 2
+- **Permintaan pemilik:** ubah haluan ke tema/konsep lamalama.com (versi 2), fitur tetap, perbaiki deploy, Kind words tidak tampil, 3 gambar per proyek, Portfolio PDF bergambar, PIMNAS + dana Rp8.125.000, tracker permintaan, AI editor Kind words. Semua keputusan: D23–D30.
+- **Dikerjakan:** analisis (CI, konten, lamalama.com diamati lewat screenshot); `docs/12-v2.md`, ADR 0021 (0018–0020 Superseded, berlaku sampai 2.0.0), Fase 15 dibatalkan, Fase 16–18 ditulis di atas; AGENTS.md (tabel bacaan), README, `docs/11-roadmap.md` diberi catatan.
+- **Temuan:** semua run `Deploy` sejak 2026-10-26 gagal di `bun run verify`: tes `appendEntry` di `tests/unit/messages/publish.test.ts:172` mengasumsikan `content/messages.yaml` kosong, lalu pesan pertama (Masriq, PR #19) masuk. Akibatnya Kind words dan 7 studi kasus AI yang sudah di-merge belum tayang. Versi `en` pesan Masriq berbahasa Indonesia, kemungkinan karena bahasa halaman formulir ≠ bahasa tulisan. Repo publik, jadi issue tracker juga publik.
+- **Belum:** semua kode. Pemilik meminta hotfix (T16.1) dikerjakan **nanti**, bukan sekarang.
+- **Langkah berikutnya:** T16.1 saat pemilik meminta, lalu T16.2–T16.4.
 
 ### 2026-10-13 · Claude Code (Opus) · T14.6 penutupan Fase 14 (rilis 1.6.0) · ringkasan fase
 - **Yang dibangun di Fase 14 (ADR 0020, D22):** beranda sebagai ruangan selayar penuh seperti artifact yang disetujui: keputusan 3D diambil di `<head>` sebelum tampilan pertama (tanpa lompatan; tanpa 3D tata letak biasa), dunia tetap dengan dinding dan lantai, kamera yang bergerak mengikuti scroll (`camera.ts`, murni dan dites), warna dinding mengikuti kamera dari giok ke nila. Hero: foto dan lembar aksara digantung dengan jepitan di tali jemuran yang menjadi benang journey (satu benang sampai konveyor), pembuka sekali (redup → lampu berkedip menyala → deteksi), cahaya ikut kursor, kertas berserat. Journey: titik besar di dinding, kamera turun mengikuti bola, klik titik membuka cerita. Proyek: konveyor di lantai dengan wadah di belakang sabuk, tiga proyek berjajar di panel, log deteksi "Judul → Bidang" yang menandai barisnya. Kind words: kertas di dinding pendek. Kontak: laptop dengan beranda mini dan angka asli dari `/api/health` + `/api/stats/summary`. HP: 3D di atas, panel teks di bawah; reduced motion: frame diam dan kamera berganti dengan potongan.
@@ -334,10 +425,3 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 - **Kamera:** target Proyek di antara sabuk dan wadah agar wadah terlihat di bawah panel; pemberhentian kamera untuk bagian yang lebih tinggi dari layar kini di tepi atasnya (sebelumnya di tengah, sehingga di HP panel menutupi sabuk); di layar laptop pendek (< 52rem) ringkasan proyek disembunyikan agar sabuk dan wadah tetap terlihat.
 - **Review subagent `reviewer`:** tanpa blocker. Should-fix diperbaiki: baris log kini disediakan sejak awal dan tidak pernah turun baris (sebelumnya muncul belakangan dan menggeser baris proyek; tes pergeseran kini juga mencakup ruang Proyek); ringkasan proyek di layar laptop pendek disembunyikan secara visual saja (tetap dibaca pembaca layar); dokumen diselaraskan. **Keputusan agent (bisa diubah pemilik):** konveyor tetap membawa hingga 8 studi kasus seperti pratinjau (pratinjau: 12 kartu, 3 baris); kartu proyek yang tidak punya baris di beranda hanya mengisi log. Nit: perbandingan URL lengkap, sorotan memudar dua arah, garis sorotan `amber-deep`, pemberhentian Kontak memakai aturan yang sama, tes bagian yang lebih pendek dari layar.
 - **Tes:** unit `sorting-plan` (dorong ke belakang) dan `stopsFor`; e2e log deteksi (baris yang ditandai = kartu yang terdeteksi, log "Judul → …"); helper gulir e2e mengikuti aturan pemberhentian baru. Screenshot 1440×900, 1280×720, HP 412.
-
-### 2026-10-13 · Claude Code (Opus) · T14.2 hero dan journey skala artifact
-- **Dikerjakan:** `printLayout`, `STAGE_WIDTH`, `HERO_UNIT` (lembar ±3,5 satuan, seperti pratinjau) dan `heroPins` (jepitan di tengah tepi atas tiap cetakan, ikut terputar) pindah ke `hero-config.ts` (murni, dites). Benang journey kini satu benang utuh: tali jemuran dari paku kiri lewat kedua jepitan ke paku kanan (`clotheslineNails`, melendut di antaranya), turun di dinding lewat titik-titik milestone, lalu ke konveyor; bola menunggu di paku kanan (`ballAt` dengan titik `rest`). Hero: jepitan (`line`), lampu gantung (tali `ink`, kap `forest`, bohlam `room-sun`) dan pembuka `lampAt` (redup 0,18 → berkedip → menyala penuh 1,15 s → deteksi mulai 1,3 s): sekali, hanya bila ruangan mulai di atas halaman dan mode `animated` (`data-lamp`); `RoomContext.setLight` di inti; pembuka yang terpotong (dispose) mengembalikan cahaya penuh. Cahaya bergeser pelan mengikuti kursor (pointer halus, animated). Kertas: tekstur serat prosedural (`drawFibers`/`paperFibers`, acak berbenih agar sama tiap kunjungan) sebagai `bumpMap` cetakan dan digambar di kertas Kind words; bayangan kontak lembut di belakang cetakan juga saat bayangan nyata menyala. Bingkai kamera hero diperlebar agar paku dan lampu masuk.
-- **Tes:** unit `heroPins`, `lampAt`, `threadWaypoints` (tali jemuran → titik → lantai), `ballAt`; e2e: pembuka lampu (`data-lamp` → `on`), dibuka di `#contact` lampu langsung menyala, reduced motion langsung menyala.
-- **Review subagent `reviewer`:** tanpa blocker. Should-fix diperbaiki: pembuka diperiksa lagi saat cetakan tampil (pembaca yang sudah menggulir tidak membuat ruangan lain redup); tes e2e pembuka kini membuktikan urutan `off` → `on` dan dinding sempat redup. Nit: dinding ikut redup lewat lapisan `room-shadow` di belakang kanvas (`--room-dark`, sebelumnya hanya benda 3D yang redup; di layar lebar lapisan itu tidak sampai ke kolom teks agar kontrasnya tetap), "Play again" saat pembuka menunggu lampu, cetakan tidak lagi miring mengikuti pointer (tali jemuran tetap), matahari hanya mengikuti mouse/pen (juga di laptop sentuh), material jepitan tidak dibuang ulang tiap tema, komentar `paperFibers`/`world.ts`, kalimat di docs/03.
-- **Catatan:** lampu diturunkan setelah screenshot (semula tergambar di belakang navigasi header). Titik journey sudah besar sejak T14.1 (seperti pratinjau), kamera turun mengikuti bola, klik titik membuka cerita, `data-reached` tetap.
-

@@ -1,6 +1,6 @@
 # 0019 · "Satu ruang": satu kanvas 3D di belakang halaman, ditambatkan ke HTML
 
-- **Status:** Accepted; bagian "ditambatkan ke HTML" untuk beranda digantikan [0020](0020-full-room-camera.md) (2026-10-10)
+- **Status:** bagian "ditambatkan ke HTML" untuk beranda digantikan [0020](0020-full-room-camera.md) (2026-10-10); **Superseded** oleh [0021](0021-v2-lamalama.md) (2026-10-28), tetap berlaku sampai rilis 2.0.0
 - **Tanggal:** 2026-10-10
 - **Melengkapi:** [0007](0007-threejs-progressive-enhancement.md) (tetap berlaku: Three.js vanilla, progressive enhancement, HTML lebih dulu)
 
