@@ -20,17 +20,16 @@ tagline:
 summary:
   en: >-
     Product-minded AI builder who takes ideas from user problem to launched product. As founder of
-    Decklify, led a 5-person team to a **commercial launch in 3 months**, validated product-market fit
-    (**+45 NPS** in the first 2 weeks), and designed a business model with an 83.68% contribution margin.
+    Decklify, led a 5-person team from idea to a **launched AI SaaS in 3 months** and the **PIMNAS 2026
+    finals**, with **+45 NPS** in user testing and an 83.68% contribution margin.
     Hands-on AI engineering (computer vision, language, edge deployment; **92.5% accuracy** in grant-funded
     research) keeps product decisions grounded in what the technology can deliver. Informatics graduate
     (**GPA 3.99/4.00**), mentor to **75+ learners**, GEMASTIK XVIII Data Mining finalist, and Google
     Student Ambassador.
   id: >-
     Pembangun produk AI yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai pendiri
-    Decklify, memimpin tim 5 orang hingga **peluncuran komersial dalam 3 bulan**, memvalidasi
-    product-market fit (**NPS +45** di 2 minggu pertama), dan merancang model bisnis dengan contribution
-    margin 83,68%. Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di edge;
+    Decklify, memimpin tim 5 orang dari ide hingga **SaaS AI daring dalam 3 bulan** dan **final PIMNAS
+    2026**, dengan **NPS +45** dalam uji pengguna dan margin kontribusi 83,68%. Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di edge;
     **akurasi 92,5%** pada riset hibah) membuat keputusan produk berpijak pada kemampuan nyata teknologi.
     Lulusan Informatika (**IPK 3,99/4,00**), membimbing **75+ peserta**, finalis Data Mining GEMASTIK
     XVIII, dan Google Student Ambassador.
@@ -107,8 +106,8 @@ contact:
 # Exactly three, shown under the hero buttons. Labels give the context of each number (approved by the owner 2026-10-10).
 stats:
   - value: "3"
-    label: { en: months from idea to commercial launch at Decklify, id: bulan dari ide hingga peluncuran komersial Decklify }
+    label: { en: months from idea to launch at Decklify, id: bulan dari ide hingga Decklify daring }
   - value: "+45"
-    label: { en: NPS in Decklify's first two weeks, id: NPS di dua minggu pertama Decklify }
+    label: { en: NPS in Decklify's user testing, id: NPS dalam uji pengguna Decklify }
   - value: "92.5%"
     label: { en: accuracy in grant-funded crisis-detection research, id: akurasi dalam riset deteksi krisis yang didanai hibah }

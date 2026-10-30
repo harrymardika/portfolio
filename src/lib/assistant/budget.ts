@@ -7,8 +7,8 @@ import { localizePath } from '@/lib/i18n/routing';
 
 import type { Knowledge, KnowledgeSection, KnowledgeSource } from './knowledge';
 
-/** Full knowledge for Gemini: generous, but well under one free-tier minute of tokens. */
-export const FULL_MAX_TOKENS = 25_000;
+/** Full knowledge for Gemini: generous, but well under one free-tier minute of tokens (ADR 0022). */
+export const FULL_MAX_TOKENS = 30_000;
 /** Compact knowledge for Groq, whose free tier allows about 8,000 tokens per minute (ADR 0014). */
 export const COMPACT_MAX_TOKENS = 5_000;
 

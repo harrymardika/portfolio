@@ -31,15 +31,15 @@ describe('optionalDetail', () => {
 describe('withHighlights', () => {
   const head = (locale: 'en' | 'id'): string => (locale === 'en' ? 'Engineer' : 'Insinyur');
 
-  it('keeps the first two highlights in the text and the rest plus the extra line in the detail', () => {
+  it('keeps the first highlight in the text and the rest plus the extra line in the detail', () => {
     const result = withHighlights(
       head,
       [{ en: 'One' }, { en: 'Two' }, { en: 'Three', id: 'Tiga' }],
       'Tags: Go',
     );
     expect(result).toEqual({
-      text: { en: 'Engineer\n- One\n- Two', id: 'Insinyur\n- One\n- Two' },
-      detail: { en: '- Three\nTags: Go', id: '- Tiga\nTags: Go' },
+      text: { en: 'Engineer\n- One', id: 'Insinyur\n- One' },
+      detail: { en: '- Two\n- Three\nTags: Go', id: '- Two\n- Tiga\nTags: Go' },
     });
   });
 

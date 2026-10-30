@@ -5,6 +5,10 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Changed
+- Decklify, told in full from the PKM-K reports and with Harry's actual role: he designed the system, ran the evaluation and the self-hosted server, and handled the business, finance, and legal work, while the team's CTO wrote the code. New facts: live since 27 August 2026, a load test of 200 concurrent generations with zero errors, 45 paid transactions in the first month of sales, an IDR 8,125,000 grant fully accounted for, copyrights, a business license, and a trademark filing. Older claims now match the reports (8.39 is the ease-of-use score, the +45 NPS comes from a 38-respondent survey). The PKM-K award is now **Finalist, PIMNAS 2026** (T16.2).
+- The "Ask Harry" assistant's knowledge keeps case study bodies in English only (it still answers in Indonesian) with a 30,000-token budget, and its compact version for the backup model is leaner, so new case studies no longer stop the build (T16.2, ADR 0022).
+
 ## [1.6.1] - 2026-10-30
 
 Hotfix: the site deploys again, so the first Kind words message and seven new case studies go live.

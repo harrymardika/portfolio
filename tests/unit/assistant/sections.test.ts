@@ -96,14 +96,12 @@ describe('buildKnowledgeSource', () => {
     expect(text.en).not.toContain('mailto:');
   });
 
-  it('keeps two highlights in the text and moves the rest and the tags to the detail', () => {
+  it('keeps one highlight in the text and moves the rest and the tags to the detail', () => {
     const experience = section(buildKnowledgeSource(input()).sections, 'experience/acme');
     expect(experience.path).toBe('/about/');
-    expect(experience.text.en).toBe(
-      'Engineer at Acme (work), Jakarta, Jan 2024 – Present\n- First\n- Second',
-    );
+    expect(experience.text.en).toBe('Engineer at Acme (work), Jakarta, Jan 2024 – Present\n- First');
     expect(experience.text.id).toContain('Insinyur at Acme');
-    expect(experience.detail).toEqual({ en: '- Third\nTags: Python' });
+    expect(experience.detail).toEqual({ en: '- Second\n- Third\nTags: Python' });
   });
 
   it('lists the kind words on the home page, the first two in the text and the rest in the detail', () => {
@@ -146,25 +144,26 @@ describe('buildKnowledgeSource', () => {
 describe('projectSection', () => {
   const local = { kind: 'local' as const, slug: 'decklify', project: decklify, repo: null };
 
-  it('links a case study to its page with the summary and localized metrics', () => {
+  it('links a case study to its page with the summary in each language', () => {
     const result = projectSection(local, {});
     expect(result.path).toBe('/projects/decklify/');
     expect(result.text).toEqual({
-      en: 'Decklify (2026), Founder: An AI studio.\n83.68% margin',
-      id: 'Decklify (2026), Founder: Studio AI.\n83,68% margin',
+      en: 'Decklify (2026), Founder: An AI studio.',
+      id: 'Decklify (2026), Founder: Studio AI.',
     });
   });
 
-  it('puts tags, links, and the body in the detail, in each language', () => {
+  it('puts metrics, tags, links, and the English body in the detail, without a second language', () => {
     const result = projectSection(local, {
       decklify: { en: '## Problem\nSlides.', id: '## Masalah\nSlide.' },
     });
-    expect(result.detail?.en).toBe('Tags: Go\nLinks: live https://decklify.id\nProblem:\nSlides.');
-    expect(result.detail?.id).toContain('Masalah:\nSlide.');
+    expect(result.detail).toEqual({
+      en: 'Metrics: 83.68% margin\nTags: Go\nLinks: live https://decklify.id\nProblem:\nSlides.',
+    });
   });
 
   it('has no detail when there is nothing beyond the summary', () => {
-    const bare = { ...local, project: { ...decklify, tags: [], links: {} } };
+    const bare = { ...local, project: { ...decklify, metrics: [], tags: [], links: {} } };
     expect(projectSection(bare, {}).detail).toBeUndefined();
   });
 

@@ -1,6 +1,6 @@
 # 0014 · Chatbot "Tanya Harry": layanan terpisah, pengetahuan dari konten, tanpa penyimpanan
 
-- **Status:** Accepted · model Gemini dan perkiraan kuota diganti [ADR 0015](0015-separate-ai-keys-flash-lite.md) (2026-10-09)
+- **Status:** Accepted · model Gemini dan perkiraan kuota diganti [ADR 0015](0015-separate-ai-keys-flash-lite.md) (2026-10-09) · isi studi kasus hanya EN, anggaran 30 ribu token, dan versi ringkas lebih ramping: [ADR 0022](0022-knowledge-english-case-studies.md) (2026-10-30)
 - **Tanggal:** 2026-10-08
 - **Tugas:** T11.1 (berlaku untuk T11.2–T11.6)
 

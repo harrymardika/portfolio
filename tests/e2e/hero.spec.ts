@@ -23,7 +23,7 @@ test('the hero shows the name, role, headline, tagline, actions, and three stats
     '/downloads/Harry-Mardika-Portfolio-EN.pdf',
   );
   await expect(hero.locator('dl dd')).toHaveCount(3);
-  await expect(hero.locator('dl dd').first()).toHaveText('months from idea to commercial launch at Decklify');
+  await expect(hero.locator('dl dd').first()).toHaveText('months from idea to launch at Decklify');
   await expect(hero.getByRole('img', { name: 'Photo of Harry Mardika' })).toBeVisible();
 });
 

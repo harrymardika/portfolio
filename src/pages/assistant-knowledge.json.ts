@@ -8,7 +8,6 @@ import type { APIRoute } from 'astro';
 import { buildKnowledgeSource } from '@/lib/assistant';
 import {
   getAwards,
-  getCaseStudyBody,
   getCertifications,
   getCvVariants,
   getEducation,
@@ -25,16 +24,9 @@ import { UI } from '@/lib/i18n';
 
 import type { LocalizedText } from '@/lib/content';
 
-/** Case study bodies by slug; Indonesian only when the case study has been translated. */
+/** Case study bodies by slug, English only: the knowledge keeps one language of each body (ADR 0022). */
 async function caseStudyBodies(): Promise<Record<string, LocalizedText>> {
-  const entries = await Promise.all(
-    (await getProjects()).map(async (project) => {
-      const translated = await getCaseStudyBody(project, 'id');
-      const en = project.body ?? '';
-      const id = translated.isFallback ? undefined : translated.entry.body;
-      return [project.id, id ? { en, id } : { en }] as const;
-    }),
-  );
+  const entries = (await getProjects()).map((project) => [project.id, { en: project.body ?? '' }] as const);
   return Object.fromEntries(entries.filter(([, body]) => body.en.trim() !== ''));
 }
 

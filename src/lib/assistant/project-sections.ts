@@ -1,7 +1,7 @@
 /**
  * Knowledge sections for the Projects page and the CVs by role (T11.1). Pure.
  */
-import { itemYear, localize, localizeNumber, type ProjectItem } from '@/lib/content';
+import { itemYear, localize, type ProjectItem } from '@/lib/content';
 import type { CvVariant, LocalizedText } from '@/lib/content';
 
 import { both, lines, optionalDetail, plainMarkdown } from './text';
@@ -9,8 +9,10 @@ import { both, lines, optionalDetail, plainMarkdown } from './text';
 import type { KnowledgeSection } from './knowledge';
 
 /**
- * A case study links to its own page with the summary and metrics in `text`; tags, links, and the body
- * are `detail`, since the compact answers link to that page anyway. A GitHub-only repo links to /projects/.
+ * A case study links to its own page with the summary in `text`; metrics, tags, links, and the body are
+ * `detail`, since the compact answers link to that page anyway. A GitHub-only repo links to /projects/.
+ * The detail is English only: the model answers in either language from it, and both bodies would
+ * double the largest part of the full knowledge (ADR 0022).
  */
 export function projectSection(
   item: ProjectItem,
@@ -34,24 +36,19 @@ export function projectSection(
   return {
     key: `project/${slug}`,
     path: `/projects/${slug}/`,
-    text: both((locale) =>
-      lines(
+    text: both(
+      (locale) =>
         `${project.title} (${project.year}), ${localize(project.role, locale)}: ${localize(project.summary, locale)}`,
+    ),
+    ...optionalDetail({
+      en: lines(
         project.metrics.length > 0 &&
-          project.metrics
-            .map((m) => `${localizeNumber(m.value, locale)} ${localize(m.label, locale)}`)
-            .join('; '),
+          `Metrics: ${project.metrics.map((m) => `${m.value} ${localize(m.label, 'en')}`).join('; ')}`,
+        project.tags.length > 0 && `Tags: ${project.tags.join(', ')}`,
+        links.length > 0 && `Links: ${links.join(', ')}`,
+        body && plainMarkdown(localize(body, 'en')),
       ),
-    ),
-    ...optionalDetail(
-      both((locale) =>
-        lines(
-          project.tags.length > 0 && `Tags: ${project.tags.join(', ')}`,
-          links.length > 0 && `Links: ${links.join(', ')}`,
-          body && plainMarkdown(localize(body, locale)),
-        ),
-      ),
-    ),
+    }),
   };
 }
 

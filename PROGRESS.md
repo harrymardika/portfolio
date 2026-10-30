@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.2 (PIMNAS dan keterangan Decklify)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.5 (evaluasi CV; prioritas pemilik 2026-10-30, sebelum T16.3–T16.4)
 
 ## Ringkasan
 
@@ -266,7 +266,7 @@ Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** se
 - [x] **T16.0** Rencana versi 2 ditulis: `docs/12-v2.md`, ADR 0021 (menggantikan 0018–0020), Fase 15 dibatalkan, Fase 16–18 di sini, keputusan D23–D30
 - [x] **T16.1** Hotfix: deploy jalan lagi dan Kind words tayang (rilis 1.6.1)
   - Kriteria: fixture tes `appendEntry` di `tests/unit/messages/publish.test.ts` tidak lagi bergantung pada isi `content/messages.yaml` (seluruh isi setelah `items:` dibuang; yang dicek tetap setara); dugaan penyebab versi `en` Masriq berbahasa Indonesia dipastikan (bahasa halaman formulir ≠ bahasa tulisan) dan dicatat; entri Masriq: terjemahan Inggris yang benar, `role`/`relationship` dirapikan (D29), isi pesan tidak diubah; `bun run verify` lulus; deploy sukses; live dicek: Kind words tampil di beranda EN/ID dan 7 studi kasus AI yang sudah di-merge (PR #12–#17, #21) ada di `/projects/`; CHANGELOG 1.6.1, tag `v1.6.1`.
-- [ ] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
+- [x] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
   - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
 - [ ] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
   - Kriteria: `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa yang diinginkan, kenapa, contoh/tautan, prioritas; label otomatis `inbox`; peringatan "repo publik, tanpa data pribadi") dan `config.yml` (issue kosong dimatikan); label `inbox`, `planned`, `needs-owner` dibuat; `AGENTS.md` §1 (cek `gh issue list --label inbox` setelah membaca PROGRESS) dan §2b baru (alur triase: tanya di komentar bila ambigu, tulis tugas berkriteria di PROGRESS bila jelas, `closes #N` di commit penutup, rencana besar ke `docs/`); diuji dengan satu issue contoh yang ditutup setelahnya.
@@ -389,6 +389,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-30 · Claude Code (Opus) · T16.2 PIMNAS, dana, dan keterangan Decklify
+- **Dikerjakan:** studi kasus Decklify EN/ID ditulis ulang dari laporan akhir PKM-K sesuai peran yang divalidasi (D31: merancang sistem, evaluasi, server, dokumen/keuangan, legalitas; kode oleh CTO); `experience.yaml` (4 poin, tag tanpa Go/Next.js), `profile.yaml` (ringkasan dan statistik hero), `cv-variants.yaml`, `awards.yaml` (Finalis PIMNAS 2026). Klaim lama dikoreksi (kemudahan 8,39, NPS dari 38 responden, tanpa "2 minggu pertama"/"product-market fit"/"peluncuran komersial"); dana Rp8.125.000; 45 transaksi Oktober tanpa rupiah.
+- **Chatbot (keputusan pemilik):** pengetahuan lengkap melewati 25 ribu token → isi studi kasus hanya EN dan batas 30 ribu; versi ringkas (Groq) juga hampir penuh → metrik proyek ke `detail`, 1 poin per pengalaman. ADR 0022. Ukuran sekarang ±19 ribu/30 ribu dan ±4,5 ribu/5 ribu. Eval chatbot ditambah 1 kasus (peran di Decklify).
+- **Catatan:** semua 16 PDF CV tetap 2 halaman (poin Decklify dipadatkan). Pemilik meminta T16.5 dikerjakan sebelum T16.3–T16.4.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.1 hotfix deploy dan Kind words (rilis 1.6.1)
 - **Dikerjakan:** fixture `appendEntry` membuang seluruh isi setelah `items:` (tes tidak bergantung pada isi `content/`); penyebab versi `en` Masriq dipastikan: `MessageForm.astro` mengirim `lang` = bahasa halaman, lalu `messageEntry` menaruh teks asli di bahasa itu; entri Masriq diperbaiki (terjemahan EN, `role`/`relationship` dirapikan, isi pesan kata-kata penulis). CHANGELOG 1.6.1, `package.json` 1.6.1, tag `v1.6.1`.

@@ -28,6 +28,19 @@
   question: What NPS did Decklify get?
   match: ['45']
   groq: true
+- id: decklify-role-en
+  category: fact
+  lang: en
+  question: Did Harry write the code for Decklify himself?
+  match: ['design|architect|plan', 'CTO|team']
+  links: [/projects/decklify/]
+  groq: true
+- id: decklify-role-id
+  category: fact
+  lang: id
+  question: Apakah Harry menulis kode Decklify sendiri?
+  match: ['rancang|arsitektur|merencanakan', 'CTO|tim']
+  links: [/projects/decklify/]
 - id: education-en
   category: fact
   lang: en

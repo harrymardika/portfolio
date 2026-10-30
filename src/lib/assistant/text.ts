@@ -8,7 +8,7 @@ import type { Locale } from '@/lib/i18n/locales';
 import type { Bilingual, KnowledgeSection } from './knowledge';
 
 /** Highlights beyond this many go to `detail`, so the compact knowledge stays within its budget. */
-export const COMPACT_HIGHLIGHTS = 2;
+export const COMPACT_HIGHLIGHTS = 1;
 
 /** Plain text: no `*accent*` or `**bold**` markers. */
 export const plain = (text: string): string => stripEmphasis(stripStrong(text));

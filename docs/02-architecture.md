@@ -180,7 +180,7 @@ bun run build
   3. scripts/generate-pdf.ts     → <outDir>/downloads/*.pdf + downloads/cv/*.pdf (varian CV, didaftar di /cv/) (Bun.serve + Chromium, cetak /print/*; anggaran ukuran)
   4. scripts/generate-og.ts      → <outDir>/og/*.jpg (template /og-template/ + Chromium, 1200×630, ≤ 150 KB)
   5. scripts/generate-sitemap.ts → <outDir>/sitemap.xml (dari canonical + hreflang tiap halaman; noindex dilewati)
-  6. scripts/generate-knowledge.ts → build-meta/knowledge.json (lengkap, EN+ID) + knowledge-compact.json (EN, ≤ 5 ribu token)
+  6. scripts/generate-knowledge.ts → build-meta/knowledge.json (lengkap, EN+ID; isi studi kasus EN, ADR 0022) + knowledge-compact.json (EN, ≤ 5 ribu token)
                                    untuk chatbot (ADR 0014): dari endpoint build /assistant-knowledge.json (query yang sama
                                    dengan halaman), path dicek terhadap output, gagal jika tautan mati, nomor HP, atau melebihi
                                    anggaran token; endpoint dihapus dari output

@@ -23,5 +23,6 @@
 | 0019 | ["Satu ruang": satu kanvas 3D di belakang halaman, ditambatkan ke HTML](0019-one-room.md) | Superseded oleh 0021 (penambatan beranda sudah diganti 0020) |
 | 0020 | [Beranda "full 3D": ruangan selayar penuh dengan kamera yang bergerak](0020-full-room-camera.md) | Superseded oleh 0021 (berlaku sampai rilis 2.0.0) |
 | 0021 | [Versi 2: tampilan ala lamalama.com, ruangan 3D diganti](0021-v2-lamalama.md) | Accepted |
+| 0022 | [Pengetahuan chatbot: isi studi kasus hanya EN, anggaran 30 ribu token, versi ringkas lebih ramping](0022-knowledge-english-case-studies.md) | Accepted (mengubah sebagian 0014) |
 
 Template: [0000-template.md](0000-template.md)
