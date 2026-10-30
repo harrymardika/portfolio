@@ -1,0 +1,2 @@
+# Every issue goes through the request form (T16.3), so agents always get the same fields.
+blank_issues_enabled: false

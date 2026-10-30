@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.3 (tracker permintaan di GitHub Issues)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.4 (AI editor Kind words)
 
 ## Ringkasan
 
@@ -268,7 +268,7 @@ Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** se
   - Kriteria: fixture tes `appendEntry` di `tests/unit/messages/publish.test.ts` tidak lagi bergantung pada isi `content/messages.yaml` (seluruh isi setelah `items:` dibuang; yang dicek tetap setara); dugaan penyebab versi `en` Masriq berbahasa Indonesia dipastikan (bahasa halaman formulir ≠ bahasa tulisan) dan dicatat; entri Masriq: terjemahan Inggris yang benar, `role`/`relationship` dirapikan (D29), isi pesan tidak diubah; `bun run verify` lulus; deploy sukses; live dicek: Kind words tampil di beranda EN/ID dan 7 studi kasus AI yang sudah di-merge (PR #12–#17, #21) ada di `/projects/`; CHANGELOG 1.6.1, tag `v1.6.1`.
 - [x] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
   - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
-- [ ] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
+- [x] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
   - Kriteria: `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa yang diinginkan, kenapa, contoh/tautan, prioritas; label otomatis `inbox`; peringatan "repo publik, tanpa data pribadi") dan `config.yml` (issue kosong dimatikan); label `inbox`, `planned`, `needs-owner` dibuat; `AGENTS.md` §1 (cek `gh issue list --label inbox` setelah membaca PROGRESS) dan §2b baru (alur triase: tanya di komentar bila ambigu, tulis tugas berkriteria di PROGRESS bila jelas, `closes #N` di commit penutup, rencana besar ke `docs/`); diuji dengan satu issue contoh yang ditutup setelahnya.
 - [ ] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
   - Kriteria: langkah AI di `kind-words.yml` mendeteksi bahasa asli tulisan, merapikan `role`/`relationship` (EN/ID), menerjemahkan isi pesan, menulis saran untuk isi pesan (tidak diterapkan), dan memberi tanda (spam, kata kasar, data pribadi, prompt injection, bukan kesan & pesan); badan PR berisi tabel per pesan; log publik tanpa isi pesan; jawaban AI divalidasi skema dan pemeriksaan lama tetap; bila AI gagal pesan tetap masuk PR dengan tanda "periksa manual"; tanpa secret/layanan baru; tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal); ADR 0017 diperbarui atau ADR baru; `/security-review`.
@@ -389,6 +389,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-30 · Claude Code (Opus) · T16.3 tracker permintaan di GitHub Issues
+- **Dikerjakan:** formulir `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa, kenapa, contoh, prioritas; label `inbox`; peringatan repo publik) dan `config.yml` (issue kosong mati); label `inbox`, `planned`, `needs-owner` dibuat di GitHub; `AGENTS.md` §1 (cek `gh issue list --label inbox`) dan §2b (alur triase); panduan pemilik `docs/10-operations.md` §3.3. Uji: satu issue contoh ditriase sesuai §2b lalu ditutup (lihat CHANGELOG).
+- **Untuk penutupan fase:** kriteria T16.6 meminta tracker dipakai minimal sekali oleh pemilik.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.5 evaluasi CV per posisi (didahulukan atas permintaan pemilik)
 - **Dikerjakan:** 16 PDF CV dinilai dengan 10 kriteria umum dan kriteria per posisi; laporan `docs/cv-evaluation.md` (skor sebelum/sesudah). Perbaikan: tanda hubung tersalin sebagai tanda minus di semua PDF (fitur kontekstual font dimatikan, dicek tes); bagian baru **Selected projects / Proyek pilihan** (field `projects` di varian, skema, CMS, i18n, tes integritas) untuk AI/ML, Data Scientist, Data Engineer, Data Analyst, Product Manager; ringkasan ketujuh varian ditulis ulang (posisi + alat di kalimat pertama, klaim sesuai sumber); 4 ringkasan studi kasus bergaya netral. Semua PDF tetap 2 halaman.

@@ -1,0 +1,50 @@
+# Owner requests (T16.3, D27): one form for updates, bugs, and ideas. An agent triages every issue
+# labeled `inbox` into a task in PROGRESS.md (AGENTS.md §2b).
+name: Permintaan / update
+description: Titip update konten, bug, fitur, atau ide untuk situs ini. Agent akan mengubahnya menjadi tugas di PROGRESS.md.
+title: '[Permintaan] '
+labels: [inbox]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Repo ini publik, jadi issue ini juga publik.** Jangan menulis nomor HP, alamat, dokumen pribadi, token, password, atau hal rahasia lain di sini.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Jenis
+      options:
+        - Konten / data CV
+        - Bug
+        - Fitur baru
+        - Tampilan
+        - Lainnya
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Apa yang diinginkan?
+      description: Tulis sejelas mungkin. Bila mengubah data, sebutkan nilai yang benar.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Kenapa? (opsional)
+      description: Alasan atau konteks, agar agent bisa memilih cara terbaik.
+  - type: textarea
+    id: examples
+    attributes:
+      label: Contoh, tautan, atau gambar (opsional)
+      description: Tempel tautan atau seret gambar ke sini. Pastikan tidak ada data pribadi di dalamnya.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioritas
+      options:
+        - Sekarang
+        - Fase berikutnya
+        - Kapan saja
+    validations:
+      required: true

@@ -126,6 +126,13 @@ Alamat halaman ini tercantum di `robots.txt` (agar tidak dirayapi), jadi siapa p
 
 **Bila workflow gagal:** lihat run *Kind words* terakhir (anotasi kuning menyebut id pesan dan alasannya, bukan isinya). Penyebab umum: secret `MESSAGES_ADMIN_TOKEN` berbeda dengan server (HTTP 401), server mati, atau kedua key AI gagal (dicoba lagi otomatis).
 
+### 3.3 Menitip permintaan ke agent (T16.3, D27)
+Ingin mengubah data CV, melapor bug, atau punya ide? Buka repo di GitHub (juga bisa dari aplikasi GitHub di HP) → **Issues → New issue → Permintaan / update**, isi formulirnya, lalu kirim. Issue otomatis berlabel `inbox`. Di awal sesi berikutnya, agent membaca semua issue `inbox` (`AGENTS.md` §2b) dan:
+- memberi label `needs-owner` serta menulis pertanyaan di komentar bila permintaannya ambigu: jawab di komentar issue itu;
+- memberi label `planned` dan menulis ID tugasnya (mis. `T17.6`) bila sudah jelas; issue tertutup otomatis saat tugasnya selesai di `main`.
+
+Repo ini publik: jangan menulis nomor HP, dokumen pribadi, token, atau password di issue.
+
 ## 4. Perawatan berkala
 
 **Bulanan (±15 menit)**

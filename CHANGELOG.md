@@ -6,6 +6,7 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 ## [Unreleased]
 
 ### Added
+- A **Permintaan / update** issue form on GitHub for the owner's requests (also from the GitHub app on a phone); agents triage every `inbox` issue into a planned task or a question first (`AGENTS.md` §2b) (T16.3).
 - CVs by role now have a **Selected projects** section with two or three case studies that back the role's skills (AI/ML Engineer, Data Scientist, Data Engineer, Data Analyst, Product Manager), chosen in `content/cv-variants.yaml` (T16.5).
 
 ### Changed

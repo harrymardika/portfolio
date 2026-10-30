@@ -8,6 +8,7 @@ Tujuannya agar siapa pun bisa melanjutkan proyek ini kapan saja tanpa kehilangan
 Baca secukupnya sesuai tugas, jangan seluruh `docs/` di setiap sesi: konteks yang terlalu panjang memboroskan token dan menurunkan kualitas hasil.
 
 1. **Selalu:** `PROGRESS.md`: status terkini, fase aktif, keputusan pemilik, log sesi terbaru. Riwayat lama ada di `docs/progress-archive.md`; baca hanya bila butuh riwayat keputusan atau koreksi data.
+   Lalu cek permintaan baru pemilik: `gh issue list --label inbox`. Bila ada, triase dulu (§2b).
 2. **Tugas kode** (fitur, refactor, tes): `docs/02-architecture.md` (struktur folder, alur data, batas modul) dan `docs/05-coding-standards.md` (aturan kode, Definition of Done). Tambah `docs/01-srs.md` bila tugasnya menambah atau mengubah kebutuhan.
 3. Dokumen spesifik tugas (lihat tabel di bawah).
 4. `docs/adr/`: cek ADR terkait sebelum mengubah keputusan teknis. Keputusan di sana **tidak boleh diubah diam-diam**.
@@ -50,6 +51,18 @@ Setiap fase diakhiri satu tugas **penutupan** (`T<fase>.Z`, tugas terakhir di fa
 4. **`CHANGELOG.md`:** pindahkan entri fase dari *Unreleased* ke bagian rilis bertanggal untuk fase itu.
 5. **Verifikasi akhir:** `bun run verify`, lalu cek situs live setelah deploy (halaman utama EN/ID, PDF, statistik).
 6. **Laporan ke pemilik:** ringkasan singkat dalam Bahasa Indonesia: apa yang selesai, apa yang menunggu keputusannya, dan fase berikutnya.
+
+## 2b. Permintaan pemilik lewat GitHub Issues (T16.3, D27)
+
+Pemilik menitip update, bug, atau ide lewat formulir **Permintaan / update** (`.github/ISSUE_TEMPLATE/request.yml`, juga dari aplikasi GitHub di HP). Issue baru otomatis berlabel `inbox`. Untuk setiap issue `inbox`:
+
+1. **Pahami** permintaannya, lalu cek kode, `content/`, dokumen, dan ADR yang terkait.
+2. **Bila ambigu:** tulis pertanyaan dengan pilihan yang jelas sebagai komentar (`gh issue comment N`), ganti label `inbox` → `needs-owner`, dan berhenti di issue itu. Lanjutkan setelah pemilik menjawab.
+3. **Bila jelas:** tulis tugas di fase yang tepat di `PROGRESS.md` (ID, kriteria penerimaan, file yang terdampak, risiko; tugas *independen* bila boleh dikerjakan di luar urutan), komentari issue dengan ID tugasnya, ganti label `inbox` → `planned`.
+4. **Kerjakan** seperti tugas biasa (§2). Commit penutupnya memuat `closes #N`, sehingga issue tertutup saat masuk `main`.
+5. **Permintaan besar** (mengubah arsitektur atau keputusan di `docs/adr/`) ditulis sebagai rencana di `docs/` dan ditinjau pemilik dulu sebelum menjadi tugas.
+
+Repo ini **publik**: jangan menyalin data pribadi, nomor HP, dokumen, token, atau hal rahasia ke issue atau komentar. Bila pemilik tidak sengaja menulisnya, minta pemilik menyunting issue itu dan jangan mengutipnya.
 
 ## 3. Aturan keras (jangan dilanggar)
 
