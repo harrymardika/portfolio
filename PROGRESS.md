@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.1 (hotfix deploy dan Kind words)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.2 (PIMNAS dan keterangan Decklify)
 
 ## Ringkasan
 
@@ -264,7 +264,7 @@ Rencana disetujui pemilik 2026-10-10 (rencana lengkap: `docs/11-roadmap.md` §H2
 Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** segera setelah selesai (situs tidak ter-update sejak 2026-10-26); sisanya dirilis bersama di penutupan sebagai **1.7.0**.
 
 - [x] **T16.0** Rencana versi 2 ditulis: `docs/12-v2.md`, ADR 0021 (menggantikan 0018–0020), Fase 15 dibatalkan, Fase 16–18 di sini, keputusan D23–D30
-- [ ] **T16.1** Hotfix: deploy jalan lagi dan Kind words tayang (rilis 1.6.1)
+- [x] **T16.1** Hotfix: deploy jalan lagi dan Kind words tayang (rilis 1.6.1)
   - Kriteria: fixture tes `appendEntry` di `tests/unit/messages/publish.test.ts` tidak lagi bergantung pada isi `content/messages.yaml` (seluruh isi setelah `items:` dibuang; yang dicek tetap setara); dugaan penyebab versi `en` Masriq berbahasa Indonesia dipastikan (bahasa halaman formulir ≠ bahasa tulisan) dan dicatat; entri Masriq: terjemahan Inggris yang benar, `role`/`relationship` dirapikan (D29), isi pesan tidak diubah; `bun run verify` lulus; deploy sukses; live dicek: Kind words tampil di beranda EN/ID dan 7 studi kasus AI yang sudah di-merge (PR #12–#17, #21) ada di `/projects/`; CHANGELOG 1.6.1, tag `v1.6.1`.
 - [ ] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
   - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
@@ -389,6 +389,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-10-30 · Claude Code (Opus) · T16.1 hotfix deploy dan Kind words (rilis 1.6.1)
+- **Dikerjakan:** fixture `appendEntry` membuang seluruh isi setelah `items:` (tes tidak bergantung pada isi `content/`); penyebab versi `en` Masriq dipastikan: `MessageForm.astro` mengirim `lang` = bahasa halaman, lalu `messageEntry` menaruh teks asli di bahasa itu; entri Masriq diperbaiki (terjemahan EN, `role`/`relationship` dirapikan, isi pesan kata-kata penulis). CHANGELOG 1.6.1, `package.json` 1.6.1, tag `v1.6.1`.
+- **Langkah berikutnya:** cek live setelah deploy (Kind words EN/ID, 7 studi kasus baru di `/projects/`); perbaikan sistem deteksi bahasa di T16.4.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.0 tambahan rencana Fase 16
 - **Permintaan pemilik:** (1) evaluasi semua CV menurut kriteria HR per posisi, (2) keterangan Decklify yang lengkap dari folder PKM-K, lalu kerjakan Fase 16.

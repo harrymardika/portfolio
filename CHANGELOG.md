@@ -5,6 +5,14 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-10-30
+
+Hotfix: the site deploys again, so the first Kind words message and seven new case studies go live.
+
+### Fixed
+- Deploys had failed since 2026-10-26: a unit test read the real `content/messages.yaml` and assumed its list was empty, so the first published message broke it. The test now keeps only the file's header comments, and checks the same thing (T16.1).
+- The first Kind words message had Indonesian text in its English version, because the form records the language of the page it was sent from, not the language it was written in. The entry now has a proper English translation and a tidied role and relationship; the message itself is the writer's own words. Detecting the written language is planned for the AI editor (T16.4) (T16.1).
+
 ## [1.6.0] - 2026-10-13
 
 Phase 14: the home page as a full-screen 3D room with a moving camera, as in the approved preview.

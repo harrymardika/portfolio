@@ -170,8 +170,10 @@ describe('appendEntry', () => {
   const entry = messageEntry(approved(), translation, new Set());
 
   it('turns the empty list of the real file into a block list and keeps its comments', () => {
+    // Keep only the real file's header comments: its list grows as messages are published, and
+    // this test must not depend on what is in content/ (T16.1).
     const file = readFileSync(join(import.meta.dir, '../../../content/messages.yaml'), 'utf8');
-    const next = appendEntry(file.replace(/^items:.*$/m, 'items: []'), entry);
+    const next = appendEntry(file.replace(/^items:[\s\S]*$/m, 'items: []\n'), entry);
     expect(next).toStartWith(file.split('\n')[0] ?? '');
     expect(next).toContain('#   - id: first-last');
     const data = load(next) as { items: unknown[] };

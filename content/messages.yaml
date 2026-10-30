@@ -17,13 +17,13 @@ items:
   - id: masriq
     name: Masriq
     role:
-      en: Larper IT
+      en: IT Larper
       id: Larper IT
     relationship:
-      en: Guru linuknya
-      id: Guru Linuxnya
+      en: His Linux teacher
+      id: Guru Linux-nya
     message:
-      en: Ya bagus web nya sudah oke ya
-      id: Ya bagus webnya sudah oke ya
+      en: Yeah, the website looks good, it's all set.
+      id: Ya bagus web nya sudah oke ya
     link: https://www.linkedin.com/in/mikailthoriq/
     approved: 2026-10
