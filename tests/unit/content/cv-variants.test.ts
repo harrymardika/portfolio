@@ -128,8 +128,21 @@ describe('cvVariantSchema', () => {
   it('rejects unknown focus labels, unknown or repeated sections, and an empty focus', () => {
     expect(cvVariantSchema.safeParse({ ...variant, focus: ['marketing'] }).success).toBe(false);
     expect(cvVariantSchema.safeParse({ ...variant, focus: [] }).success).toBe(false);
-    expect(cvVariantSchema.safeParse({ ...variant, sections: ['projects'] }).success).toBe(false);
+    expect(cvVariantSchema.safeParse({ ...variant, sections: ['hobbies'] }).success).toBe(false);
     expect(cvVariantSchema.safeParse({ ...variant, sections: ['skills', 'skills'] }).success).toBe(false);
     expect(cvVariantSchema.safeParse({ ...variant, skills: ['ml', 'ml'] }).success).toBe(false);
+  });
+
+  it('accepts up to four selected projects, each once (T16.5)', () => {
+    const withProjects = { ...variant, sections: ['experience', 'projects'] };
+    expect(cvVariantSchema.safeParse({ ...withProjects, projects: ['decklify', 'reclaimyt'] }).success).toBe(true);
+    expect(cvVariantSchema.safeParse({ ...withProjects, projects: ['decklify', 'decklify'] }).success).toBe(false);
+    expect(cvVariantSchema.safeParse({ ...withProjects, projects: ['a', 'b', 'c', 'd', 'e'] }).success).toBe(false);
+    expect(cvVariantSchema.safeParse({ ...withProjects, projects: [] }).success).toBe(false);
+  });
+
+  it('needs the projects list and the "projects" section together', () => {
+    expect(cvVariantSchema.safeParse({ ...variant, sections: ['experience', 'projects'] }).success).toBe(false);
+    expect(cvVariantSchema.safeParse({ ...variant, projects: ['decklify'] }).success).toBe(false);
   });
 });

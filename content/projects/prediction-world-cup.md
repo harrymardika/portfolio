@@ -1,8 +1,8 @@
 ---
 title: FIFA World Cup Match Prediction & Tournament Simulation
 summary:
-  en: I built a machine-learning pipeline that predicts international football match outcomes from rankings and recent form, then uses those predictions to simulate an entire World Cup tournament.
-  id: Saya membangun pipeline machine-learning yang memprediksi hasil pertandingan sepak bola internasional berdasarkan peringkat dan performa terkini, lalu menggunakan prediksi tersebut untuk mensimulasikan seluruh turnamen Piala Dunia.
+  en: A machine learning pipeline that predicts international football results from rankings and recent form, then simulates a whole World Cup tournament.
+  id: Pipeline machine learning yang memprediksi hasil pertandingan sepak bola internasional dari peringkat dan performa terkini, lalu mensimulasikan seluruh turnamen Piala Dunia.
 role:
   en: Developer
   id: Pengembang

@@ -1,8 +1,8 @@
 ---
 title: Coinbase Review Sentiment Analysis
 summary:
-  en: I built an end-to-end sentiment analysis pipeline for Coinbase app reviews, comparing classic ML and deep learning models to select the most accurate classifier.
-  id: Saya membangun pipeline analisis sentimen lengkap untuk ulasan aplikasi Coinbase, membandingkan model ML klasik dan deep learning untuk memilih classifier paling akurat.
+  en: An end-to-end sentiment analysis pipeline for Coinbase app reviews that compares classic ML and deep learning models to pick the most accurate classifier.
+  id: Pipeline analisis sentimen lengkap untuk ulasan aplikasi Coinbase yang membandingkan model ML klasik dan deep learning untuk memilih classifier paling akurat.
 role:
   en: Developer
   id: Pengembang

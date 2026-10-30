@@ -1,8 +1,8 @@
 ---
 title: Self-hosted portfolio platform
 summary:
-  en: This website, bilingual, with a CV and portfolio PDF generated from one data source, built in CI and served from a 1.8 GB laptop at home.
-  id: Website ini, dwibahasa, dengan CV dan PDF portfolio dari satu sumber data, dibangun di CI dan disajikan dari laptop 1,8 GB di rumah.
+  en: A bilingual portfolio site with CV and portfolio PDFs generated from one data source, built in CI and self-hosted on a 1.8 GB laptop at home.
+  id: Situs portfolio dwibahasa dengan CV dan PDF portfolio dari satu sumber data, dibangun di CI dan di-host sendiri di laptop 1,8 GB di rumah.
 role: { en: Solo developer, id: Pengembang tunggal }
 year: 2026
 tags: [Astro, TypeScript, Three.js, Docker, GitHub Actions, Cloudflare]

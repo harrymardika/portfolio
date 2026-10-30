@@ -81,5 +81,7 @@ for (const { file, maxPages, maxBytes, mustContain } of CASES) {
     for (const phrase of mustContain) expect(pdf.text.toLowerCase()).toContain(phrase.toLowerCase());
     expect(pdf.text).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
     expect(pdf.text).not.toContain('**');
+    // A hyphen must stay a hyphen in the text layer, or ATS keywords like "F1-score" do not match (T16.5).
+    if (file.includes('-CV-')) expect(pdf.text).not.toMatch(/\d\u2212/);
   });
 }

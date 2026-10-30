@@ -7,126 +7,135 @@ variants:
     role: { en: AI/ML Engineer, id: AI/ML Engineer }
     summary:
       en: >-
-        AI engineer who builds and ships computer vision, language, and edge AI systems. Built a real-time
-        multimodal crisis-detection model with **92.5% accuracy (AUC 0.96)** and deployed it on Hailo-8L at
-        **5–8 ms latency**; engineered a crowd violence detection engine that **cut computational overhead by
-        45%**. Founder of Decklify, an AI SaaS launched in 3 months and a PIMNAS 2026 finalist. Informatics graduate
-        (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and mentor to **75+ learners**.
+        AI/ML engineer who builds and ships computer vision, NLP, and edge AI systems with Python,
+        PyTorch, and TensorFlow. Built a multimodal crisis-detection model with **92.5% accuracy (AUC
+        0.96)** and deployed it on Hailo-8L at **5–8 ms latency**; engineered a real-time crowd violence
+        detection engine that **cut computational overhead by 45%**. Founder of Decklify, an AI SaaS
+        launched in 3 months. Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining
+        finalist.
       id: >-
-        AI engineer yang membangun dan meluncurkan sistem computer vision, bahasa, dan edge AI. Membangun model
-        deteksi krisis multimodal real-time dengan **akurasi 92,5% (AUC 0,96)** dan men-deploy-nya di Hailo-8L
-        dengan **latensi 5–8 ms**; merancang mesin deteksi kekerasan massa yang **memangkas beban komputasi
-        45%**. Pendiri Decklify, SaaS AI yang daring dalam 3 bulan dan finalis PIMNAS 2026. Lulusan Informatika
-        (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan membimbing **75+ peserta**.
+        AI/ML engineer yang membangun dan meluncurkan sistem computer vision, NLP, dan edge AI dengan
+        Python, PyTorch, dan TensorFlow. Membangun model deteksi krisis multimodal dengan **akurasi
+        92,5% (AUC 0,96)** dan men-deploy-nya di Hailo-8L dengan **latensi 5–8 ms**; merekayasa mesin
+        deteksi kekerasan massa real-time yang **memangkas beban komputasi 45%**. Pendiri Decklify, SaaS
+        AI yang daring dalam 3 bulan. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining
+        GEMASTIK XVIII.
     focus: [ai]
-    sections: [skills, experience, education, training, awards, leadership, certifications]
+    sections: [skills, experience, projects, education, training, awards, leadership, certifications]
     skills: [ai-ml, llm-genai, cloud-mlops, data, languages]
+    projects: [aksara-jawa-yolo, hoax-detection, reclaimyt]
 
   - id: data-scientist
     name: { en: Data Scientist, id: Data Scientist }
     role: { en: Data Scientist, id: Data Scientist }
     summary:
       en: >-
-        Data scientist who turns raw data into models with measurable results. Built a multimodal
-        crisis-detection model from **11k+ images and 1k+ transcripts** reaching **92.5% accuracy (AUC 0.96)**
-        and a 0.92 F1-score, and a BERT summarization system scoring **ROUGE-1 56.63%**. Built forecasting and
-        recommendation models, including LSTM stock prediction and film recommendations (content-based and
-        collaborative filtering), and led the ML team behind a spending-analysis model with **90% accuracy**.
-        Informatics graduate (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and Top 5 of 40 teams in
-        Regression Rumble at Neurontara Data Clash.
+        Data scientist who turns raw data into models with measurable results, using Python,
+        scikit-learn, TensorFlow, and PyTorch. Built a multimodal crisis-detection model from **11k+
+        images and 1k+ transcripts** reaching **92.5% accuracy (AUC 0.96)**, a BERT summarization system
+        scoring **ROUGE-1 56.63%**, and forecasting models for stock and gold prices. Informatics
+        graduate (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and Top 5 of 40 teams in
+        Regression Rumble (Neurontara Data Clash).
       id: >-
-        Data scientist yang mengubah data mentah menjadi model dengan hasil terukur. Membangun model deteksi
-        krisis multimodal dari **11 ribu+ gambar dan 1 ribu+ transkrip** dengan **akurasi 92,5% (AUC 0,96)**
-        dan F1-score 0,92, serta sistem peringkasan berbasis BERT dengan **ROUGE-1 56,63%**. Membangun model
-        peramalan dan rekomendasi, termasuk prediksi harga saham dengan LSTM dan rekomendasi film (content-based
-        dan collaborative filtering), serta memimpin tim ML untuk model analisis pola pengeluaran dengan
-        **akurasi 90%**.
-        Lulusan Informatika (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan 5 besar dari 40 tim di
-        Regression Rumble, Neurontara Data Clash.
+        Data scientist yang mengubah data mentah menjadi model dengan hasil terukur, memakai Python,
+        scikit-learn, TensorFlow, dan PyTorch. Membangun model deteksi krisis multimodal dari **11 ribu+
+        citra dan 1 ribu+ transkrip** dengan **akurasi 92,5% (AUC 0,96)**, sistem peringkasan berbasis
+        BERT dengan **ROUGE-1 56,63%**, serta model peramalan harga saham dan emas. Lulusan Informatika
+        (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan 5 besar dari 40 tim di Regression
+        Rumble (Neurontara Data Clash).
     focus: [ai, data]
-    sections: [skills, experience, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
     skills: [ai-ml, data, llm-genai, cloud-mlops, languages]
+    projects: [gold-price-prediction, prediction-world-cup, bca-stock-lstm]
 
   - id: data-engineer
     name: { en: Data Engineer, id: Data Engineer }
     role: { en: Data Engineer, id: Data Engineer }
     summary:
       en: >-
-        Engineer focused on the data side of AI systems, from data pipelines to production models. Led the data and
-        optimization pipeline for **11k+ images and 1k+ transcripts**, built end-to-end ML pipelines with
-        TensorFlow Extended (TFX) monitored in Prometheus and Grafana, and migrated RAG storage from FAISS to a
-        Qdrant vector database for faster semantic search. Informatics graduate (**GPA 3.99/4.00**) and
-        GEMASTIK XVIII Data Mining finalist.
+        Data engineer with hands-on experience building data and ML pipelines in Python, SQL, Spark, and
+        Airflow. Led the data and optimization pipeline for **11k+ images and 1k+ transcripts**, built
+        end-to-end ML pipelines with TensorFlow Extended (TFX) monitored in Prometheus and Grafana, and
+        migrated RAG storage from FAISS to a Qdrant vector database for faster semantic search.
+        Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining finalist.
       id: >-
-        Engineer yang berfokus pada sisi data dari sistem AI, mulai dari pipeline data hingga model di produksi.
-        Memimpin pipeline data dan optimasi untuk **11 ribu+ citra dan 1 ribu+ transkrip**, membangun pipeline
-        ML end-to-end dengan TensorFlow Extended (TFX) yang dipantau di Prometheus dan Grafana, serta
-        memindahkan penyimpanan RAG dari FAISS ke vector database Qdrant agar pencarian semantik lebih cepat.
-        Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
+        Data engineer dengan pengalaman langsung membangun pipeline data dan ML dengan Python, SQL,
+        Spark, dan Airflow. Memimpin pipeline data dan optimasi untuk **11 ribu+ citra dan 1 ribu+
+        transkrip**, membangun pipeline ML end-to-end dengan TensorFlow Extended (TFX) yang dipantau di
+        Prometheus dan Grafana, serta memindahkan penyimpanan RAG dari FAISS ke vector database Qdrant
+        agar pencarian semantik lebih cepat. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data
+        Mining GEMASTIK XVIII.
     focus: [data]
-    sections: [skills, experience, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
     skills: [data, cloud-mlops, ai-ml, languages]
+    projects: [hoax-detection, humadity-iot-main, portfolio-site]
 
   - id: data-analyst
     name: { en: Data Analyst, id: Data Analyst }
     role: { en: Data Analyst, id: Data Analyst }
     summary:
       en: >-
-        Analytical, product-minded engineer who turns data into decisions. Evaluated Decklify with a
-        38-respondent survey (**+45 NPS**, ease of use 8.39/10) and built its cost model (83.68% contribution
-        margin, break-even at 11 packages a month). Built models for forecasting, recommendation, and classification, including LSTM
-        stock prediction, film recommendations, and a spending-behavior model with **90% accuracy**.
-        Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining finalist.
+        Data analyst who turns data into decisions with Python, SQL, and BI tools (Power BI, Tableau,
+        Looker Studio). Ran Decklify's evaluation with a 38-respondent survey (**+45 NPS**, ease of use
+        8.39/10) and built its cost model (**83.68% contribution margin**, break-even at 11 packages a
+        month). Built forecasting and classification models, including a spending-behavior model with
+        **90% accuracy**. Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining
+        finalist.
       id: >-
-        Engineer yang analitis dan berpikir produk, mengubah data menjadi keputusan. Mengevaluasi Decklify lewat
-        kuesioner 38 responden (**NPS +45**, kemudahan 8,39/10) dan menyusun model biayanya (margin kontribusi
-        83,68%, titik impas 11 paket per bulan). Membangun model untuk peramalan, rekomendasi, dan klasifikasi, termasuk
-        prediksi saham dengan LSTM, rekomendasi film, dan model perilaku belanja dengan **akurasi 90%**.
-        Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
+        Data analyst yang mengubah data menjadi keputusan dengan Python, SQL, dan alat BI (Power BI,
+        Tableau, Looker Studio). Menjalankan evaluasi Decklify lewat kuesioner 38 responden (**NPS
+        +45**, kemudahan 8,39/10) dan menyusun model biayanya (**margin kontribusi 83,68%**, titik impas
+        11 paket per bulan). Membangun model peramalan dan klasifikasi, termasuk model perilaku belanja
+        dengan **akurasi 90%**. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK
+        XVIII.
     focus: [data, product]
-    sections: [skills, experience, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
     skills: [data, ai-ml, product-management, languages]
+    projects: [prediction-world-cup, gold-price-prediction, coinbase-sentiment-analysis]
 
   - id: product-manager
     name: { en: Product Manager, id: Product Manager }
     role: { en: Product Manager, id: Product Manager }
     summary:
       en: >-
-        Product manager who takes ideas from user problem to launched product. As founder of Decklify, took an AI
-        SaaS from idea to **launch in 3 months**, evaluated it with **+45 NPS** in user testing and a load test
-        of 200 concurrent generations, reached **45 paid transactions** in October 2026 (mostly launch vouchers), and
-        designed a business model with an **83.68% contribution margin** and break-even at 11 packages a month. Hands-on AI engineering keeps product decisions
-        grounded in what the technology can deliver. Informatics graduate (**GPA 3.99/4.00**).
+        Product manager who takes ideas from user problem to launched product. As founder of Decklify,
+        took an AI SaaS from idea to **launch in 3 months**: planned the product, ran user research and
+        evaluation (a 38-respondent survey with **+45 NPS**, expert focus groups, a load test of 200
+        concurrent generations), and designed the business model with an **83.68% contribution margin**
+        and break-even at 11 packages a month, after which Decklify reached **45 paid transactions** in October 2026 (mostly
+        launch vouchers). Informatics graduate (**GPA 3.99/4.00**) with hands-on AI engineering.
       id: >-
-        Product manager yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai pendiri
-        Decklify, membawa SaaS AI dari ide hingga **daring dalam 3 bulan**, mengevaluasinya dengan **NPS +45**
-        dalam uji pengguna dan uji beban 200 generasi serentak, mencapai **45 transaksi berbayar** pada
-        Oktober 2026 (sebagian besar voucher peluncuran), serta merancang model bisnis dengan **margin kontribusi 83,68%** dan titik impas 11
-        paket per bulan. Pengalaman langsung di AI
-        engineering membuat keputusan produk berpijak pada kemampuan nyata teknologi. Lulusan Informatika
-        (**IPK 3,99/4,00**).
+        Product manager yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai
+        pendiri Decklify, membawa SaaS AI dari ide hingga **daring dalam 3 bulan**: merencanakan produk,
+        menjalankan riset pengguna dan evaluasi (kuesioner 38 responden dengan **NPS +45**, FGD bersama
+        pakar, uji beban 200 generasi serentak), serta merancang model bisnis dengan **margin kontribusi
+        83,68%** dan titik impas 11 paket per bulan, lalu Decklify mencapai **45 transaksi berbayar** pada Oktober 2026
+        (sebagian besar voucher peluncuran). Lulusan Informatika (**IPK 3,99/4,00**) dengan pengalaman
+        langsung di AI engineering.
     focus: [product]
-    sections: [experience, skills, education, leadership, awards, training, certifications]
+    sections: [experience, projects, skills, education, leadership, awards, training, certifications]
     skills: [product-management, web-product, ai-ml, llm-genai, languages]
+    projects: [portfolio-site, dompet-juara]
 
   - id: project-manager
     name: { en: Project Manager, id: Project Manager }
     role: { en: Project Manager, id: Project Manager }
     summary:
       en: >-
-        Project lead with a record of delivery. As founder of Decklify, an AI SaaS, led a 5-person team to a
-        **launch in 3 months** and the PIMNAS 2026 finals, and managed an IDR 8,125,000 national grant with
-        **100% accountability** across 82 logged activities; ran end-to-end operations of a hackathon for **100+ participants and 30 teams**; and
-        managed cross-functional teams organizing workshops, technical events, and competition preparation
-        programs. Hands-on AI engineering experience (computer vision, language, edge deployment). Informatics
-        graduate (**GPA 3.99/4.00**).
+        Project manager with a record of delivery. As founder of Decklify, an AI SaaS, led a
+        5-person team to a **launch in 3 months** and the PIMNAS 2026 finals, managing an IDR 8,125,000
+        national grant **fully spent and reported** across 82 logged activities; ran end-to-end operations
+        of a hackathon for **100+ participants and 30 teams**; and managed cross-functional teams for
+        workshops, technical events, and competition preparation. Hands-on AI engineering (computer
+        vision, language, edge deployment). Informatics graduate (**GPA 3.99/4.00**).
       id: >-
-        Pemimpin proyek dengan rekam jejak penyelesaian. Sebagai pendiri Decklify, SaaS AI, memimpin tim 5 orang
-        hingga **daring dalam 3 bulan** dan final PIMNAS 2026, serta mengelola dana hibah nasional Rp8.125.000
-        dengan **akuntabilitas 100%** dalam 82 kegiatan tercatat; menjalankan operasional hackathon dari awal hingga akhir untuk **100+ peserta dan
-        30 tim**; serta mengelola tim lintas fungsi yang menyelenggarakan workshop, acara teknis, dan program
-        persiapan kompetisi. Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di
-        edge). Lulusan Informatika (**IPK 3,99/4,00**).
+        Project manager dengan rekam jejak penyelesaian. Sebagai pendiri Decklify, SaaS
+        AI, memimpin tim 5 orang hingga **daring dalam 3 bulan** dan final PIMNAS 2026, serta mengelola
+        dana hibah nasional Rp8.125.000 dengan **realisasi 100%** dalam 82 kegiatan tercatat;
+        menjalankan operasional hackathon dari awal hingga akhir untuk **100+ peserta dan 30 tim**;
+        serta mengelola tim lintas fungsi untuk workshop, acara teknis, dan persiapan kompetisi.
+        Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di edge). Lulusan
+        Informatika (**IPK 3,99/4,00**).
     focus: [project]
     sections: [experience, leadership, skills, education, awards, training, certifications]
     skills: [product-management, leadership, web-product, languages]
@@ -137,16 +146,17 @@ variants:
     role: { en: Informatics Graduate · Technology & Leadership, id: Lulusan Informatika · Teknologi & Kepemimpinan }
     summary:
       en: >-
-        Fast-learning graduate with leadership experience across a startup, a tech community, and teaching.
-        Founded Decklify and led a 5-person team to a **launch in 3 months** and the PIMNAS 2026 finals; selected as **1 of 800
-        Google Student Ambassadors from 12,000+ applicants**; four-time Most Outstanding Student (MAPRES) with
-        a **GPA of 3.99/4.00**; mentored **75+ learners** and ran a hackathon for 100+ participants.
+        Fast-learning graduate with leadership experience across a startup, a tech community, and
+        teaching. Founded Decklify and led a 5-person team to a **launch in 3 months** and the PIMNAS
+        2026 finals; selected as **1 of 800 Google Student Ambassadors from 12,000+ applicants**;
+        four-time Most Outstanding Student (MAPRES) with a **GPA of 3.99/4.00**; mentored **75+
+        learners** and ran a hackathon for 100+ participants.
       id: >-
-        Lulusan yang cepat belajar dengan pengalaman memimpin di startup, komunitas teknologi, dan pengajaran.
-        Mendirikan Decklify dan memimpin tim 5 orang hingga **daring dalam 3 bulan** dan final PIMNAS 2026; terpilih
-        sebagai **1 dari 800 Google Student Ambassador dari 12.000+ pendaftar**; empat kali Mahasiswa
-        Berprestasi (MAPRES) dengan **IPK 3,99/4,00**; membimbing **75+ peserta** dan menjalankan hackathon
-        untuk 100+ peserta.
+        Lulusan yang cepat belajar dengan pengalaman memimpin di startup, komunitas teknologi, dan
+        pengajaran. Mendirikan Decklify dan memimpin tim 5 orang hingga **daring dalam 3 bulan** dan
+        final PIMNAS 2026; terpilih sebagai **1 dari 800 Google Student Ambassador dari 12.000+
+        pendaftar**; empat kali Mahasiswa Berprestasi (MAPRES) dengan **IPK 3,99/4,00**; membimbing
+        **75+ peserta** dan menjalankan hackathon untuk 100+ peserta.
     focus: [leadership, product]
     sections: [education, experience, leadership, awards, skills, training, certifications]
     skills: [leadership, product-management, data, languages]

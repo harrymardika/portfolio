@@ -17,8 +17,8 @@ tags:
 metrics:
   - value: '0.9899'
     label:
-      en: Best R² score (Lasso LARS)
-      id: Skor R² terbaik (Lasso LARS)
+      en: best R² score (Lasso LARS)
+      id: skor R² terbaik (Lasso LARS)
   - value: 3.16%
     label:
       en: MAPE of top linear model

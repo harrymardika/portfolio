@@ -367,10 +367,19 @@ content:
             description: Geser untuk mengurutkan. Bagian yang tidak dimasukkan tidak tampil; masing-masing sekali saja.
             type: select
             list: { min: 1 }
-            options: { values: [education, skills, experience, leadership, training, awards, certifications] }
+            options:
+              {
+                values:
+                  [education, skills, experience, projects, leadership, training, awards, certifications],
+              }
           - name: skills
             label: Grup skill (urutan tampil)
             description: id grup dari menu Skill. Kosong = semua grup.
+            type: string
+            list: true
+          - name: projects
+            label: Proyek pilihan (urutan tampil)
+            description: Nama file studi kasus tanpa .md (mis. hoax-detection), maksimal 4. Tampil bila bagian "projects" ada di urutan bagian.
             type: string
             list: true
 

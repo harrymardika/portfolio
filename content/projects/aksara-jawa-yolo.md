@@ -1,8 +1,8 @@
 ---
 title: Javanese script (Aksara Jawa) classification
 summary:
-  en: My undergraduate thesis. A fine-tuned YOLO26 classifier for the 20 basic Javanese characters, with a visual look inside how its convolution filters learn.
-  id: Skripsi saya. Klasifikasi 20 karakter dasar aksara Jawa dengan YOLO26 yang di-fine-tune, disertai visualisasi cara filter konvolusinya belajar.
+  en: Undergraduate thesis. A fine-tuned YOLO26 classifier for the 20 basic Javanese characters, with a visual look inside how its convolution filters learn.
+  id: Skripsi. Klasifikasi 20 karakter dasar aksara Jawa dengan YOLO26 yang di-fine-tune, disertai visualisasi cara filter konvolusinya belajar.
 role: { en: Researcher (thesis), id: Peneliti (skripsi) }
 year: 2026
 tags: [YOLO26, PyTorch, Computer Vision, Interpretability]

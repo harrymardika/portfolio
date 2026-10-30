@@ -29,6 +29,7 @@ export const CV_SECTIONS = [
   'education',
   'skills',
   'experience',
+  'projects',
   'leadership',
   'training',
   'awards',
@@ -233,6 +234,16 @@ export const cvVariantSchema = z.strictObject({
     .min(1)
     .refine((list) => new Set(list).size === list.length, 'List each skill group once')
     .optional(),
+  /** Case study slugs for the "Selected projects" section (T16.5, D32), in display order. */
+  projects: z
+    .array(slug)
+    .min(1)
+    .max(4, 'Show at most 4 projects on a CV')
+    .refine((list) => new Set(list).size === list.length, 'List each project once')
+    .optional(),
+}).refine((variant) => variant.sections.includes('projects') === (variant.projects !== undefined), {
+  message: 'List `projects` exactly when `sections` includes "projects"',
+  path: ['projects'],
 });
 
 export type Profile = z.infer<typeof profileSchema>;

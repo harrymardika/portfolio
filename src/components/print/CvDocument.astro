@@ -19,6 +19,7 @@ import {
   type Education,
   type Experience,
   type Profile,
+  type Project,
   type SkillGroup,
   type Training,
 } from '@/lib/content';
@@ -39,6 +40,8 @@ interface Props {
   role?: string;
   summary?: string;
   sections?: readonly CvSection[];
+  /** "Selected projects" (T16.5): case studies with their page URL, in display order. */
+  projects?: readonly { project: Project; url: string }[];
 }
 
 const {
@@ -54,6 +57,7 @@ const {
   role = localize(profile.role, locale),
   summary = localize(profile.summary, locale),
   sections = DEFAULT_CV_SECTIONS,
+  projects = [],
 } = Astro.props;
 const t = UI[locale];
 const present = t['date.present'];
@@ -146,6 +150,28 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
           ))}
         </section>
       )}
+      {section === 'projects' && projects.length > 0 && (
+        <section>
+          <h2>{t['cv.projects']}</h2>
+          <ul class="cv-list">
+            {projects.map(({ project, url }) => {
+              const metric = project.metrics[0];
+              return (
+                <li>
+                  <a href={url}>
+                    <strong>{project.title}</strong>
+                  </a>{' '}
+                  · {project.year}:{' '}
+                  <RichText text={localize(project.summary, locale).replace(/\.\s*$/, '')} />
+                  {metric
+                    ? `; ${localizeNumber(metric.value, locale)} ${localize(metric.label, locale)}.`
+                    : '.'}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
       {section === 'leadership' && leadership.length > 0 && (
         <section>
           <h2>{t['about.leadership']}</h2>
@@ -209,6 +235,9 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
 <style>
   .cv {
     font-family: var(--font-sans);
+    /* Plus Jakarta Sans swaps a hyphen next to a digit for a minus glyph ("5-person" became
+       "5−person" in the PDF text), which breaks ATS keyword matches (T16.5). */
+    font-variant-ligatures: no-contextual;
     font-size: 8.6pt;
     line-height: 1.25;
     color: var(--print-ink);

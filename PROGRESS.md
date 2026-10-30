@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.5 (evaluasi CV; prioritas pemilik 2026-10-30, sebelum T16.3–T16.4)
+**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 16 (perbaikan dan konten, menuju versi 2) · **Tugas berikutnya:** T16.3 (tracker permintaan di GitHub Issues)
 
 ## Ringkasan
 
@@ -273,7 +273,7 @@ Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** se
 - [ ] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
   - Kriteria: langkah AI di `kind-words.yml` mendeteksi bahasa asli tulisan, merapikan `role`/`relationship` (EN/ID), menerjemahkan isi pesan, menulis saran untuk isi pesan (tidak diterapkan), dan memberi tanda (spam, kata kasar, data pribadi, prompt injection, bukan kesan & pesan); badan PR berisi tabel per pesan; log publik tanpa isi pesan; jawaban AI divalidasi skema dan pemeriksaan lama tetap; bila AI gagal pesan tetap masuk PR dengan tanda "periksa manual"; tanpa secret/layanan baru; tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal); ADR 0017 diperbarui atau ADR baru; `/security-review`.
 
-- [ ] **T16.5** Evaluasi semua CV menurut kriteria HR per posisi, lalu perbaiki (D32, `docs/12-v2.md` §B2)
+- [x] **T16.5** Evaluasi semua CV menurut kriteria HR per posisi, lalu perbaiki (D32, `docs/12-v2.md` §B2)
   - Kriteria: CV umum dan 7 varian dinilai dengan kriteria umum (ATS, ≤ 2 halaman, ringkasan menyebut posisi, poin berpola aksi + hasil terukur, kata kunci posisi, konsistensi, tanpa klaim tak terbukti) dan kriteria per posisi; hasil di `docs/cv-evaluation.md` (temuan, perbaikan, skor sebelum/sesudah, keputusan yang menunggu pemilik); perbaikan diterapkan di `content/` tanpa fakta baru; semua PDF CV dicek ulang (halaman, teks bisa disalin); `bun run verify` lulus; dikerjakan setelah T16.2.
 
 ---
@@ -390,6 +390,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-30 · Claude Code (Opus) · T16.5 evaluasi CV per posisi (didahulukan atas permintaan pemilik)
+- **Dikerjakan:** 16 PDF CV dinilai dengan 10 kriteria umum dan kriteria per posisi; laporan `docs/cv-evaluation.md` (skor sebelum/sesudah). Perbaikan: tanda hubung tersalin sebagai tanda minus di semua PDF (fitur kontekstual font dimatikan, dicek tes); bagian baru **Selected projects / Proyek pilihan** (field `projects` di varian, skema, CMS, i18n, tes integritas) untuk AI/ML, Data Scientist, Data Engineer, Data Analyst, Product Manager; ringkasan ketujuh varian ditulis ulang (posisi + alat di kalimat pertama, klaim sesuai sumber); 4 ringkasan studi kasus bergaya netral. Semua PDF tetap 2 halaman.
+- **Keputusan pemilik:** bagian proyek hanya untuk varian yang cocok; SQL, Spark/PySpark, Airflow, BigQuery, Power BI, Tableau, Looker Studio benar dipakai (tetap di Skills).
+- **Menunggu pemilik:** nomor HP (tetap tidak di PDF publik), bukti alat data lewat draf studi kasus yang belum di-merge (`docs/cv-evaluation.md` §5).
+
 ### 2026-10-30 · Claude Code (Opus) · T16.2 PIMNAS, dana, dan keterangan Decklify
 - **Dikerjakan:** studi kasus Decklify EN/ID ditulis ulang dari laporan akhir PKM-K sesuai peran yang divalidasi (D31: merancang sistem, evaluasi, server, dokumen/keuangan, legalitas; kode oleh CTO); `experience.yaml` (4 poin, tag tanpa Go/Next.js), `profile.yaml` (ringkasan dan statistik hero), `cv-variants.yaml`, `awards.yaml` (Finalis PIMNAS 2026). Klaim lama dikoreksi (kemudahan 8,39, NPS dari 38 responden, tanpa "2 minggu pertama"/"product-market fit"/"peluncuran komersial"); dana Rp8.125.000; 45 transaksi Oktober tanpa rupiah.
 - **Chatbot (keputusan pemilik):** pengetahuan lengkap melewati 25 ribu token → isi studi kasus hanya EN dan batas 30 ribu; versi ringkas (Groq) juga hampir penuh → metrik proyek ke `detail`, 1 poin per pengalaman. ADR 0022. Ukuran sekarang ±19 ribu/30 ribu dan ±4,5 ribu/5 ribu. Eval chatbot ditambah 1 kasus (peran di Decklify).
@@ -398,6 +403,7 @@ Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / be
 ### 2026-10-30 · Claude Code (Opus) · T16.1 hotfix deploy dan Kind words (rilis 1.6.1)
 - **Dikerjakan:** fixture `appendEntry` membuang seluruh isi setelah `items:` (tes tidak bergantung pada isi `content/`); penyebab versi `en` Masriq dipastikan: `MessageForm.astro` mengirim `lang` = bahasa halaman, lalu `messageEntry` menaruh teks asli di bahasa itu; entri Masriq diperbaiki (terjemahan EN, `role`/`relationship` dirapikan, isi pesan kata-kata penulis). CHANGELOG 1.6.1, `package.json` 1.6.1, tag `v1.6.1`.
 - **Langkah berikutnya:** cek live setelah deploy (Kind words EN/ID, 7 studi kasus baru di `/projects/`); perbaikan sistem deteksi bahasa di T16.4.
+- **Koreksi (2026-10-30, kemudian):** deploy 1.6.1 (run 40983008974) ternyata **gagal** di build Docker: pengetahuan chatbot dengan data GitHub asli ±25.318/25.000 dan ±5.306/5.000 token. `bun run verify` tidak menangkapnya karena e2e memakai data GitHub tiruan (`GITHUB_FIXTURE`). Diperbaiki oleh ADR 0022 di T16.2; deploy berikutnya membawa 1.6.1 dan T16.2 sekaligus.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.0 tambahan rencana Fase 16
 - **Permintaan pemilik:** (1) evaluasi semua CV menurut kriteria HR per posisi, (2) keterangan Decklify yang lengkap dari folder PKM-K, lalu kerjakan Fase 16.

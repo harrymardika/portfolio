@@ -7,7 +7,7 @@ role: { en: ML Engineer, id: ML Engineer }
 year: 2024
 tags: [CNN, NLP, TFX, TensorFlow Serving, Prometheus, Grafana]
 metrics:
-  - { value: "89.6%", label: { en: "training accuracy (validation 81.2%)", id: "akurasi latih (validasi 81,2%)" } }
+  - { value: "81.2%", label: { en: "validation accuracy (training 89.6%)", id: "akurasi validasi (latih 89,6%)" } }
 links:
   repo: https://github.com/harrymardika/hoax-detection
 featured: false

@@ -32,7 +32,7 @@ Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `d
 
 ## 2a. Varian CV per posisi (Fase 10, D10)
 
-- Didefinisikan di `content/cv-variants.yaml` (docs/04). Halaman cetaknya `/print/cv/<id>/` dan `/id/print/cv/<id>/`, memakai template CV umum yang sama (`CvDocument.astro`) dengan baris peran, ringkasan, urutan bagian, dan poin yang dipilih varian (`applyVariant`).
+- Didefinisikan di `content/cv-variants.yaml` (docs/04). Halaman cetaknya `/print/cv/<id>/` dan `/id/print/cv/<id>/`, memakai template CV umum yang sama (`CvDocument.astro`) dengan baris peran, ringkasan, urutan bagian, poin yang dipilih varian (`applyVariant`), dan bagian proyek pilihan bila varian mengisinya (T16.5). Teks PDF tidak boleh mengubah tanda hubung menjadi tanda minus (fitur kontekstual font dimatikan di `CvDocument.astro`; dicek `pdf.spec.ts`).
 - `scripts/generate-pdf.ts` mencetaknya saat build ke `downloads/cv/`, mis. `/downloads/cv/Harry-Mardika-CV-Data-Engineer-EN.pdf`. Aturan sama dengan CV umum: ≤ 2 halaman, ≤ 1 MB, teks bisa dipilih, tanpa nomor HP (dites per varian di `tests/e2e/pdf.spec.ts`).
 - Didaftar di halaman **`/cv/`** ("CV per posisi", EN + ID) yang ditautkan di **footer** ("Resumes" / "Resume") di samping "Statistik situs" (keputusan pemilik, D10). Halaman itu noindex dan `robots.txt` melarang `/downloads/cv/`, jadi varian tidak muncul di hasil pencarian; unduhan tercatat di statistik sebagai `download-cv`.
 

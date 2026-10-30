@@ -5,9 +5,16 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Added
+- CVs by role now have a **Selected projects** section with two or three case studies that back the role's skills (AI/ML Engineer, Data Scientist, Data Engineer, Data Analyst, Product Manager), chosen in `content/cv-variants.yaml` (T16.5).
+
 ### Changed
-- Decklify, told in full from the PKM-K reports and with Harry's actual role: he designed the system, ran the evaluation and the self-hosted server, and handled the business, finance, and legal work, while the team's CTO wrote the code. New facts: live since 27 August 2026, a load test of 200 concurrent generations with zero errors, 45 paid transactions in the first month of sales, an IDR 8,125,000 grant fully accounted for, copyrights, a business license, and a trademark filing. Older claims now match the reports (8.39 is the ease-of-use score, the +45 NPS comes from a 38-respondent survey). The PKM-K award is now **Finalist, PIMNAS 2026** (T16.2).
+- Every CV was reviewed against what recruiters look for in each role (`docs/cv-evaluation.md`): each role's summary now opens with the role and its main tools, and claims match their sources (T16.5).
+- Decklify, told in full from the PKM-K reports and with Harry's actual role: he designed the system, ran the evaluation and the self-hosted server, and handled the business, finance, and legal work, while the team's CTO wrote the code. New facts: live since 27 August 2026, a load test of 200 concurrent generations with zero errors, 45 paid transactions in October 2026 (mostly with launch vouchers), an IDR 8,125,000 grant fully spent and reported, copyrights, a business license, and a trademark filing. Older claims now match the reports (8.39 is the ease-of-use score, the +45 NPS comes from a 38-respondent survey). The PKM-K award is now **Finalist, PIMNAS 2026** (T16.2).
 - The "Ask Harry" assistant's knowledge keeps case study bodies in English only (it still answers in Indonesian) with a 30,000-token budget, and its compact version for the backup model is leaner, so new case studies no longer stop the build (T16.2, ADR 0022).
+
+### Fixed
+- In every CV PDF, a hyphen after a number ("F1-score", "5-person") was copied out as a minus sign, so applicant tracking systems could miss those keywords (T16.5).
 
 ## [1.6.1] - 2026-10-30
 

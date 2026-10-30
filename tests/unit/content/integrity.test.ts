@@ -134,6 +134,19 @@ describe('content files', () => {
     expect(dangling).toEqual([]);
   });
 
+  it('every CV variant project is a published case study', () => {
+    const published = new Set(
+      projectFiles
+        .filter((name) => (readFrontmatter(`projects/${name}`) as { draft?: boolean }).draft !== true)
+        .map((name) => name.replace(/\.md$/, '')),
+    );
+    const dangling = parseYamlList(read('cv-variants.yaml'), 'variants', { withPosition: true, mayBeEmpty: true })
+      .flatMap((variant) => ((variant['projects'] as string[] | undefined) ?? []).map((slug) => `${variant['id']}: ${slug}`))
+      .filter((ref) => !published.has(ref.split(': ')[1] ?? ''));
+
+    expect(dangling).toEqual([]);
+  });
+
   it('pairs every **bold** marker, so no stray asterisks reach the site or the CV', () => {
     const strings = (value: unknown, path: string): [string, string][] =>
       typeof value === 'string'

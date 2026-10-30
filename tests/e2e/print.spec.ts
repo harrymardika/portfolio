@@ -118,6 +118,7 @@ const SECTION_HEADINGS: Record<string, UiKey> = {
   education: 'about.education',
   skills: 'about.skills',
   experience: 'about.experience',
+  projects: 'cv.projects',
   leadership: 'about.leadership',
   training: 'about.training',
   awards: 'about.awards',
@@ -145,6 +146,17 @@ for (const variant of cvVariants()) {
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
       expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
       expect(await page.locator('.cv').innerText()).not.toContain('**');
+      // Selected projects (T16.5): one line per case study, linked to its page in the CV's language.
+      const projects = page
+        .locator('.cv section')
+        .filter({ has: page.getByRole('heading', { name: t['cv.projects'] }) });
+      const slugs = variant.sections.includes('projects') ? (variant.projects ?? []) : [];
+      await expect(projects.locator('li')).toHaveCount(slugs.length);
+      for (const [index, slug] of slugs.entries())
+        await expect(projects.locator('li a').nth(index)).toHaveAttribute(
+          'href',
+          new RegExp(`^https?://[^/]+${locale === 'en' ? '' : '/id'}/projects/${slug}/$`),
+        );
     });
   }
 }

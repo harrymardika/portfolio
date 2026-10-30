@@ -6,7 +6,7 @@
 import CvDocument from '@/components/print/CvDocument.astro';
 import PrintLayout from '@/layouts/PrintLayout.astro';
 import { applyVariant, localize, type CvVariant } from '@/lib/content';
-import { getCvData, getCvVariants } from '@/lib/content/queries';
+import { getCvData, getCvVariants, getProjects } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
 
 export async function getStaticPaths() {
@@ -26,6 +26,13 @@ const data = await getCvData();
 const selected = applyVariant(data, variant);
 const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
 const role = localize(variant.role, locale);
+const published = new Map((await getProjects()).map((entry) => [entry.id, entry.data]));
+const projects = (variant.projects ?? []).map((slug) => {
+  const project = published.get(slug);
+  if (!project)
+    throw new Error(`cv-variants → ${variant.id} → projects: "${slug}" is not a published case study`);
+  return { project, url: new URL(localizePath(`/projects/${slug}/`, locale), Astro.site).href };
+});
 ---
 
 <PrintLayout
@@ -41,5 +48,6 @@ const role = localize(variant.role, locale);
     role={role}
     summary={localize(variant.summary, locale)}
     sections={variant.sections}
+    projects={projects}
   />
 </PrintLayout>

@@ -118,8 +118,9 @@ Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sam
 `variants[]`: `{ id, name, role, summary, focus[], sections[], skills? }`
 - `name`: nama varian (dipakai di nama file PDF). `role` dan `summary`: baris peran dan ringkasan khusus varian ini; ringkasan **hanya berisi fakta yang sudah ada** di konten.
 - `focus`: `ai` · `data` · `product` (produk) · `project` (manajemen proyek/delivery) · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
-- `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
+- `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `projects`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
 - `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil. Jika tidak diisi, varian memakai grup yang tampil di CV umum (`show_on_cv` tidak `false`); daftar kosong ditolak.
+- `projects` (opsional, T16.5): 1–4 nama file studi kasus tanpa `.md` (mis. `hoax-detection`) untuk bagian **Selected projects / Proyek pilihan**; tampil hanya bila `projects` ada di `sections`. Setiap baris memuat judul (bertaut ke halaman studi kasus), tahun, `summary`, dan metrik pertama, jadi tulis `summary` studi kasus dengan gaya netral (tanpa "I built…"). Label `metrics` sebaiknya diawali huruf kecil, karena CV menaruhnya setelah nilai di tengah kalimat. `projects` dan bagian `projects` di `sections` harus diisi bersamaan. Slug yang tidak ada atau masih draf ditolak tes. Hasil evaluasi CV per posisi: `docs/cv-evaluation.md`.
 
 **Label fokus pada poin pencapaian:** setiap `highlights[]` di experience, education, dan trainings boleh diberi `focus`, mis. `- { en: "...", id: "...", focus: [ai, data] }`. Aturan di varian:
 - pekerjaan (kategori `work`, `founder`, `research`) dan pendidikan **selalu tampil** agar riwayat tidak bolong; jika tidak ada poin yang cocok, tampil poin pertama;
