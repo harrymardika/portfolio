@@ -76,18 +76,16 @@ variants:
     summary:
       en: >-
         Data analyst who turns data into decisions with Python, SQL, and BI tools (Power BI, Tableau,
-        Looker Studio). Ran Decklify's evaluation with a 38-respondent survey (**+45 NPS**, ease of use
-        8.39/10) and built its cost model (**83.68% contribution margin**, break-even at 11 packages a
-        month). Built forecasting and classification models, including a spending-behavior model with
-        **90% accuracy**. Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining
-        finalist.
+        Looker Studio). Evaluated Decklify through user testing (**+45 NPS**, ease of use 8.39/10) and
+        built its cost model (**83.68% contribution margin**, break-even at 11 packages a month). Built
+        forecasting and classification models, including a spending-behavior model with **90%
+        accuracy**. Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining finalist.
       id: >-
         Data analyst yang mengubah data menjadi keputusan dengan Python, SQL, dan alat BI (Power BI,
-        Tableau, Looker Studio). Menjalankan evaluasi Decklify lewat kuesioner 38 responden (**NPS
-        +45**, kemudahan 8,39/10) dan menyusun model biayanya (**margin kontribusi 83,68%**, titik impas
-        11 paket per bulan). Membangun model peramalan dan klasifikasi, termasuk model perilaku belanja
-        dengan **akurasi 90%**. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK
-        XVIII.
+        Tableau, Looker Studio). Mengevaluasi Decklify lewat uji pengguna (**NPS +45**, kemudahan
+        8,39/10) dan menyusun model biayanya (**margin kontribusi 83,68%**, titik impas 11 paket per
+        bulan). Membangun model peramalan dan klasifikasi, termasuk model perilaku belanja dengan
+        **akurasi 90%**. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
     focus: [data, product]
     sections: [skills, experience, projects, training, education, awards, certifications, leadership]
     skills: [data, ai-ml, product-management, languages]
@@ -100,18 +98,17 @@ variants:
       en: >-
         Product manager who takes ideas from user problem to launched product. As founder of Decklify,
         took an AI SaaS from idea to **launch in 3 months**: planned the product, ran user research and
-        evaluation (a 38-respondent survey with **+45 NPS**, expert focus groups, a load test of 200
-        concurrent generations), and designed the business model with an **83.68% contribution margin**
-        and break-even at 11 packages a month, after which Decklify reached **45 paid transactions** in October 2026 (mostly
-        launch vouchers). Informatics graduate (**GPA 3.99/4.00**) with hands-on AI engineering.
+        evaluation (user testing with **+45 NPS**, expert focus groups, a load test of 200 concurrent
+        generations), and designed a business model with an **83.68% contribution margin**, reaching
+        **45 paid transactions** in the first month of sales. Informatics graduate (**GPA 3.99/4.00**)
+        with hands-on AI engineering.
       id: >-
         Product manager yang membawa ide dari masalah pengguna hingga produk diluncurkan. Sebagai
         pendiri Decklify, membawa SaaS AI dari ide hingga **daring dalam 3 bulan**: merencanakan produk,
-        menjalankan riset pengguna dan evaluasi (kuesioner 38 responden dengan **NPS +45**, FGD bersama
-        pakar, uji beban 200 generasi serentak), serta merancang model bisnis dengan **margin kontribusi
-        83,68%** dan titik impas 11 paket per bulan, lalu Decklify mencapai **45 transaksi berbayar** pada Oktober 2026
-        (sebagian besar voucher peluncuran). Lulusan Informatika (**IPK 3,99/4,00**) dengan pengalaman
-        langsung di AI engineering.
+        menjalankan riset pengguna dan evaluasi (uji pengguna dengan **NPS +45**, FGD bersama pakar, uji
+        beban 200 generasi serentak), serta merancang model bisnis dengan **margin kontribusi 83,68%**
+        hingga mencapai **45 transaksi berbayar** di bulan pertama penjualan. Lulusan Informatika (**IPK
+        3,99/4,00**) dengan pengalaman langsung di AI engineering.
     focus: [product]
     sections: [experience, projects, skills, education, leadership, awards, training, certifications]
     skills: [product-management, web-product, ai-ml, llm-genai, languages]
@@ -122,20 +119,19 @@ variants:
     role: { en: Project Manager, id: Project Manager }
     summary:
       en: >-
-        Project manager with a record of delivery. As founder of Decklify, an AI SaaS, led a
-        5-person team to a **launch in 3 months** and the PIMNAS 2026 finals, managing an IDR 8,125,000
-        national grant **fully spent and reported** across 82 logged activities; ran end-to-end operations
-        of a hackathon for **100+ participants and 30 teams**; and managed cross-functional teams for
-        workshops, technical events, and competition preparation. Hands-on AI engineering (computer
-        vision, language, edge deployment). Informatics graduate (**GPA 3.99/4.00**).
+        Project manager with a record of delivery. As founder of Decklify, an AI SaaS, led a 5-person
+        team to a **launch in 3 months** and the PIMNAS 2026 finals, managing an IDR 8,125,000 national
+        grant across 82 logged activities; ran end-to-end operations of a hackathon for **100+
+        participants and 30 teams**; and managed cross-functional teams for workshops, technical events,
+        and competition preparation. Hands-on AI engineering (computer vision, language, edge
+        deployment). Informatics graduate (**GPA 3.99/4.00**).
       id: >-
-        Project manager dengan rekam jejak penyelesaian. Sebagai pendiri Decklify, SaaS
-        AI, memimpin tim 5 orang hingga **daring dalam 3 bulan** dan final PIMNAS 2026, serta mengelola
-        dana hibah nasional Rp8.125.000 dengan **realisasi 100%** dalam 82 kegiatan tercatat;
-        menjalankan operasional hackathon dari awal hingga akhir untuk **100+ peserta dan 30 tim**;
-        serta mengelola tim lintas fungsi untuk workshop, acara teknis, dan persiapan kompetisi.
-        Pengalaman langsung di AI engineering (computer vision, bahasa, deployment di edge). Lulusan
-        Informatika (**IPK 3,99/4,00**).
+        Project manager dengan rekam jejak penyelesaian. Sebagai pendiri Decklify, SaaS AI, memimpin tim
+        5 orang hingga **daring dalam 3 bulan** dan final PIMNAS 2026, serta mengelola dana hibah
+        nasional Rp8.125.000 dalam 82 kegiatan tercatat; menjalankan operasional hackathon dari awal
+        hingga akhir untuk **100+ peserta dan 30 tim**; serta mengelola tim lintas fungsi untuk
+        workshop, acara teknis, dan persiapan kompetisi. Pengalaman langsung di AI engineering (computer
+        vision, bahasa, deployment di edge). Lulusan Informatika (**IPK 3,99/4,00**).
     focus: [project]
     sections: [experience, leadership, skills, education, awards, training, certifications]
     skills: [product-management, leadership, web-product, languages]

@@ -73,3 +73,25 @@ Semua 16 PDF (8 CV × EN/ID) tetap **2 halaman**, teksnya bisa disalin, tanpa no
 1. **Nomor HP:** aturan proyek melarang nomor HP di PDF publik. Saran: tulis nomor di formulir lamaran, atau cetak salinan pribadi dari halaman `/print/cv/…` (tambahkan nomor di salinan itu saja, jangan di-commit).
 2. **Bukti alat data:** pemilik mengonfirmasi pernah memakai SQL, Spark/PySpark, Airflow, BigQuery, Power BI, Tableau, dan Looker Studio, tetapi belum ada studi kasus terbit yang menunjukkannya. Ada draf studi kasus AI yang belum di-merge dan cocok untuk itu (mis. `drafts/case-study-netflix-prize-data-warehouse-recommender`, `drafts/case-study-etl-pipeline`, `drafts/case-study-air-quality-analysis`). Setelah ditinjau dan di-merge, tambahkan slug-nya ke `projects` varian Data Engineer dan Data Analyst.
 3. **Poin Research Assistant** (2 bulan, 5 poin) di CV umum boleh dipangkas bila pemilik ingin ruang untuk hal lain; tidak diubah karena poin yang sama tampil di web.
+
+## 6. Tinjauan HR lanjutan (2026-10-30, permintaan pemilik)
+
+Pemilik meminta "(100% spent and reported)" dan "from 38 respondents" dihapus, lalu CV dinilai ulang sebagai HR (bagus, sesuai, terstruktur, jelas).
+
+**Blok Decklify, sebelum:** isinya kuat, strukturnya lemah. Poin pertama hanya mendeskripsikan produk ("Leading development…"); pencapaian terkuat (tim 5 orang, final PIMNAS) ada di poin terakhir; satu poin memuat tiga gagasan (evaluasi, model bisnis, penjualan); angka "IDR 428,862" terlalu presisi untuk CV; keterangan dalam kurung membuat poin padat.
+
+**Sesudah (5 poin, satu gagasan per poin, terkuat di depan):** (1) mendirikan Decklify dan memimpin tim 5 orang hingga daring dalam 3 bulan dan final PIMNAS 2026; (2) arsitektur sistem dan server produksi sendiri, biaya tetap di bawah IDR 430K/bulan; (3) evaluasi produk: uji beban 200 generasi serentak tanpa galat, NPS +45; (4) model bisnis margin kontribusi 83,68% dan 45 transaksi berbayar di bulan pertama penjualan; (5) dana hibah IDR 8,125,000 serta hak cipta, NIB, dan permohonan merek. Ringkasan varian Data Analyst, Product Manager, dan Project Manager disesuaikan. Keterangan "sebagian besar voucher peluncuran" kini hanya di studi kasus (CV cukup menyebut transaksi berbayar, yang memang benar).
+
+**Penilaian HR sesudah perbaikan:**
+
+| Aspek | Nilai | Catatan |
+|---|---|---|
+| Bagus (isi dan dampak) | 9/10 | Hampir setiap poin punya angka; prestasi akademik dan kompetisi kuat |
+| Sesuai (dengan posisi) | 9/10 | Tujuh varian; ringkasan dibuka dengan posisi dan alatnya; proyek pilihan mendukung skill |
+| Terstruktur | 8,5/10 | Urutan bagian standar ATS; blok Decklify kini rapi |
+| Jelas | 8,5/10 | Bahasa aktif dan ringkas; beberapa poin lama masih umum (di bawah) |
+
+**Saran berikutnya (isi lama, tidak diubah tanpa persetujuan karena juga tampil di web):**
+- Poin yang tidak punya hasil terukur dan terdengar umum: Green Leadership ("Strengthened leadership values…", "Developed research, critical thinking…"), DBS facilitator ("Built a collaborative and inclusive learning environment…"), Indosat facilitator ("Supported program growth… measurable increase in enrollment" tanpa angka). Lebih kuat bila diberi angka atau dihapus dari CV.
+- Research Assistant (2 bulan) memiliki 5 poin, lebih banyak dari peran yang lebih penting; 3 poin sudah cukup.
+- Bukti alat data (SQL, Spark, Airflow, BigQuery, BI) tetap dicantumkan atas keputusan pemilik (mampu memakainya); siapkan contoh untuk wawancara, dan tambahkan studi kasusnya bila sudah terbit.

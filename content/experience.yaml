@@ -12,18 +12,21 @@ items:
     end: present
     tags: [Product, System Design, Generative AI, Docker, Linux]
     highlights:
-      - en: Leading development of Decklify, an AI SaaS that turns prompts, documents, or old PPTX files into editable decks (decklify.id).
-        id: "Memimpin pengembangan Decklify, SaaS AI yang mengubah perintah, dokumen, atau file PPTX lama menjadi presentasi yang bisa disunting (decklify.id)."
-        focus: [ai, product, project]
-      - en: Designed the system architecture (Next.js, Go, PostgreSQL, AI pipeline) for a **launch in 3 months**, and run the self-hosted server that keeps fixed costs at **IDR 428,862 a month**.
-        id: "Merancang arsitektur sistem (Next.js, Go, PostgreSQL, pipeline AI) hingga **daring dalam 3 bulan** dan menjalankan server sendiri dengan biaya tetap **Rp428.862 per bulan**."
+      - en: Founded Decklify, an AI SaaS that turns prompts, documents, or old PPTX files into editable decks, and led a 5-person team from idea to launch in **3 months** and to the **PIMNAS 2026 finals**.
+        id: "Mendirikan Decklify, SaaS AI yang mengubah perintah, dokumen, atau file PPTX lama menjadi presentasi yang bisa disunting, dan memimpin tim 5 orang dari ide hingga daring dalam **3 bulan** dan ke **final PIMNAS 2026**."
+        focus: [ai, product, project, leadership]
+      - en: Designed the system architecture (Next.js, Go, PostgreSQL, multi-provider AI pipeline) and run the self-hosted production server, keeping fixed costs under **IDR 430K a month**.
+        id: "Merancang arsitektur sistem (Next.js, Go, PostgreSQL, pipeline AI multi-penyedia) dan menjalankan server produksi sendiri dengan biaya tetap di bawah **Rp430 ribu per bulan**."
         focus: [ai, product, project, data]
-      - en: Led product evaluation (load test of **200 concurrent generations with zero errors**, **+45 NPS** from 38 respondents) and built the business model (**83.68% contribution margin**); **45 paid transactions** in October 2026, mostly launch vouchers.
-        id: "Memimpin evaluasi produk (uji beban **200 generasi serentak tanpa galat**, **NPS +45** dari 38 responden) dan menyusun model bisnis (**margin kontribusi 83,68%**); **45 transaksi berbayar** pada Oktober 2026, sebagian besar voucher peluncuran."
+      - en: Led product evaluation, including a load test of **200 concurrent generations with zero errors** and user testing that scored **+45 NPS**.
+        id: "Memimpin evaluasi produk, termasuk uji beban **200 generasi serentak tanpa galat** dan uji pengguna dengan **NPS +45**."
         focus: [product, ai, data]
-      - en: Led a 5-person team with an **IDR 8,125,000** national grant (100% spent and reported) to the **PIMNAS 2026 finals**; secured copyrights, a business license, and a trademark filing.
-        id: "Memimpin tim 5 orang dengan hibah nasional **Rp8.125.000** (terealisasi 100%) hingga **final PIMNAS 2026**; mengurus hak cipta, NIB, dan permohonan merek."
-        focus: [leadership, product, project]
+      - en: Built the business model with an **83.68% contribution margin**, reaching **45 paid transactions** in the first month of sales.
+        id: "Menyusun model bisnis dengan **margin kontribusi 83,68%** hingga mencapai **45 transaksi berbayar** di bulan pertama penjualan."
+        focus: [product, data]
+      - en: Managed an **IDR 8,125,000** national grant and secured copyrights, a business license, and a trademark filing.
+        id: "Mengelola dana hibah nasional **Rp8.125.000** serta mengurus hak cipta, izin usaha (NIB), dan permohonan merek."
+        focus: [project, leadership, product]
 
   - id: mitra-teknologi-gemilang
     organization: PT. Mitra Teknologi Gemilang

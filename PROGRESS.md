@@ -390,6 +390,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
 
+### 2026-10-30 · Claude Code (Opus) · T16.5 lanjutan: tinjauan HR blok Decklify
+- **Permintaan pemilik:** hapus "(100% spent and reported)" dan "from 38 respondents", lalu nilai CV sebagai HR. Pemilik juga memutuskan alat data (SQL, Spark, Airflow, BigQuery, BI) tetap dicantumkan.
+- **Dikerjakan:** blok Decklify ditulis ulang menjadi 5 poin (satu gagasan per poin, tim dan PIMNAS di depan, biaya tetap dibulatkan); ringkasan varian Data Analyst, Product Manager, Project Manager disesuaikan; penilaian dan saran berikutnya di `docs/cv-evaluation.md` §6. Semua 16 PDF tetap 2 halaman. Issue #35 (percobaan pemilik) ditriase dan ditutup.
+
 ### 2026-10-30 · Claude Code (Opus) · T16.4 AI editor Kind words
 - **Dikerjakan:** langkah terjemahan diganti AI editor (`src/lib/messages/publish.ts`: `editPrompt`, `checkEdit`, `editMessage`, `editReport`; `scripts/kind-words.ts`): deteksi bahasa tulisan, `role`/`relationship` dirapikan (ditolak bila nama hilang atau panjang berubah jauh), isi pesan asli selalu dipertahankan, saran hanya di tabel PR, tanda spam/kata kasar/data pribadi/prompt injection/bukan kesan & pesan; bila AI gagal pesan tetap masuk dengan tanda "periksa manual". Log publik hanya id dan kode. ADR 0023 (mengubah langkah terjemahan ADR 0017), `docs/10` §3.2. Tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal, tabel laporan). `/security-review` dijalankan.
 

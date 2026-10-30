@@ -34,7 +34,7 @@ const CASES: { file: string; maxPages: number; maxBytes: number; mustContain: st
     file: 'Harry-Mardika-CV-ID.pdf',
     maxPages: 2,
     maxBytes: 1_000_000,
-    mustContain: ['PENGALAMAN', 'Memimpin pengembangan'],
+    mustContain: ['PENGALAMAN', 'Mendirikan Decklify'],
   },
   {
     file: 'Harry-Mardika-Portfolio-EN.pdf',
