@@ -18,6 +18,7 @@ import {
   type Profile,
   type ProjectItem,
   type Publication,
+  publicationLink,
   publicationVenue,
   type SkillGroup,
 } from '@/lib/content';
@@ -134,7 +135,17 @@ const moreSummary = (item: ProjectItem): string =>
                     {' '}
                     · {publicationVenue(paper)}, {awardDate(paper.date)}
                     {paper.status !== 'published' && ` (${t[`about.publicationStatus.${paper.status}`]})`}
-                    {paper.doi && ` · DOI ${paper.doi}`}
+                    {paper.doi && (
+                      <>
+                        {' '}
+                        · DOI{' '}
+                        {publicationLink(paper) ? (
+                          <a href={publicationLink(paper)}>{paper.doi}</a>
+                        ) : (
+                          paper.doi
+                        )}
+                      </>
+                    )}
                   </span>
                 </li>
               ))}

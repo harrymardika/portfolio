@@ -3,9 +3,12 @@
  */
 import type { Publication } from './schemas';
 
-/** The paper's public link: its DOI through the resolver, else its URL; nothing before it is out. */
+/**
+ * The paper's public link: its `url` (the article page) when given, else its DOI through the resolver;
+ * nothing before it is out. A new DOI can take a while to resolve, so the article page goes first (T17.0d).
+ */
 export const publicationLink = (paper: Pick<Publication, 'doi' | 'url'>): string | undefined =>
-  paper.doi ? `https://doi.org/${paper.doi}` : paper.url;
+  paper.url ?? (paper.doi ? `https://doi.org/${paper.doi}` : undefined);
 
 /** "Venue, Vol. 7, No. 4": the venue with its volume and issue when known. */
 export const publicationVenue = (paper: Pick<Publication, 'venue' | 'details'>): string =>

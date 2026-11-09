@@ -5,6 +5,14 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-11-09
+
+### Fixed
+- The JSCE article's DOI does not resolve yet (doi.org answers "not found"), so every link to the paper (About, CVs, the Javanese script case study) now opens the journal's article page; the DOI is still written out, and clicking it opens that page too. A publication's `url` now takes precedence over its DOI (T17.0d).
+
+### Changed
+- CVs list a publication without its author names, at the owner's request (T17.0d).
+
 ## [1.7.2] - 2026-11-09
 
 Academic credentials: a publications section, the BNSP certification, and the scientific paper.

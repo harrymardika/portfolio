@@ -161,7 +161,14 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
                 )}
                 {paper.doi && (
                   <span class="text-xs text-ink-muted">
-                    DOI: <span class="font-mono">{paper.doi}</span>
+                    DOI:{' '}
+                    {link ? (
+                      <a href={link} rel="noopener" class="font-mono underline">
+                        {paper.doi}
+                      </a>
+                    ) : (
+                      <span class="font-mono">{paper.doi}</span>
+                    )}
                   </span>
                 )}
               </li>

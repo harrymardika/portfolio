@@ -135,7 +135,8 @@ describe('publicationSchema', () => {
 });
 
 describe('publication helpers', () => {
-  it('links the DOI through its resolver, else the URL', () => {
+  it('links the article page when given, else the DOI through its resolver', () => {
+    expect(publicationLink({ doi: '10.1/x', url: 'https://example.com/p' })).toBe('https://example.com/p');
     expect(publicationLink({ doi: '10.1/x' })).toBe('https://doi.org/10.1/x');
     expect(publicationLink({ url: 'https://example.com/p' })).toBe('https://example.com/p');
     expect(publicationLink({})).toBeUndefined();

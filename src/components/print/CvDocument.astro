@@ -188,8 +188,8 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
               const link = publicationLink(paper);
               return (
                 <li>
-                  <strong>{paper.title}</strong>. {paper.authors.join(', ')}.{' '}
-                  <em>{publicationVenue(paper)}</em>, {awardDate(paper.date)}
+                  {/* No author list on the CV (owner, 2026-11-09): About and the article page show it. */}
+                  <strong>{paper.title}</strong>. <em>{publicationVenue(paper)}</em>, {awardDate(paper.date)}
                   {paper.status !== 'published' && ` (${t[`about.publicationStatus.${paper.status}`]})`}.
                   {link && (
                     <>

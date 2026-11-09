@@ -107,7 +107,7 @@ Di CV, gelar yang punya `gpa` otomatis diberi baris "Transcript and diploma avai
 
 ### `publications.yaml` (Publikasi, T17.0b, D33)
 `items[]`: `id`, `title`, `authors[]` (urut seperti di artikel; keduanya teks biasa, ditulis persis seperti terbit), `venue` (nama jurnal/konferensi), `details?` (mis. `Vol. 7, No. 4`), `date` (`YYYY` atau `YYYY-MM`), `status` (`published` bawaan, `accepted`, `submitted`), `doi?` (tanpa `https://doi.org/`), `url?`, `project?` (nama file studi kasus terkait, harus terbit), `show_on_web?`, `show_on_cv?`.
-- Status `published` wajib punya `doi` atau `url`. Status lain tampil dengan label "Accepted" / "Submitted, under review".
+- Status `published` wajib punya `doi` atau `url`. Status lain tampil dengan label "Accepted" / "Submitted, under review". Tautan "Read the paper" dan tautan di CV memakai `url` (halaman artikel) bila diisi, baru DOI; DOI baru bisa butuh waktu sampai aktif di doi.org. CV tidak mencantumkan nama penulis (permintaan pemilik 2026-11-09).
 - Tampil di About (bagian **Publications / Publikasi**, dengan tautan artikel dan studi kasus), CV umum dan varian yang mencantumkan `publications` di `sections`, halaman profil Portfolio PDF, dan pengetahuan chatbot.
 - Alur untuk naskah yang sedang diproses (D34): tulis dulu sebagai poin di `education.yaml`; setelah dikirim ke jurnal, pindahkan ke sini dengan `status: submitted`; setelah terbit, ubah ke `published` dan isi `doi`.
 

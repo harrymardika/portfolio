@@ -12,4 +12,6 @@ items:
     date: 2026-10
     status: published
     doi: 10.61628/jsce.v7i4.2904
+    # The DOI does not resolve yet (doi.org says not found), so links go to the article page.
+    url: https://journal.unpacti.ac.id/index.php/JSCE/article/view/2904
     project: aksara-jawa-yolo
