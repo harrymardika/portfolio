@@ -21,6 +21,8 @@ export const knowledgeSectionSchema = z.strictObject({
   text: bilingualSchema,
   /** Long form (a case study body), only in the full knowledge. */
   detail: bilingualSchema.optional(),
+  /** Shorter English text that replaces `text` in the compact knowledge (ADR 0024); full knowledge ignores it. */
+  brief: z.string().min(1).optional(),
 });
 export type KnowledgeSection = z.infer<typeof knowledgeSectionSchema>;
 

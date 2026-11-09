@@ -84,6 +84,25 @@ describe('knowledgeText and toCompact', () => {
     expect(compact.paths).toEqual(knowledge.paths);
     expect(knowledgeText(compact)).toBe('## profile (/)\nAda builds AI.\n\n## project/x (/projects/x/)\nX.');
   });
+
+  it('uses a brief in place of the text in the compact knowledge only', () => {
+    const knowledge = finalize();
+    const withBrief: Knowledge = {
+      ...knowledge,
+      sections: knowledge.sections.map((section) =>
+        section.key === 'project/x'
+          ? { ...section, text: { en: 'X, a long summary.' }, brief: 'X (2026)' }
+          : section,
+      ),
+    };
+    expect(knowledgeText(withBrief)).toContain('X, a long summary.');
+    expect(knowledgeText(withBrief)).not.toContain('X (2026)');
+    const compact = toCompact(withBrief);
+    expect(knowledgeText(compact)).toBe(
+      '## profile (/)\nAda builds AI.\n\n## project/x (/projects/x/)\nX (2026)',
+    );
+    expect(compact.sections.every((section) => section.brief === undefined)).toBe(true);
+  });
 });
 
 describe('knowledgeProblems', () => {

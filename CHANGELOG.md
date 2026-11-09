@@ -5,6 +5,13 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-11-09
+
+Hotfix: the site deploys again, so the 14 case studies merged since 2026-11-04 go live.
+
+### Fixed
+- Every deploy since 2026-11-04 stopped at the assistant's knowledge step: the 14 new case studies pushed the compact knowledge for the backup provider (Groq) to about 5,100 tokens, over its 5,000 budget. Case studies that are not featured now appear there as a short line (title, year, tags) instead of their full summary; the full knowledge keeps every summary, and the budget is unchanged (ADR 0024, T17.0).
+
 ## [1.7.0] - 2026-10-30
 
 Phase 16: fixes and content on the way to version 2.

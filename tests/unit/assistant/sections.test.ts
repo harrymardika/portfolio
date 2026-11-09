@@ -162,6 +162,15 @@ describe('projectSection', () => {
     });
   });
 
+  it('gives a case study that is not featured a short brief for the compact knowledge', () => {
+    expect(projectSection(local, {}).brief).toBe('Decklify (2026, Go)');
+  });
+
+  it('keeps the full summary of a featured case study in the compact knowledge', () => {
+    const featured = { ...local, project: { ...decklify, featured: true } };
+    expect(projectSection(featured, {}).brief).toBeUndefined();
+  });
+
   it('has no detail when there is nothing beyond the summary', () => {
     const bare = { ...local, project: { ...decklify, metrics: [], tags: [], links: {} } };
     expect(projectSection(bare, {}).detail).toBeUndefined();

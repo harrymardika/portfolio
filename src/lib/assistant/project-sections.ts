@@ -12,7 +12,9 @@ import type { KnowledgeSection } from './knowledge';
  * A case study links to its own page with the summary in `text`; metrics, tags, links, and the body are
  * `detail`, since the compact answers link to that page anyway. A GitHub-only repo links to /projects/.
  * The detail is English only: the model answers in either language from it, and both bodies would
- * double the largest part of the full knowledge (ADR 0022).
+ * double the largest part of the full knowledge (ADR 0022). Only featured case studies keep their summary
+ * in the compact knowledge; the rest are a `brief` line (title, year, tags), so each new case study adds
+ * a few tokens to Groq's small budget instead of a whole summary (ADR 0024).
  */
 export function projectSection(
   item: ProjectItem,
@@ -40,6 +42,11 @@ export function projectSection(
       (locale) =>
         `${project.title} (${project.year}), ${localize(project.role, locale)}: ${localize(project.summary, locale)}`,
     ),
+    ...(project.featured
+      ? {}
+      : {
+          brief: `${project.title} (${[project.year, ...project.tags].join(', ')})`,
+        }),
     ...optionalDetail({
       en: lines(
         project.metrics.length > 0 &&

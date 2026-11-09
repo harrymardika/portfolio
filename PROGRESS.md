@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-10-30 · **Fase aktif:** Fase 17 (gambar proyek dan Portfolio PDF bergambar) · **Tugas berikutnya:** T17.1 (skema dan tampilan gambar proyek)
+**Terakhir diperbarui:** 2026-11-09 · **Fase aktif:** Fase 17 (gambar proyek dan Portfolio PDF bergambar) · **Tugas berikutnya:** T17.0 (hotfix deploy), lalu T17.0b–c (publikasi, BNSP, PI), lalu T17.1
 
 ## Ringkasan
 
@@ -284,6 +284,16 @@ Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** se
 
 Tiga gambar per studi kasus (sampul, diagram, hasil), jujur dan dibuat skrip; tidak ada angka atau tampilan rekaan.
 
+**Sisipan mendesak (permintaan pemilik 2026-11-09, independen, dikerjakan sebelum T17.1):**
+
+- [x] **T17.0** Hotfix: deploy jalan lagi (rilis 1.7.1)
+  - Penyebab: sejak 2026-11-04 setiap Deploy gagal di langkah `knowledge`: setelah 14 draf studi kasus di-merge, `knowledge-compact.json` ±5.107 token (data asli) / ±5.205 (fixture e2e), di atas anggaran 5.000. Situs live belum memuat 14 studi kasus itu.
+  - Kriteria: versi ringkas memakai baris pendek (judul, tahun, tag) untuk studi kasus yang tidak `featured` (ringkasan tetap di versi lengkap), sehingga tiap studi kasus baru menambah ±20 token, bukan ±80; batas 5.000 tidak dinaikkan; ADR baru mengubah sebagian ADR 0022; tes unit; `bun run build` (data asli) dan `bun run verify` lulus; Deploy sukses dan live dicek.
+- [ ] **T17.0b** Bagian Publikasi (D33)
+  - Kriteria: `content/publications.yaml` (judul, penulis, jurnal, volume/nomor, tahun, DOI/URL, status `published`/`submitted`, tautan ke studi kasus) dengan skema Zod dan Pages CMS; bagian "Publications/Publikasi" di About, CV umum + 7 varian, dan Portfolio PDF (EN/ID); chatbot mengetahuinya; studi kasus `aksara-jawa-yolo` EN/ID menautkan DOI; isi pertama: artikel JSCE Vol 7 No 4 (Okt 2026), DOI 10.61628/jsce.v7i4.2904; CV tetap ≤ 2 halaman.
+- [ ] **T17.0c** Sertifikat BNSP, Penulisan Ilmiah, dan catatan ijazah (D34–D36)
+  - Kriteria: `certifications.yaml` memuat BNSP "Associate Data Scientist (Ilmuwan Data Madya)", LSP Universitas Gunadarma atas nama BNSP, terbit 2026-07, berlaku s.d. 2029-07, nomor sertifikat sebagai `credential_id`; disebut di ringkasan CV varian Data Scientist dan AI/ML; Penulisan Ilmiah (PI, 2025) "Aplikasi Chatbot Akademik Berbasis RAG …" sebagai poin di Pendidikan yang menautkan studi kasus Chatbot RAG; CV menulis "Transcript and diploma available on request" tanpa mengunggah dokumen; NPM, tempat/tanggal lahir, dan nomor ijazah tidak masuk repo; CV tetap ≤ 2 halaman.
+
 - [ ] **T17.1** Skema dan tampilan gambar proyek
   - Kriteria: field `images` di frontmatter studi kasus (`src`, `alt` EN/ID, `kind`: `cover`/`diagram`/`result`) di skema + Pages CMS; galeri di halaman studi kasus (EN/ID, `loading="lazy"` di luar layar pertama, ukuran tetap tanpa CLS); sampul di daftar Projects; tes: setiap gambar ada filenya dan punya `alt` EN; dua gambar lama (reclaimyt, dompet-juara) dipakai; tes tidak mengasumsikan jumlah proyek.
 - [ ] **T17.2** Skrip `scripts/generate-project-visuals.ts`
@@ -364,6 +374,10 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 | D30 | AI editor Kind words | **Setelah disetujui, di PR**: deteksi bahasa, rapikan metadata, terjemahkan, tandai masalah; **isi pesan hanya saran**; tanpa secret/layanan baru (2026-10-28) |
 | D31 | Keterangan Decklify | Dilengkapi dari dokumen PKM-K. Pemilik **tidak menulis kode** Decklify; perannya perencanaan dan evaluasi (desain sistem, evaluasi produk), server, dokumen/keuangan, legalitas. 45 transaksi Oktober boleh tampil **tanpa rupiah**; klaim lama dikoreksi sesuai laporan akhir (2026-10-30) |
 | D32 | Evaluasi CV | Semua CV (umum + 7 varian) dievaluasi menurut kriteria HR per posisi lalu **langsung diperbaiki**; pemilik meninjau di ringkasan akhir (2026-10-30) |
+| D33 | Publikasi | **Bagian baru Publications/Publikasi** (About, CV umum + varian, Portfolio PDF, chatbot); isi pertama artikel JSCE skripsi (2026-11-09) |
+| D34 | Penulisan Ilmiah (PI) | Masih proses dikirim ke jurnal: **poin di Pendidikan** sekarang; pindah ke Publikasi berstatus `submitted` setelah dikirim, lalu `published` + DOI setelah terbit (saran agent, 2026-11-09) |
+| D35 | Ijazah dan transkrip | **Tidak diunggah**; CV menulis IPK + "Transcript and diploma available on request" (2026-11-09) |
+| D36 | Sertifikat BNSP | **Nomor sertifikat ditampilkan** sebagai credential ID; disebut di ringkasan varian Data Scientist dan AI/ML (2026-11-09) |
 
 **Dijawab pemilik 2026-10-10 sebelum pergi** (Fase 13 dikerjakan tanpa pemilik):
 - **Deploy:** semua tugas Fase 13 dikumpulkan di branch `phase/13` (di-push sebagai cadangan) dan baru di-merge ke `main` di T13.7 setelah semua tes dan Lighthouse lulus, agar situs live tidak pernah tampil setengah jadi.
@@ -389,6 +403,11 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-11-09 · Claude Code (Opus) · T17.0 hotfix deploy (rilis 1.7.1)
+- **Penyebab:** 14 draf studi kasus di-merge pemilik (PR #18–#33); versi ringkas pengetahuan chatbot naik ke ±5.107 token (> 5.000), jadi setiap Deploy sejak 2026-11-04 berhenti di langkah `knowledge`.
+- **Perbaikan:** field `brief` (hanya versi ringkas); studi kasus yang tidak `featured` cukup judul, tahun, tag (ADR 0024). Hasil build data asli: ringkas ±4.103/5.000, lengkap ±25.132/30.000 token. `bun run verify` lulus.
+- **Permintaan pemilik yang sama:** publikasi JSCE, sertifikat BNSP, Penulisan Ilmiah, saran ijazah/transkrip → T17.0b–c. Keputusan: D33–D36.
 
 ### 2026-10-30 · Claude Code (Opus) · T16.6 penutupan Fase 16 (rilis 1.7.0) · ringkasan fase
 - **Yang dibangun:** deploy jalan lagi (tes `appendEntry` tidak bergantung pada `content/`; batas pengetahuan chatbot diatur ulang, ADR 0022); Kind words pertama tayang dengan terjemahan benar; Decklify ditulis lengkap dari dokumen PKM-K sesuai peran pemilik (D31) dan Finalis PIMNAS 2026, dana Rp8.125.000; evaluasi semua CV per posisi (`docs/cv-evaluation.md`): bagian proyek pilihan, ringkasan per posisi, tanda hubung ATS; tracker permintaan di GitHub Issues (`AGENTS.md` §2b, dipakai pemilik di #35); AI editor Kind words (ADR 0023).

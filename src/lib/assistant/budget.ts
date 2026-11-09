@@ -50,14 +50,17 @@ export function knowledgeText(knowledge: Pick<Knowledge, 'sections'>): string {
     .join('\n\n');
 }
 
-/** The compact knowledge: English only, without `detail` (extra highlights, tags, links, case study bodies). */
+/**
+ * The compact knowledge: English only, without `detail` (extra highlights, tags, links, case study bodies),
+ * and with a section's `brief` in place of its text when it has one (ADR 0024).
+ */
 export function toCompact(knowledge: Knowledge): Knowledge {
   return {
     ...knowledge,
-    sections: knowledge.sections.map(({ key, path, text }): KnowledgeSection => ({
+    sections: knowledge.sections.map(({ key, path, text, brief }): KnowledgeSection => ({
       key,
       path,
-      text: { en: text.en },
+      text: { en: brief ?? text.en },
     })),
   };
 }
