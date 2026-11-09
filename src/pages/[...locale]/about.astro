@@ -146,7 +146,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
                   <span class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
                     {link && (
                       <a href={link} rel="noopener" class="font-semibold text-forest-ink underline">
-                        {t['about.publicationRead']} ↗
+                        {t['about.publicationRead']} <span aria-hidden="true">↗</span>
                       </a>
                     )}
                     {paper.project && (
@@ -225,7 +225,7 @@ const formatDate = (value: string): string => (value.length === 4 ? value : form
                   rel="noopener"
                   class="w-max text-sm font-semibold text-forest-ink underline"
                 >
-                  {t['about.verify']} ↗
+                  {t['about.verify']} <span aria-hidden="true">↗</span>
                 </a>
               )}
             </li>
