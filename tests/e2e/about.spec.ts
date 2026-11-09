@@ -9,6 +9,7 @@ test('the About page lists every section in order', async ({ page }) => {
     'Experience',
     'Leadership & teaching',
     'Education',
+    'Publications',
     'Training',
     'Awards',
     'Certifications',

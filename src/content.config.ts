@@ -20,6 +20,7 @@ import {
   profileSchema,
   projectSchema,
   projectTranslationSchema,
+  publicationSchema,
   skillGroupSchema,
   messageSchema,
   trainingSchema,
@@ -56,6 +57,10 @@ export const collections = {
   awards: defineCollection({ loader: listFile('awards'), schema: awardSchema }),
   trainings: defineCollection({ loader: listFile('trainings'), schema: trainingSchema }),
   certifications: defineCollection({ loader: listFile('certifications'), schema: certificationSchema }),
+  publications: defineCollection({
+    loader: listFile('publications', 'items', { mayBeEmpty: true }),
+    schema: publicationSchema,
+  }),
   // Order matters for these two, so the parser records each entry's position in the file.
   skills: defineCollection({
     loader: listFile('skills', 'groups', { withPosition: true }),

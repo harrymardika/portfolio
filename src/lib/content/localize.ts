@@ -38,7 +38,8 @@ const FOREIGN_DECIMAL: Record<Locale, RegExp> = {
  * ("92,5") or a point decimal in Indonesian ("92.5"). A separator followed by exactly three
  * digits is a thousands separator and is allowed in both ("12,000", "12.000"). Version numbers
  * keep their points in every language: inside a code span (`Python 3.10`) or glued to a letter (v8.1).
+ * Links are not numbers either (a DOI such as https://doi.org/10.61628/…), so URLs are skipped.
  */
 export function hasForeignDecimal(text: string, locale: Locale): boolean {
-  return FOREIGN_DECIMAL[locale].test(text.replace(/`[^`]*`/g, ''));
+  return FOREIGN_DECIMAL[locale].test(text.replace(/`[^`]*`/g, '').replace(/https?:\/\/[^\s)>\]]+/g, ''));
 }

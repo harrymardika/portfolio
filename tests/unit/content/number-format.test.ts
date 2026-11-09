@@ -73,6 +73,12 @@ describe('number format per language (D16)', () => {
     expect(hasForeignDecimal('Python 3.10', 'id')).toBe(true); // outside a code span it reads as a decimal
   });
 
+  it('skips links, such as a DOI', () => {
+    expect(hasForeignDecimal('[artikel](https://doi.org/10.61628/jsce.v7i4.2904)', 'id')).toBe(false);
+    expect(hasForeignDecimal('DOI: `10.61628/jsce.v7i4.2904`', 'id')).toBe(false);
+    expect(hasForeignDecimal('DOI: 10.61628/jsce.v7i4.2904', 'id')).toBe(true);
+  });
+
   it('allows thousands separators and lists', () => {
     expect(hasForeignDecimal('12,000+ applicants', 'en')).toBe(false);
     expect(hasForeignDecimal('12.000+ pendaftar', 'id')).toBe(false);

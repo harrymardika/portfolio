@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { PHONE_PATTERN } from '../../src/lib/security/contact';
+
 test('the first Tab focuses the skip link, which moves focus to the main content', async ({
   page,
   isMobile,
@@ -57,7 +59,8 @@ test('the skip link and footer are translated on Indonesian pages', async ({ pag
 test('no page shows a phone number', async ({ page }) => {
   for (const path of ['/', '/id/', '/cv/', '/id/cv/']) {
     await page.goto(path);
-    expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+    // Icon path data ("…2.48-1-3.5.28-1.15…") is not text; every other part of the HTML is checked.
+    expect((await page.content()).replace(/<svg[\s\S]*?<\/svg>/g, '')).not.toMatch(PHONE_PATTERN);
   }
 });
 

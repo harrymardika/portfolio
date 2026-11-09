@@ -38,6 +38,8 @@ items:
       id: Mahasiswa Berprestasi (MAPRES) semester 4, 5, 6, dan 7
     issuer: { en: "Universitas Gunadarma" }
     date: "2024"
+    # Already a highlight under Education on the CV; shown here on the website only (T17.0c, two-page CV).
+    show_on_cv: false
 
   - id: kompres-15
     title:
@@ -59,3 +61,5 @@ items:
       id: Best Student, Machine Learning Developer Cohort (90.000+ pendaftar)
     issuer: { en: "Indosat Ooredoo Hutchison Digital Camp" }
     date: 2024-04
+    # Already a highlight under Training on the CV; shown here on the website only (T17.0c, two-page CV).
+    show_on_cv: false

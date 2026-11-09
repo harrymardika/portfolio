@@ -1,0 +1,15 @@
+# Publications: journal and conference papers. Newest first on the site and CV.
+# Title and authors stay as published. `status`: published (needs `doi` or `url`), accepted, or submitted.
+# Move a paper from `submitted` to `published` and add its DOI once it is out (decision D34).
+# Schema: docs/04-content-guide.md §3.
+
+items:
+  - id: jsce-2026-aksara-yolo26
+    title: Javanese Script Classification with YOLO26 and Convolutional Filter Visualization
+    authors: [Harry Mardika, Ericks Rachmat Swedia]
+    venue: Journal of System and Computer Engineering (JSCE)
+    details: Vol. 7, No. 4
+    date: 2026-10
+    status: published
+    doi: 10.61628/jsce.v7i4.2904
+    project: aksara-jawa-yolo

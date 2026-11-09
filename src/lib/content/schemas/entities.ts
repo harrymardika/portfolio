@@ -30,6 +30,7 @@ export const CV_SECTIONS = [
   'skills',
   'experience',
   'projects',
+  'publications',
   'leadership',
   'training',
   'awards',
@@ -146,6 +147,38 @@ export const certificationSchema = z
     path: ['expires'],
   });
 
+/** Where a paper stands (D34): only `published` has a DOI or link; the others say so next to the venue. */
+export const PUBLICATION_STATUSES = ['published', 'accepted', 'submitted'] as const;
+
+/** A DOI without its resolver, e.g. `10.61628/jsce.v7i4.2904`. */
+const doi = z
+  .string()
+  .trim()
+  .regex(/^10\.\d{4,9}\/\S+$/, 'Write the DOI without https://doi.org/, e.g. 10.1234/abc.5');
+
+/** A paper (T17.0b, D33). Title and authors stay as published; only the status label is translated. */
+export const publicationSchema = z
+  .strictObject({
+    id: slug,
+    title: z.string().trim().min(1),
+    authors: z.array(z.string().trim().min(1)).min(1),
+    /** Journal or conference name. */
+    venue: z.string().trim().min(1),
+    /** Volume, issue, pages, e.g. "Vol. 7, No. 4". */
+    details: z.string().trim().min(1).optional(),
+    date: yearOrYearMonth,
+    status: z.enum(PUBLICATION_STATUSES).default('published'),
+    doi: doi.optional(),
+    url: z.url({ protocol: /^https$/ }).optional(),
+    /** Slug of the case study about the same work, linked from the paper. */
+    project: slug.optional(),
+    ...visibility,
+  })
+  .refine((p) => p.status !== 'published' || p.doi !== undefined || p.url !== undefined, {
+    message: 'A published paper needs a `doi` or `url`',
+    path: ['doi'],
+  });
+
 /** Added by the YAML parser (file order); never written by hand. */
 const position = z.number().int().min(0);
 
@@ -252,6 +285,8 @@ export type Education = z.infer<typeof educationSchema>;
 export type Training = z.infer<typeof trainingSchema>;
 export type Award = z.infer<typeof awardSchema>;
 export type Certification = z.infer<typeof certificationSchema>;
+export type Publication = z.infer<typeof publicationSchema>;
+export type PublicationStatus = (typeof PUBLICATION_STATUSES)[number];
 export type SkillGroup = z.infer<typeof skillGroupSchema>;
 export type Milestone = z.infer<typeof milestoneSchema>;
 export type Project = z.infer<typeof projectSchema>;

@@ -8,7 +8,7 @@ import {
   type KnowledgeInput,
   type KnowledgeSection,
 } from '@/lib/assistant';
-import { cvVariantSchema, profileSchema, projectSchema } from '@/lib/content/schemas';
+import { cvVariantSchema, profileSchema, projectSchema, publicationSchema } from '@/lib/content/schemas';
 
 const profile = profileSchema.parse({
   name: 'Ada Lovelace',
@@ -65,6 +65,7 @@ const input = (overrides: Partial<KnowledgeInput> = {}): KnowledgeInput => ({
   trainings: [],
   awards: [],
   certifications: [],
+  publications: [],
   skills: [],
   projects: [],
   caseStudies: {},
@@ -124,6 +125,35 @@ describe('buildKnowledgeSource', () => {
     expect(kindWords.detail).toEqual({ en: '- Edsger (Mentor): Great work.' });
   });
 
+  it('lists publications on About with venue, status, and DOI', () => {
+    const publications = [
+      publicationSchema.parse({
+        id: 'paper',
+        title: 'A Paper',
+        authors: ['Ada Lovelace', 'Charles Babbage'],
+        venue: 'Journal X',
+        details: 'Vol. 1, No. 2',
+        date: '2026-10',
+        doi: '10.1234/x.1',
+      }),
+      publicationSchema.parse({
+        id: 'draft',
+        title: 'Next Paper',
+        authors: ['Ada Lovelace'],
+        venue: 'Journal Y',
+        date: 2026,
+        status: 'submitted',
+      }),
+    ];
+    const papers = section(buildKnowledgeSource(input({ publications })).sections, 'publications');
+    expect(papers.path).toBe('/about/');
+    expect(papers.text).toEqual({
+      en:
+        '- "A Paper", Ada Lovelace, Charles Babbage, Journal X, Vol. 1, No. 2, 2026-10, published, DOI 10.1234/x.1\n' +
+        '- "Next Paper", Ada Lovelace, Journal Y, 2026, submitted',
+    });
+  });
+
   it('leaves out the profile links line when email is the only one', () => {
     const emailOnly = {
       ...profile,
@@ -136,6 +166,7 @@ describe('buildKnowledgeSource', () => {
   it('leaves out lists that are empty', () => {
     const keys = buildKnowledgeSource(input()).sections.map((s) => s.key);
     expect(keys).not.toContain('certifications');
+    expect(keys).not.toContain('publications');
     expect(keys).not.toContain('cv-variants');
     expect(keys).not.toContain('kind-words');
   });

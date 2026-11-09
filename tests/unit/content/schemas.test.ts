@@ -8,9 +8,11 @@ import {
   localizedText,
   slug,
   messageSchema,
+  publicationSchema,
   yearMonth,
   yearOrYearMonth,
 } from '@/lib/content/schemas';
+import { publicationLink, publicationVenue } from '@/lib/content/publications';
 
 describe('localizedText', () => {
   it('accepts English only, with Indonesian optional', () => {
@@ -102,6 +104,46 @@ describe('certificationSchema', () => {
     const result = certificationSchema.safeParse({ ...valid, expires: '2024-01' });
     expect(result.success).toBe(false);
     expect(result.error?.issues[0]?.path).toEqual(['expires']);
+  });
+});
+
+describe('publicationSchema', () => {
+  const valid = {
+    id: 'paper',
+    title: 'A Paper',
+    authors: ['Ada Lovelace'],
+    venue: 'Journal X',
+    date: '2026-10',
+    doi: '10.61628/jsce.v7i4.2904',
+  };
+
+  it('defaults to published and accepts a bare DOI', () => {
+    expect(publicationSchema.parse(valid).status).toBe('published');
+  });
+
+  it('rejects a DOI written as a link', () => {
+    expect(publicationSchema.safeParse({ ...valid, doi: 'https://doi.org/10.61628/x' }).success).toBe(false);
+  });
+
+  it('needs a DOI or URL once published, but not while submitted', () => {
+    const { doi: _doi, ...withoutLink } = valid;
+    const result = publicationSchema.safeParse(withoutLink);
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['doi']);
+    expect(publicationSchema.safeParse({ ...withoutLink, status: 'submitted' }).success).toBe(true);
+  });
+});
+
+describe('publication helpers', () => {
+  it('links the DOI through its resolver, else the URL', () => {
+    expect(publicationLink({ doi: '10.1/x' })).toBe('https://doi.org/10.1/x');
+    expect(publicationLink({ url: 'https://example.com/p' })).toBe('https://example.com/p');
+    expect(publicationLink({})).toBeUndefined();
+  });
+
+  it('adds volume and issue to the venue when known', () => {
+    expect(publicationVenue({ venue: 'JSCE', details: 'Vol. 7, No. 4' })).toBe('JSCE, Vol. 7, No. 4');
+    expect(publicationVenue({ venue: 'JSCE' })).toBe('JSCE');
   });
 });
 

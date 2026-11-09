@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { PHONE_PATTERN } from '../../src/lib/security/contact';
+
 test('the contact section shows the email address first, then the social profiles', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('#contact');
@@ -11,7 +13,7 @@ test('the contact section shows the email address first, then the social profile
     'href',
     'https://www.instagram.com/harry.mrdk/',
   );
-  await expect(section).not.toContainText(/(\+?62|\b08)[\d\s-]{8,}/);
+  await expect(section).not.toContainText(PHONE_PATTERN);
 });
 
 test('the copy button copies the email address', async ({ page, context, browserName }) => {

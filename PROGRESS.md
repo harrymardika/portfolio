@@ -3,7 +3,7 @@
 > Satu-satunya sumber kebenaran tentang status proyek. **Perbarui setiap kali menyelesaikan atau menghentikan tugas.**
 > Legenda: `[ ]` belum · `[~]` sedang dikerjakan (tulis siapa) · `[x]` selesai · `[!]` terblokir (tulis alasannya)
 
-**Terakhir diperbarui:** 2026-11-09 · **Fase aktif:** Fase 17 (gambar proyek dan Portfolio PDF bergambar) · **Tugas berikutnya:** T17.0 (hotfix deploy), lalu T17.0b–c (publikasi, BNSP, PI), lalu T17.1
+**Terakhir diperbarui:** 2026-11-09 · **Fase aktif:** Fase 17 (gambar proyek dan Portfolio PDF bergambar) · **Tugas berikutnya:** T17.1 (skema dan tampilan gambar proyek)
 
 ## Ringkasan
 
@@ -289,9 +289,9 @@ Tiga gambar per studi kasus (sampul, diagram, hasil), jujur dan dibuat skrip; ti
 - [x] **T17.0** Hotfix: deploy jalan lagi (rilis 1.7.1)
   - Penyebab: sejak 2026-11-04 setiap Deploy gagal di langkah `knowledge`: setelah 14 draf studi kasus di-merge, `knowledge-compact.json` ±5.107 token (data asli) / ±5.205 (fixture e2e), di atas anggaran 5.000. Situs live belum memuat 14 studi kasus itu.
   - Kriteria: versi ringkas memakai baris pendek (judul, tahun, tag) untuk studi kasus yang tidak `featured` (ringkasan tetap di versi lengkap), sehingga tiap studi kasus baru menambah ±20 token, bukan ±80; batas 5.000 tidak dinaikkan; ADR baru mengubah sebagian ADR 0022; tes unit; `bun run build` (data asli) dan `bun run verify` lulus; Deploy sukses dan live dicek.
-- [ ] **T17.0b** Bagian Publikasi (D33)
+- [x] **T17.0b** Bagian Publikasi (D33)
   - Kriteria: `content/publications.yaml` (judul, penulis, jurnal, volume/nomor, tahun, DOI/URL, status `published`/`submitted`, tautan ke studi kasus) dengan skema Zod dan Pages CMS; bagian "Publications/Publikasi" di About, CV umum + 7 varian, dan Portfolio PDF (EN/ID); chatbot mengetahuinya; studi kasus `aksara-jawa-yolo` EN/ID menautkan DOI; isi pertama: artikel JSCE Vol 7 No 4 (Okt 2026), DOI 10.61628/jsce.v7i4.2904; CV tetap ≤ 2 halaman.
-- [ ] **T17.0c** Sertifikat BNSP, Penulisan Ilmiah, dan catatan ijazah (D34–D36)
+- [x] **T17.0c** Sertifikat BNSP, Penulisan Ilmiah, dan catatan ijazah (D34–D36)
   - Kriteria: `certifications.yaml` memuat BNSP "Associate Data Scientist (Ilmuwan Data Madya)", LSP Universitas Gunadarma atas nama BNSP, terbit 2026-07, berlaku s.d. 2029-07, nomor sertifikat sebagai `credential_id`; disebut di ringkasan CV varian Data Scientist dan AI/ML; Penulisan Ilmiah (PI, 2025) "Aplikasi Chatbot Akademik Berbasis RAG …" sebagai poin di Pendidikan yang menautkan studi kasus Chatbot RAG; CV menulis "Transcript and diploma available on request" tanpa mengunggah dokumen; NPM, tempat/tanggal lahir, dan nomor ijazah tidak masuk repo; CV tetap ≤ 2 halaman.
 
 - [ ] **T17.1** Skema dan tampilan gambar proyek
@@ -403,6 +403,12 @@ Semua keputusan D1–D7 sudah dijawab pada 2026-10-05.
 ## Log sesi
 
 Format: `### YYYY-MM-DD · <agent/orang> · <tugas>`, lalu poin: dikerjakan / belum / langkah berikutnya / catatan. Entri terbaru di atas. Simpan sekitar 5 entri terakhir di sini; entri yang lebih lama dipindah ke [`docs/progress-archive.md`](docs/progress-archive.md) agar file ini tetap ringkas.
+
+### 2026-11-09 · Claude Code (Opus) · T17.0b–c publikasi, BNSP, Penulisan Ilmiah (rilis 1.7.2)
+- **Dikerjakan:** `content/publications.yaml` + skema (`status` published/accepted/submitted, DOI tanpa resolver), Pages CMS, bagian Publikasi di About, CV umum + 7 varian, halaman profil Portfolio PDF, chatbot; studi kasus `aksara-jawa-yolo` EN/ID menautkan DOI. BNSP Associate Data Scientist (2026-07 s.d. 2029-07, nomor sertifikat) di Sertifikasi dan ringkasan varian AI/ML + Data Scientist. PI sebagai poin Pendidikan (judul lengkap di studi kasus Chatbot RAG). CV: baris "Transcript and diploma available on request" di gelar ber-IPK.
+- **Agar CV umum tetap 2 halaman:** poin skripsi dan PI satu baris; penghargaan MAPRES dan Best Student IDCamp disembunyikan dari CV saja (`show_on_cv: false`, sudah tertulis di Pendidikan/Pelatihan; tetap di web); entri CV boleh berlanjut ke halaman berikut di antara poin (judul tetap menempel poin pertama); jarak antarentri sedikit dirapatkan; label situs di kontak CV hanya domain. Semua 16 PDF CV 2 halaman.
+- **Lainnya:** pemeriksa format angka (D16) kini mengabaikan URL (DOI bukan angka desimal). Dokumen pribadi (NPM, tempat/tanggal lahir, nomor ijazah, scan ijazah/transkrip) tidak masuk repo.
+- **Menunggu pemilik:** setelah naskah PI dikirim ke jurnal, pindahkan ke `publications.yaml` dengan `status: submitted` (lewat CMS menu Publikasi atau minta agent).
 
 ### 2026-11-09 · Claude Code (Opus) · T17.0 hotfix deploy (rilis 1.7.1)
 - **Penyebab:** 14 draf studi kasus di-merge pemilik (PR #18–#33); versi ringkas pengetahuan chatbot naik ke ±5.107 token (> 5.000), jadi setiap Deploy sejak 2026-11-04 berhenti di langkah `knowledge`.

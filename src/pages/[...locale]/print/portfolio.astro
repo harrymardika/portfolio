@@ -11,6 +11,7 @@ import {
   getProfile,
   getProjectItems,
   getProjects,
+  getPublications,
   getSkillGroups,
 } from '@/lib/content/queries';
 import { localeStaticPaths, localizePath, type Locale, UI } from '@/lib/i18n';
@@ -22,10 +23,11 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const [profile, milestones, awards, items, entries, skills] = await Promise.all([
+const [profile, milestones, awards, publications, items, entries, skills] = await Promise.all([
   getProfile(),
   getMilestones(),
   getAwards('cv'),
+  getPublications('cv'),
   getProjectItems(),
   getProjects(),
   getSkillGroups('web'),
@@ -54,6 +56,7 @@ const siteUrl = new URL(localizePath('/', locale), Astro.site).href;
     siteUrl={siteUrl}
     milestones={milestones}
     awards={awards}
+    publications={publications}
     featured={featured}
     more={more}
     skills={skills}

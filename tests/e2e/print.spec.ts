@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { localize } from '../../src/lib/content/localize';
+import { PHONE_PATTERN } from '../../src/lib/security/contact';
 import { UI, type UiKey } from '../../src/lib/i18n/ui';
 import { cvVariants, publishedCaseStudies } from './helpers';
 
@@ -12,6 +13,7 @@ for (const [path, headings] of [
       'Education',
       'Skills',
       'Experience',
+      'Publications',
       'Leadership & teaching',
       'Training',
       'Awards',
@@ -25,6 +27,7 @@ for (const [path, headings] of [
       'Pendidikan',
       'Keahlian',
       'Pengalaman',
+      'Publikasi',
       'Kepemimpinan & mengajar',
       'Pelatihan',
       'Penghargaan',
@@ -40,7 +43,7 @@ for (const [path, headings] of [
     await expect(page.locator('img, canvas, svg')).toHaveCount(0);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
-    expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+    expect(await page.content()).not.toMatch(PHONE_PATTERN);
     // Key results marked **like this** in content/ are bold, and no marker is left as text.
     expect(await page.locator('.cv .cv-entry li strong').count()).toBeGreaterThan(5);
     await expect(page.locator('.cv section').first().locator('p strong').first()).toBeVisible();
@@ -81,7 +84,7 @@ for (const path of ['/print/portfolio/', '/id/print/portfolio/']) {
     await expect(page.getByRole('img', { name: 'Harry Mardika' })).toBeVisible();
     await expect(page.locator('.pf-journey li')).toHaveCount(5);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
-    expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+    expect(await page.content()).not.toMatch(PHONE_PATTERN);
   });
 }
 
@@ -119,6 +122,7 @@ const SECTION_HEADINGS: Record<string, UiKey> = {
   skills: 'about.skills',
   experience: 'about.experience',
   projects: 'cv.projects',
+  publications: 'about.publications',
   leadership: 'about.leadership',
   training: 'about.training',
   awards: 'about.awards',
@@ -144,7 +148,7 @@ for (const variant of cvVariants()) {
         expect(actual).toContain(t[SECTION_HEADINGS[section] ?? 'cv.summary']);
       await expect(page.locator('img, canvas, svg')).toHaveCount(0);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
-      expect(await page.content()).not.toMatch(/(\+?62|\b08)[\d\s-]{8,}/);
+      expect(await page.content()).not.toMatch(PHONE_PATTERN);
       expect(await page.locator('.cv').innerText()).not.toContain('**');
       // Selected projects (T16.5): one line per case study, linked to its page in the CV's language.
       const projects = page

@@ -17,6 +17,8 @@ import {
   type Milestone,
   type Profile,
   type ProjectItem,
+  type Publication,
+  publicationVenue,
   type SkillGroup,
 } from '@/lib/content';
 import { contentImage } from '@/lib/content/media';
@@ -38,12 +40,13 @@ interface Props {
   siteUrl: string;
   milestones: Milestone[];
   awards: Award[];
+  publications: Publication[];
   featured: FeaturedProject[];
   more: ProjectItem[];
   skills: SkillGroup[];
 }
 
-const { locale, profile, siteUrl, milestones, awards, featured, more, skills } = Astro.props;
+const { locale, profile, siteUrl, milestones, awards, publications, featured, more, skills } = Astro.props;
 const t = UI[locale];
 const headline = splitEmphasis(localize(profile.headline, locale));
 const site = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
@@ -120,6 +123,24 @@ const moreSummary = (item: ProjectItem): string =>
             ))}
           </ul>
         </div>
+        {publications.length > 0 && (
+          <div>
+            <h3>{t['about.publications']}</h3>
+            <ul class="pf-list">
+              {publications.map((paper) => (
+                <li>
+                  <strong>{paper.title}</strong>
+                  <span class="pf-muted-ink">
+                    {' '}
+                    · {publicationVenue(paper)}, {awardDate(paper.date)}
+                    {paper.status !== 'published' && ` (${t[`about.publicationStatus.${paper.status}`]})`}
+                    {paper.doi && ` · DOI ${paper.doi}`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   </section>

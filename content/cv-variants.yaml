@@ -11,17 +11,17 @@ variants:
         PyTorch, and TensorFlow. Built a multimodal crisis-detection model with **92.5% accuracy (AUC
         0.96)** and deployed it on Hailo-8L at **5–8 ms latency**; engineered a real-time crowd violence
         detection engine that **cut computational overhead by 45%**. Founder of Decklify, an AI SaaS
-        launched in 3 months. Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining
-        finalist.
+        launched in 3 months. BNSP-certified Associate Data Scientist with a published journal article
+        on YOLO26; Informatics graduate (**GPA 3.99/4.00**) and GEMASTIK XVIII Data Mining finalist.
       id: >-
         AI/ML engineer yang membangun dan meluncurkan sistem computer vision, NLP, dan edge AI dengan
         Python, PyTorch, dan TensorFlow. Membangun model deteksi krisis multimodal dengan **akurasi
         92,5% (AUC 0,96)** dan men-deploy-nya di Hailo-8L dengan **latensi 5–8 ms**; merekayasa mesin
         deteksi kekerasan massa real-time yang **memangkas beban komputasi 45%**. Pendiri Decklify, SaaS
-        AI yang daring dalam 3 bulan. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining
-        GEMASTIK XVIII.
+        AI yang daring dalam 3 bulan. Bersertifikat BNSP Ilmuwan Data Madya dengan artikel jurnal
+        tentang YOLO26; lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
     focus: [ai]
-    sections: [skills, experience, projects, education, training, awards, leadership, certifications]
+    sections: [skills, experience, projects, publications, education, training, awards, leadership, certifications]
     skills: [ai-ml, llm-genai, cloud-mlops, data, languages]
     projects: [aksara-jawa-yolo, hoax-detection, reclaimyt]
 
@@ -33,18 +33,18 @@ variants:
         Data scientist who turns raw data into models with measurable results, using Python,
         scikit-learn, TensorFlow, and PyTorch. Built a multimodal crisis-detection model from **11k+
         images and 1k+ transcripts** reaching **92.5% accuracy (AUC 0.96)**, a BERT summarization system
-        scoring **ROUGE-1 56.63%**, and forecasting models for stock and gold prices. Informatics
-        graduate (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and Top 5 of 40 teams in
+        scoring **ROUGE-1 56.63%**, and forecasting models for stock and gold prices. BNSP-certified
+        Associate Data Scientist, Informatics graduate (**GPA 3.99/4.00**), GEMASTIK XVIII Data Mining finalist, and Top 5 of 40 teams in
         Regression Rumble (Neurontara Data Clash).
       id: >-
         Data scientist yang mengubah data mentah menjadi model dengan hasil terukur, memakai Python,
         scikit-learn, TensorFlow, dan PyTorch. Membangun model deteksi krisis multimodal dari **11 ribu+
         citra dan 1 ribu+ transkrip** dengan **akurasi 92,5% (AUC 0,96)**, sistem peringkasan berbasis
-        BERT dengan **ROUGE-1 56,63%**, serta model peramalan harga saham dan emas. Lulusan Informatika
-        (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan 5 besar dari 40 tim di Regression
+        BERT dengan **ROUGE-1 56,63%**, serta model peramalan harga saham dan emas. Bersertifikat BNSP
+        Ilmuwan Data Madya, lulusan Informatika (**IPK 3,99/4,00**), finalis Data Mining GEMASTIK XVIII, dan 5 besar dari 40 tim di Regression
         Rumble (Neurontara Data Clash).
     focus: [ai, data]
-    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, publications, training, education, awards, certifications, leadership]
     skills: [ai-ml, data, llm-genai, cloud-mlops, languages]
     projects: [gold-price-prediction, prediction-world-cup, bca-stock-lstm]
 
@@ -66,7 +66,7 @@ variants:
         agar pencarian semantik lebih cepat. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data
         Mining GEMASTIK XVIII.
     focus: [data]
-    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, publications, training, education, awards, certifications, leadership]
     skills: [data, cloud-mlops, ai-ml, languages]
     projects: [hoax-detection, humadity-iot-main, portfolio-site]
 
@@ -87,7 +87,7 @@ variants:
         bulan). Membangun model peramalan dan klasifikasi, termasuk model perilaku belanja dengan
         **akurasi 90%**. Lulusan Informatika (**IPK 3,99/4,00**) dan finalis Data Mining GEMASTIK XVIII.
     focus: [data, product]
-    sections: [skills, experience, projects, training, education, awards, certifications, leadership]
+    sections: [skills, experience, projects, publications, training, education, awards, certifications, leadership]
     skills: [data, ai-ml, product-management, languages]
     projects: [prediction-world-cup, gold-price-prediction, coinbase-sentiment-analysis]
 
@@ -110,7 +110,7 @@ variants:
         hingga mencapai **45 transaksi berbayar** di bulan pertama penjualan. Lulusan Informatika (**IPK
         3,99/4,00**) dengan pengalaman langsung di AI engineering.
     focus: [product]
-    sections: [experience, projects, skills, education, leadership, awards, training, certifications]
+    sections: [experience, projects, publications, skills, education, leadership, awards, training, certifications]
     skills: [product-management, web-product, ai-ml, llm-genai, languages]
     projects: [portfolio-site, dompet-juara]
 
@@ -133,7 +133,7 @@ variants:
         workshop, acara teknis, dan persiapan kompetisi. Pengalaman langsung di AI engineering (computer
         vision, bahasa, deployment di edge). Lulusan Informatika (**IPK 3,99/4,00**).
     focus: [project]
-    sections: [experience, leadership, skills, education, awards, training, certifications]
+    sections: [experience, leadership, skills, education, publications, awards, training, certifications]
     skills: [product-management, leadership, web-product, languages]
 
   - id: management-trainee
@@ -154,5 +154,5 @@ variants:
         pendaftar**; empat kali Mahasiswa Berprestasi (MAPRES) dengan **IPK 3,99/4,00**; membimbing
         **75+ peserta** dan menjalankan hackathon untuk 100+ peserta.
     focus: [leadership, product]
-    sections: [education, experience, leadership, awards, skills, training, certifications]
+    sections: [education, publications, experience, leadership, awards, skills, training, certifications]
     skills: [leadership, product-management, data, languages]

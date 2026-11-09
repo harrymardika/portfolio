@@ -5,6 +5,21 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+## [1.7.2] - 2026-11-09
+
+Academic credentials: a publications section, the BNSP certification, and the scientific paper.
+
+### Added
+- Publications: `content/publications.yaml` (title, authors, venue, date, status, DOI, related case study), editable in Pages CMS, shown on About, in the general CV and all seven CVs by role, on the profile page of the portfolio PDF, and in the assistant's knowledge. First entry: the thesis article in the Journal of System and Computer Engineering (JSCE), Vol. 7, No. 4, October 2026, DOI 10.61628/jsce.v7i4.2904, also linked from the Javanese script case study (T17.0b).
+- BNSP certification "Associate Data Scientist (Ilmuwan Data Madya)", valid July 2026 to July 2029, with its certificate number; mentioned in the AI/ML Engineer and Data Scientist CV summaries (T17.0c).
+- The scientific paper (Penulisan Ilmiah, 2025) on a RAG academic chatbot under Education and in the Chatbot RAG case study; CVs note "Transcript and diploma available on request" next to the GPA (T17.0c).
+
+### Changed
+- The general CV stays within two pages: the thesis and scientific paper lines are shorter, two awards already stated under Education and Training are left off the CV (still on the website), a long CV entry may continue on the next page between bullets, and the contact line shows the site's domain (T17.0c).
+
+### Fixed
+- The number-format check (D16) no longer reads a DOI inside a link as a decimal number (T17.0b).
+
 ## [1.7.1] - 2026-11-09
 
 Hotfix: the site deploys again, so the 14 case studies merged since 2026-11-04 go live.

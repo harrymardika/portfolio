@@ -289,6 +289,51 @@ content:
           - { name: credential_id, label: ID kredensial, type: string }
           - { name: url, label: URL verifikasi, type: string }
 
+  - name: publications
+    label: Publikasi
+    description: 'Artikel jurnal atau konferensi. Judul dan penulis ditulis persis seperti terbit. Status published wajib punya DOI atau URL.'
+    type: file
+    path: content/publications.yaml
+    format: yaml
+    fields:
+      - name: items
+        label: Publikasi
+        type: object
+        list: { collapsible: { collapsed: true, summary: '{id} ({date})' } }
+        fields:
+          - { name: id, component: slug }
+          - { name: title, label: Judul, type: string, required: true }
+          - { name: authors, label: Penulis (urut), type: string, list: true, required: true }
+          - { name: venue, label: Jurnal / konferensi, type: string, required: true }
+          - { name: details, label: Volume / nomor, type: string, description: 'Mis. Vol. 7, No. 4' }
+          - name: date
+            label: Tanggal
+            type: string
+            required: true
+            description: Tahun (2025) atau YYYY-MM (2025-04).
+            pattern:
+              regex: '^\d{4}(-(0[1-9]|1[0-2]))?$'
+              message: Gunakan tahun (2025) atau format YYYY-MM.
+          - name: status
+            label: Status
+            type: select
+            options: { values: [published, accepted, submitted] }
+          - {
+              name: doi,
+              label: DOI,
+              type: string,
+              description: 'Tanpa https://doi.org/, mis. 10.61628/jsce.v7i4.2904',
+            }
+          - { name: url, label: URL artikel, type: string }
+          - {
+              name: project,
+              label: Studi kasus terkait,
+              type: string,
+              description: 'Nama file studi kasus tanpa .md',
+            }
+          - { name: show_on_web, component: showOnWeb }
+          - { name: show_on_cv, component: showOnCv }
+
   - name: skills
     label: Keahlian
     description: Urutan grup di sini = urutan di web.
@@ -370,7 +415,17 @@ content:
             options:
               {
                 values:
-                  [education, skills, experience, projects, leadership, training, awards, certifications],
+                  [
+                    education,
+                    skills,
+                    experience,
+                    projects,
+                    publications,
+                    leadership,
+                    training,
+                    awards,
+                    certifications,
+                  ],
               }
           - name: skills
             label: Grup skill (urutan tampil)

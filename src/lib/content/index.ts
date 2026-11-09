@@ -13,5 +13,6 @@ export * from './localize';
 export * from './ordering';
 export * from './project-items';
 export * from './projects';
+export * from './publications';
 export * from './visibility';
 export type * from './schemas';

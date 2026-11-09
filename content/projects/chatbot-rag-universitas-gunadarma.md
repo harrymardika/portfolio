@@ -33,3 +33,4 @@ I designed a modular RAG pipeline that crawls official university sites, chunks 
 - Provided both a React/TypeScript web client and a Chainlit Python UI for flexible user experiences.
 - Exposed a FastAPI RESTful and WebSocket API that returns answers with source citations.
 - Containerized all services with Docker Compose, enabling easy deployment and scaling.
+- Written up as my scientific paper (Penulisan Ilmiah) at Universitas Gunadarma in 2025: “Aplikasi Chatbot Akademik Berbasis Retrieval-Augmented Generation (RAG) untuk Meningkatkan Pengetahuan Informasi Layanan Akademik bagi Mahasiswa Universitas Gunadarma”.

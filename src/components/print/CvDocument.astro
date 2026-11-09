@@ -20,6 +20,9 @@ import {
   type Experience,
   type Profile,
   type Project,
+  type Publication,
+  publicationLink,
+  publicationVenue,
   type SkillGroup,
   type Training,
 } from '@/lib/content';
@@ -35,6 +38,7 @@ interface Props {
   trainings: Training[];
   awards: Award[];
   certifications: Certification[];
+  publications?: Publication[];
   skills: SkillGroup[];
   /** Variant overrides; the general CV uses the profile's role and summary. */
   role?: string;
@@ -53,6 +57,7 @@ const {
   trainings,
   awards,
   certifications,
+  publications = [],
   skills,
   role = localize(profile.role, locale),
   summary = localize(profile.summary, locale),
@@ -73,8 +78,11 @@ const contacts = [
       href: social.url,
       platform: social.platform,
     })),
-  { label: siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''), href: siteUrl },
+  // The domain alone as the label (the link keeps the language path), so the contact line fits on one line.
+  { label: new URL(siteUrl).host, href: siteUrl },
 ];
+// A degree with a GPA notes that the documents behind it are available, never the scans themselves (D35).
+const documentsOnRequest = { en: UI.en['cv.documentsOnRequest'], id: UI.id['cv.documentsOnRequest'] };
 const awardDate = (date: string): string => (date.length === 4 ? date : formatYearMonth(date, locale));
 ---
 
@@ -117,7 +125,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
               subtitle={item.institution}
               location={item.location}
               dates={range(item)}
-              highlights={item.highlights}
+              highlights={item.gpa ? [...item.highlights, documentsOnRequest] : item.highlights}
             />
           ))}
         </section>
@@ -166,6 +174,29 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
                   {metric
                     ? `; ${localizeNumber(metric.value, locale)} ${localize(metric.label, locale)}.`
                     : '.'}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+      {section === 'publications' && publications.length > 0 && (
+        <section>
+          <h2>{t['about.publications']}</h2>
+          <ul class="cv-list">
+            {publications.map((paper) => {
+              const link = publicationLink(paper);
+              return (
+                <li>
+                  <strong>{paper.title}</strong>. {paper.authors.join(', ')}.{' '}
+                  <em>{publicationVenue(paper)}</em>, {awardDate(paper.date)}
+                  {paper.status !== 'published' && ` (${t[`about.publicationStatus.${paper.status}`]})`}.
+                  {link && (
+                    <>
+                      {' '}
+                      <a href={link}>{paper.doi ? `DOI: ${paper.doi}` : link}</a>
+                    </>
+                  )}
                 </li>
               );
             })}
@@ -275,7 +306,7 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
   }
 
   .cv section {
-    margin-top: 4pt;
+    margin-top: 3pt;
   }
 
   .cv h2 {
@@ -291,7 +322,17 @@ const awardDate = (date: string): string => (date.length === 4 ? date : formatYe
   }
 
   .cv :global(.cv-entry) {
-    margin-top: 3pt;
+    margin-top: 2pt;
+  }
+
+  /* A long entry may continue on the next page between bullets, so a page never ends with a large
+     gap; its header line stays with the first bullet, and a bullet never splits (T17.0c). */
+  .cv :global(.cv-line) {
+    break-after: avoid;
+  }
+
+  .cv :global(.cv-entry li),
+  .cv-list li {
     break-inside: avoid;
   }
 

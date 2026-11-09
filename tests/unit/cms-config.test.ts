@@ -17,6 +17,7 @@ import {
   profileSchema,
   projectSchema,
   projectTranslationSchema,
+  publicationSchema,
   skillGroupSchema,
   messageSchema,
   cvVariantSchema,
@@ -237,6 +238,7 @@ describe('.pages.yml', () => {
       ...compare('trainings', listFields('trainings', 'items'), shapeOf(trainingSchema)),
       ...compare('awards', listFields('awards', 'items'), shapeOf(awardSchema)),
       ...compare('certifications', listFields('certifications', 'items'), shapeOf(certificationSchema)),
+      ...compare('publications', listFields('publications', 'items'), shapeOf(publicationSchema)),
       // `position` is added by the YAML parser from the file order, never edited.
       ...compare('skills', listFields('skills', 'groups'), shapeOf(skillGroupSchema), ['position']),
       ...compare('journey', listFields('journey', 'milestones'), shapeOf(milestoneSchema), ['position']),

@@ -3,6 +3,15 @@
 # Schema: docs/04-content-guide.md §3.
 
 items:
+  # Competency certificate (SKKNI, 9 units: collect, review, validate, and clean data; build and evaluate
+  # models). Issued by LSP Universitas Gunadarma on behalf of BNSP, valid 3 years (decision D36).
+  - id: bnsp-associate-data-scientist
+    name: Associate Data Scientist (Ilmuwan Data Madya)
+    issuer: BNSP
+    issued: 2026-07
+    expires: 2029-07
+    credential_id: 62019 2511 6 0025284 2026
+
   - id: alibaba-cloud-associate
     name: "Alibaba Cloud Certified Associate: Cloud Computing"
     issuer: Alibaba Cloud

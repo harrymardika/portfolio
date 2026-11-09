@@ -32,6 +32,7 @@ Bisa juga langsung lewat web GitHub (tombol ✏️ di file), bahkan dari HP.
 | Penghargaan & lomba | `content/awards.yaml` |
 | Pelatihan / bootcamp | `content/trainings.yaml` |
 | Sertifikat | `content/certifications.yaml` |
+| Publikasi (artikel jurnal/konferensi) | `content/publications.yaml` |
 | Skills | `content/skills.yaml` |
 | Titik-titik di jalur Journey 3D | `content/journey.yaml` |
 | Proyek / case study | `content/projects/<slug>.md` (terjemahan body: `content/projects/id/<slug>.md`) |
@@ -95,6 +96,7 @@ List `items[]`:
 
 ### `education.yaml`, `trainings.yaml`
 Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `location`, `start`, `end`, `gpa?`, `highlights[]`.
+Di CV, gelar yang punya `gpa` otomatis diberi baris "Transcript and diploma available on request" (teks UI `cv.documentsOnRequest`, D35). Scan ijazah dan transkrip **tidak** diunggah ke repo atau situs (memuat NPM, tempat/tanggal lahir, nomor ijazah).
 
 ### `awards.yaml`
 `items[]`: `id`, `title` (LocalizedText), `issuer` (teks biasa atau LocalizedText untuk nama yang berbeda per bahasa, mis. kementerian), `date` (`YYYY` atau `YYYY-MM`), `rank?`, `show_on_cv?`.
@@ -102,6 +104,12 @@ Mirip `experience`: `id`, `institution`, `program`/`degree` (LocalizedText), `lo
 ### `certifications.yaml`
 `items[]`: `id`, `name`, `issuer`, `issued` (`YYYY-MM`), `expires?` (`YYYY-MM`), `credential_id?`, `url?`.
 **Sertifikat yang `expires`-nya sudah lewat otomatis disembunyikan** dari web dan CV. Untuk menampilkannya lagi setelah diperpanjang, cukup perbarui `expires`.
+
+### `publications.yaml` (Publikasi, T17.0b, D33)
+`items[]`: `id`, `title`, `authors[]` (urut seperti di artikel; keduanya teks biasa, ditulis persis seperti terbit), `venue` (nama jurnal/konferensi), `details?` (mis. `Vol. 7, No. 4`), `date` (`YYYY` atau `YYYY-MM`), `status` (`published` bawaan, `accepted`, `submitted`), `doi?` (tanpa `https://doi.org/`), `url?`, `project?` (nama file studi kasus terkait, harus terbit), `show_on_web?`, `show_on_cv?`.
+- Status `published` wajib punya `doi` atau `url`. Status lain tampil dengan label "Accepted" / "Submitted, under review".
+- Tampil di About (bagian **Publications / Publikasi**, dengan tautan artikel dan studi kasus), CV umum dan varian yang mencantumkan `publications` di `sections`, halaman profil Portfolio PDF, dan pengetahuan chatbot.
+- Alur untuk naskah yang sedang diproses (D34): tulis dulu sebagai poin di `education.yaml`; setelah dikirim ke jurnal, pindahkan ke sini dengan `status: submitted`; setelah terbit, ubah ke `published` dan isi `doi`.
 
 ### `skills.yaml`
 `groups[]`: `{ id, name: LocalizedText, items: (string | LocalizedText)[], show_on_web?, show_on_cv? }`. `show_on_web` juga mengatur Portfolio PDF. Nama teknologi cukup ditulis biasa (`PyTorch`); kata sehari-hari ditulis dwibahasa (`{ en: Public speaking, id: Berbicara di depan umum }`). Urutan grup di file = urutan tampil.
@@ -118,7 +126,7 @@ Satu CV per jenis posisi (mis. Data Engineer), dibuat otomatis dari isi yang sam
 `variants[]`: `{ id, name, role, summary, focus[], sections[], skills? }`
 - `name`: nama varian (dipakai di nama file PDF). `role` dan `summary`: baris peran dan ringkasan khusus varian ini; ringkasan **hanya berisi fakta yang sudah ada** di konten.
 - `focus`: `ai` · `data` · `product` (produk) · `project` (manajemen proyek/delivery) · `leadership`. Poin pencapaian tampil jika **tanpa label fokus**, atau labelnya cocok.
-- `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `projects`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
+- `sections`: urutan bagian setelah ringkasan, dari `education`, `skills`, `experience`, `projects`, `publications`, `leadership`, `training`, `awards`, `certifications`. Bagian yang tidak ditulis tidak tampil.
 - `skills`: id grup skill (lihat `skills.yaml`) dengan urutan tampil. Jika tidak diisi, varian memakai grup yang tampil di CV umum (`show_on_cv` tidak `false`); daftar kosong ditolak.
 - `projects` (opsional, T16.5): 1–4 nama file studi kasus tanpa `.md` (mis. `hoax-detection`) untuk bagian **Selected projects / Proyek pilihan**; tampil hanya bila `projects` ada di `sections`. Setiap baris memuat judul (bertaut ke halaman studi kasus), tahun, `summary`, dan metrik pertama, jadi tulis `summary` studi kasus dengan gaya netral (tanpa "I built…"). Label `metrics` sebaiknya diawali huruf kecil, karena CV menaruhnya setelah nilai di tengah kalimat. `projects` dan bagian `projects` di `sections` harus diisi bersamaan. Slug yang tidak ada atau masih draf ditolak tes. Hasil evaluasi CV per posisi: `docs/cv-evaluation.md`.
 

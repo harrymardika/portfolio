@@ -2,7 +2,7 @@
  * Turns site content into knowledge sections (T11.1). Pure: the build endpoint passes in what the pages
  * show (src/pages/assistant-knowledge.json.ts), so visibility rules live in one place (queries.ts).
  */
-import { formatDateRange, localize, localizeNumber, type ProjectItem } from '@/lib/content';
+import { formatDateRange, localize, localizeNumber, publicationVenue, type ProjectItem } from '@/lib/content';
 import type {
   Award,
   Certification,
@@ -13,6 +13,7 @@ import type {
   LocalizedText,
   Message,
   Profile,
+  Publication,
   SkillGroup,
   Training,
   YearMonth,
@@ -32,6 +33,7 @@ export interface KnowledgeInput {
   readonly trainings: readonly Training[];
   readonly awards: readonly Award[];
   readonly certifications: readonly Certification[];
+  readonly publications: readonly Publication[];
   readonly skills: readonly SkillGroup[];
   readonly projects: readonly ProjectItem[];
   /** Case study Markdown bodies by slug; `id` only when a translation exists. */
@@ -125,7 +127,7 @@ function timeline(input: KnowledgeInput): KnowledgeSection[] {
   return [...experience, ...education, ...trainings];
 }
 
-function recognition({ awards, certifications, skills }: KnowledgeInput): KnowledgeSection[] {
+function recognition({ awards, certifications, publications, skills }: KnowledgeInput): KnowledgeSection[] {
   return [
     {
       key: 'awards',
@@ -143,6 +145,20 @@ function recognition({ awards, certifications, skills }: KnowledgeInput): Knowle
       key: 'certifications',
       path: '/about/',
       text: { en: certifications.map((c) => `- ${c.name}, ${c.issuer}, ${c.issued}`).join('\n') },
+    },
+    {
+      // Titles and venues stay as published, so one language serves both.
+      key: 'publications',
+      path: '/about/',
+      text: {
+        en: publications
+          .map(
+            (p) =>
+              `- "${p.title}", ${p.authors.join(', ')}, ${publicationVenue(p)}, ${p.date}, ${p.status}` +
+              (p.doi ? `, DOI ${p.doi}` : ''),
+          )
+          .join('\n'),
+      },
     },
     {
       key: 'skills',

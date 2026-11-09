@@ -23,7 +23,7 @@ Tombol unduh ada di hero beranda dan di halaman About (EN/ID), dengan atribut `d
 
 - A4, margin 12–15 mm, **satu kolom**, maksimal 2 halaman.
 - Teks asli yang bisa dipilih (bukan gambar). Tanpa tabel tata letak, ikon sebagai pengganti teks, grafik skill bar, atau foto.
-- Judul bagian standar, dengan urutan (keputusan pemilik 2026-10-07): Summary, Education, Skills, Experience, Leadership & teaching, Training, Awards, Certifications.
+- Judul bagian standar, dengan urutan (keputusan pemilik 2026-10-07): Summary, Education, Skills, Experience, Publications (T17.0b, tampil bila ada isi), Leadership & teaching, Training, Awards, Certifications. Gelar yang punya IPK diberi baris "Transcript and diploma available on request" (D35).
 - Teks **hitam** (`--print-ink`) di atas putih, tidak memakai warna tema. Yang tebal: nama, judul entri, nama grup skill, dan frasa yang ditandai `**…**` di konten (docs/04 §6). Daftar Awards dan Certifications sengaja polos (keputusan pemilik 2026-10-07): jika semua baris tebal, tidak ada yang menonjol.
 - Header: nama, kota, email, LinkedIn, GitHub, URL website. **Tanpa nomor HP.**
 - Isi: item dengan `show_on_cv: true`, sertifikat yang masih berlaku, urutan terbaru dulu.

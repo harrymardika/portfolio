@@ -22,6 +22,7 @@ import {
   trainingSchema,
   messageSchema,
   cvVariantSchema,
+  publicationSchema,
 } from '@/lib/content/schemas';
 import { hasStrayStrongMarker } from '@/lib/content/emphasis';
 import { parseFrontmatter } from '@/lib/content/frontmatter';
@@ -49,6 +50,7 @@ const LIST_FILES = [
   { file: 'awards.yaml', key: 'items', schema: awardSchema },
   { file: 'trainings.yaml', key: 'items', schema: trainingSchema },
   { file: 'certifications.yaml', key: 'items', schema: certificationSchema },
+  { file: 'publications.yaml', key: 'items', schema: publicationSchema, mayBeEmpty: true },
   { file: 'skills.yaml', key: 'groups', schema: skillGroupSchema, withPosition: true },
   { file: 'journey.yaml', key: 'milestones', schema: milestoneSchema, withPosition: true },
   { file: 'messages.yaml', key: 'items', schema: messageSchema, withPosition: true, mayBeEmpty: true },
@@ -143,6 +145,19 @@ describe('content files', () => {
     const dangling = parseYamlList(read('cv-variants.yaml'), 'variants', { withPosition: true, mayBeEmpty: true })
       .flatMap((variant) => ((variant['projects'] as string[] | undefined) ?? []).map((slug) => `${variant['id']}: ${slug}`))
       .filter((ref) => !published.has(ref.split(': ')[1] ?? ''));
+
+    expect(dangling).toEqual([]);
+  });
+
+  it('every publication `project` is a published case study', () => {
+    const published = new Set(
+      projectFiles
+        .filter((name) => (readFrontmatter(`projects/${name}`) as { draft?: boolean }).draft !== true)
+        .map((name) => name.replace(/\.md$/, '')),
+    );
+    const dangling = parseYamlList(read('publications.yaml'), 'items', { mayBeEmpty: true })
+      .map((paper) => paper['project'] as string | undefined)
+      .filter((slug): slug is string => slug !== undefined && !published.has(slug));
 
     expect(dangling).toEqual([]);
   });

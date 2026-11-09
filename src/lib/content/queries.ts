@@ -20,6 +20,7 @@ import type {
   Experience,
   Milestone,
   Profile,
+  Publication,
   SkillGroup,
   Message,
   Training,
@@ -49,6 +50,13 @@ export async function getTrainings(surface: Surface = 'web'): Promise<Training[]
 
 export async function getAwards(surface: Surface = 'web'): Promise<Award[]> {
   return sortedBy(visibleOn(await dataOf(getCollection('awards')), surface), (a, b) =>
+    compareDatesDesc(a.date, b.date),
+  );
+}
+
+/** Papers shown on a surface, newest first (T17.0b). */
+export async function getPublications(surface: Surface = 'web'): Promise<Publication[]> {
+  return sortedBy(visibleOn(await dataOf(getCollection('publications')), surface), (a, b) =>
     compareDatesDesc(a.date, b.date),
   );
 }
@@ -94,7 +102,7 @@ export async function getCaseStudyBody(project: ProjectEntry, locale: Locale) {
 
 /** Everything the CV shows (surface `cv`), shared by the general CV and its variants. */
 export async function getCvData() {
-  const [profile, experience, education, trainings, awards, certifications, skills] = await Promise.all([
+  const [profile, experience, education, trainings, awards, certifications, skills, publications] = await Promise.all([
     getProfile(),
     getExperience('cv'),
     getEducation('cv'),
@@ -102,8 +110,9 @@ export async function getCvData() {
     getAwards('cv'),
     getCertifications(),
     getSkillGroups(),
+    getPublications('cv'),
   ]);
-  return { profile, experience, education, trainings, awards, certifications, skills };
+  return { profile, experience, education, trainings, awards, certifications, skills, publications };
 }
 
 /** CV variants in file order (T10.1, D10). */

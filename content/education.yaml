@@ -11,8 +11,15 @@ items:
     highlights:
       - en: "**Four-time Most Outstanding Student (MAPRES)**, 4th to 7th semester."
         id: "**Empat kali Mahasiswa Berprestasi (MAPRES)**, semester 4 hingga 7."
-      - en: "Undergraduate thesis: “Javanese Script (Aksara Jawa) Classification Based on YOLO26 with Visualization and Interpretation of Convolution Filters.”"
-        id: "Skripsi: “Klasifikasi Aksara Jawa Berbasis YOLO26 dengan Visualisasi dan Interpretasi Filter Konvolusi.”"
+      # One line each so the general CV stays within two pages. Full titles: the thesis in the case study
+      # aksara-jawa-yolo and in publications.yaml; the PI in the case study chatbot-rag-universitas-gunadarma.
+      - en: "Undergraduate thesis on YOLO26 Javanese script classification with filter visualization, published in JSCE (2026)."
+        id: "Skripsi tentang klasifikasi aksara Jawa dengan YOLO26 dan visualisasi filter, terbit di jurnal JSCE (2026)."
+        focus: [ai]
+      # Penulisan Ilmiah (PI), certificate 2025-09. Being submitted to a journal: move it to
+      # publications.yaml with `status: submitted` once sent (decision D34).
+      - en: "Scientific paper (Penulisan Ilmiah, 2025) on a RAG-based academic chatbot for Universitas Gunadarma students."
+        id: "Penulisan Ilmiah (2025) tentang chatbot akademik berbasis RAG untuk mahasiswa Universitas Gunadarma."
         focus: [ai]
 
   - id: sman2-mandau
