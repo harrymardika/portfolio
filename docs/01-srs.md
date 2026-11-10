@@ -97,4 +97,4 @@ Server: Lenovo IdeaPad 300S-11IBR, Celeron N3050, RAM 1,8 GB, SSD 500 GB, Debian
 
 ## 7. Roadmap
 
-Lihat `PROGRESS.md` (Fase 0–8).
+Lihat `docs/progress-archive.md` (daftar tugas Fase 0–8).

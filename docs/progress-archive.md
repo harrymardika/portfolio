@@ -1,6 +1,20 @@
-# Arsip log sesi
+# Arsip PROGRESS
 
-> Log sesi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi. Entri terbaru di atas. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan atau koreksi data.
+> Isi lama yang dipindah dari [`PROGRESS.md`](../PROGRESS.md) agar file itu tetap ringkas dibaca setiap sesi: log sesi lama (terbaru di atas) dan daftar tugas fase yang sudah selesai. Tidak perlu dibaca untuk mengerjakan tugas, kecuali butuh riwayat keputusan, kriteria tugas lama, atau koreksi data.
+
+## Log sesi lama
+
+### 2026-10-30 · Claude Code (Opus) · T16.4 AI editor Kind words
+- **Dikerjakan:** langkah terjemahan diganti AI editor (`src/lib/messages/publish.ts`: `editPrompt`, `checkEdit`, `editMessage`, `editReport`; `scripts/kind-words.ts`): deteksi bahasa tulisan, `role`/`relationship` dirapikan (ditolak bila nama hilang atau panjang berubah jauh), isi pesan asli selalu dipertahankan, saran hanya di tabel PR, tanda spam/kata kasar/data pribadi/prompt injection/bukan kesan & pesan; bila AI gagal pesan tetap masuk dengan tanda "periksa manual". Log publik hanya id dan kode. ADR 0023 (mengubah langkah terjemahan ADR 0017), `docs/10` §3.2. Tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal, tabel laporan). `/security-review` dijalankan.
+
+### 2026-10-30 · Claude Code (Opus) · T16.3 tracker permintaan di GitHub Issues
+- **Dikerjakan:** formulir `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa, kenapa, contoh, prioritas; label `inbox`; peringatan repo publik) dan `config.yml` (issue kosong mati); label `inbox`, `planned`, `needs-owner` dibuat di GitHub; `AGENTS.md` §1 (cek `gh issue list --label inbox`) dan §2b (alur triase); panduan pemilik `docs/10-operations.md` §3.3. Uji: satu issue contoh ditriase sesuai §2b lalu ditutup (lihat CHANGELOG).
+- **Untuk penutupan fase:** kriteria T16.6 meminta tracker dipakai minimal sekali oleh pemilik.
+
+### 2026-10-30 · Claude Code (Opus) · T16.5 evaluasi CV per posisi (didahulukan atas permintaan pemilik)
+- **Dikerjakan:** 16 PDF CV dinilai dengan 10 kriteria umum dan kriteria per posisi; laporan `docs/cv-evaluation.md` (skor sebelum/sesudah). Perbaikan: tanda hubung tersalin sebagai tanda minus di semua PDF (fitur kontekstual font dimatikan, dicek tes); bagian baru **Selected projects / Proyek pilihan** (field `projects` di varian, skema, CMS, i18n, tes integritas) untuk AI/ML, Data Scientist, Data Engineer, Data Analyst, Product Manager; ringkasan ketujuh varian ditulis ulang (posisi + alat di kalimat pertama, klaim sesuai sumber); 4 ringkasan studi kasus bergaya netral. Semua PDF tetap 2 halaman.
+- **Keputusan pemilik:** bagian proyek hanya untuk varian yang cocok; SQL, Spark/PySpark, Airflow, BigQuery, Power BI, Tableau, Looker Studio benar dipakai (tetap di Skills).
+- **Menunggu pemilik:** nomor HP (tetap tidak di PDF publik), bukti alat data lewat draf studi kasus yang belum di-merge (`docs/cv-evaluation.md` §5).
 
 ### 2026-10-30 · Claude Code (Opus) · T16.2 PIMNAS, dana, dan keterangan Decklify
 - **Dikerjakan:** studi kasus Decklify EN/ID ditulis ulang dari laporan akhir PKM-K sesuai peran yang divalidasi (D31: merancang sistem, evaluasi, server, dokumen/keuangan, legalitas; kode oleh CTO); `experience.yaml` (4 poin, tag tanpa Go/Next.js), `profile.yaml` (ringkasan dan statistik hero), `cv-variants.yaml`, `awards.yaml` (Finalis PIMNAS 2026). Klaim lama dikoreksi (kemudahan 8,39, NPS dari 38 responden, tanpa "2 minggu pertama"/"product-market fit"/"peluncuran komersial"); dana Rp8.125.000; 45 transaksi Oktober tanpa rupiah.
@@ -630,3 +644,254 @@
 - **Belum:** belum ada kode aplikasi.
 - **Langkah berikutnya:** `T1.1` scaffold Astro.
 - **Catatan:** kode proyek lama ("Temporal Portal", React/Vite) sengaja dihapus oleh pemilik; mulai dari nol.
+
+## Daftar tugas Fase 0–16
+
+Dipindah dari `PROGRESS.md` pada 2026-11-10. Semua `[x]`, kecuali Fase 15 yang dibatalkan (D23).
+
+### Fase 0: Fondasi ✅
+
+- [x] **T0.1** Analisis SRS (PDF) dan bahan CV
+- [x] **T0.2** Pilih tema: **F + E, palet Hijau** → `docs/adr/0006-visual-theme.md`, prototipe di `docs/design/theme-prototypes.html`
+- [x] **T0.3** Dokumentasi: README, AGENTS.md, CLAUDE.md, `docs/01`–`09`, ADR 0001–0008
+- [x] **T0.4** Ekstrak data CV ke `content/` (EN lengkap, ID sebagian), dengan koreksi data yang disetujui pemilik
+- [x] **T0.5** Subagent reviewer (`.claude/agents/reviewer.md`), `.gitignore`, `.editorconfig`, `.env.example`
+
+### Fase 1: Scaffold & fondasi kode ✅
+
+- [x] **T1.1** Scaffold Astro + Bun + TypeScript strict
+  - Kriteria: `bun run dev` jalan; `tsconfig` strict (`strict`, `noUncheckedIndexedAccess`); struktur folder sesuai `docs/02-architecture.md` §4; path alias `@/` → `src/`.
+- [x] **T1.2** Tooling kualitas
+  - Kriteria: ESLint (+ plugin astro), Prettier (+ plugin astro), script `bun run check` = typecheck + lint + format:check; `bun test` jalan dengan 1 contoh tes; Playwright terpasang dengan 1 smoke test.
+- [x] **T1.3** Skema konten (Zod) untuk semua file di `content/` + loader Astro Content Layer
+  - Kriteria: build gagal dengan pesan jelas jika data salah; tipe TS diekspor; tes unit untuk validasi `LocalizedText`, tanggal `YYYY-MM`, dan sertifikat kedaluwarsa.
+- [x] **T1.4** Helper konten murni di `src/lib/content/` (`localize`, `formatDateRange`, `isActiveCertification`, `sortByDateDesc`, dll.)
+  - Kriteria: fungsi murni tanpa I/O, cakupan tes ≥ 90%.
+- [x] **T1.5** i18n: routing `en` (default `/`) + `id` (`/id/`), kamus UI di `src/lib/i18n/`, tombol ganti bahasa
+  - Kriteria: setiap halaman punya `hreflang` alternatif; teks UI tidak ada yang hardcode.
+- [x] **T1.6** Design tokens & Tailwind: tokens dari `docs/03-design-system.md` di `src/styles/tokens.css`, font dimuat (self-host via Fontsource)
+  - Kriteria: tidak ada hex mentah di komponen; mode gelap/terang berfungsi.
+- [x] **T1.7** Layout dasar: `BaseLayout`, `Header`, `Footer` (ikon sosial: LinkedIn, Instagram @harry.mrdk, GitHub, email), skip-link, meta SEO dasar
+  - Kriteria: lolos axe tanpa pelanggaran serius; navigasi keyboard berfungsi.
+- [x] **T1.8** Docker dev: `docker/compose.dev.yml` dengan hot reload *(independen, boleh dikerjakan paralel)*
+  - Kriteria: `docker compose -f docker/compose.dev.yml up` menjalankan dev server di port 4321.
+
+### Fase 2: Halaman & UI ✅
+
+- [x] **T2.1** Modul inti 3D `src/scenes/core/` (renderer, loop, pause saat offscreen, reduced-motion, deteksi WebGL, dispose)
+  - Kriteria: kontrak `SceneHandle` sesuai `docs/02-architecture.md` §6; tes unit untuk util non-WebGL.
+- [x] **T2.2** Hero: kartu foto 3D + kotak deteksi wajah + statistik
+  - Kriteria: sesuai prototipe (F + E, Hijau); tanpa JS/WebGL tampil versi statis yang setara; LCP < 2.5 s di mobile.
+- [x] **T2.3** Bagian Journey: jalur 3D dari `content/journey.yaml`, bola bergerak mengikuti scroll, titik bisa diklik (dialog detail)
+  - Kriteria: versi tanpa 3D berupa timeline HTML yang dapat diakses; label tidak menutupi teks di mobile.
+- [x] **T2.4** Halaman Projects (daftar + filter tag) dan detail proyek (case study dari `content/projects/*.md`); tambahkan ke `NAV_ITEMS`
+- [x] **T2.5** Halaman About: ringkasan, pengalaman, pendidikan, penghargaan, sertifikat aktif, skills; tambahkan ke `NAV_ITEMS`
+- [x] **T2.8** Menu navigasi di HP (saat `NAV_ITEMS` > 0, menu disembunyikan di bawah `md`)
+- [x] **T2.6** Bagian Contact (email, LinkedIn, Instagram, GitHub) tanpa nomor HP
+- [x] **T2.7** Halaman 404 dan halaman `/homelab` (spesifikasi server; status live menyusul di Fase 6)
+
+### Fase 3: Sinkronisasi GitHub
+
+- [x] **T3.1** `scripts/fetch-github.ts`: ambil repo publik `harrymardika` (REST, token opsional), pilih yang ada di `content/github.yaml → include` atau bertopic `portfolio`, kurangi `exclude` (keputusan D5); simpan ke `src/data/generated/github.json`
+  - Kriteria: skema Zod untuk `content/github.yaml`; fungsi seleksi murni + tes; retry + backoff; tetap build jika API gagal (pakai cache terakhir); tes untuk fungsi mapping.
+- [x] **T3.2** Gabungkan data GitHub dengan `content/projects/*.md` (Markdown lokal menimpa data GitHub jika `repo` sama)
+- [x] **T3.3** Jalankan sinkronisasi terjadwal (cron di GitHub Actions, tiap 6 jam): jadwal `17 */6 * * *` di `deploy.yml`. Run terjadwal pertama 2026-10-06 13:19 dan 22:39 UTC sukses (GitHub menjalankannya terlambat ±1–20 menit, normal); server memasang image 22:50 UTC dan cache Cloudflare terhapus otomatis
+
+### Fase 4: PDF CV & Portfolio ✅
+
+- [x] **T4.1** Halaman cetak `/print/cv` dan `/id/print/cv` (ATS: 1 kolom, teks asli, tanpa grafik, tanpa nomor HP)
+- [x] **T4.2** Halaman cetak `/print/portfolio` (visual, case study unggulan)
+- [x] **T4.3** `scripts/generate-pdf.ts` (Playwright) → `dist/downloads/` (setelah `astro build`) dengan nama `Harry-Mardika-CV-EN.pdf`, dst.
+  - Kriteria: berjalan di build Docker; teks PDF bisa dipilih/disalin; ukuran < 1 MB.
+- [x] **T4.4** Tombol download di UI (EN/ID) dan event statistik (T5.3); ganti CTA sementara di hero ("Get in touch"/"LinkedIn profile") menjadi "Download CV"/"Portfolio PDF"
+
+### Fase 5: Statistik bawaan (ADR 0009, `docs/08-analytics.md`)
+
+- [x] **T5.1** Service `services/stats/` (Bun + SQLite): `POST /api/stats/event`, `GET /api/stats/summary`, `GET /api/stats/private` (token)
+  - Kriteria: hash pengunjung harian dengan salt yang berganti & dibuang, tanpa IP tersimpan; filter bot; rate limit; validasi input (Zod); unit test untuk agregasi & privasi; RAM ≤ 96 MB *(direvisi dari 64 MB setelah diukur: runtime Bun 36 MB + Zod 32 MB + layanan ±4 MB)*.
+- [x] **T5.2** `docker/compose.yml` + `Caddyfile`: service `stats` (bundel `server.js`), volume `stats-data` (`STATS_DB_PATH`), route `/api/stats/*`, batas memori 128 MB (terukur 17 MiB), backup SQLite `docker/deploy/backup-stats.sh` (diuji)
+- [x] **T5.3** Skrip beacon di situs: `pageview`, `download-cv`, `download-portfolio`, `outbound` (konstanta di `src/lib/stats/events.ts`); hormati DNT/GPC; tidak aktif di dev dan `/print/*`
+- [x] **T5.4** Tampilan statistik publik di situs (EN/ID): pengunjung, tampilan halaman, unduhan, halaman & sumber teratas, negara; fallback "—" jika API tidak tersedia
+- [x] **T5.5** Laporan privat tautan `?ref=` untuk pemilik (`scripts/stats-report.ts` / endpoint bertoken) + panduan
+
+### Fase 6: Docker, CI/CD, deploy
+
+- [x] **T6.1** `docker/Dockerfile` multi-stage (build: Node + Bun + Chromium → GitHub, Astro, PDF, CSP, kompresi → `web` Caddy / `stats` Bun) + `Caddyfile` dengan header keamanan dan CSP berbasis hash
+- [x] **T6.2** GitHub Actions `ci.yml`: `bun run verify` pada setiap PR (dipanggil juga oleh `deploy.yml`; lulus di GitHub 2026-10-06)
+- [x] **T6.3** GitHub Actions `deploy.yml`: verify → build & push `portfolio-web`/`portfolio-stats` ke GHCR (`latest` + `sha-…`) saat push ke `main`, tiap 6 jam, dan manual (run pertama sukses 2026-10-06; image bisa ditarik tanpa login)
+- [x] **T6.4** `docker/compose.yml` produksi: `web` (96 MB) + `stats` (128 MB), read-only, tanpa capability; update lewat systemd timer, **bukan Watchtower** (diarsipkan; ADR 0010). Cloudflare Tunnel diurus pemilik
+- [x] **T6.5** Halaman `/homelab`: status server live dari `/api/health` (tanpa Uptime Kuma: tidak perlu container tambahan; saat server mati, Cloudflare menyajikan salinan dan badge menulis offline)
+
+### Fase 7: Kualitas
+
+- [x] **T7.1** SEO: sitemap (dari HTML build, dengan hreflang), robots.txt, gambar OG 1200×630 per halaman (22, EN+ID), JSON-LD `Person`/`WebSite`/`CreativeWork`, canonical + hreflang
+- [x] **T7.2** Lighthouse CI di GitHub Actions (target: Perf ≥ 90 mobile, A11y/BP/SEO ≥ 95): `lighthouserc.cjs`, langkah di `ci.yml` (menahan deploy). Beranda (3D) gagal di < 80 dan memberi peringatan di < 90; lihat `docs/progress-archive.md` (log 2026-10-06)
+- [x] **T7.3** Header keamanan (CSP, HSTS, dll.): situs live mendapat **A+ (120, 12/12)** di Mozilla HTTP Observatory (2026-10-06); securityheaders.com menolak akses otomatis, cek manual oleh pemilik bila perlu
+- [x] **T7.5** Ketersediaan saat server mati: HTML di-cache Cloudflare 7 hari + purge otomatis saat deploy (ADR 0012). Aktif dan diuji di produksi 2026-10-06
+- [x] **T7.4** Uji e2e utama: ganti bahasa (tetap di halaman yang sama), download CV, navigasi keyboard (`keyboard.spec.ts`), fallback tanpa WebGL (hero + journey)
+
+### Fase 8: Otomasi lanjutan
+
+- [x] **T8.1** CMS berbasis Git untuk mengedit `content/` dari browser: **Pages CMS** (ADR 0011), `.pages.yml`, penjaga drift `tests/unit/cms-config.test.ts`. *Pemilik: pasang GitHub App sekali (docs/04 §1).*
+- [x] **T8.2** Workflow AI: repo baru bertopic `portfolio` → draf case study + terjemahan ID sebagai Pull Request (tidak auto-merge): Gemini, cadangan Groq (ADR 0013). Run nyata pertama 2026-10-07: Gemini 503 → Groq → [PR #1](https://github.com/harrymardika/portfolio/pull/1) untuk `camera-genai`
+- [x] **T8.3** Terjemahkan semua `highlights` di `content/` ke Bahasa Indonesia: draf AI 2026-10-05, **direview pemilik 2026-10-07** (54 OK, 1 diperbaiki: judul resmi skripsi)
+
+### Fase 9: Personal branding & konten (`docs/11-roadmap.md` §A, C, D, F) ✅
+
+- [x] **T9.1** Positioning dan baris peran (D8, D9) · disetujui pemilik 2026-10-07. *Sisa untuk pemilik: samakan headline LinkedIn menjadi "AI Product Manager".*
+  - Kriteria: `profile.role` = "AI Product Manager" (EN + ID); tagline, ringkasan, dan tiga angka di hero ditulis ulang dengan suara produk (masalah pengguna, peluncuran, metrik) dengan AI engineering sebagai pembeda, ditinjau pemilik; tampil konsisten di hero, About, CV umum, sampul Portfolio, JSON-LD; tes e2e/PDF tidak bergantung pada teks lama. Pemilik menyamakan headline LinkedIn.
+- [x] **T9.2** Skill lebih lengkap (D11)
+  - Kriteria: `content/skills.yaml` disusun ulang ke grup baru (AI & ML, LLM & Generative AI, Data, Cloud & MLOps, Web & produk, Produk & manajemen, Kepemimpinan, Bahasa); hanya skill yang dicentang pemilik; EN + ID; CV umum tetap ≤ 2 halaman; kategori filter Projects disesuaikan jika ada tag baru.
+- [x] **T9.3** Studi kasus bahasa Indonesia (D12) · terjemahan disetujui pemilik 2026-10-08
+  - Keputusan: semua 11 diterjemahkan; istilah teknis/asing tetap bahasa Inggris.
+  - Kriteria: body `content/projects/id/<slug>.md` untuk semua studi kasus, fallback ke Inggris (+ catatan) bila belum ada; menu CMS; Portfolio PDF ID memakai terjemahan; tes kesamaan struktur EN/ID (judul bagian, gambar); terjemahan ditinjau pemilik; draf AI baru (T8.2) ikut menulis versi ID.
+- [x] **T9.4** Tampilan kesan & pesan (dulu "testimoni"; D15; formulirnya T12.1)
+  - Kriteria: `content/messages.yaml` (nama, peran opsional, hubungan, pesan EN/ID, tautan opsional, bulan izin) + skema + CMS; tampil di beranda ("Kind words" / "Kesan & pesan"); tidak tampil jika kosong; hanya dengan izin penulisnya. Portfolio PDF: belum (opsional, setelah ada isinya).
+
+- [x] **T9.5** Format angka konsisten di semua bahasa (D16)
+  - Aturan: **ikuti aturan baku tiap bahasa**. EN: titik desimal, koma ribuan (`92.5%`, `12,000`). ID (PUEBI): koma desimal, titik ribuan (`92,5%`, `12.000`). Berlaku di web, CV, Portfolio PDF, statistik, studi kasus terjemahan (T9.3), draf AI.
+  - Kriteria: nilai yang ditulis sekali untuk dua bahasa (angka hero, angka utama proyek, IPK) ditulis gaya Inggris dan diubah otomatis di halaman/PDF ID (`localizeNumber`); tes unit menolak desimal yang tertukar di `content/` dan kamus UI; aturan ditulis di docs/04 §6 dan prompt draf AI.
+- [x] **T9.6** Penutupan Fase 9: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
+
+### Fase 10: CV per posisi (`docs/11-roadmap.md` §B) ✅
+
+- [x] **T10.1** Model data varian (D10)
+  - Kriteria: `content/cv-variants.yaml` (id, baris peran, ringkasan EN/ID, urutan bagian, label fokus yang dipilih, grup skill); label fokus (`ai`, `data`, `product`, `leadership`) pada `highlights`; skema + CMS + tes; varian hanya memilih/mengurutkan data yang ada.
+- [x] **T10.2** Pembuat PDF per varian
+  - Kriteria: build menghasilkan PDF tiap varian (EN + ID) di jalur yang disepakati D10; tiap varian ≤ 2 halaman, ATS-friendly, tanpa nomor HP (tes per varian).
+- [x] **T10.3** Isi varian awal: AI/ML, Data Engineer, Data Analyst, Product Manager, Project Manager, Management Trainee · disetujui pemilik 2026-10-08
+  - Kriteria: ringkasan dan pilihan poin tiap varian ditinjau pemilik (lewat pratinjau PDF).
+- [x] **T10.4** Penutupan Fase 10: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
+
+### Fase 11: Chatbot "Tanya Harry" di sudut (`docs/11-roadmap.md` §E, D13, D14) ✅
+
+Rencana rinci (arsitektur, batas, keamanan) di `docs/11-roadmap.md` §E. Pratinjau yang dipilih pemilik: https://claude.ai/artifact/9bHCrGGLHm7t1BJoh2fV7a (bagian 3).
+
+- [x] **T11.1** ADR 0014 + pengetahuan dari konten
+  - Kriteria: ADR 0014 (layanan terpisah, penyedia, privasi tanpa penyimpanan, batas, tanpa vector DB, widget sudut, kill switch); `knowledge.json` (lengkap, untuk Gemini) dan `knowledge-compact.json` (≤ 5 ribu token, untuk Groq) dibuat saat build dari `content/` publik saja, beserta daftar path situs yang boleh ditautkan; tes: tanpa nomor HP, tanpa draf, ukuran di bawah batas, path valid.
+- [x] **T11.2** Layanan `services/assistant` (`POST /api/ask`, `GET /api/ask/health`)
+  - Kriteria: penyedia Gemini/Groq direfaktor ke `src/lib/ai/` (dipakai juga draf T8.2); validasi masuk (Origin, ukuran, 1–500 karakter, riwayat ≤ 6 pesan, bot); batas per pengunjung 10/jam dan 30/hari (hash harian, tanpa IP), total 300/hari, ≤ 3 permintaan bersamaan, timeout 20 s; jawaban JSON tervalidasi (teks biasa, tautan hanya path situs, pola nomor HP ditolak), Gemini → Groq → pesan cadangan; kill switch `ASSISTANT_ENABLED`; log tanpa teks pertanyaan; tes unit dengan penyedia tiruan.
+- [x] **T11.3** Infrastruktur: Docker, deploy, Caddy (+ `/security-review`)
+  - Kriteria: target `assistant` di Dockerfile + matrix deploy; service `assistant` di compose (hardening, 128 MB, tanpa volume); Caddy `/api/ask*` (no-store); CSP tetap; `.env.example`, docs/07 dan docs/10 (key terpisah, mematikan fitur, kuota); `test:e2e:docker` mencakup health.
+- [x] **T11.4** Widget chat di sudut
+  - Kriteria: tombol kecil di semua halaman `PageLayout` (bukan halaman cetak), tersembunyi tanpa JS; panel dimuat saat diklik; dialog non-modal yang ramah keyboard dan pembaca layar; contoh pertanyaan, hapus percakapan, pemberitahuan privasi; percakapan bertahan antar-halaman dalam satu tab (`sessionStorage`); fallback CV + email saat server mati/batas habis; lembar bawah di HP tanpa menutupi footer; EN/ID; event statistik `ask` tanpa teks; e2e dengan API tiruan + axe; Lighthouse tetap ≥ 90/95.
+- [x] **T11.5** Uji kualitas dan keamanan
+  - Kriteria: ±30 pertanyaan uji (fakta EN/ID, di luar topik, data pribadi, prompt injection, tautan luar/HTML) dijalankan lewat workflow manual `assistant-eval.yml` (secret repo, tanpa laptop); hasil di `docs/assistant-eval.md`; prompt diperbaiki sampai lulus; `/security-review` seluruh fase.
+- [x] **T11.5b** Key AI terpisah dan model chatbot Gemini Flash Lite
+  - Kriteria: chatbot hanya memakai `ASSISTANT_GEMINI_API_KEY` → `ASSISTANT_GROQ_API_KEY`, draf AI hanya `DRAFT_GEMINI_API_KEY` → `DRAFT_GROQ_API_KEY` (nama sama di GitHub, server, compose, dan kode; diganti pemilik 2026-10-09); chatbot memakai `gemini-3.5-flash-lite` (500/hari), draf tetap `gemini-3.5-flash`; eval dibagi dua (15 Gemini, 15 Groq); pesan error penyedia menyebut jenis kuota; ADR 0015 (menggantikan sebagian ADR 0013 dan 0014); docs/10; tes unit.
+- [x] **T11.6** Peluncuran dan pemantauan
+  - Kriteria: pemilik membuat key Gemini dan Groq terpisah dan memasangnya di server (panduan di docs/10); fitur dinyalakan setelah T11.5 lulus; situs live dicek; jumlah pertanyaan tampil di statistik privat.
+- [x] **T11.6b** Draf AI sadar-grup (independen, permintaan pemilik 2026-10-09)
+  - Kriteria: grup di `content/github.yaml` = satu kandidat draf (bila salah satu anggota bertopic `portfolio`); anggota grup tidak didraf sendiri; grup tercakup bila repo anggota mana pun ditautkan; branch draf lama anggota memblokir grup; draf membaca README semua anggota (total ≤ 12.000 karakter); judul/slug dari judul grup, `links.repo` = repo pertama; ADR 0016; docs/04, docs/10; tes unit.
+- [x] **T11.7** Penutupan Fase 11: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: sesuai checklist §2a.
+
+### Fase 12: Formulir kesan & pesan bermoderasi (`docs/11-roadmap.md` §F, D15) ✅
+
+Rencana disetujui pemilik 2026-10-09 (formulir di halaman sendiri; tinjau di halaman privat ber-token; yang disetujui otomatis jadi PR; tanpa email penulis; notifikasi harian lewat issue GitHub berisi jumlah saja). Repo publik: pesan yang belum disetujui tidak boleh masuk PR, issue, atau log Actions.
+
+- [x] **T12.1** API kesan & pesan di layanan stats + ADR 0017
+  - Kriteria: `POST /api/messages` (Origin, honeypot, bot, 3/pengunjung/hari, antrean ≤ 100, validasi termasuk tolak nomor HP/email/URL di teks, persetujuan tayang wajib; JSON atau form biasa → 303), disimpan *pending* di `messages.sqlite` terpisah (tanpa backup, tanpa IP); endpoint ber-token `MESSAGES_ADMIN_TOKEN` untuk tinjau (pending, approve, reject = hapus), workflow (approved, published = hapus), dan jumlah; pending > 90 hari terhapus otomatis; Caddy `/api/messages*` (no-store, ≤ 8 KiB); compose + `.env.example`; tes unit; `/security-review`.
+- [x] **T12.2** Halaman formulir `/messages/` (EN/ID)
+  - Kriteria: formulir dengan validasi per field, terkirim tanpa JS (303 ke halaman terima kasih / belum terkirim), pemberitahuan privasi, tautan dari bagian Kesan & pesan di beranda (tetap tampil walau kosong) dan footer; e2e + axe; Lighthouse ≥ 90/95.
+- [x] **T12.3** Halaman tinjau privat
+  - Kriteria: `/messages/review/` noindex, di luar sitemap, `Disallow` robots; token di `sessionStorage`; daftar pending (teks aman), Setujui/Tolak dengan konfirmasi; e2e + axe; `/security-review`.
+- [x] **T12.4** Workflow `kind-words.yml`: PR otomatis + notifikasi harian
+  - Kriteria: tiap jam pesan yang disetujui diterjemahkan AI (key `DRAFT_*`, teks dianggap tak tepercaya, diperiksa), ditambahkan ke `content/messages.yaml`, dicek tes konten, dibuka sebagai PR `kind-words` (merge = tayang), lalu dihapus dari server; tiap hari 08.00 WIB issue berisi jumlah pesan menunggu (tanpa isi); `/security-review`.
+- [x] **T12.5** Penutupan Fase 12: rapikan dan dokumentasikan (AGENTS.md §2a)
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus; README, docs/02, docs/04 (dan docs/07/10, ADR bila perlu) sesuai kode; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus dan situs live dicek; laporan ke pemilik.
+
+### Fase 13: Tampilan baru Giok → Nila dan beranda "satu ruang" 3D (`docs/11-roadmap.md` §H, §I; D18–D21) ✅
+
+Rencana disetujui pemilik 2026-10-10. Pratinjau (privat): [satu ruang 3D, warna Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb) dan [diagnosis "pola AI", hero foto + aksara, konveyor](https://claude.ai/artifact/ERboSgCo7gpAGg1LZoNe1t). Pratinjau lama Fase 13 (peta embedding dkk.) tidak berlaku lagi (D21).
+
+Aturan untuk semua tugas Fase 13 dan 14:
+- **Fitur lama tidak boleh hilang.** Daftar wajibnya di `docs/11-roadmap.md` §I, dijaga oleh `tests/e2e/feature-inventory.spec.ts` (T13.0). Tes lama boleh disesuaikan dengan tampilan baru hanya bila yang dicek tetap setara; tes tidak boleh dihapus atau dilemahkan (AGENTS.md §3).
+- **Aturan 3D tetap** (`docs/03-design-system.md` §6, ADR 0007): isi selalu HTML dan lengkap tanpa JS/WebGL, mati otomatis di perangkat lemah, satu frame diam untuk reduced motion, berhenti saat tidak terlihat, ≤ 180 KB gzip JS 3D per halaman (sekarang ±136 KB), Lighthouse ≥ 90/95 (CI mengukur tanpa GPU, jadi yang diukur adalah fallback).
+- **Halaman cetak dan PDF tidak berubah** (ATS, selalu terang).
+- Tugas yang mengubah tampilan dicek di desktop dan HP, tema terang dan gelap; T13.1, T13.4, dan T13.6 dipratinjaukan ke pemilik sebelum merge.
+
+- [x] **T13.0** Pagar pengaman fitur lama (sebelum tampilan diubah)
+  - Kriteria: `tests/e2e/feature-inventory.spec.ts` memeriksa setiap butir §I di EN dan ID, desktop dan HP (selector berdasarkan peran dan teks, bukan kelas CSS, agar tetap berlaku setelah tampilan berubah); semua lulus pada tampilan sekarang; angka Lighthouse ketujuh halaman saat ini dicatat di log sesi sebagai pembanding; screenshot acuan (desktop/HP × terang/gelap) dibuat sebagai artefak lokal untuk perbandingan, tidak di-commit.
+- [x] **T13.1** Warna Giok → Nila, terang dan gelap (ADR 0018 menggantikan ADR 0006)
+  - Kriteria: token baru di `src/styles/tokens.css` untuk tiga titik ruangan (giok, tengah, nila) × tema terang (muda) dan gelap (tua), amber tetap; latar halaman berupa gradasi CSS panjang dari giok ke nila sehingga perubahan warna tetap ada tanpa JS; sorot cahaya dan tekstur butiran halus; halaman selain beranda memakai satu titik tetap (About giok, Projects tengah, Statistik dan 404 nila, lainnya tengah); `tests/unit/tokens-contrast.test.ts` mencakup semua pasangan teks di kedua tema, termasuk titik antara gradasi (sampel tiap 10%); `bun run lint:tokens` lulus; tombol tema tetap bekerja tanpa kedip; `docs/03-design-system.md` §2 ditulis ulang. Belum ada perubahan tata letak; pratinjau ke pemilik.
+- [x] **T13.2** Rapikan "pola AI" di seluruh situs (tanpa 3D)
+  - Kriteria: H1 beranda = nama pemilik (D19), `headline` tampil sebagai kalimat di bawahnya tanpa warna aksen; `*aksen*` tidak lagi diwarnai di web (format tetap diterima di `content/`, PDF tidak berubah); badge pil peran dan label mono huruf kapital dihapus (font mono hanya untuk keluaran mesin: label deteksi, nama kelas); tiga angka hero menjadi daftar dengan konteks (label di `profile.yaml` diperpanjang EN/ID, ditinjau pemilik); proyek pilihan di beranda menjadi baris, bukan kartu; Kontak menjadi email besar + tombol salin + tautan media sosial (semuanya tetap ada); judul halaman, meta, dan JSON-LD tidak berubah; `docs/03` dan `docs/04` diperbarui; `feature-inventory` lulus.
+- [x] **T13.3** Inti "satu ruang" 3D (`src/scenes/room/`, ADR 0019)
+  - Kriteria (diubah 2026-10-10 mengikuti ADR 0019, lihat log sesi T13.3): satu kanvas `position: fixed` per halaman di belakang isi; benda 3D **ditambatkan ke elemen HTML** dan ikut bergeser bersama scroll (pemetaan halaman ↔ dunia sebagai fungsi murni + tes), menggantikan "jalur kamera dengan titik jangkar"; dinding penangkap bayangan di belakang bidang halaman (lantai tidak diperlukan karena benda dimiringkan sendiri); satu cahaya utama tetap (bukan mengikuti kamera) dengan warna dari token (`--room-sky/-ground/-sun/-shadow`) yang ikut berubah saat tema diganti; warna dinding mengikuti gradasi CSS (T13.1), bukan posisi scroll di 3D; tingkatan: bayangan real-time (≥ 6 core dan bukan layar sentuh), selain itu setiap bagian menggambar bayangan lembut statis sendiri, `still` untuk reduced motion, `off` = HTML saja (`decide3D`); render hanya bila perlu; bagian dibangun saat slotnya dekat dan shader-nya dikompilasi async lebih dulu; `SceneHandle` tetap; kanvas `aria-hidden`, tanpa pointer, dan klik ke 3D diabaikan saat menyeret atau memilih teks; `docs/02` §6.1. Pemasangan di beranda setelah LCP lewat dynamic import dipindah ke T13.4.
+- [x] **T13.4** Beranda, ruang 1: foto cetak dan lembar aksara Jawa
+  - Kriteria: foto dan lembar aksara bertuliskan "Harry Mardika" melayang dengan bayangan (bayangan foto jatuh ke lembar); urutan deteksi sekali saat halaman dibuka (wajah → `person` → nama; lalu kotak ha, ra, ma, da, ka → transliterasi), tombol "putar ulang"; gambar lembar dan koordinat kotaknya dibuat sekali oleh `scripts/generate-aksara.ts` dan hasilnya di-commit ke `content/media/` (font Noto Sans Javanese hanya dipakai skrip itu, alasan dependency ditulis di commit), sehingga browser tidak memuat font aksara; fallback HTML = foto + gambar lembar dengan bayangan CSS, elemen LCP adalah foto atau lembar aksara (keduanya `eager` + `fetchpriority=high`; di desktop lembar yang terbesar, diubah atas persetujuan pemilik 2026-10-10); semua label dan keterangan dari kamus UI EN/ID; tombol Download CV dan Portfolio PDF tetap (beserta statistik unduhan); scene `photo-card` lama dihapus setelah diganti; LCP < 2,5 s di HP; pratinjau ke pemilik.
+- [x] **T13.5** Beranda, ruang 2: benang journey
+  - Kriteria: benang dari bawah lembar aksara melewati titik-titik `journey.yaml` (4–6 item) sampai ke lantai proyek; bola mengikuti scroll; titik yang sudah dilewati menyala dan daftar HTML ikut menandainya; klik titik 3D membuka popover detail yang sama dengan daftar (popover tetap jalan tanpa JS); scene `journey-path` lama dihapus setelah diganti; tes journey lama tetap lulus atau disesuaikan setara.
+- [x] **T13.6** Beranda, ruang 3–5: konveyor, Kind words, laptop homelab
+  - Kriteria: konveyor membawa 3 proyek pilihan di depan dan proyek lain dari data, wadah dari `profile.projects.categories`; hover/ketuk menampilkan judul, klik membuka studi kasus; Kind words: pesan dari `messages.yaml` sebagai kertas yang ditempel (teks tetap HTML) + tombol "Leave a message"; Kontak: laptop homelab yang layarnya menampilkan beranda; tanpa 3D semuanya tetap HTML; pratinjau ke pemilik.
+
+---
+- [x] **T13.7** Penutupan Fase 13: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.5.0
+  - Kriteria: kode/dependency/branch yang tidak terpakai dihapus (termasuk scene lama dan token hijau lama); README, docs/02, docs/03, docs/04 sesuai kode; ADR 0018 dan 0019 tercatat di `docs/adr/README.md`; fase ✅ dan ringkasan fase di PROGRESS; entri CHANGELOG fase dipindah ke rilis bertanggal; `bun run verify` lulus, `feature-inventory` lulus, Lighthouse ketujuh halaman ≥ 90/95 dan dibandingkan dengan angka T13.0; situs live dicek di desktop dan HP sungguhan; laporan ke pemilik.
+
+### Fase 14: Beranda "full 3D" persis artifact (`docs/11-roadmap.md` §H2; D22)
+
+Rencana disetujui pemilik 2026-10-10 (rencana lengkap: `docs/11-roadmap.md` §H2 dan ADR 0020). Pembanding: [artifact satu ruang Giok → Nila](https://claude.ai/artifact/Xkm8xfNPp6m1d1ijtf64jb). Aturan Fase 13 (fitur lama tetap, `feature-inventory`, aturan 3D, PDF tidak berubah) tetap berlaku. Dikerjakan di branch `phase/14`, merge ke `main` sekali di T14.6.
+
+- [x] **T14.0** Kerangka: ADR 0020, rencana di docs, keputusan 3D sebelum tampilan pertama (`html[data-room-3d]` dari skrip inline `earlyMode`, salinan mandiri `decide3D` yang dijaga tes), tata letak ruangan (selayar penuh, kolom teks kiri dengan scrim, panel bawah di HP, tanpa garis) hanya saat 3D aktif
+  - Kriteria: tanpa 3D (tanpa WebGL/GPU, Save-Data, Lighthouse CI) beranda tetap tata letak sekarang tanpa ruang kosong; dengan 3D tidak ada lompatan tata letak setelah `load`; `feature-inventory` lulus di kedua mode; CSP memuat hash skrip baru.
+- [x] **T14.1** Kamera di dunia tetap dan warna ruangan mengikuti kamera
+  - Kriteria: `src/scenes/room/camera.ts` murni + tes (titik jangkar dari posisi bagian, interpolasi, jarak untuk lebar yang harus muat, offset tampilan desktop/HP); grup halaman tidak lagi digeser scroll; dinding dan lantai penangkap bayangan; cahaya mengikuti target kamera; `--room-a/b/c` mengikuti kamera dari giok ke nila (diskret, hanya saat berubah).
+- [x] **T14.2** Ruang hero dan journey skala artifact + tali jemuran, lampu yang menyala, lampu ikut kursor, kertas bertekstur
+  - Kriteria: foto dan lembar aksara besar digantung dengan jepitan di tali yang menjadi benang journey (satu benang utuh); urutan pembuka: ruangan redup → lampu menyala → deteksi, sekali (reduced motion: keadaan akhir); titik journey besar, kamera turun mengikuti bola, klik titik membuka cerita, `data-reached` tetap; lampu bergeser pelan mengikuti kursor (pointer halus saja); serat kertas prosedural dan bayangan kontak.
+- [x] **T14.3** Ruang proyek: konveyor di lantai (wadah di belakang sabuk, kartu berjudul) + 3 kolom proyek + log deteksi sinkron
+  - Kriteria: kartu yang terdeteksi menyorot kolom/baris proyek yang sama di HTML (`data-detected`) dengan catatan mono "Judul → Bidang" dari `content/` (tanpa skor rekaan); klik kartu membuka studi kasus.
+- [x] **T14.4** Ruang Kind words dan kontak: laptop besar dengan beranda mini dan angka asli
+  - Kriteria: layar = nama, baris peran, tombol Download CV, foto, dan baris status dari `/api/health` + `/api/stats/summary` (pengunjung 30 hari; disembunyikan bila gagal; tanpa data baru); pesan Kind words ditempel di dinding (teks tetap HTML).
+- [x] **T14.5** Tema terang yang hidup, HP, reduced motion, aksesibilitas, performa
+  - Kriteria: tema mengikuti perangkat (pilihan pemilik) dan versi terang sama hidupnya dengan gelap; HP: 3D di atas, panel teks di bawah; kontras teks di atas scrim/panel ≥ 4,5:1 di kedua tema; JS 3D beranda ≤ 180 KB gzip; Lighthouse ≥ 90/95.
+
+---
+- [x] **T14.6** Penutupan Fase 14 (AGENTS.md §2a), rilis 1.6.0
+  - Kriteria: review subagent; screenshot berdampingan dengan artifact (desktop 1440, HP 412, terang/gelap); `bun run verify`; merge `phase/14` → `main`, deploy, tag v1.6.0, cek live; laporan ke pemilik.
+
+### Fase 15: Halaman lain dalam ruang yang sama (`docs/11-roadmap.md` §H; D20, D21) ❌ Dibatalkan
+
+**Dibatalkan pemilik 2026-10-28 (D23):** situs pindah ke versi 2 ala lamalama.com (Fase 16–18 di bawah). Daftar tugas di bawah tetap sebagai riwayat dan **tidak dikerjakan**. Kebutuhan yang masih berlaku dipindah: indeks Projects dengan tag dan bidang (catatan T15.1, D20) → T18.4; halaman tanpa 3D mengikuti tampilan baru dan OG baru (T15.5) → T18.5.
+
+- [ ] **T15.1** Projects: jalur sortir penuh dan daftar indeks (D20)
+  - Catatan dari T13.2: `ProjectRow` belum menampilkan jumlah bintang GitHub, chip tag, dan bidang (menampilkan peran); putuskan apa yang dibutuhkan indeks `/projects/` sebelum grid diganti, dan ganti sisa font mono di kartu.
+  - Kriteria: semua proyek (studi kasus dan repo GitHub) di konveyor dari data, wadah per kategori (aturan sama dengan filter: kategori < 2 proyek disembunyikan); filter dan tautan `?filter=` menyorot wadah dan proyeknya; pencarian tetap; daftar indeks (tahun, judul, deskripsi, bidang, angka utama) menggantikan grid kartu; klik kartu di konveyor membuka studi kasus; e2e memakai helper `publishedCaseStudies` (tanpa daftar proyek di kode tes); Lighthouse `/projects/` ≥ 90.
+- [ ] **T15.2** About: dinding penghargaan
+  - Kriteria: penghargaan dan sertifikat aktif sebagai cetakan berbingkai dari `awards.yaml` dan `certifications.yaml` (sertifikat kedaluwarsa tetap hilang otomatis); hover/klik menyorot item yang sama di daftar HTML; semua bagian About tetap (ringkasan, pengalaman, pendidikan, penghargaan, sertifikat, skill).
+- [ ] **T15.3** Statistik: laptop homelab
+  - Kriteria: layar laptop menampilkan status server dan kunjungan dari API statistik publik yang sudah ada (tidak ada data baru yang disimpan); saat API mati layar menampilkan "offline" dan isi HTML `/stats/` tetap; semua isi halaman Statistik tetap.
+- [ ] **T15.4** 404 ala computer vision
+  - Kriteria: kotak deteksi memindai dinding kosong lalu mengunci "page · not found 0.99"; teks 404 dan tautan tetap HTML; label dari kamus UI (EN/ID).
+- [ ] **T15.5** Halaman tanpa 3D mengikuti tampilan baru
+  - Kriteria: studi kasus, `/cv/`, `/messages/` (beserta halaman terkirim, belum terkirim, dan tinjau), panel chatbot, menu HP, dan footer memakai warna dan tipografi baru; gambar OG dibuat ulang dengan warna baru; halaman cetak dan PDF tidak berubah; axe tanpa pelanggaran di kedua tema.
+- [ ] **T15.6** (opsional, diputuskan pemilik setelah T15.5) Transisi antarhalaman
+  - Kriteria: kanvas tetap hidup saat pindah halaman (Astro View Transitions) dan kamera terbang ke sudut halaman baru, hanya bila chatbot, statistik, formulir, dan skrip halaman tetap benar; bila tidak, dibatalkan dan alasannya dicatat.
+
+---
+- [ ] **T15.7** Penutupan Fase 15: rapikan dan dokumentasikan (AGENTS.md §2a), rilis 1.7.0
+  - Kriteria: seperti T13.7; `feature-inventory` lulus; laporan ke pemilik.
+
+### Fase 16: Perbaikan dan konten, menuju versi 2 ✅ (`docs/12-v2.md` §A–C2; D24, D26, D27, D29–D32)
+
+Rencana disetujui pemilik 2026-10-28. T16.1 dirilis sendiri sebagai **1.6.1** segera setelah selesai (situs tidak ter-update sejak 2026-10-26); sisanya dirilis bersama di penutupan sebagai **1.7.0**.
+
+- [x] **T16.0** Rencana versi 2 ditulis: `docs/12-v2.md`, ADR 0021 (menggantikan 0018–0020), Fase 15 dibatalkan, Fase 16–18 di sini, keputusan D23–D30
+- [x] **T16.1** Hotfix: deploy jalan lagi dan Kind words tayang (rilis 1.6.1)
+  - Kriteria: fixture tes `appendEntry` di `tests/unit/messages/publish.test.ts` tidak lagi bergantung pada isi `content/messages.yaml` (seluruh isi setelah `items:` dibuang; yang dicek tetap setara); dugaan penyebab versi `en` Masriq berbahasa Indonesia dipastikan (bahasa halaman formulir ≠ bahasa tulisan) dan dicatat; entri Masriq: terjemahan Inggris yang benar, `role`/`relationship` dirapikan (D29), isi pesan tidak diubah; `bun run verify` lulus; deploy sukses; live dicek: Kind words tampil di beranda EN/ID dan 7 studi kasus AI yang sudah di-merge (PR #12–#17, #21) ada di `/projects/`; CHANGELOG 1.6.1, tag `v1.6.1`.
+- [x] **T16.2** PIMNAS, angka pendanaan, dan keterangan Decklify yang lengkap (D26, D31; `docs/12-v2.md` §B)
+  - Kriteria: `awards.yaml` `pkm-k-2026` menjadi "Finalist, PIMNAS 2026 (PKM-Kewirausahaan)" / "Finalis PIMNAS 2026 (PKM-Kewirausahaan)"; dana hibah Rp8.125.000 (EN `IDR 8,125,000`, ID `Rp8.125.000`, D16) di `experience.yaml`, `cv-variants.yaml`, dan studi kasus `decklify` EN/ID bila menyebutnya; tidak ada sisa "5.85"/"5,85" di `content/`; keterangan Decklify (studi kasus EN/ID, `experience.yaml`, `profile.yaml`, `journey.yaml`, `cv-variants.yaml`) dilengkapi dari dokumen PKM-K sesuai peran yang divalidasi pemilik (tidak menulis kode) dan daftar angka di §B; klaim lama dikoreksi (kemudahan 8,39 bukan kepuasan, NPS dari 38 responden, tanpa "first 2 weeks"/"product-market fit"); 45 transaksi Oktober tanpa rupiah; tanpa NPV/IRR; CV umum dan varian tetap ≤ 2 halaman; pengetahuan chatbot dan PDF ikut berubah saat build; ditinjau pemilik.
+- [x] **T16.3** Tracker permintaan pemilik di GitHub Issues (D27)
+  - Kriteria: `.github/ISSUE_TEMPLATE/request.yml` (jenis, apa yang diinginkan, kenapa, contoh/tautan, prioritas; label otomatis `inbox`; peringatan "repo publik, tanpa data pribadi") dan `config.yml` (issue kosong dimatikan); label `inbox`, `planned`, `needs-owner` dibuat; `AGENTS.md` §1 (cek `gh issue list --label inbox` setelah membaca PROGRESS) dan §2b baru (alur triase: tanya di komentar bila ambigu, tulis tugas berkriteria di PROGRESS bila jelas, `closes #N` di commit penutup, rencana besar ke `docs/`); diuji dengan satu issue contoh yang ditutup setelahnya.
+- [x] **T16.4** AI editor untuk Kind words (D30, `docs/12-v2.md` §C2)
+  - Kriteria: langkah AI di `kind-words.yml` mendeteksi bahasa asli tulisan, merapikan `role`/`relationship` (EN/ID), menerjemahkan isi pesan, menulis saran untuk isi pesan (tidak diterapkan), dan memberi tanda (spam, kata kasar, data pribadi, prompt injection, bukan kesan & pesan); badan PR berisi tabel per pesan; log publik tanpa isi pesan; jawaban AI divalidasi skema dan pemeriksaan lama tetap; bila AI gagal pesan tetap masuk PR dengan tanda "periksa manual"; tanpa secret/layanan baru; tes unit dengan penyedia tiruan (kasus Masriq, teks berisi instruksi, AI gagal); ADR 0017 diperbarui atau ADR baru; `/security-review`.
+
+- [x] **T16.5** Evaluasi semua CV menurut kriteria HR per posisi, lalu perbaiki (D32, `docs/12-v2.md` §B2)
+  - Kriteria: CV umum dan 7 varian dinilai dengan kriteria umum (ATS, ≤ 2 halaman, ringkasan menyebut posisi, poin berpola aksi + hasil terukur, kata kunci posisi, konsistensi, tanpa klaim tak terbukti) dan kriteria per posisi; hasil di `docs/cv-evaluation.md` (temuan, perbaikan, skor sebelum/sesudah, keputusan yang menunggu pemilik); perbaikan diterapkan di `content/` tanpa fakta baru; semua PDF CV dicek ulang (halaman, teks bisa disalin); `bun run verify` lulus; dikerjakan setelah T16.2.
+
+---
+- [x] **T16.6** Penutupan Fase 16 (AGENTS.md §2a), rilis 1.7.0
+  - Kriteria: seperti T13.7; tracker sudah dipakai minimal sekali oleh pemilik; laporan ke pemilik.

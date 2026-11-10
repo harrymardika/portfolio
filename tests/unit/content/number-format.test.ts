@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { readdirSync, readFileSync } from 'node:fs';
-import { parse } from 'yaml';
+import { load } from 'js-yaml';
 import { hasForeignDecimal } from '@/lib/content';
 import { UI } from '@/lib/i18n';
 
@@ -44,11 +44,11 @@ function frontmatter(source: string): string {
 function contentFindings(): Finding[] {
   const out: Finding[] = [];
   for (const file of readdirSync('content').filter((name) => name.endsWith('.yaml'))) {
-    collect(parse(readFileSync(`content/${file}`, 'utf8')), file, out);
+    collect(load(readFileSync(`content/${file}`, 'utf8')), file, out);
   }
   for (const file of readdirSync('content/projects').filter((name) => name.endsWith('.md'))) {
     const source = readFileSync(`content/projects/${file}`, 'utf8');
-    collect(parse(frontmatter(source)), file, out);
+    collect(load(frontmatter(source)), file, out);
     const body = source.split(/^---$/m).slice(2).join('---');
     if (hasForeignDecimal(body, 'en')) out.push({ where: `${file} (body)`, text: 'English case study' });
   }

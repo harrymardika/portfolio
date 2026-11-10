@@ -5,6 +5,10 @@ Setiap tugas yang selesai menambahkan entri di bagian **Unreleased**. Saat sebua
 
 ## [Unreleased]
 
+### Changed
+- Housekeeping: the finished task lists of Phases 0–16 and older session logs moved from `PROGRESS.md` to `docs/progress-archive.md` (442 → ±190 lines); the 14 merged `drafts/case-study-*` branches were deleted from GitHub.
+- The number format test parses YAML with `js-yaml`, the parser the site uses, instead of the unlisted `yaml` package.
+
 ## [1.7.3] - 2026-11-09
 
 ### Fixed

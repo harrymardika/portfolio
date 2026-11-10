@@ -1,6 +1,6 @@
 # 11 · Rencana lanjutan (Fase 9–15)
 
-> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D22 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`PROGRESS.md`](../PROGRESS.md) (Fase 9–15).
+> Disusun 2026-10-07 setelah situs online dan Fase 0–8 selesai. Dokumen ini menjelaskan **apa** yang dibangun setelah peluncuran, **kenapa**, dan pilihan yang dulu diajukan ke pemilik. **Semua keputusan D8–D22 sudah diambil pemilik** (2026-10-07 sampai 2026-10-10); keputusannya tercatat di awal tiap bagian dan di tabel [Keputusan](#keputusan) di bawah. Bila keputusan berbeda dari rekomendasi awal, yang berlaku adalah keputusannya. Daftar tugas yang bisa dicentang ada di [`docs/progress-archive.md`](progress-archive.md#daftar-tugas-fase-016) (Fase 9–15, dipindah dari `PROGRESS.md` setelah selesai).
 >
 > **Status (2026-10-28):** Fase 9–14 selesai (rilis 1.1.0–1.6.0): chatbot dan formulir kesan & pesan tayang 2026-10-09, tampilan Giok → Nila 2026-10-10, beranda "full 3D" 2026-10-13. **Fase 15 dibatalkan** (D23): berikutnya versi 2 ala lamalama.com di [`12-v2.md`](12-v2.md) (Fase 16–18, ADR 0021). Daftar fitur wajib §I tetap berlaku untuk v2.
 >
